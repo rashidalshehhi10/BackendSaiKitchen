@@ -1,0 +1,332 @@
+﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SaiKitchenBackend.Controllers
+{
+    public class InquiryController : BaseController
+    {
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> AddInquiryAsync(Inquiry inquiry)
+        {
+            inquiry.InquiryStartDate = Helper.GetDateTime();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId == inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.CustomerName = inquiry.Customer.CustomerName;
+                customer.CustomerEmail = inquiry.Customer.CustomerEmail;
+                customer.CustomerAddress = inquiry.Customer.CustomerAddress;
+                customer.CustomerNationalId = inquiry.Customer.CustomerNationalId;
+                customer.ContactStatusId = inquiry.Customer.ContactStatusId;
+                customer.WayofContactId = inquiry.Customer.WayofContactId;
+                customer.CustomerCountry = inquiry.Customer.CustomerCountry;
+                customer.CustomerCity = inquiry.Customer.CustomerCity;
+                customer.CustomerNationality = inquiry.Customer.CustomerNationality;
+                customer.IsActive = true;
+                customer.IsDeleted = false;
+                customer.IsEscalationRequested = false;
+                inquiry.Customer = customer;
+            }
+            else
+            {
+                try
+                {
+                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId != inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    if (anotherBranchCustomer != null)
+                    {
+                        List<int?> roletypeId = new List<int?>();
+                        roletypeId.Add((int)roleType.Manager);
+                        sendNotificationToHead(anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
+                    }
+                }
+
+                catch (Exception ex)
+                {
+
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
+            }
+            if (inquiry.Building.BuildingAddress == null || inquiry.Building.BuildingAddress == "")
+            {
+                inquiry.Building.BuildingAddress = customer.CustomerAddress;
+            }
+            if (inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo != null)
+            {
+                sendNotificationToOneUser(Constants.measurementAssign + "" + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
+            }
+            inquiryRepository.Create(inquiry);
+            context.SaveChanges();
+
+            inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+            //inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserFcmtoken
+            response.data = inquiry;
+            try
+            {
+                //(String toEmail, String inquiryCode, String measurementScheduleDate, String assignTo, String contactNumber, String buildingAddress)
+                await mailService.SendInquiryEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserMobile, inquiry.Building.BuildingAddress);
+            }
+
+            catch (Exception ex)
+            {
+
+                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+            }
+            return response;
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetWorkscope()
+        {
+            response.data = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetAllInquiries()
+        {
+            response.data = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes);
+            return response;
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetInquiriesOfBranch(int branchId)
+        {
+
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true
+            && x.IsDeleted == false).Select(x => new ViewInquiry()
+            {
+                InquiryWorkscopeId = x.InquiryWorkscopeId,
+                InquiryId = x.InquiryId,
+                InquiryDescription = x.Inquiry.InquiryDescription,
+                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
+                WorkScopeId = x.WorkscopeId,
+                WorkScopeName = x.Workscope.WorkScopeName,
+                DesignScheduleDate = x.DesignScheduleDate,
+                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+                Status = x.InquiryStatusId,
+                MeasurementScheduleDate = x.MeasurementScheduleDate,
+                BuildingAddress = x.Inquiry.Building.BuildingAddress,
+                BuildingCondition = x.Inquiry.Building.BuildingCondition,
+                BuildingFloor = x.Inquiry.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
+                CustomerId = x.Inquiry.CustomerId,
+                CustomerName = x.Inquiry.Customer.CustomerName,
+                CustomerContact = x.Inquiry.Customer.CustomerContact,
+                BranchId = x.Inquiry.BranchId,
+                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId
+            }).OrderByDescending(x => x.InquiryId);
+            tableResponse.data = inquiries;
+            tableResponse.recordsTotal = inquiries.Count();
+            tableResponse.recordsFiltered = inquiries.Count();
+            return tableResponse;
+        }
+
+        private static string GetInquiryCode(InquiryWorkscope x)
+        {
+            return "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId;
+        }
+
+
+
+
+
+        #region Measurement 
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetMeasurementOfBranch(int branchId)
+        {
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x =>x.MeasurementAssignedTo==Constants.userId&& x.Inquiry.BranchId == branchId && (x.InquiryStatusId == 1 || x.InquiryStatusId == 2) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            && x.IsDeleted == false).Select(x => new ViewMeasurement()
+            {
+                InquiryWorkscopeId = x.InquiryWorkscopeId,
+                InquiryId = x.InquiryId,
+                InquiryDescription = x.Inquiry.InquiryDescription,
+                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
+                WorkScopeId = x.WorkscopeId,
+                WorkScopeName = x.Workscope.WorkScopeName,
+                DesignScheduleDate = x.DesignScheduleDate,
+                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+                Status = x.InquiryStatusId,
+                MeasurementScheduleDate = x.MeasurementScheduleDate,
+                BuildingAddress = x.Inquiry.Building.BuildingAddress,
+                BuildingCondition = x.Inquiry.Building.BuildingCondition,
+                BuildingFloor = x.Inquiry.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
+                CustomerId = x.Inquiry.CustomerId,
+                CustomerName = x.Inquiry.Customer.CustomerName,
+                CustomerContact = x.Inquiry.Customer.CustomerContact,
+                BranchId = x.Inquiry.BranchId,
+                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+            }).OrderByDescending(x => x.InquiryId);
+            tableResponse.data = inquiries;
+            tableResponse.recordsTotal = inquiries.Count();
+            tableResponse.recordsFiltered = inquiries.Count();
+            return tableResponse;
+        }
+
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> UpdateMeasurementDetailsAsync(Inquiry inquiry)
+        {
+            inquiry.InquiryStartDate = Helper.GetDateTime();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId == inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.CustomerName = inquiry.Customer.CustomerName;
+                customer.CustomerEmail = inquiry.Customer.CustomerEmail;
+                customer.CustomerAddress = inquiry.Customer.CustomerAddress;
+                customer.CustomerNationalId = inquiry.Customer.CustomerNationalId;
+                customer.ContactStatusId = inquiry.Customer.ContactStatusId;
+                customer.WayofContactId = inquiry.Customer.WayofContactId;
+                customer.CustomerCountry = inquiry.Customer.CustomerCountry;
+                customer.CustomerCity = inquiry.Customer.CustomerCity;
+                customer.CustomerNationality = inquiry.Customer.CustomerNationality;
+                customer.IsActive = true;
+                customer.IsDeleted = false;
+                customer.IsEscalationRequested = false;
+                inquiry.Customer = customer;
+            }
+            else
+            {
+                try
+                {
+                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId != inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    if (anotherBranchCustomer != null)
+                    {
+
+                        List<int?> roletypeId = new List<int?>();
+                        roletypeId.Add((int)roleType.Manager);
+                        sendNotificationToHead(anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
+                    }
+                }
+
+                catch (Exception ex)
+                {
+
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
+            }
+            if (inquiry.Building.BuildingAddress == null || inquiry.Building.BuildingAddress == "")
+            {
+                inquiry.Building.BuildingAddress = customer.CustomerAddress;
+            }
+            if (inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo != null)
+            {
+                sendNotificationToOneUser(Constants.measurementAssign + "" + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
+            }
+            inquiryRepository.Create(inquiry);
+            context.SaveChanges();
+
+            inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+            //inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserFcmtoken
+            response.data = inquiry;
+            try
+            {
+                await mailService.SendInquiryEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserMobile, inquiry.Building.BuildingAddress);
+            }
+
+            catch (Exception ex)
+            {
+
+                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+            }
+            
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public Object UpdateInquiryScheduleDate(UpdateInquirySchedule updateInquirySchedule)
+        {
+           
+            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquirySchedule.InquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes).Include(x=>x.AddedByNavigation.UserRoles).Include(x=>x.AddedByNavigation.UserRoles).FirstOrDefault();
+            if (inquiry != null)
+            {
+                //inquiry.InquiryWorkscopes.AsQueryable<InquiryWorkscope>().Where(x => x.IsActive == true && x.IsDeleted == false).ForEachAsync((x) => { x.DesignAssignedTo = updateMeasurementSchedule.MeasurementAssignedTo; x.MeasurementScheduleDate = updateMeasurementSchedule.MeasurementScheduleDate; x.InquiryStatusId = updateMeasurementSchedule.InquiryStatusId; });
+                if (inquiry.InquiryWorkscopes.FirstOrDefault().InquiryStatusId <= 2) { 
+                updateInquirySchedule.InquiryStatusId = Helper.ConvertToDateTime(updateInquirySchedule.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
+
+                }
+                else if (updateInquirySchedule.DesignScheduleDate != null && inquiry.InquiryWorkscopes.FirstOrDefault().InquiryStatusId <= 4)
+                {
+                    updateInquirySchedule.InquiryStatusId = Helper.ConvertToDateTime(updateInquirySchedule.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 4 : 3;
+                }
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.MeasurementAssignedTo = updateInquirySchedule.MeasurementAssignedTo;
+                    inquiryWorkscope.MeasurementScheduleDate = updateInquirySchedule.MeasurementScheduleDate;
+                    inquiryWorkscope.InquiryStatusId = updateInquirySchedule.InquiryStatusId;
+                    inquiryWorkscope.DesignAssignedTo = updateInquirySchedule.DesignAssignedTo;
+                    inquiryWorkscope.DesignScheduleDate = updateInquirySchedule.DesignScheduleDate;
+                }
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+                response.data = inquiry;
+                try
+                {
+                    var userRoles = userRoleRepository.FindByCondition(x => inquiry.AddedByNavigation.UserRoles.Where(y => y.UserRoleId == x.UserRoleId).Any() && x.IsActive==true && x.IsDeleted==false).Include(x=>x.BranchRole).Include(x=>x.BranchRole.RoleHeads).ToList();
+                    var roleHeadsId = userRoles.FirstOrDefault().BranchRole.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.HeadRoleId).ToList();
+                    var roleTypeId = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.RoleTypeId).ToList();
+
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                }
+
+                catch (Exception ex)
+                {
+
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "No Inquiry Exist";
+            }
+            return response;
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public Object AddMeaurementtoInquiry(Measurement measurement)
+        {
+            Guid obj = Guid.NewGuid();
+            using (var stream = new MemoryStream(measurement.MeasurementFile))
+            {
+                FileStream file = new FileStream(@"Assets/Images/"+obj.ToString(), FileMode.Create, FileAccess.Write);
+                stream.WriteTo(file);
+                file.Close();
+                stream.Close();
+            }
+
+            //measurementRepository.Create(measurement);
+            //context.SaveChanges();
+            response.data = measurement;
+            return response;
+        }
+
+
+            #endregion
+        }
+}
