@@ -27,6 +27,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
+        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
         public virtual DbSet<InquiryStatus> InquiryStatuses { get; set; }
         public virtual DbSet<InquiryWorkscope> InquiryWorkscopes { get; set; }
@@ -53,7 +54,7 @@ namespace BackendSaiKitchen.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.\\;Database=DbSaiKitchen;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\;Database=DbSaiKitchen;Trusted_Connection=True;MultipleActiveResultSets=true;");
             }
         }
 
@@ -251,6 +252,26 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<File>(entity =>
+            {
+                entity.ToTable("File");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.FileImage).HasColumnType("image");
+
+                entity.Property(e => e.FileName).HasMaxLength(50);
+
+                entity.Property(e => e.FileUrl).HasColumnName("FileURL");
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Measurement)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.MeasurementId)
+                    .HasConstraintName("FK_File_Measurement");
+            });
+
             modelBuilder.Entity<Inquiry>(entity =>
             {
                 entity.ToTable("Inquiry");
@@ -359,9 +380,22 @@ namespace BackendSaiKitchen.Models
                     .HasMaxLength(50)
                     .HasColumnName("KDIBaseUnitHeight");
 
-                entity.Property(e => e.KdiboardModel)
+                entity.Property(e => e.KdiboardModelCarcass)
                     .HasMaxLength(50)
-                    .HasColumnName("KDIBoardModel");
+                    .HasColumnName("KDIBoardModelCarcass");
+
+                entity.Property(e => e.KdiboardModelCarcassColor)
+                    .HasMaxLength(50)
+                    .HasColumnName("KDIBoardModelCarcassColor");
+
+                entity.Property(e => e.KdiboardModelDoorShutterColor)
+                    .HasMaxLength(10)
+                    .HasColumnName("KDIBoardModelDoorShutterColor")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.KdiboradModelDoorShutter)
+                    .HasMaxLength(50)
+                    .HasColumnName("KDIBoradModelDoorShutter");
 
                 entity.Property(e => e.KdikitchenType)
                     .HasMaxLength(50)
@@ -369,17 +403,9 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.Kdinotes).HasColumnName("KDINotes");
 
-                entity.Property(e => e.KdiselectedColor)
-                    .HasMaxLength(50)
-                    .HasColumnName("KDISelectedColor");
-
                 entity.Property(e => e.KdiwallUnitHeight)
                     .HasMaxLength(50)
                     .HasColumnName("KDIWallUnitHeight");
-
-                entity.Property(e => e.Kdiworktop)
-                    .HasMaxLength(50)
-                    .HasColumnName("KDIWorktop");
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
@@ -410,14 +436,6 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.MeasurementComment).HasMaxLength(500);
 
-                entity.Property(e => e.MeasurementDescription).HasMaxLength(500);
-
-                entity.Property(e => e.MeasurementFile).HasColumnType("image");
-
-                entity.Property(e => e.MeasurementFileUrl)
-                    .HasMaxLength(500)
-                    .HasColumnName("MeasurementFileURL");
-
                 entity.Property(e => e.MeasurementName).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
@@ -441,6 +459,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.MeasurementMeasurementApprovedByNavigations)
                     .HasForeignKey(d => d.MeasurementApprovedBy)
                     .HasConstraintName("FK_Measurement_User1");
+
+                entity.HasOne(d => d.MeasurementDetail)
+                    .WithMany(p => p.Measurements)
+                    .HasForeignKey(d => d.MeasurementDetailId)
+                    .HasConstraintName("FK_Measurement_MeasurementDetail");
 
                 entity.HasOne(d => d.MeasurementTakenByNavigation)
                     .WithMany(p => p.MeasurementMeasurementTakenByNavigations)
@@ -484,11 +507,6 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.MeasurementDetailSpotLightFromWall).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
-
-                entity.HasOne(d => d.Measurement)
-                    .WithMany(p => p.MeasurementDetails)
-                    .HasForeignKey(d => d.MeasurementId)
-                    .HasConstraintName("FK_MeasurementDetail_Measurement");
             });
 
             modelBuilder.Entity<MeasurementDetailInfo>(entity =>

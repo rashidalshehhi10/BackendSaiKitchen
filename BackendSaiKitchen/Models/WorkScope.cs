@@ -15,6 +15,7 @@ namespace BackendSaiKitchen.Models
         public int WorkScopeId { get; set; }
         public string WorkScopeName { get; set; }
         public string WorkScopeDescription { get; set; }
+        public int? QuestionaireType { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }

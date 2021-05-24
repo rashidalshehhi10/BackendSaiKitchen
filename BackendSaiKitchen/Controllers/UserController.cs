@@ -17,7 +17,7 @@ namespace SaiKitchenBackend.Controllers
     public class UserController : BaseController
     {
 
-        [HttpHead]
+        [HttpHead,HttpPost]
         [Route("")]
         public Object User()
         {

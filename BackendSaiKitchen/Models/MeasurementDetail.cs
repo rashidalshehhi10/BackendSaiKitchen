@@ -10,10 +10,10 @@ namespace BackendSaiKitchen.Models
         public MeasurementDetail()
         {
             MeasurementDetailInfos = new HashSet<MeasurementDetailInfo>();
+            Measurements = new HashSet<Measurement>();
         }
 
         public int MeasurementDetailId { get; set; }
-        public int? MeasurementId { get; set; }
         public string MeasurementDetailName { get; set; }
         public string MeasurementDetailDescription { get; set; }
         public string MeasurementDetailCeilingHeight { get; set; }
@@ -33,7 +33,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
-        public virtual Measurement Measurement { get; set; }
         public virtual ICollection<MeasurementDetailInfo> MeasurementDetailInfos { get; set; }
+        public virtual ICollection<Measurement> Measurements { get; set; }
     }
 }

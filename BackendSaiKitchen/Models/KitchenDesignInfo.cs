@@ -15,11 +15,12 @@ namespace BackendSaiKitchen.Models
 
         public int Kdiid { get; set; }
         public string KdikitchenType { get; set; }
-        public string KdiboardModel { get; set; }
-        public string KdiselectedColor { get; set; }
+        public string KdiboardModelCarcass { get; set; }
+        public string KdiboardModelCarcassColor { get; set; }
+        public string KdiboradModelDoorShutter { get; set; }
+        public string KdiboardModelDoorShutterColor { get; set; }
         public string KdibaseUnitHeight { get; set; }
         public string KdiwallUnitHeight { get; set; }
-        public string Kdiworktop { get; set; }
         public string Kdinotes { get; set; }
         public int? CreatedBy { get; set; }
         public string CreatedDate { get; set; }

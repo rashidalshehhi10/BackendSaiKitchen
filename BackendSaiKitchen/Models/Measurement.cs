@@ -9,17 +9,16 @@ namespace BackendSaiKitchen.Models
     {
         public Measurement()
         {
-            MeasurementDetails = new HashSet<MeasurementDetail>();
+            Files = new HashSet<File>();
         }
 
         public int MeasurementId { get; set; }
         public string MeasurementName { get; set; }
         public string MeasurementDescription { get; set; }
+        public int? MeasurementDetailId { get; set; }
         public int? MeasurementStatusId { get; set; }
         public string MeasurementComment { get; set; }
         public int? FeesId { get; set; }
-        public byte[] MeasurementFile { get; set; }
-        public string MeasurementFileUrl { get; set; }
         public int? InquiryWorkscopeId { get; set; }
         public int? MeasurementTakenBy { get; set; }
         public int? KitchenDesignInfoId { get; set; }
@@ -38,8 +37,9 @@ namespace BackendSaiKitchen.Models
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }
         public virtual KitchenDesignInfo KitchenDesignInfo { get; set; }
         public virtual User MeasurementApprovedByNavigation { get; set; }
+        public virtual MeasurementDetail MeasurementDetail { get; set; }
         public virtual User MeasurementTakenByNavigation { get; set; }
         public virtual WardrobeDesignInformation WardrobeDesignInfo { get; set; }
-        public virtual ICollection<MeasurementDetail> MeasurementDetails { get; set; }
+        public virtual ICollection<File> Files { get; set; }
     }
 }
