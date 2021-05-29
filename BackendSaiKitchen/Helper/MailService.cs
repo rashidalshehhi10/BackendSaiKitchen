@@ -15,9 +15,7 @@ namespace BackendSaiKitchen.Helper
         //public static MailService mailService;
         public MailService(IOptions<MailSettings> mailSettings)
         {
-
             _mailSettings = mailSettings != null ? mailSettings.Value : new MailSettings();
-            //mailService = this;
         }
         public MailService()
         {
@@ -79,10 +77,8 @@ namespace BackendSaiKitchen.Helper
                 await smtp.SendAsync(email);
                 smtp.Disconnect(true);
             }
-
             catch (Exception ex)
             {
-
                 Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
             }
         }
