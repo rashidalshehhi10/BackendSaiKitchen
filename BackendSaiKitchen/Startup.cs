@@ -24,6 +24,11 @@ namespace BackendSaiKitchen
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sai Kitchen Documentation", Version = "v1" });
+
+            });
             services.AddDbContextPool<DbSaiKitchenContext>(options => options.UseSqlServer("Server=.\\;Database=DbSaiKitchen;Trusted_Connection=True;"));
 
             //services.AddDbContext<DbSaiKitchenContext>(ServiceLifetime.Transient);
@@ -41,11 +46,7 @@ namespace BackendSaiKitchen
             //FirebaseApp.Create();
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sai Kitchen Documentation", Version = "v1" });
-
-            });
+           
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -54,6 +55,7 @@ namespace BackendSaiKitchen
             });
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,16 +64,18 @@ namespace BackendSaiKitchen
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sai Kitchen v1"));
             }
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sai Kitchen v1"));
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             // Enable Cors
             app.UseCors("CorsApi");
+
 
             app.UseAuthorization();
             // below code is needed to get User name for Log             
