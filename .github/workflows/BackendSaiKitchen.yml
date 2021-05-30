@@ -28,8 +28,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
-      with: # Set Azure credentials secret as an input
-        credentials: ${{ secrets.AZURE_CREDENTIALS }}
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
