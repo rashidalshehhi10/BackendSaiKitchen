@@ -137,6 +137,7 @@ namespace SaiKitchenBackend.Controllers
 
         private static string GetInquiryCode(InquiryWorkscope x)
         {
+            string a;
             return "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId;
         }
 
