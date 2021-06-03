@@ -2,7 +2,14 @@
   "dependencies": {
     "apis1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/BackendSaiKitchenapi/apis/BackendSaiKitchen",
-      "type": "apis.azure"
+      "type": "apis.azure",
+      "apiEndpoint": "https://backendsaikitchenapi.azure-api.net/BackendSaiKitchenapi/v1"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/backendsaikitchendbserver/databases/BackendSaiKitchen_db",
+      "type": "mssql.azure",
+      "connectionId": "DBConnectionString",
+      "secretStore": "AzureAppSettings"
     }
   }
 }

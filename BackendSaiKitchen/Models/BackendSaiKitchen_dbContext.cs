@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class DbSaiKitchenContext : DbContext
+    public partial class BackendSaiKitchen_dbContext : DbContext
     {
-        public DbSaiKitchenContext()
+        public BackendSaiKitchen_dbContext()
         {
         }
 
-        public DbSaiKitchenContext(DbContextOptions<DbSaiKitchenContext> options)
+        public BackendSaiKitchen_dbContext(DbContextOptions<BackendSaiKitchen_dbContext> options)
             : base(options)
         {
         }
