@@ -1,3 +1,5 @@
+using Azure.Storage.Blobs;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Builder;
@@ -55,7 +57,12 @@ namespace BackendSaiKitchen
             });
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+            
+            
+            services.AddScoped(x =>
+            new BlobServiceClient(Configuration.GetConnectionString("AzureStorge")));
 
+            services.AddScoped<IBlobManager, BlobManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
