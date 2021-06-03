@@ -407,7 +407,7 @@ namespace SaiKitchenBackend.Controllers
             response.data = inquiry;
             try
             {
-                await mailService.SendInquiryEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserMobile, inquiry.Building.BuildingAddress);
+                  mailService.SendInquiryEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName, inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserMobile, inquiry.Building.BuildingAddress);
             }
 
             catch (Exception ex)

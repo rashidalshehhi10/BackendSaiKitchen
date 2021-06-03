@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SaiKitchenBackend.Controllers
 {
@@ -66,8 +67,9 @@ namespace SaiKitchenBackend.Controllers
             inquiryWorkscopeRepository = new Repository<InquiryWorkscope>(context);
             measurementRepository = new Repository<Measurement>(context);
 
-
         }
+
+
         override
         public void OnActionExecuting(ActionExecutingContext context)
         {
