@@ -153,6 +153,7 @@ namespace SaiKitchenBackend.Controllers
                     if (inquiryWorkscope.InquiryStatusId < 3)
                     {
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
+              
                     }
                     else if (inquiryWorkscope.InquiryStatusId < 5)
                     {
