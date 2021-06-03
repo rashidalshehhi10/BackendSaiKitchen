@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Add_Update([FromForm]Blob File)
+        public async Task<IActionResult> Add_Updatefile([FromForm]Blob File)
         {
             
             if (File.File!=null)

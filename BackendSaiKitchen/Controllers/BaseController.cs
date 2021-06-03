@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using Azure.Storage.Blobs;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using BackendSaiKitchen.Repository;
@@ -18,6 +19,8 @@ namespace SaiKitchenBackend.Controllers
     [Route("Api/[controller]")]
     public class BaseController : Controller
     {
+
+     
         public DbSaiKitchenContext context = new DbSaiKitchenContext();
 
         public ServiceResponse response = new ServiceResponse();
@@ -65,7 +68,6 @@ namespace SaiKitchenBackend.Controllers
             noificationRepository = new Repository<Notification>(context);
             inquiryWorkscopeRepository = new Repository<InquiryWorkscope>(context);
             measurementRepository = new Repository<Measurement>(context);
-
 
         }
         override
@@ -210,8 +212,9 @@ namespace SaiKitchenBackend.Controllers
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
             }
-        }
 
+            
+        }
 
     }
 
