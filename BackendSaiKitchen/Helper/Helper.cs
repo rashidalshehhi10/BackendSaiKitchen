@@ -72,5 +72,18 @@ namespace BackendSaiKitchen.Helper
             string encrypted = Convert.ToBase64String(b);
             return encrypted;
         }
+
+        /*public static string AcceptOrDecline(string chioce)
+        {
+            if (chioce == "accept")
+            {
+                return "accept";
+            }
+            else
+            {
+                return "Decline";
+            }
+
+        }*/
     }
 }

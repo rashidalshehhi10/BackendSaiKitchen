@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Add_Updatefile([FromForm]Blob File)
+        public async Task<IActionResult> Add_Updatefile([FromForm]Blob File,File file)
         {
             
             if (File.File!=null)
@@ -27,10 +27,15 @@ namespace BackendSaiKitchen.Controllers
                 if (File.File.ContentType == "image/png" || File.File.ContentType == "image/jpeg" || File.File.ContentType == "application/pdf")
                 {
                     await _blobManager.Uplaod(File);
+
+                    fileRepository.Create(file);
+                    context.SaveChanges();
+                    response.data = file;
                 }
                 else
                 {
-                    Serilog.Log.Error("you can only upload type jpeg,png or pdf");
+                    response.isError = true;
+                    response.errorMessage="you can only upload type jpeg,png or pdf";
                 }
                
             }
