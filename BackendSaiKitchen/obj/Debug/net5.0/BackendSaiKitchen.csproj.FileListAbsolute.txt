@@ -85,7 +85,6 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKi
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\ref\BackendSaiKitchen.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.pdb
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.genruntimeconfig.cache
-D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csprojAssemblyReference.cache
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\appsettings.json
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\sai-kitchencrm-firebase-adminsdk-tmg5e-454a2caa79.json
@@ -178,3 +177,7 @@ C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Blobs.dll
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Common.dll
 C:\Users\G.force_sy\Source\Repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\System.Memory.Data.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Core.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Blobs.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Common.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\System.Memory.Data.dll

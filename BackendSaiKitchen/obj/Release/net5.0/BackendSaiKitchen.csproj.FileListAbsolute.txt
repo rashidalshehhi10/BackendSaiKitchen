@@ -86,3 +86,7 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\ref\Backen
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.pdb
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.genruntimeconfig.cache
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.csprojAssemblyReference.cache
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\Azure.Core.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\Azure.Storage.Blobs.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\Azure.Storage.Common.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\System.Memory.Data.dll
