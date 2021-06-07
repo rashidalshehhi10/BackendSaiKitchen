@@ -73,17 +73,33 @@ namespace BackendSaiKitchen.Helper
             return encrypted;
         }
 
-        /*public static string AcceptOrDecline(string chioce)
+        public static string GuessFileType(byte[] file)
         {
-            if (chioce == "accept")
+            string s = Convert.ToBase64String(file).Substring(0, 5);
+            switch (s.ToUpper())
             {
-                return "accept";
+                case "IVBOR":
+                    return "png";
+                case "/9J/4":
+                    return "jpg";
+                case "AAAAF":
+                    return "mp4";
+                case "JVBER":
+                    return "pdf";
+                case "AAABA":
+                    return "ico";
+                case "UMFYI":
+                    return "rar";
+                case "E1XYD":
+                    return "rtf";
+                case "U1PKC":
+                    return "txt";
+                case "MQOWM":
+                case "77U/M":
+                    return "srt";
+                default:
+                    return "";
             }
-            else
-            {
-                return "Decline";
-            }
-
-        }*/
+        }
     }
 }

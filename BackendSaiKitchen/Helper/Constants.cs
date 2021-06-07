@@ -49,7 +49,10 @@ namespace BackendSaiKitchen.Helper
         designPending = 3,
         designDelayed = 4,
         quotationPending = 5,
-        quotationDelayed = 6
+        quotationDelayed = 6,
+        measurementaccpeted=7,
+        measurementrejected=8
+
     }
 
     public enum roleType

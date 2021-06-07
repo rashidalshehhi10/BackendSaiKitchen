@@ -29,6 +29,7 @@ namespace SaiKitchenBackend.Controllers
         public Notification notification = new Notification();
 
         public MailService mailService = new MailService();
+        public Repository<Accesory> accesoryRepository;
         public Repository<User> userRepository;
         public Repository<Branch> branchRepository;
         public Repository<BranchRole> branchRoleRepository;
@@ -70,6 +71,7 @@ namespace SaiKitchenBackend.Controllers
             inquiryWorkscopeRepository = new Repository<InquiryWorkscope>(context);
             measurementRepository = new Repository<Measurement>(context);
             fileRepository = new Repository<File>(context);
+            accesoryRepository = new Repository<Accesory>(context);
 
         }
         override

@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
 using System;
@@ -13,45 +14,104 @@ namespace BackendSaiKitchen.Controllers
 {
     public class MeasuementController : BaseController
     {
+        private IBlobManager _blobManager;
+
+        public MeasuementController(IBlobManager blobManager)
+        {
+            _blobManager = blobManager;
+        }
+
         [HttpPost]
         [Route("[action]")]
-        public object AddMeasrmuent(Measurement measurement)
+        public async Task<object> AddMeasrmuent(CustomMeasurement measurementVM)
         {
-            
-            if (measurement.Files.Count > 0)
+            if (measurementVM.files.Count > 0)
             {
-                Guid obj = Guid.NewGuid();
-                using (var stream = new MemoryStream(measurement.Files.FirstOrDefault().FileImage))
+                Measurement measurement = new Measurement();
+
+                MeasurementDetail measurementDetail = new MeasurementDetail() ;
+                measurementDetail.MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight;
+                measurementDetail.MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter;
+                measurementDetail.MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight;
+                measurementDetail.MeasurementDetailCornishDiameter = measurementVM.MeasurementDetailCornishDiameter;
+                measurementDetail.MeasurementDetailDoorHeight = measurementVM.MeasurementDetailDoorHeight;
+                measurementDetail.MeasurementDetailPlinthHeight = measurementVM.MeasurementDetailPlinthHeight;
+                measurementDetail.MeasurementDetailPlinthDiameter = measurementVM.MeasurementDetailPlinthDiameter;
+                measurementDetail.MeasurementDetailSkirtingHeight = measurementVM.MeasurementDetailSkirtingHeight;
+                measurementDetail.MeasurementDetailSpotLightFromWall = measurementVM.MeasurementDetailSpotLightFromWall;
+                measurementDetail.IsActive = true;
+                measurementDetail.IsDeleted = false;
+
+                WardrobeDesignInformation wDInfo = new WardrobeDesignInformation();
+                wDInfo.WdiclosetType = measurementVM.WdiclosetType;
+                wDInfo.WdiboardModel = measurementVM.WdiboardModel;
+                wDInfo.WdiselectedColor = measurementVM.WdiselectedColor;
+                wDInfo.WdiceilingHeight = measurementVM.WdiceilingHeight;
+                wDInfo.WdiclosetHeight = measurementVM.WdiclosetHeight;
+                wDInfo.WdistorageDoor = measurementVM.WdistorageDoor;
+                wDInfo.WdidoorDesign = measurementVM.WdidoorDesign;
+                wDInfo.WdihandleDesign = measurementVM.WdihandleDesign;
+                wDInfo.WdidoorMaterial = measurementVM.WdidoorMaterial;
+                wDInfo.Wdinotes = measurementVM.Wdinotes;
+                wDInfo.IsActive = true;
+                wDInfo.IsDeleted = false;
+                wDInfo.Accesories = measurementVM.accesories;
+
+                InquiryWorkscope inquiryWorkscope = new InquiryWorkscope();
+                inquiryWorkscope.DesignAssignedTo = measurementVM.DesignAssignedTo;
+                inquiryWorkscope.DesignScheduleDate = measurementVM.DesignScheduleDate;
+
+                Measurement _measurement = new Measurement();
+                _measurement.Files = measurementVM.files;
+                _measurement.WardrobeDesignInfo = wDInfo;
+                _measurement.MeasurementDetail = measurementDetail;
+                _measurement.InquiryWorkscope = inquiryWorkscope;
+
+
+                foreach (var file in _measurement.Files)
                 {
-                    FileStream file = new FileStream(@"Assets/Images/" + obj.ToString(), FileMode.Create, FileAccess.Write);
-                    stream.WriteTo(file);
-                    file.Close();
-                    stream.Close();
-                }
-
-                measurementRepository.Create(measurement);
-
-                //TODO:
-                // fileRepository(new File(){ measurementId = measurement.measurementId }
-
-                if (measurement.InquiryWorkscope.MeasurementAssignedTo != null)
-                {
-                    sendNotificationToOneUser("wait here we have to send confirmation to head", false, null, null, (int)measurement.MeasurementApprovedByNavigation.UserId, (int)measurement.InquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Measurement);
                     
+                    if (file != null)
+                    {
+                        var stream = new MemoryStream(file.FileImage);
+                        var exet = Helper.Helper.GuessFileType(file.FileImage);
+                        IFormFile blob = new FormFile(stream, 0, file.FileImage.Length, file.FileUrl, file.FileName + "." + exet);
+
+
+                        if (exet == "png" || exet == "jpg" || exet == "pdf")
+                        {
+                            await _blobManager.Uplaod(new Blob() { File = blob });
+                            file.FileImage = null;
+
+                        }
+                        else
+                        {
+                            response.isError = true;
+                            response.errorMessage = "you can only upload type jpeg, png or pdf";
+                        }
+
+                    }
+                }
+                if  (measurementVM.DesignAssignedTo != null)
+                {   
                     List<int?> roletypeId = new List<int?>();
                     
                     roletypeId.Add((int)roleType.Manager);
-                    
+
                     sendNotificationToHead(
-                        measurement.MeasurementTakenBy + " added new measurement",
+                        measurementVM.DesignAssignedTo + " Added a New Measurement",
                         true,
-                        Url.ActionLink("Accept", "MeasuementController", new { id = measurement.MeasurementId }),
-                        Url.ActionLink("Decline", "MeasuementController", new { id = measurement.MeasurementId }),
+                        Url.ActionLink("Accept", "MeasuementController", new { id = measurementVM.MeasurementId}),
+                        Url.ActionLink("Decline", "MeasuementController", new { id = measurementVM.MeasurementId }),
                         roletypeId,
-                        (int)measurement.InquiryWorkscope.Inquiry.BranchId,
+                        (int)measurementVM.BranchId,
                         (int)notificationCategory.Measurement);
-       
-                    response.data = measurement;
+
+
+
+                    measurementRepository.Create(_measurement);
+                    context.SaveChanges();
+                    response.data = _measurement;
                     return response;
                 }
                 
@@ -61,6 +121,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Kindly upload measurement file";
             }
+            
             return response;
         }
 
@@ -68,12 +129,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public IActionResult Accept(int id)
         {
-            var measurmenet = measurementRepository.FindByCondition(m => m.MeasurementId == id).FirstOrDefault();
-           // measurmenet.InquiryWorkscope.DesignAssignedTo
-            //measurmenet.InquiryWorkscope.DesignScheduleDate
-            measurementRepository.Update(measurmenet);
-            context.SaveChanges();
-
+           var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive==true&& m.IsDeleted ==false).FirstOrDefault();
+           measurement.MeasurementStatusId = (int)inquiryStatus.measurementaccpeted;
+           measurementRepository.Update(measurement);
             return Ok();
         }
 
@@ -82,11 +140,44 @@ namespace BackendSaiKitchen.Controllers
         public IActionResult Decline(int id)
         {
 
-            var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id).FirstOrDefault();
-            measurement.InquiryWorkscope.InquiryStatusId = 7;
+            var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            measurement.InquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementrejected;
             measurementRepository.Update(measurement);
             context.SaveChanges();
            
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> Add_UpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
+        {
+            var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == customMeasFiles.measurementid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+
+            foreach (var File in measurement.Files )
+            {
+
+                if (File != null)
+                {
+
+                    var stream = new MemoryStream(File.FileImage);
+                    var exet = Helper.Helper.GuessFileType(File.FileImage);
+                    IFormFile blob = new FormFile(stream, 0, File.FileImage.Length, File.FileUrl, File.FileName + "." + exet);
+
+
+                    if (exet == "png" || exet == "jpg" || exet == "pdf")
+                    {
+                        await _blobManager.Uplaod(new Blob() { File = blob });
+                        
+                    }
+                    else
+                    {
+                        response.isError = true;
+                        response.errorMessage = "you can only upload type jpeg, png or pdf";
+                    }
+
+                }
+            }
             return Ok();
         }
 
