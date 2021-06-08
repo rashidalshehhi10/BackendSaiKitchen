@@ -181,3 +181,6 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Core.d
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Blobs.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Azure.Storage.Common.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\System.Memory.Data.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\System.IO.Pipelines.dll

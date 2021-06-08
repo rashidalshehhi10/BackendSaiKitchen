@@ -20,7 +20,7 @@ namespace BackendSaiKitchen.Controllers
             _blobManager = blobManager;
         }
 
-        [HttpPost]
+      /*  [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Add_Updatefiles(byte[] files)
         {
@@ -32,7 +32,7 @@ namespace BackendSaiKitchen.Controllers
                     var stream = new MemoryStream(files);
                 //string s = Convert.ToBase64String(files).Substring(0,5);
                 string exet = Helper.Helper.GuessFileType(files);
-               /* switch (s.ToUpper())
+                switch (s.ToUpper())
                 {
                     case "IVBOR":
                         exet = "png";
@@ -65,7 +65,7 @@ namespace BackendSaiKitchen.Controllers
                     default:
                         s = "";
                         break;
-                }*/
+                }
                 IFormFile blob = new FormFile(stream, 0, files.Length, "Name."+ exet, "FileName."+exet);
 
                     if (exet == "png" || exet == "jpg" || exet == "application/pdf")
@@ -81,7 +81,7 @@ namespace BackendSaiKitchen.Controllers
                 }
            // }
             return Ok();
-        }
+        }*/
 
         [HttpPost]
         [Route("[action]")]

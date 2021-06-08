@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -152,23 +154,28 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> Add_UpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == customMeasFiles.measurementid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            //var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            
 
-            foreach (var File in measurement.Files )
+            foreach (var File in customMeasFiles.base64img )
             {
 
                 if (File != null)
                 {
-
-                    var stream = new MemoryStream(File.FileImage);
-                    var exet = Helper.Helper.GuessFileType(File.FileImage);
-                    IFormFile blob = new FormFile(stream, 0, File.FileImage.Length, File.FileUrl, File.FileName + "." + exet);
+                    string f;
+                    f = File.Split(',')[1];
+                    byte[] img= Convert.FromBase64String(f);
+                    MemoryStream stream = new MemoryStream(img);
+                    Guid guid = new Guid();
+      
+                    var exet = Helper.Helper.GuessFileType(img);
+                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid + "." + exet);
 
 
                     if (exet == "png" || exet == "jpg" || exet == "pdf")
                     {
                         await _blobManager.Uplaod(new Blob() { File = blob });
-                        
+                        //File.FileImage = null;
                     }
                     else
                     {
@@ -178,7 +185,10 @@ namespace BackendSaiKitchen.Controllers
 
                 }
             }
-            return Ok();
+           // measurementRepository.Create(measurement);
+           // context.SaveChanges();
+           // response.data = measurement;
+            return response;
         }
 
     }

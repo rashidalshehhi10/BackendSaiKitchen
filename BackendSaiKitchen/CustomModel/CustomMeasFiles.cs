@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,9 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class CustomMeasFiles
     {
-        public int measurementid { get; set; }
+        public int Ininquiryworkscopeid { get; set; }
 
-        public IFormFileCollection files { get; set; }
+        
+         public List<string> base64img { get; set; }
     }
 }

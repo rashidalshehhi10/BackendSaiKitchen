@@ -75,7 +75,8 @@ namespace BackendSaiKitchen.Helper
 
         public static string GuessFileType(byte[] file)
         {
-            string s = Convert.ToBase64String(file).Substring(0, 5);
+            string f = Convert.ToBase64String(file);
+            string s =f.Substring(0, 5);
             switch (s.ToUpper())
             {
                 case "IVBOR":
