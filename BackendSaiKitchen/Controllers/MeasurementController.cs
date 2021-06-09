@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Buffers.Text;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -76,14 +77,19 @@ namespace BackendSaiKitchen.Controllers
                     if (file != null)
                     {
                         var stream = new MemoryStream(file.FileImage);
-                        var exet = Helper.Helper.GuessFileType(file.FileImage);
-                        IFormFile blob = new FormFile(stream, 0, file.FileImage.Length, file.FileUrl, file.FileName + "." + exet);
+                        Guid guid = Guid.NewGuid();
+                        var exet = Helper.Helper.GuessFileTypebyte(file.FileImage);
+                        IFormFile blob = new FormFile(stream, 0,file.FileImage.Length, "azure", guid + "." + exet);
 
 
                         if (exet == "png" || exet == "jpg" || exet == "pdf")
                         {
                             await _blobManager.Uplaod(new Blob() { File = blob });
                             file.FileImage = null;
+                            file.FileUrl = Helper.Constants.AzureUrl + guid;
+                            file.FileName = guid + "." + exet;
+                            file.MeasurementId = measurement.MeasurementId;
+                            measurementRepository.Create(measurement);
 
                         }
                         else
@@ -94,8 +100,7 @@ namespace BackendSaiKitchen.Controllers
 
                     }
                 }
-                if  (measurementVM.DesignAssignedTo != null)
-                {   
+                  
                     List<int?> roletypeId = new List<int?>();
                     
                     roletypeId.Add((int)roleType.Manager);
@@ -106,7 +111,7 @@ namespace BackendSaiKitchen.Controllers
                         Url.ActionLink("Accept", "MeasuementController", new { id = measurementVM.MeasurementId}),
                         Url.ActionLink("Decline", "MeasuementController", new { id = measurementVM.MeasurementId }),
                         roletypeId,
-                        (int)measurementVM.BranchId,
+                        (int)Helper.Constants.branchId,
                         (int)notificationCategory.Measurement);
 
 
@@ -115,7 +120,7 @@ namespace BackendSaiKitchen.Controllers
                     context.SaveChanges();
                     response.data = _measurement;
                     return response;
-                }
+                
                 
             }
             else
@@ -131,10 +136,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public IActionResult Accept(int id)
         {
-           var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive==true&& m.IsDeleted ==false).FirstOrDefault();
-           measurement.MeasurementStatusId = (int)inquiryStatus.measurementaccpeted;
-           measurementRepository.Update(measurement);
+
+            var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            measurement.MeasurementStatusId = (int)inquiryStatus.measurementaccpeted;
+            measurementRepository.Update(measurement);
             return Ok();
+
+
         }
 
         [HttpPost]
@@ -154,28 +162,29 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> Add_UpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            //var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
             
 
-            foreach (var File in customMeasFiles.base64img )
+            foreach (var File in customMeasFiles.Base64img )
             {
+                Models.File file = new Models.File();
 
                 if (File != null)
                 {
-                    string f;
-                    f = File.Split(',')[1];
-                    byte[] img= Convert.FromBase64String(f);
-                    MemoryStream stream = new MemoryStream(img);
-                    Guid guid = new Guid();
-      
-                    var exet = Helper.Helper.GuessFileType(img);
+                    MemoryStream stream = new MemoryStream(File);
+                    Guid guid = Guid.NewGuid();
+                    var exet = Helper.Helper.GuessFileTypebyte(File);
+
                     IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid + "." + exet);
 
 
                     if (exet == "png" || exet == "jpg" || exet == "pdf")
                     {
                         await _blobManager.Uplaod(new Blob() { File = blob });
-                        //File.FileImage = null;
+                        file.FileUrl = Helper.Constants.AzureUrl + guid;
+                        file.FileName = guid + "." + exet;
+                        file.MeasurementId = measurement.MeasurementId;
+                        measurementRepository.Create(measurement);
                     }
                     else
                     {
@@ -185,9 +194,17 @@ namespace BackendSaiKitchen.Controllers
 
                 }
             }
-           // measurementRepository.Create(measurement);
-           // context.SaveChanges();
-           // response.data = measurement;
+            List<int?> roletypeId = new List<int?>();
+
+            roletypeId.Add((int)roleType.Manager);
+            sendNotificationToHead(
+                measurement.MeasurementTakenByNavigation + " Added a New Measurement",
+                true,
+                Url.ActionLink("Accept", "MeasuementController", new { id = measurement.MeasurementId }),
+                Url.ActionLink("Decline", "MeasuementController", new { id = measurement.MeasurementId }),
+                roletypeId,
+                (int)Helper.Constants.branchId,
+                (int)notificationCategory.Measurement);
             return response;
         }
 
