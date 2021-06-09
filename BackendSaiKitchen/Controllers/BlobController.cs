@@ -28,7 +28,7 @@ namespace BackendSaiKitchen.Controllers
                 if (files != null)
                 {
                 var stream = new MemoryStream(files);
-                string exet = Helper.Helper.GuessFileTypebyte(files);
+                string exet = Helper.Helper.GuessFileType(files);
                 IFormFile blob = new FormFile(stream, 0, files.Length, "Name."+ exet, "FileName."+exet);
 
                     if (exet == "png" || exet == "jpg" || exet == "application/pdf")
@@ -42,7 +42,6 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                 }
-           // }
             return Ok();
         }
 

@@ -28,8 +28,8 @@ namespace BackendSaiKitchen.Helper
         public static DateTime ConvertToDateTime(String dateTime)
         {
             //04 / 27 / 2021 10:01 AM
-            DateTime dateTimeParsed; 
-             DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt" },provider, DateTimeStyles.None, out dateTimeParsed);
+            DateTime dateTimeParsed;
+            DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt" }, provider, DateTimeStyles.None, out dateTimeParsed);
             return dateTimeParsed;
         }
         public static String GetDateFromString(String dateTime)
@@ -80,12 +80,12 @@ namespace BackendSaiKitchen.Helper
         }
         public static async Task<string> UploadFileToBlob(byte[] fileByte)
         {
-            string fileUrl="";
+            string fileUrl = "";
             if (fileByte != null)
             {
                 MemoryStream stream = new MemoryStream(fileByte);
                 var exet = GuessFileType(fileByte);
-                 fileUrl = Guid.NewGuid().ToString() + "." + exet;
+                fileUrl = Guid.NewGuid().ToString() + "." + exet;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
                 if (exet == "png" || exet == "jpg" || exet == "pdf")
                 {
@@ -99,40 +99,7 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
-        public static string GuessFileTypestring(string file)
-        {
-            //string f = Convert.ToBase64String(file);
-            string s = file;
-            string f = s.Split(',')[1];
-            //var f = file;
-            string ss =f.Substring(0, 5);
-            switch (ss.ToUpper())
-            {
-                case "IVBOR":
-                    return "png";
-                case "/9J/4":
-                    return "jpg";
-                case "AAAAF":
-                    return "mp4";
-                case "JVBER":
-                    return "pdf";
-                case "AAABA":
-                    return "ico";
-                case "UMFYI":
-                    return "rar";
-                case "E1XYD":
-                    return "rtf";
-                case "U1PKC":
-                    return "txt";
-                case "MQOWM":
-                case "77U/M":
-                    return "srt";
-                default:
-                    return "";
-            }
-        }
-
-        public static string GuessFileTypebyte(byte[] file)
+        public static string GuessFileType(byte[] file)
         {
             string f = Convert.ToBase64String(file);
             string s = f.Substring(0, 5);
@@ -162,6 +129,4 @@ namespace BackendSaiKitchen.Helper
             }
         }
     }
-
-
 }

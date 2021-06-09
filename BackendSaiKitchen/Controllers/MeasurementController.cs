@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using File = BackendSaiKitchen.Models.File;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -131,7 +132,7 @@ namespace BackendSaiKitchen.Controllers
         public IActionResult Accept(int id)
         {
             var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
-            measurement.MeasurementStatusId = (int)inquiryStatus.measurementaccpeted;
+            measurement.MeasurementStatusId = (int)inquiryStatus.measurementAccpeted;
             measurementRepository.Update(measurement);
             return Ok();
         }
@@ -142,22 +143,48 @@ namespace BackendSaiKitchen.Controllers
         {
 
             var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
-            measurement.InquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementrejected;
+            measurement.InquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
             measurementRepository.Update(measurement);
             context.SaveChanges();
 
             return Ok();
+
         }
 
+        static List<File> files = new List<File>();
         [HttpPost]
         [Route("[action]")]
         public async Task<object> Add_UpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            //var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
-            foreach (var File in customMeasFiles.base64img)
+            files.Clear();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            foreach (var file in customMeasFiles.base64img)
             {
-                string fileUrl = await Helper.Helper.UploadFileToBlob(File);
-                if (fileUrl == null)
+                string fileName;
+                string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+
+                if (fileUrl != null)
+                {
+                    files.Add(new File()
+                    {
+                        FileUrl = fileUrl,
+                        FileName = fileUrl.Split('.')[0],
+                        IsActive = true,
+                        IsDeleted = false,
+                        UpdatedBy = Constants.userId,
+                        UpdatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+
+                    });
+                    Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementAccpeted;
+                    inquiryworkscope.Measurements.Add(measurement);
+                    inquiryWorkscopeRepository.Update(inquiryworkscope);
+                    context.SaveChanges();
+
+                }
+                else
                 {
                     response.isError = true;
                     response.errorMessage = Constants.wrongFileUpload;

@@ -52,8 +52,9 @@ namespace BackendSaiKitchen.Helper
         designDelayed = 4,
         quotationPending = 5,
         quotationDelayed = 6,
-        measurementaccpeted=7,
-        measurementrejected=8
+        measurementAccpeted=7,
+        measurementRejected=8,
+        measurementWaitingForApproval=9
 
     }
 
