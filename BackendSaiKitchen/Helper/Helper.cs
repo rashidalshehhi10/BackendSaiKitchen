@@ -1,12 +1,18 @@
-﻿using System;
+﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Helper
 {
     public class Helper
     {
         static CultureInfo provider = CultureInfo.InvariantCulture;
+        public static IBlobManager blobManager;
         public static String GenerateToken(int userId)
         {
             byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
@@ -71,6 +77,26 @@ namespace BackendSaiKitchen.Helper
             byte[] b = System.Text.ASCIIEncoding.ASCII.GetBytes(strEncrypted);
             string encrypted = Convert.ToBase64String(b);
             return encrypted;
+        }
+        public static async Task<string> UploadFileToBlob(byte[] fileByte)
+        {
+            string fileUrl="";
+            if (fileByte != null)
+            {
+                MemoryStream stream = new MemoryStream(fileByte);
+                var exet = GuessFileType(fileByte);
+                 fileUrl = Guid.NewGuid().ToString() + "." + exet;
+                IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
+                if (exet == "png" || exet == "jpg" || exet == "pdf")
+                {
+                    await blobManager.Uplaod(new Blob() { File = blob });
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return fileUrl;
         }
 
         public static string GuessFileType(byte[] file)

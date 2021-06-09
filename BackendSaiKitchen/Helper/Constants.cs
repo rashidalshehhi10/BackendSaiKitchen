@@ -7,8 +7,9 @@ namespace BackendSaiKitchen.Helper
         public static string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
         public static string loginErrormessage = "Incorrect Email or Password";
         public static string inquiryOnAnotherBranchMessage = " generated inquiry on another branch";
-        public static string measurementRescheduleBranchMessage = " measurement reschedule to " ;
+        public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
         public static string measurementAssign = " You are assigned for the new measurement at ";
+        public static string wrongFileUpload = "Kindly uppoad jpg,png or PDF";
         public static int userId;
         public static int userRoleId;
         public static int branchId;
