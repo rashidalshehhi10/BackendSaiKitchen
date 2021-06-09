@@ -20,52 +20,15 @@ namespace BackendSaiKitchen.Controllers
             _blobManager = blobManager;
         }
 
-      /*  [HttpPost]
+       [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Add_Updatefiles(byte[] files)
         {
-            //foreach (var File in files)
-            //{
 
                 if (files != null)
                 {
-                    var stream = new MemoryStream(files);
-                //string s = Convert.ToBase64String(files).Substring(0,5);
-                string exet = Helper.Helper.GuessFileType(files);
-                switch (s.ToUpper())
-                {
-                    case "IVBOR":
-                        exet = "png";
-                        break;
-                    case "/9J/4":
-                        exet = "jpg";
-                        break;
-                    case "AAAAF":
-                        exet = "mp4";
-                        break;
-                    case "JVBER":
-                        exet = "pdf";
-                        break;
-                    case "AAABA":
-                        exet= "ico";
-                        break;
-                    case "UMFYI":
-                        exet = "rar";
-                        break;
-                    case "E1XYD":
-                        exet = "rtf";
-                        break;
-                    case "U1PKC":
-                        exet = "txt";
-                        break;
-                    case "MQOWM":
-                    case "77U/M":
-                        exet = "srt";
-                        break;
-                    default:
-                        s = "";
-                        break;
-                }
+                var stream = new MemoryStream(files);
+                string exet = Helper.Helper.GuessFileTypebyte(files);
                 IFormFile blob = new FormFile(stream, 0, files.Length, "Name."+ exet, "FileName."+exet);
 
                     if (exet == "png" || exet == "jpg" || exet == "application/pdf")
@@ -81,7 +44,7 @@ namespace BackendSaiKitchen.Controllers
                 }
            // }
             return Ok();
-        }*/
+        }
 
         [HttpPost]
         [Route("[action]")]

@@ -99,10 +99,43 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
-        public static string GuessFileType(byte[] file)
+        public static string GuessFileTypestring(string file)
+        {
+            //string f = Convert.ToBase64String(file);
+            string s = file;
+            string f = s.Split(',')[1];
+            //var f = file;
+            string ss =f.Substring(0, 5);
+            switch (ss.ToUpper())
+            {
+                case "IVBOR":
+                    return "png";
+                case "/9J/4":
+                    return "jpg";
+                case "AAAAF":
+                    return "mp4";
+                case "JVBER":
+                    return "pdf";
+                case "AAABA":
+                    return "ico";
+                case "UMFYI":
+                    return "rar";
+                case "E1XYD":
+                    return "rtf";
+                case "U1PKC":
+                    return "txt";
+                case "MQOWM":
+                case "77U/M":
+                    return "srt";
+                default:
+                    return "";
+            }
+        }
+
+        public static string GuessFileTypebyte(byte[] file)
         {
             string f = Convert.ToBase64String(file);
-            string s =f.Substring(0, 5);
+            string s = f.Substring(0, 5);
             switch (s.ToUpper())
             {
                 case "IVBOR":
@@ -129,4 +162,6 @@ namespace BackendSaiKitchen.Helper
             }
         }
     }
+
+
 }
