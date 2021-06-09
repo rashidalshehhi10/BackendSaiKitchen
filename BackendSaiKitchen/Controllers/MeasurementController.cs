@@ -169,7 +169,7 @@ namespace BackendSaiKitchen.Controllers
                     Guid guid = new Guid();
       
                     var exet = Helper.Helper.GuessFileType(File);
-                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid + "." + exet);
+                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid.ToString() + "." + exet);
 
 
                     if (exet == "png" || exet == "jpg" || exet == "pdf")
