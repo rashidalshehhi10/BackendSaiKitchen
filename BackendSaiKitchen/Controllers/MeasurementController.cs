@@ -166,10 +166,10 @@ namespace BackendSaiKitchen.Controllers
                     //f = File.Split(',')[1];
                     //byte[] img= Convert.FromBase64String(f);
                     MemoryStream stream = new MemoryStream(File);
-                    Guid guid = new Guid();
+                   
       
                     var exet = Helper.Helper.GuessFileType(File);
-                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid.ToString() + "." + exet);
+                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", Guid.NewGuid().ToString() + "." + exet);
 
 
                     if (exet == "png" || exet == "jpg" || exet == "pdf")
