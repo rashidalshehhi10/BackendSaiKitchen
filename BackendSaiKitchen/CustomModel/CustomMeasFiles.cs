@@ -12,6 +12,6 @@ namespace BackendSaiKitchen.CustomModel
         public int Ininquiryworkscopeid { get; set; }
 
         
-         public List<byte[]> Base64img { get; set; }
+         public List<byte[]> base64img { get; set; }
     }
 }

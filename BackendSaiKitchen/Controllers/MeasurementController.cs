@@ -11,17 +11,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using System.Buffers.Text;
 
 namespace BackendSaiKitchen.Controllers
 {
     public class MeasuementController : BaseController
     {
-        private IBlobManager _blobManager;
 
         public MeasuementController(IBlobManager blobManager)
         {
-            _blobManager = blobManager;
+            Helper.Helper.blobManager = blobManager;
         }
 
         [HttpPost]
@@ -32,7 +30,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 Measurement measurement = new Measurement();
 
-                MeasurementDetail measurementDetail = new MeasurementDetail() ;
+                MeasurementDetail measurementDetail = new MeasurementDetail();
                 measurementDetail.MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight;
                 measurementDetail.MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter;
                 measurementDetail.MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight;
@@ -73,23 +71,18 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var file in _measurement.Files)
                 {
-                    
+
                     if (file != null)
                     {
                         var stream = new MemoryStream(file.FileImage);
-                        Guid guid = Guid.NewGuid();
-                        var exet = Helper.Helper.GuessFileTypebyte(file.FileImage);
-                        IFormFile blob = new FormFile(stream, 0,file.FileImage.Length, "azure", guid + "." + exet);
+                        var exet = Helper.Helper.GuessFileType(file.FileImage);
+                        IFormFile blob = new FormFile(stream, 0, file.FileImage.Length, file.FileUrl, file.FileName + "." + exet);
 
 
                         if (exet == "png" || exet == "jpg" || exet == "pdf")
                         {
-                            await _blobManager.Uplaod(new Blob() { File = blob });
+                            await Helper.Helper.blobManager.Uplaod(new Blob() { File = blob });
                             file.FileImage = null;
-                            file.FileUrl = Helper.Constants.AzureUrl + guid;
-                            file.FileName = guid + "." + exet;
-                            file.MeasurementId = measurement.MeasurementId;
-                            measurementRepository.Create(measurement);
 
                         }
                         else
@@ -100,18 +93,19 @@ namespace BackendSaiKitchen.Controllers
 
                     }
                 }
-                  
+                if (measurementVM.DesignAssignedTo != null)
+                {
                     List<int?> roletypeId = new List<int?>();
-                    
+
                     roletypeId.Add((int)roleType.Manager);
 
                     sendNotificationToHead(
                         measurementVM.DesignAssignedTo + " Added a New Measurement",
                         true,
-                        Url.ActionLink("Accept", "MeasuementController", new { id = measurementVM.MeasurementId}),
+                        Url.ActionLink("Accept", "MeasuementController", new { id = measurementVM.MeasurementId }),
                         Url.ActionLink("Decline", "MeasuementController", new { id = measurementVM.MeasurementId }),
                         roletypeId,
-                        (int)Helper.Constants.branchId,
+                        (int)measurementVM.BranchId,
                         (int)notificationCategory.Measurement);
 
 
@@ -120,15 +114,15 @@ namespace BackendSaiKitchen.Controllers
                     context.SaveChanges();
                     response.data = _measurement;
                     return response;
-                
-                
+                }
+
             }
             else
             {
                 response.isError = true;
                 response.errorMessage = "Kindly upload measurement file";
             }
-            
+
             return response;
         }
 
@@ -136,13 +130,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public IActionResult Accept(int id)
         {
-
             var measurement = measurementRepository.FindByCondition(m => m.MeasurementId == id && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
             measurement.MeasurementStatusId = (int)inquiryStatus.measurementaccpeted;
             measurementRepository.Update(measurement);
             return Ok();
-
-
         }
 
         [HttpPost]
@@ -154,7 +145,7 @@ namespace BackendSaiKitchen.Controllers
             measurement.InquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementrejected;
             measurementRepository.Update(measurement);
             context.SaveChanges();
-           
+
             return Ok();
         }
 
@@ -162,51 +153,17 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> Add_UpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
-            
-
-            foreach (var File in customMeasFiles.Base64img )
+            //var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            foreach (var File in customMeasFiles.base64img)
             {
-                Models.File file = new Models.File();
-
-                if (File != null)
+                string fileUrl = await Helper.Helper.UploadFileToBlob(File);
+                if (fileUrl == null)
                 {
-                    MemoryStream stream = new MemoryStream(File);
-                    Guid guid = Guid.NewGuid();
-                    var exet = Helper.Helper.GuessFileTypebyte(File);
-
-                    IFormFile blob = new FormFile(stream, 0, File.Length, "azure", guid + "." + exet);
-
-
-                    if (exet == "png" || exet == "jpg" || exet == "pdf")
-                    {
-                        await _blobManager.Uplaod(new Blob() { File = blob });
-                        file.FileUrl = Helper.Constants.AzureUrl + guid;
-                        file.FileName = guid + "." + exet;
-                        file.MeasurementId = measurement.MeasurementId;
-                        measurementRepository.Create(measurement);
-                    }
-                    else
-                    {
-                        response.isError = true;
-                        response.errorMessage = "you can only upload type jpeg, png or pdf";
-                    }
-
+                    response.isError = true;
+                    response.errorMessage = Constants.wrongFileUpload;
                 }
             }
-            List<int?> roletypeId = new List<int?>();
-
-            roletypeId.Add((int)roleType.Manager);
-            sendNotificationToHead(
-                measurement.MeasurementTakenByNavigation + " Added a New Measurement",
-                true,
-                Url.ActionLink("Accept", "MeasuementController", new { id = measurement.MeasurementId }),
-                Url.ActionLink("Decline", "MeasuementController", new { id = measurement.MeasurementId }),
-                roletypeId,
-                (int)Helper.Constants.branchId,
-                (int)notificationCategory.Measurement);
             return response;
         }
-
     }
 }
