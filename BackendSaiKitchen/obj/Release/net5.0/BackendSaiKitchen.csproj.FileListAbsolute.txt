@@ -2,6 +2,10 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\appsetting
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\appsettings.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\sai-kitchencrm-firebase-adminsdk-tmg5e-454a2caa79.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\BackendSaiKitchen.exe
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\EmailTemplate\ForgotPasswordTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\EmailTemplate\NewInquiryTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\EmailTemplate\sai-logo.png
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\EmailTemplate\WelcomeTemplate.html
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\BackendSaiKitchen.deps.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\BackendSaiKitchen.runtimeconfig.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\BackendSaiKitchen.runtimeconfig.dev.json
