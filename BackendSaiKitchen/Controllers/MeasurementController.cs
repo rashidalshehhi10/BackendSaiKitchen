@@ -177,11 +177,6 @@ namespace BackendSaiKitchen.Controllers
                         CreatedDate = Helper.Helper.GetDateTime(),
 
                     });
-                    Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementAccpeted;
-                    inquiryworkscope.Measurements.Add(measurement);
-                    inquiryWorkscopeRepository.Update(inquiryworkscope);
-                    context.SaveChanges();
 
                 }
                 else
@@ -190,6 +185,12 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
+
+            Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+            inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementAccpeted;
+            inquiryworkscope.Measurements.Add(measurement);
+            inquiryWorkscopeRepository.Update(inquiryworkscope);
+            context.SaveChanges();
             return response;
         }
     }
