@@ -144,20 +144,53 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public void CheckScheduleDate()
         {
+
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             foreach (var inquiry in inquiries)
             {
                 var inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
                 foreach (var inquiryWorkscope in inquiryWorkscopes)
                 {
-                    if (inquiryWorkscope.InquiryStatusId < 3)
+                    var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == inquiryWorkscope.InquiryWorkscopeId && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
+            
+                    List<int?> roletypeId = new List<int?>();
+                    roletypeId.Add((int)roleType.Manager);
+
+                    if (inquiryWorkscope.InquiryStatusId < (int)inquiryStatus.designPending)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
-              
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
+
+                        if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
+                        {
+                            sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementDelayed, false,
+                              null,
+                              null,
+                              roletypeId, Constants.branchId,
+                              (int)notificationCategory.Measurement);
+
+                            sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementDelayed, false, null, null,
+                                Constants.userId, Constants.branchId,
+                                (int)notificationCategory.Measurement);
+                        }
+
+
+
                     }
-                    else if (inquiryWorkscope.InquiryStatusId < 5)
+                    else if (inquiryWorkscope.InquiryStatusId < (int)inquiryStatus.quotationPending)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 4 : 3;
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending ;
+                        if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
+                        {
+                            sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, true,
+                              null,
+                              null,
+                              roletypeId, Constants.branchId,
+                              (int)notificationCategory.Design) ;
+
+                            sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, false, null, null,
+                                (int)inquiry.AddedBy, Constants.branchId,
+                                (int)notificationCategory.Design);
+                        }
                     }
                     inquiryWorkscopeRepository.Update(inquiryWorkscope);
 

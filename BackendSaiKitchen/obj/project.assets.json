@@ -135,6 +135,56 @@
           "lib/netstandard2.0/Google.Apis.Core.dll": {}
         }
       },
+      "Hangfire.Core/1.7.23": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "11.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Hangfire.Core.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Hangfire.Core.dll": {}
+        },
+        "resource": {
+          "lib/netstandard2.0/ca/Hangfire.Core.resources.dll": {
+            "locale": "ca"
+          },
+          "lib/netstandard2.0/de/Hangfire.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.0/es/Hangfire.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.0/fa/Hangfire.Core.resources.dll": {
+            "locale": "fa"
+          },
+          "lib/netstandard2.0/fr/Hangfire.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.0/nb/Hangfire.Core.resources.dll": {
+            "locale": "nb"
+          },
+          "lib/netstandard2.0/nl/Hangfire.Core.resources.dll": {
+            "locale": "nl"
+          },
+          "lib/netstandard2.0/pt-BR/Hangfire.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.0/pt-PT/Hangfire.Core.resources.dll": {
+            "locale": "pt-PT"
+          },
+          "lib/netstandard2.0/pt/Hangfire.Core.resources.dll": {
+            "locale": "pt"
+          },
+          "lib/netstandard2.0/zh-TW/Hangfire.Core.resources.dll": {
+            "locale": "zh-TW"
+          },
+          "lib/netstandard2.0/zh/Hangfire.Core.resources.dll": {
+            "locale": "zh"
+          }
+        }
+      },
       "Humanizer.Core/2.8.26": {
         "type": "package",
         "compile": {
@@ -3284,6 +3334,79 @@
         "lib/netstandard2.0/Google.Apis.Core.dll",
         "lib/netstandard2.0/Google.Apis.Core.pdb",
         "lib/netstandard2.0/Google.Apis.Core.xml"
+      ]
+    },
+    "Hangfire.Core/1.7.23": {
+      "sha512": "ekiwguo5KcBqiUTJ89kTutthhQEneWw0Qo/b9Z8uSoVqETQl2eV2F+6IlVECIRp2HsgIR4aOOaNdj3Cch7E3ng==",
+      "type": "package",
+      "path": "hangfire.core/1.7.23",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "COPYING",
+        "COPYING.LESSER",
+        "LICENSE.md",
+        "LICENSE_ROYALTYFREE",
+        "LICENSE_STANDARD",
+        "NOTICES",
+        "hangfire.core.1.7.23.nupkg.sha512",
+        "hangfire.core.nuspec",
+        "lib/net45/Hangfire.Core.dll",
+        "lib/net45/Hangfire.Core.xml",
+        "lib/net45/ca/Hangfire.Core.resources.dll",
+        "lib/net45/de/Hangfire.Core.resources.dll",
+        "lib/net45/es/Hangfire.Core.resources.dll",
+        "lib/net45/fa/Hangfire.Core.resources.dll",
+        "lib/net45/fr/Hangfire.Core.resources.dll",
+        "lib/net45/nb/Hangfire.Core.resources.dll",
+        "lib/net45/nl/Hangfire.Core.resources.dll",
+        "lib/net45/pt-BR/Hangfire.Core.resources.dll",
+        "lib/net45/pt-PT/Hangfire.Core.resources.dll",
+        "lib/net45/pt/Hangfire.Core.resources.dll",
+        "lib/net45/zh-TW/Hangfire.Core.resources.dll",
+        "lib/net45/zh/Hangfire.Core.resources.dll",
+        "lib/net46/Hangfire.Core.dll",
+        "lib/net46/Hangfire.Core.xml",
+        "lib/net46/ca/Hangfire.Core.resources.dll",
+        "lib/net46/de/Hangfire.Core.resources.dll",
+        "lib/net46/es/Hangfire.Core.resources.dll",
+        "lib/net46/fa/Hangfire.Core.resources.dll",
+        "lib/net46/fr/Hangfire.Core.resources.dll",
+        "lib/net46/nb/Hangfire.Core.resources.dll",
+        "lib/net46/nl/Hangfire.Core.resources.dll",
+        "lib/net46/pt-BR/Hangfire.Core.resources.dll",
+        "lib/net46/pt-PT/Hangfire.Core.resources.dll",
+        "lib/net46/pt/Hangfire.Core.resources.dll",
+        "lib/net46/zh-TW/Hangfire.Core.resources.dll",
+        "lib/net46/zh/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/Hangfire.Core.dll",
+        "lib/netstandard1.3/Hangfire.Core.xml",
+        "lib/netstandard1.3/ca/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/de/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/es/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/fa/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/fr/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/nb/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/nl/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/pt-BR/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/pt-PT/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/pt/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/zh-TW/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/zh/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/Hangfire.Core.dll",
+        "lib/netstandard2.0/Hangfire.Core.xml",
+        "lib/netstandard2.0/ca/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/de/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/es/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/fa/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/fr/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/nb/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/nl/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/pt-BR/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/pt-PT/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/pt/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/zh-TW/Hangfire.Core.resources.dll",
+        "lib/netstandard2.0/zh/Hangfire.Core.resources.dll"
       ]
     },
     "Humanizer.Core/2.8.26": {
@@ -9831,6 +9954,7 @@
     "net5.0": [
       "Azure.Storage.Blobs >= 12.8.4",
       "FirebaseAdmin >= 2.0.0",
+      "Hangfire.Core >= 1.7.23",
       "MailKit >= 2.11.1",
       "Microsoft.AspNetCore.Http >= 2.2.2",
       "Microsoft.AspNetCore.Http.Features >= 5.0.6",
@@ -9857,23 +9981,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\samee\\.nuget\\packages\\": {},
+    "C:\\Users\\G.force_sy\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "projectUniqueName": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
       "projectName": "BackendSaiKitchen",
-      "projectPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
-      "packagesPath": "C:\\Users\\samee\\.nuget\\packages\\",
-      "outputPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
+      "projectPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "packagesPath": "C:\\Users\\G.force_sy\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\samee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\G.force_sy\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -9907,6 +10031,10 @@
           "FirebaseAdmin": {
             "target": "Package",
             "version": "[2.0.0, )"
+          },
+          "Hangfire.Core": {
+            "target": "Package",
+            "version": "[1.7.23, )"
           },
           "MailKit": {
             "target": "Package",
@@ -10023,7 +10151,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   },

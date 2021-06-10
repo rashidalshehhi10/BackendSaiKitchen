@@ -34,14 +34,26 @@ namespace BackendSaiKitchen.CustomModel
         public string WdidoorMaterial { get; set; }
         public string Wdinotes { get; set; }
 
-        public List<Accesory> accesories { get; set; }
-        public List<File> files { get; set; }
+        public string MeasurementComment { get; set; }
 
-        public int? DesignAssignedTo { get; set; }
-        public string DesignScheduleDate { get; set; }
+        public List<byte[]> base64img { get; set; }
+        public  List<CustomAccossries> Accesories { get; set; }
 
-        public int BranchId { get; set; }
-        public string BranchName { get; set; }
+ 
 
+    }
+
+    public class CustomAccossries
+    {
+        public int AccesoriesId { get; set; }
+        public int? WardrobeDesignInfoId { get; set; }
+        public string AccesoriesName { get; set; }
+        public bool? AccesoriesValue { get; set; }
+        public int? CreatedBy { get; set; }
+        public string CreatedDate { get; set; }
+        public int? UpdatedBy { get; set; }
+        public string UpdatedDate { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

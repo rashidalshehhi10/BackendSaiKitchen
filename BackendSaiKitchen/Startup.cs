@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog.Context;
+using Hangfire;
 
 namespace BackendSaiKitchen
 {
