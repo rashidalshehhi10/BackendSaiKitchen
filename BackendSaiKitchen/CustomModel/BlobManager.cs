@@ -22,7 +22,7 @@ namespace BackendSaiKitchen.CustomModel
         public async Task Uplaod(Blob File )
         {
 
-            var blobcontainer = _blobServiceClient.GetBlobContainerClient("saikitchenfrontend");
+            var blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
 
             var blobclient = blobcontainer.GetBlobClient(File.File.FileName);
 
