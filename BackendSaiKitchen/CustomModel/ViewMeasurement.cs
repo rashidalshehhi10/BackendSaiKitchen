@@ -29,6 +29,7 @@ namespace BackendSaiKitchen.CustomModel
         public String BuildingReconstruction { get; set; }
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
+        public string InquiryAddedBy { get; set; }
         public int NoOfRevision { get; set; }
         public Object Actions { get; set; }
 
