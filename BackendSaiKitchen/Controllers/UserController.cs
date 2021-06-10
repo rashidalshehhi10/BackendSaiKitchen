@@ -132,7 +132,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object LoginUser(User user)
         {
-            User loggedinUser = context.Users.Where(x => x.UserEmail == user.UserEmail && x.UserPassword == user.UserPassword && x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.Branch.IsActive == true && y.Branch.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false)).FirstOrDefault();
+            User loggedinUser = context.Users.Where(x => x.UserEmail == user.UserEmail && x.UserPassword == user.UserPassword && 
+            x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.Branch.IsActive == true 
+            && y.Branch.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.BranchRole.RoleType.IsActive==true && y.BranchRole.RoleType.IsDeleted==false)).FirstOrDefault();
             if (loggedinUser != null)
             {
                 loggedinUser.UserToken = Helper.GenerateToken(loggedinUser.UserId);
@@ -180,7 +182,7 @@ namespace SaiKitchenBackend.Controllers
 
         private void getLoginUserData(User loggedinUser)
         {
-            var loggedInUserRoles = userRoleRepository.FindByCondition(x => x.UserId == loggedinUser.UserId && x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Include(x => x.BranchRole.PermissionRoles.Where(z => z.IsActive == true && z.IsDeleted == false)).ToList();
+            var loggedInUserRoles = userRoleRepository.FindByCondition(x => x.UserId == loggedinUser.UserId && x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Include(x => x.BranchRole.PermissionRoles.Where(z => z.IsActive == true && z.IsDeleted == false)).Include(x=>x.BranchRole.RoleType).ToList();
             var branchRole = branchRoleRepository.FindByCondition(x => loggedInUserRoles.Select(z => z.BranchRoleId).Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).ToList();
 
             loggedinUser.UserPassword = "";

@@ -5,7 +5,7 @@ namespace BackendSaiKitchen.Helper
     public class Constants
     {
         public static string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
-        public static string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/saikitchenfrontend/";
+        public static string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/files/";
         public static string loginErrormessage = "Incorrect Email or Password";
         public static string inquiryOnAnotherBranchMessage = " generated inquiry on another branch";
         public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
@@ -23,7 +23,6 @@ namespace BackendSaiKitchen.Helper
         {
             return "";
         }
-
     };
 
 
