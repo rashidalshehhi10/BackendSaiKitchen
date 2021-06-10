@@ -181,14 +181,15 @@ namespace SaiKitchenBackend.Controllers
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                         {
+                            
                             sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, true,
                               null,
                               null,
-                              roletypeId, Constants.branchId,
+                              roletypeId, (int)inquiry.BranchId,
                               (int)notificationCategory.Design);
 
                             sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, false, null, null,
-                                (int)inquiry.AddedBy, Constants.branchId,
+                                (int)inquiry.AddedBy,(int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
                         }
                     }
