@@ -96,4 +96,16 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSai
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\ref\BackendSaiKitchen.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.pdb
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.genruntimeconfig.cache
-D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Release\net5.0\BackendSaiKitchen.csprojAssemblyReference.cache
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\Hangfire.Core.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\ca\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\de\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\es\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\fa\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\fr\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\nb\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\nl\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\pt-BR\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\pt-PT\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\pt\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\zh-TW\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Release\net5.0\zh\Hangfire.Core.resources.dll

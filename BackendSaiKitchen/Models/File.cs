@@ -20,6 +20,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
+        public virtual Design DesignFile { get; set; }
         public virtual Measurement Measurement { get; set; }
     }
 }
