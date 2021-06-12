@@ -29,6 +29,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
+        public virtual User DesignCreatedByNavigation { get; set; }
         public virtual User DesignApprovedByNavigation { get; set; }
         public virtual User DesignTakenByNavigation { get; set; }
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }

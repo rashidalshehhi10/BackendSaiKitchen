@@ -13,6 +13,7 @@ namespace BackendSaiKitchen.Helper
         public static string wrongFileUpload = "Kindly upload jpg,png or PDF";
         public static string MeasurementDelayed = " Delayed the Measurement";
         public static string DesignDelayed = "Delayed the Measurement";
+        public static string DesignAdded = "Design Added By";
         public static int userId;
         public static int userRoleId;
         public static int branchId;
@@ -55,7 +56,9 @@ namespace BackendSaiKitchen.Helper
         quotationDelayed = 6,
         measurementAccpeted=7,
         measurementRejected=8,
-        measurementWaitingForApproval=9
+        measurementWaitingForApproval=9,
+        designAccepted=10,
+        designRejected=11
 
     }
 
