@@ -26,8 +26,6 @@ namespace BackendSaiKitchen.Models
         public int? CreatedBy { get; set; }
         public string CreatedDate { get; set; }
 
-        public virtual User DesignApproveByNavigation { get; set; }
-        public virtual User DesignTakenByNavigation { get; set; }
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }
         public virtual ICollection<File> Files { get; set; }
     }

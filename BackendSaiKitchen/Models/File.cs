@@ -12,7 +12,7 @@ namespace BackendSaiKitchen.Models
         public byte[] FileImage { get; set; }
         public string FileUrl { get; set; }
         public int? MeasurementId { get; set; }
-        public int? DesignFileId { get; set; }
+        public int? DesignId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -20,7 +20,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
-        public virtual Design DesignFile { get; set; }
+        public virtual Design Design { get; set; }
         public virtual Measurement Measurement { get; set; }
     }
 }

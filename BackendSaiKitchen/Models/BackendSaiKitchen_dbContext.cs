@@ -248,16 +248,6 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.DesignName).HasMaxLength(50);
 
-                entity.HasOne(d => d.DesignApproveByNavigation)
-                    .WithMany(p => p.DesignDesignApproveByNavigations)
-                    .HasForeignKey(d => d.DesignApproveBy)
-                    .HasConstraintName("FK_Design_User");
-
-                entity.HasOne(d => d.DesignTakenByNavigation)
-                    .WithMany(p => p.DesignDesignTakenByNavigations)
-                    .HasForeignKey(d => d.DesignTakenBy)
-                    .HasConstraintName("FK_Design_UserTaken");
-
                 entity.HasOne(d => d.InquiryWorkscope)
                     .WithMany(p => p.Designs)
                     .HasForeignKey(d => d.InquiryWorkscopeId)
@@ -293,9 +283,9 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.DesignFile)
+                entity.HasOne(d => d.Design)
                     .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.DesignFileId)
+                    .HasForeignKey(d => d.DesignId)
                     .HasConstraintName("FK_File_Design");
 
                 entity.HasOne(d => d.Measurement)
