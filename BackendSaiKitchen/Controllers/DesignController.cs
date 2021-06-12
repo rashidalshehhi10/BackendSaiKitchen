@@ -18,7 +18,8 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x. == de.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            
             foreach (var file in designCustomModel.base64f3d)
             {
                 string fileUrl = await Helper.Helper.UploadFileToBlob(file);
@@ -35,7 +36,6 @@ namespace BackendSaiKitchen.Controllers
                         UpdatedDate = Helper.Helper.GetDateTime(),
                         CreatedBy = Constants.userId,
                         CreatedDate = Helper.Helper.GetDateTime(),
-
                     });
 
                 }
@@ -46,9 +46,6 @@ namespace BackendSaiKitchen.Controllers
                 }
             }
 
-            Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-            inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
-            inquiryworkscope.Measurements.Add(measurement);
             inquiryWorkscopeRepository.Update(inquiryworkscope);
             context.SaveChanges();
             return response;
