@@ -26,6 +26,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
+        public virtual DbSet<Design> Designs { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
@@ -54,7 +55,7 @@ namespace BackendSaiKitchen.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;");
+                optionsBuilder.UseSqlServer("Server=.\\;Database=DbSaiKitchen;Trusted_Connection=True;MultipleActiveResultSets=true;");
             }
         }
 
@@ -265,6 +266,7 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.FileUrl).HasColumnName("FileURL");
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
 
                 entity.HasOne(d => d.Measurement)
                     .WithMany(p => p.Files)

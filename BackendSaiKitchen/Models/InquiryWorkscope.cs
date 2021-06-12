@@ -9,7 +9,6 @@ namespace BackendSaiKitchen.Models
     {
         public InquiryWorkscope()
         {
-            Designs = new HashSet<Design>();
             Measurements = new HashSet<Measurement>();
         }
 
@@ -35,7 +34,6 @@ namespace BackendSaiKitchen.Models
         public virtual InquiryStatus InquiryStatus { get; set; }
         public virtual User MeasurementAssignedToNavigation { get; set; }
         public virtual WorkScope Workscope { get; set; }
-        public virtual ICollection<Design> Designs { get; set; }
         public virtual ICollection<Measurement> Measurements { get; set; }
     }
 }
