@@ -237,6 +237,37 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_CustomerBranch_Customer");
             });
 
+            modelBuilder.Entity<Design>(entity =>
+            {
+                entity.ToTable("Design");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.DesignApprovedon).HasMaxLength(50);
+
+                entity.Property(e => e.DesignName).HasMaxLength(50);
+
+                entity.HasOne(d => d.DesignApprovedByNavigation)
+                    .WithMany(p => p.DesignDesignApprovedByNavigations)
+                    .HasForeignKey(d => d.DesignApprovedBy)
+                    .HasConstraintName("FK_Design_UserApprove");
+
+                entity.HasOne(d => d.DesignTakenByNavigation)
+                    .WithMany(p => p.DesignDesignTakenByNavigations)
+                    .HasForeignKey(d => d.DesignTakenBy)
+                    .HasConstraintName("FK_Design_UserTaken");
+
+                entity.HasOne(d => d.DesignCreatedByNavigation)
+                    .WithMany(p => p.DesignDesignCreatedByNavigations)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("FK_Design_User");
+
+                entity.HasOne(d => d.InquiryWorkscope)
+                    .WithMany(p => p.Designs)
+                    .HasForeignKey(d => d.InquiryWorkscopeId)
+                    .HasConstraintName("FK_Design_InquiryWorkscope");
+            });
+
             modelBuilder.Entity<Fee>(entity =>
             {
                 entity.HasKey(e => e.FeesId);

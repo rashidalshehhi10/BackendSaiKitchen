@@ -18,8 +18,8 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId==(int)inquiryStatus.designRejected).FirstOrDefault();
+            Design design = new Design();
             foreach (var file in designCustomModel.base64f3d)
             {
                 string fileUrl = await Helper.Helper.UploadFileToBlob(file);
@@ -36,7 +36,8 @@ namespace BackendSaiKitchen.Controllers
                         UpdatedDate = Helper.Helper.GetDateTime(),
                         CreatedBy = Constants.userId,
                         CreatedDate = Helper.Helper.GetDateTime(),
-                    });
+                        
+                    }) ;
 
                 }
                 else
@@ -45,10 +46,42 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
+            List<int?> roletypeId = new List<int?>();
 
+            roletypeId.Add((int)roleType.Manager);
+            sendNotificationToHead(Constants.DesignAdded + Constants.userId, true,
+                Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+               roletypeId, Constants.branchId,(int)notificationCategory.Design);
+
+            design.Files = files;
+            inquiryworkscope.Designs.Add(design);
             inquiryWorkscopeRepository.Update(inquiryworkscope);
             context.SaveChanges();
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object AcceptDesign(int id)
+        {
+            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            inquiryWS.InquiryStatusId = (int)inquiryStatus.designAccepted;
+            inquiryWorkscopeRepository.Update(inquiryWS);
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object DeclineDesign(int id)
+        {
+            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
+            inquiryWorkscopeRepository.Update(inquiryWS);
+            context.SaveChanges();
+            return response;
+
+        }
+
     }
 }

@@ -211,7 +211,12 @@ namespace BackendSaiKitchen.Controllers
             context.SaveChanges();
             return response;
         }
+        [HttpPost]
+        [Route("[action]")]
+        public object GetAllMeasurement()
+        {
+            return measurementRepository.FindByCondition(m => m.IsActive == true && m.IsDeleted == false);
+        }
 
-      
     }
 }
