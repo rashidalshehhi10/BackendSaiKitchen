@@ -349,7 +349,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetMeasurementOfBranch(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == 1 || x.InquiryStatusId == 2) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
             && x.IsDeleted == false).Select(x => new ViewMeasurement()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,

@@ -151,22 +151,25 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object AcceptMeasurement(int id)
+        public object AcceptMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
-            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWS.InquiryStatusId = (int)inquiryStatus.measurementAccpeted;
-            inquiryWorkscopeRepository.Update(inquiryWS);
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAccepted;
+            inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
+            inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
+            inquiryWorkscopeRepository.Update(inquiryWorkscope);
             return response;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public object DeclineMeasurement(int id)
+        public object DeclineMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
-            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWS.InquiryStatusId = (int)inquiryStatus.measurementRejected;
-            inquiryWorkscopeRepository.Update(inquiryWS);
-            context.SaveChanges();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
+            inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
+            inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
+            inquiryWorkscopeRepository.Update(inquiryWorkscope);
             return response;
 
         }
