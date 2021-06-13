@@ -108,6 +108,10 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
+            "Sentry.AspNetCore": {
+              "target": "Package",
+              "version": "[3.5.0, )"
+            },
             "Serilog.Sinks.MSSqlServer": {
               "target": "Package",
               "version": "[5.6.0, )"

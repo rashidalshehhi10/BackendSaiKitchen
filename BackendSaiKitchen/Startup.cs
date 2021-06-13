@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Serilog.Context;
 using Hangfire;
+using Sentry.AspNetCore;
 
 namespace BackendSaiKitchen
 {
@@ -99,6 +100,9 @@ namespace BackendSaiKitchen
             {
                 endpoints.MapControllers();
             });
+            // Enable automatic tracing integration.
+            // Make sure to put this middleware right after `UseRouting()`.
+            app.UseSentryTracing();
         }
     }
 }
