@@ -206,6 +206,7 @@ namespace BackendSaiKitchen.Controllers
 
             Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
             inquiryworkscope.InquiryStatusId = (int) inquiryStatus.measurementWaitingForApproval;
+            inquiryworkscope.IsMeasurementDrawing = true;
             inquiryworkscope.Measurements.Add(measurement);
             inquiryWorkscopeRepository.Update(inquiryworkscope);
             context.SaveChanges();

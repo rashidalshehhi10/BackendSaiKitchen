@@ -16,6 +16,7 @@ namespace BackendSaiKitchen.Models
         public int InquiryWorkscopeId { get; set; }
         public int? InquiryId { get; set; }
         public int? WorkscopeId { get; set; }
+        public bool? IsMeasurementDrawing { get; set; }
         public int? MeasurementAssignedTo { get; set; }
         public int? DesignAssignedTo { get; set; }
         public int? InquiryStatusId { get; set; }
