@@ -10,7 +10,6 @@ namespace BackendSaiKitchen.CustomModel
     public class CustomMeasurement
     {
         public int MeasurementId { get; set; }
-
         public string MeasurementDetailCeilingHeight { get; set; }
         public string MeasurementDetailCielingDiameter { get; set; }
         public string MeasurementDetailCornishHeight { get; set; }
