@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using File = BackendSaiKitchen.Models.File;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -205,6 +206,8 @@ namespace BackendSaiKitchen.Controllers
             }
 
             Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+            measurement.IsActive = true;
+            measurement.IsDeleted = false;
             inquiryworkscope.InquiryStatusId = (int) inquiryStatus.measurementWaitingForApproval;
             inquiryworkscope.IsMeasurementDrawing = true;
             inquiryworkscope.Measurements.Add(measurement);
@@ -217,6 +220,15 @@ namespace BackendSaiKitchen.Controllers
         public object GetAllMeasurement()
         {
             return measurementRepository.FindByCondition(m => m.IsActive == true && m.IsDeleted == false);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ViewMeasurementById(int inquiryWorkscopeId)
+        {
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId!=(int)inquiryStatus.measurementPending &&x.InquiryStatusId!=(int)inquiryStatus.measurementdelayed  && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count>0).Include(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false)).FirstOrDefault();
+            response.data = inquiryworkscope;
+            return response;
         }
 
     }

@@ -481,7 +481,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetApprovalMeasurementOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-         && x.IsDeleted == false).Select(x => new ViewMeasurement()
+         && x.IsDeleted == false && x.Measurements.Any(y=>y.IsActive==true && y.IsDeleted==false)).Select(x => new ViewMeasurement()
          {
              InquiryWorkscopeId = x.InquiryWorkscopeId,
              InquiryId = x.InquiryId,
