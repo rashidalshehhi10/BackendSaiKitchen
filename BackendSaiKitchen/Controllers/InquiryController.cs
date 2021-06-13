@@ -139,10 +139,35 @@ namespace SaiKitchenBackend.Controllers
         {
             return "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId;
         }
-
         [HttpGet]
         [Route("[action]")]
         public void CheckScheduleDate()
+        {
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            foreach (var inquiry in inquiries)
+            {
+                var inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
+                foreach (var inquiryWorkscope in inquiryWorkscopes)
+                {
+                    if (inquiryWorkscope.InquiryStatusId < 3)
+                    {
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
+
+                    }
+                    else if (inquiryWorkscope.InquiryStatusId < 5)
+                    {
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 4 : 3;
+                    }
+                    inquiryWorkscopeRepository.Update(inquiryWorkscope);
+
+                }
+            }
+            context.SaveChanges();
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public void CheckNotifyScheduleDate()
         {
 
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
@@ -181,7 +206,7 @@ namespace SaiKitchenBackend.Controllers
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                         {
-                            
+
                             sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, true,
                               null,
                               null,
@@ -189,7 +214,7 @@ namespace SaiKitchenBackend.Controllers
                               (int)notificationCategory.Design);
 
                             sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, false, null, null,
-                                (int)inquiry.AddedBy,(int)inquiry.BranchId,
+                                (int)inquiry.AddedBy, (int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
                         }
                     }
