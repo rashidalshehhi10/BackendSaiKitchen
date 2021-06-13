@@ -24,64 +24,64 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
         static List<File> files = new List<File>();
-        static List<Accesory> Accesories =new List<Accesory>();
+        static List<Accesory> Accesories = new List<Accesory>();
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddMeasrmuent(CustomMeasurement measurementVM)
         {
             files.Clear();
             Accesories.Clear();
-            
-                Measurement measurement = new Measurement();
-                measurement.MeasurementComment = measurementVM.MeasurementComment;
+
+            Measurement measurement = new Measurement();
+            measurement.MeasurementComment = measurementVM.MeasurementComment;
 
 
 
-                MeasurementDetail measurementDetail = new MeasurementDetail();
-                measurementDetail.MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight;
-                measurementDetail.MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter;
-                measurementDetail.MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight;
-                measurementDetail.MeasurementDetailCornishDiameter = measurementVM.MeasurementDetailCornishDiameter;
-                measurementDetail.MeasurementDetailDoorHeight = measurementVM.MeasurementDetailDoorHeight;
-                measurementDetail.MeasurementDetailPlinthHeight = measurementVM.MeasurementDetailPlinthHeight;
-                measurementDetail.MeasurementDetailPlinthDiameter = measurementVM.MeasurementDetailPlinthDiameter;
-                measurementDetail.MeasurementDetailSkirtingHeight = measurementVM.MeasurementDetailSkirtingHeight;
-                measurementDetail.MeasurementDetailSpotLightFromWall = measurementVM.MeasurementDetailSpotLightFromWall;
-                measurementDetail.IsActive = true;
-                measurementDetail.IsDeleted = false;
+            MeasurementDetail measurementDetail = new MeasurementDetail();
+            measurementDetail.MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight;
+            measurementDetail.MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter;
+            measurementDetail.MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight;
+            measurementDetail.MeasurementDetailCornishDiameter = measurementVM.MeasurementDetailCornishDiameter;
+            measurementDetail.MeasurementDetailDoorHeight = measurementVM.MeasurementDetailDoorHeight;
+            measurementDetail.MeasurementDetailPlinthHeight = measurementVM.MeasurementDetailPlinthHeight;
+            measurementDetail.MeasurementDetailPlinthDiameter = measurementVM.MeasurementDetailPlinthDiameter;
+            measurementDetail.MeasurementDetailSkirtingHeight = measurementVM.MeasurementDetailSkirtingHeight;
+            measurementDetail.MeasurementDetailSpotLightFromWall = measurementVM.MeasurementDetailSpotLightFromWall;
+            measurementDetail.IsActive = true;
+            measurementDetail.IsDeleted = false;
 
 
-                WardrobeDesignInformation wDInfo = new WardrobeDesignInformation();
-                wDInfo.WdiclosetType = measurementVM.WdiclosetType;
-                wDInfo.WdiboardModel = measurementVM.WdiboardModel;
-                wDInfo.WdiselectedColor = measurementVM.WdiselectedColor;
-                wDInfo.WdiceilingHeight = measurementVM.WdiceilingHeight;
-                wDInfo.WdiclosetHeight = measurementVM.WdiclosetHeight;
-                wDInfo.WdistorageDoor = measurementVM.WdistorageDoor;
-                wDInfo.WdidoorDesign = measurementVM.WdidoorDesign;
-                wDInfo.WdihandleDesign = measurementVM.WdihandleDesign;
-                wDInfo.WdidoorMaterial = measurementVM.WdidoorMaterial;
-                wDInfo.Wdinotes = measurementVM.Wdinotes;
-                wDInfo.IsActive = true;
-                wDInfo.IsDeleted = false;
-               
+            WardrobeDesignInformation wDInfo = new WardrobeDesignInformation();
+            wDInfo.WdiclosetType = measurementVM.WdiclosetType;
+            wDInfo.WdiboardModel = measurementVM.WdiboardModel;
+            wDInfo.WdiselectedColor = measurementVM.WdiselectedColor;
+            wDInfo.WdiceilingHeight = measurementVM.WdiceilingHeight;
+            wDInfo.WdiclosetHeight = measurementVM.WdiclosetHeight;
+            wDInfo.WdistorageDoor = measurementVM.WdistorageDoor;
+            wDInfo.WdidoorDesign = measurementVM.WdidoorDesign;
+            wDInfo.WdihandleDesign = measurementVM.WdihandleDesign;
+            wDInfo.WdidoorMaterial = measurementVM.WdidoorMaterial;
+            wDInfo.Wdinotes = measurementVM.Wdinotes;
+            wDInfo.IsActive = true;
+            wDInfo.IsDeleted = false;
 
 
 
-                foreach (var acc in measurementVM.Accesories)
+
+            foreach (var acc in measurementVM.Accesories)
+            {
+                Accesories.Add(new Accesory()
                 {
-                    Accesories.Add(new Accesory()
-                    {
-                        AccesoriesName=acc.AccesoriesName,
-                        AccesoriesValue=acc.AccesoriesValue,
-                        IsActive=true,
-                        IsDeleted=false,
-                        CreatedBy=Constants.userId,
-                        CreatedDate=Helper.Helper.GetDateTime(),
-                        UpdatedBy = Constants.userId,
-                        UpdatedDate = Helper.Helper.GetDateTime(),
-                    });
-                }
+                    AccesoriesName = acc.AccesoriesName,
+                    AccesoriesValue = acc.AccesoriesValue,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedBy = Constants.userId,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    UpdatedBy = Constants.userId,
+                    UpdatedDate = Helper.Helper.GetDateTime(),
+                });
+            }
 
 
             if (measurementVM.base64img.Count > 0)
@@ -121,7 +121,7 @@ namespace BackendSaiKitchen.Controllers
                 measurementRepository.Create(measurement);
                 context.SaveChanges();
                 response.data = measurement;
-               
+
 
                 List<int?> roletypeId = new List<int?>();
 
@@ -131,14 +131,14 @@ namespace BackendSaiKitchen.Controllers
                     measurement.MeasurementTakenByNavigation.UserName + " Added a New Measurement",
                     true,
                     Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
-                    Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId}),
+                    Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                     roletypeId,
                     Constants.branchId,
                     (int)notificationCategory.Measurement);
 
                 measurement.Files = files;
                 return response;
-                
+
 
             }
             else
@@ -171,52 +171,55 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        
+
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddUpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
             files.Clear();
-            if (customMeasFiles.base64img != null || customMeasFiles.base64img.Count>0)
+            if (customMeasFiles.base64img != null || customMeasFiles.base64img.Count > 0)
             {
-                try { 
-                var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                foreach (var file in customMeasFiles.base64img)
+                try
                 {
-                    string fileUrl = await Helper.Helper.UploadFileToBlob(file);
-
-                    if (fileUrl != null)
+                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    foreach (var file in customMeasFiles.base64img)
                     {
-                        files.Add(new File()
+                        string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+
+                        if (fileUrl != null)
                         {
-                            FileUrl = fileUrl,
-                            FileName = fileUrl.Split('.')[0],
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            CreatedDate = Helper.Helper.GetDateTime(),
+                            files.Add(new File()
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
 
-                        });
+                            });
 
+                        }
+                        else
+                        {
+                            response.isError = true;
+                            response.errorMessage = Constants.wrongFileUpload;
+                        }
                     }
-                    else
-                    {
-                        response.isError = true;
-                        response.errorMessage = Constants.wrongFileUpload;
-                    }
+
+                    Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+                    measurement.IsActive = true;
+                    measurement.MeasurementComment = customMeasFiles.measurementComment;
+                    measurement.IsDeleted = false;
+                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                    inquiryworkscope.IsMeasurementDrawing = true;
+                    inquiryworkscope.Measurements.Add(measurement);
+                    inquiryWorkscopeRepository.Update(inquiryworkscope);
+                    context.SaveChanges();
                 }
-
-                Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-                measurement.IsActive = true;
-                measurement.IsDeleted = false;
-                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
-                inquiryworkscope.IsMeasurementDrawing = true;
-                inquiryworkscope.Measurements.Add(measurement);
-                inquiryWorkscopeRepository.Update(inquiryworkscope);
-                context.SaveChanges();
-                }catch(Exception e)
+                catch (Exception e)
                 {
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                     response.isError = true;
@@ -242,7 +245,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewMeasurementById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId!=(int)inquiryStatus.measurementPending &&x.InquiryStatusId!=(int)inquiryStatus.measurementdelayed  && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count>0).Include(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false && y.Files.Any(z=>z.IsActive==true&& z.IsDeleted==false))).ThenInclude(y=>y.Files.Where(z=>z.IsActive==true &&  z.IsDeleted==false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count > 0).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
             response.data = inquiryworkscope;
             return response;
         }
