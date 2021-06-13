@@ -246,7 +246,15 @@ namespace BackendSaiKitchen.Controllers
         public object ViewMeasurementById(int inquiryWorkscopeId)
         {
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count > 0).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
-            response.data = inquiryworkscope;
+            if (inquiryworkscope != null)
+            {
+                response.data = inquiryworkscope;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = Constants.MeasurementMissing;
+            }
             return response;
         }
     }
