@@ -8,6 +8,6 @@ namespace BackendSaiKitchen.CustomModel
 {
     public interface IBlobManager
     {
-        Task Uplaod(Blob File);
+        Task Upload(Blob File);
     }
 }

@@ -16,10 +16,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackendSaiKitchen.Controllers
 {
-    public class MeasuementController : BaseController
+    public class MeasurementController : BaseController
     {
 
-        public MeasuementController(IBlobManager blobManager)
+        public MeasurementController(IBlobManager blobManager)
         {
             Helper.Helper.blobManager = blobManager;
         }
@@ -177,42 +177,58 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddUpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            foreach (var file in customMeasFiles.base64img)
+            if (customMeasFiles.base64img != null || customMeasFiles.base64img.Count>0)
             {
-                string fileUrl = await Helper.Helper.UploadFileToBlob(file);
-
-                if (fileUrl != null)
+                try { 
+                var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                foreach (var file in customMeasFiles.base64img)
                 {
-                    files.Add(new File()
+                    string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+
+                    if (fileUrl != null)
                     {
-                        FileUrl = fileUrl,
-                        FileName = fileUrl.Split('.')[0],
-                        IsActive = true,
-                        IsDeleted = false,
-                        UpdatedBy = Constants.userId,
-                        UpdatedDate = Helper.Helper.GetDateTime(),
-                        CreatedBy = Constants.userId,
-                        CreatedDate = Helper.Helper.GetDateTime(),
+                        files.Add(new File()
+                        {
+                            FileUrl = fileUrl,
+                            FileName = fileUrl.Split('.')[0],
+                            IsActive = true,
+                            IsDeleted = false,
+                            UpdatedBy = Constants.userId,
+                            UpdatedDate = Helper.Helper.GetDateTime(),
+                            CreatedBy = Constants.userId,
+                            CreatedDate = Helper.Helper.GetDateTime(),
 
-                    });
+                        });
 
+                    }
+                    else
+                    {
+                        response.isError = true;
+                        response.errorMessage = Constants.wrongFileUpload;
+                    }
                 }
-                else
+
+                Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+                measurement.IsActive = true;
+                measurement.IsDeleted = false;
+                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                inquiryworkscope.IsMeasurementDrawing = true;
+                inquiryworkscope.Measurements.Add(measurement);
+                inquiryWorkscopeRepository.Update(inquiryworkscope);
+                context.SaveChanges();
+                }catch(Exception e)
                 {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
                     response.isError = true;
-                    response.errorMessage = Constants.wrongFileUpload;
+                    response.errorMessage = Constants.MeasurementFileMissing;
                 }
             }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = Constants.MeasurementFileMissing;
+            }
 
-            Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-            measurement.IsActive = true;
-            measurement.IsDeleted = false;
-            inquiryworkscope.InquiryStatusId = (int) inquiryStatus.measurementWaitingForApproval;
-            inquiryworkscope.IsMeasurementDrawing = true;
-            inquiryworkscope.Measurements.Add(measurement);
-            inquiryWorkscopeRepository.Update(inquiryworkscope);
-            context.SaveChanges();
             return response;
         }
         [HttpPost]
@@ -226,10 +242,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewMeasurementById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId!=(int)inquiryStatus.measurementPending &&x.InquiryStatusId!=(int)inquiryStatus.measurementdelayed  && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count>0).Include(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId!=(int)inquiryStatus.measurementPending &&x.InquiryStatusId!=(int)inquiryStatus.measurementdelayed  && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count>0).Include(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false && y.Files.Any(z=>z.IsActive==true&& z.IsDeleted==false))).ThenInclude(y=>y.Files.Where(z=>z.IsActive==true &&  z.IsDeleted==false)).FirstOrDefault();
             response.data = inquiryworkscope;
             return response;
         }
-
     }
 }

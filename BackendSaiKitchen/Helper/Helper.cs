@@ -89,12 +89,15 @@ namespace BackendSaiKitchen.Helper
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
                 if (exet == "png" || exet == "jpg" || exet == "pdf")
                 {
-                    await blobManager.Uplaod(new Blob() { File = blob });
+                    await blobManager.Upload(new Blob() { File = blob });
                 }
                 else
                 {
-                    return null;
+                    throw new FileNotFoundException(Constants.MeasurementFileMissing);
                 }
+            }
+            else { 
+                throw new FileNotFoundException(Constants.MeasurementFileMissing); 
             }
             return fileUrl;
         }
