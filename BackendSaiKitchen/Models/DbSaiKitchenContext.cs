@@ -262,10 +262,6 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.DesignTakenBy)
                     .HasConstraintName("FK_Design_UserTaken");
 
-                entity.HasOne(d => d.DesignCreatedByNavigation)
-                    .WithMany(p => p.DesignDesignCreatedByNavigations)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .HasConstraintName("FK_Design_User");
 
                 entity.HasOne(d => d.InquiryWorkscope)
                     .WithMany(p => p.Designs)

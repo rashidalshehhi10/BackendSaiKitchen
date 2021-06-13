@@ -26,6 +26,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
+        public virtual DbSet<Design> Designs { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
@@ -245,21 +246,20 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.DesignApprovedon).HasMaxLength(50);
 
+                entity.Property(e => e.DesignDescription).HasMaxLength(500);
+
                 entity.Property(e => e.DesignName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.DesignApprovedByNavigation)
                     .WithMany(p => p.DesignDesignApprovedByNavigations)
                     .HasForeignKey(d => d.DesignApprovedBy)
-                    .HasConstraintName("FK_Design_UserApprove");
+                    .HasConstraintName("FK_Design_User1");
 
                 entity.HasOne(d => d.DesignTakenByNavigation)
                     .WithMany(p => p.DesignDesignTakenByNavigations)
                     .HasForeignKey(d => d.DesignTakenBy)
-                    .HasConstraintName("FK_Design_UserTaken");
-
-                entity.HasOne(d => d.DesignCreatedByNavigation)
-                    .WithMany(p => p.DesignDesignCreatedByNavigations)
-                    .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("FK_Design_User");
 
                 entity.HasOne(d => d.InquiryWorkscope)
@@ -296,6 +296,11 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.FileUrl).HasColumnName("FileURL");
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Design)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.DesignId)
+                    .HasConstraintName("FK_File_Design");
 
                 entity.HasOne(d => d.Measurement)
                     .WithMany(p => p.Files)
