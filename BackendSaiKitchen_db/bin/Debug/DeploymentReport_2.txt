@@ -1,0 +1,19 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       [dbo].[Building]
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Table rebuild
+       [dbo].[Building] (Table)
+
+** Supporting actions
+     Drop
+       [dbo].[FK_Inquiry_bUILDING] (Foreign Key)
+     Create
+       [dbo].[FK_Inquiry_bUILDING] (Foreign Key)
