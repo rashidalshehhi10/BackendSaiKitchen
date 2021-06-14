@@ -95,4 +95,7 @@
     <Build Include="dbo\Tables\InquiryStatus.sql" />
     <Build Include="dbo\Tables\Permission.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="BackendSaiKitchen_db.publish.xml" />
+  </ItemGroup>
 </Project>
