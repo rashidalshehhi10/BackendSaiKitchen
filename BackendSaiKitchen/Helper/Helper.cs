@@ -86,7 +86,7 @@ namespace BackendSaiKitchen.Helper
                 MemoryStream stream = new MemoryStream(fileByte);
                 var exet = GuessFileType(fileByte);
                 fileUrl = Guid.NewGuid().ToString() + "." + exet;
-                IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
+                IFormFile blob = new FormFile(stream, 0, fileByte.Length,exet, fileUrl);
                 if (exet == "png" || exet == "jpg" || exet == "pdf")
                 {
                     await blobManager.Upload(new Blob() { File = blob });
