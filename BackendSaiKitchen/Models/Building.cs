@@ -18,6 +18,7 @@ namespace BackendSaiKitchen.Models
         public string BuildingCondition { get; set; }
         public string BuildingFloor { get; set; }
         public bool? BuildingReconstruction { get; set; }
+        public bool? IsOccupied { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
