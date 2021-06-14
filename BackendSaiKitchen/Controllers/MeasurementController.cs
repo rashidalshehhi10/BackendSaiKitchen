@@ -1,18 +1,14 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
 using File = BackendSaiKitchen.Models.File;
-using Microsoft.EntityFrameworkCore;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -171,7 +167,6 @@ namespace BackendSaiKitchen.Controllers
             inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
             inquiryWorkscopeRepository.Update(inquiryWorkscope);
             return response;
-
         }
 
 
@@ -188,7 +183,6 @@ namespace BackendSaiKitchen.Controllers
                     foreach (var file in customMeasFiles.base64img)
                     {
                         string fileUrl = await Helper.Helper.UploadFileToBlob(file);
-
                         if (fileUrl != null)
                         {
                             files.Add(new File()
@@ -203,7 +197,6 @@ namespace BackendSaiKitchen.Controllers
                                 CreatedDate = Helper.Helper.GetDateTime(),
 
                             });
-
                         }
                         else
                         {
@@ -234,7 +227,6 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = Constants.MeasurementFileMissing;
             }
-
             return response;
         }
         [HttpPost]
