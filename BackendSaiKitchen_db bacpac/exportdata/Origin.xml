@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DacOrigin xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <PackageProperties>
+    <Version>3.1.0.0</Version>
+    <ContainsExportedData>true</ContainsExportedData>
+    <StreamVersions>
+      <Version StreamName="Data">2.0.0.0</Version>
+      <Version StreamName="DeploymentContributors">1.0.0.0</Version>
+    </StreamVersions>
+  </PackageProperties>
+  <Operation>
+    <Identity>4a80797a-3f76-4e99-89f8-d3d58cc9a8ae</Identity>
+    <Start>2021-06-14T09:50:22.1548120+04:00</Start>
+    <End>0001-01-01T00:00:00.0000000</End>
+    <ProductName>Microsoft.SqlServer.Dac, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</ProductName>
+    <ProductVersion>15.0.4975.1</ProductVersion>
+    <ProductSchema>http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02</ProductSchema>
+  </Operation>
+  <Server>
+    <ServerVersion>Microsoft SQL Server 2019 (RTM-GDR) (KB4583458) - 15.0.2080.9 (X64) 
+	Nov  6 2020 16:50:01 
+	Copyright (C) 2019 Microsoft Corporation
+	Enterprise Edition (64-bit) on Windows 10 Home 10.0 &lt;X64&gt; (Build 19043: ) (Hypervisor)
+</ServerVersion>
+    <ObjectCounts>
+      <DatabaseOptions>1</DatabaseOptions>
+      <DefaultConstraint>2</DefaultConstraint>
+      <ForeignKeyConstraint>43</ForeignKeyConstraint>
+      <PermissionStatement>2</PermissionStatement>
+      <PrimaryKeyConstraint>32</PrimaryKeyConstraint>
+      <SimpleColumn>382</SimpleColumn>
+      <Table>32</Table>
+    </ObjectCounts>
+  </Server>
+  <ExportStatistics>
+    <SourceDatabaseSize>14152</SourceDatabaseSize>
+    <TableRowCountTotalTag>541</TableRowCountTotalTag>
+  </ExportStatistics>
+  <Checksums>
+    <Checksum Uri="/model.xml">B2033FD1EC7B807F7409AF1DF856F104F25DAFABC2FCC5A9843670A4C94CF7F6</Checksum>
+  </Checksums>
+  <ModelSchemaVersion>2.9</ModelSchemaVersion>
+</DacOrigin>
