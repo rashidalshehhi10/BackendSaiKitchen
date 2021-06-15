@@ -144,7 +144,6 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
-
         [HttpPost]
         [Route("[action]")]
         public object AcceptMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
@@ -154,6 +153,9 @@ namespace BackendSaiKitchen.Controllers
             inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
             inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
             inquiryWorkscopeRepository.Update(inquiryWorkscope);
+            context.SaveChanges();
+            sendNotificationToOneUser( "you are assign for the new design",
+                false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
             return response;
         }
 
@@ -166,6 +168,9 @@ namespace BackendSaiKitchen.Controllers
             inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
             inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
             inquiryWorkscopeRepository.Update(inquiryWorkscope);
+            context.SaveChanges();
+            sendNotificationToOneUser("Your measrements is rejected", false, null, null,
+                (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
             return response;
         }
 
