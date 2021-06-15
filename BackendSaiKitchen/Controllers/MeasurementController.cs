@@ -150,12 +150,19 @@ namespace BackendSaiKitchen.Controllers
         public object AcceptMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            if (inquiryWorkscope != null) { 
             inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAccepted;
             inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
             inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
             inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
             sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedToNavigation.UserName + "Added the measurements", false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry doesnt exist";
+            }
             return response;
         }
 
