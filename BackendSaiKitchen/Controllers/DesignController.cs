@@ -12,11 +12,6 @@ namespace BackendSaiKitchen.Controllers
 {
     public class DesignController : BaseController
     {
-        public DesignController(IBlobManager blobManager)
-        {
-            Helper.Helper.blobManager = blobManager;
-        }
-
         static List<File> files = new List<File>();
         [HttpPost]
         [Route("[action]")]
@@ -62,7 +57,7 @@ namespace BackendSaiKitchen.Controllers
             design.Files = files;
             inquiryworkscope.Designs.Add(design);
             inquiryWorkscopeRepository.Update(inquiryworkscope);
-            
+            context.SaveChanges();
             return response;
         }
 
@@ -73,12 +68,6 @@ namespace BackendSaiKitchen.Controllers
             var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             inquiryWS.InquiryStatusId = (int)inquiryStatus.designAccepted;
             inquiryWorkscopeRepository.Update(inquiryWS);
-            
-            List<int?> roleTypeId = new List<int?>();
-            roleTypeId.Add((int)roleType.Manager);
-
-            sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId,(int)notificationCategory.Design);
-            
             return response;
         }
 
@@ -89,8 +78,6 @@ namespace BackendSaiKitchen.Controllers
             var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
             inquiryWorkscopeRepository.Update(inquiryWS);
-
-            sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design) ;
             context.SaveChanges();
             return response;
 

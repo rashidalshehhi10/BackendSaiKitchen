@@ -224,10 +224,4 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\zh\Hangfire.
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.AspNetCore.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.Extensions.Logging.dll
-<<<<<<< HEAD
-C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.dll
-C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.AspNetCore.dll
-C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.Extensions.Logging.dll
-=======
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csproj.AssemblyReference.cache
->>>>>>> e9719bed8d3b09804061476421f3be2aca18b405
