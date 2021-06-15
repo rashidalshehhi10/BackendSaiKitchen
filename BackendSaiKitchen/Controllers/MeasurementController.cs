@@ -149,13 +149,21 @@ namespace BackendSaiKitchen.Controllers
         public object AcceptMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAccepted;
-            inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
-            inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
-            inquiryWorkscopeRepository.Update(inquiryWorkscope);
-            context.SaveChanges();
-            sendNotificationToOneUser( "you are assign for the new design",
-                false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+            if (inquiryWorkscope !=null)
+            {
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAccepted;
+                inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
+                inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                context.SaveChanges();
+                sendNotificationToOneUser("you are assign for the new design",
+                    false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
             return response;
         }
 
@@ -164,13 +172,21 @@ namespace BackendSaiKitchen.Controllers
         public object DeclineMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
-            inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
-            inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
-            inquiryWorkscopeRepository.Update(inquiryWorkscope);
-            context.SaveChanges();
-            sendNotificationToOneUser("Your measrements is rejected", false, null, null,
-                (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+            if (inquiryWorkscope!=null)
+            {
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
+                inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
+                inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                context.SaveChanges();
+                sendNotificationToOneUser("Your measrements is rejected", false, null, null,
+                    (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
             return response;
         }
 

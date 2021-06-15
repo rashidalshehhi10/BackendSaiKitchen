@@ -71,13 +71,22 @@ namespace BackendSaiKitchen.Controllers
         public object AcceptDesign(int id)
         {
             var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWS.InquiryStatusId = (int)inquiryStatus.designAccepted;
-            inquiryWorkscopeRepository.Update(inquiryWS);
+            if (inquiryWS != null)
+            {
+                inquiryWS.InquiryStatusId = (int)inquiryStatus.designAccepted;
+                inquiryWorkscopeRepository.Update(inquiryWS);
+                context.SaveChanges();
+                List<int?> roleTypeId = new List<int?>();
+                roleTypeId.Add((int)roleType.Manager);
 
-            List<int?> roleTypeId = new List<int?>();
-            roleTypeId.Add((int)roleType.Manager);
+                sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
 
-            sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
 
             return response;
         }
@@ -87,11 +96,19 @@ namespace BackendSaiKitchen.Controllers
         public object DeclineDesign(int id)
         {
             var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
-            inquiryWorkscopeRepository.Update(inquiryWS);
+            if (inquiryWS != null)
+            {
+                inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
+                inquiryWorkscopeRepository.Update(inquiryWS);
 
-            sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
-            context.SaveChanges();
+                sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
             return response;
 
         }
