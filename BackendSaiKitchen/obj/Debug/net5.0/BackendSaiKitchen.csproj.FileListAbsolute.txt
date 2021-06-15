@@ -227,3 +227,51 @@ C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\ref\BackendSaiKitchen.dll
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.pdb
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.genruntimeconfig.cache
+<<<<<<< HEAD
+=======
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csproj.AssemblyReference.cache
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\ForgotPasswordTemplate.html
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\NewInquiryTemplate.html
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\sai-logo.png
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\WelcomeTemplate.html
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Hangfire.Core.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\ca\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\de\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\es\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\fa\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\fr\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\nb\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\nl\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt-BR\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt-PT\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\zh-TW\Hangfire.Core.resources.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\zh\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\ForgotPasswordTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\NewInquiryTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\sai-logo.png
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\WelcomeTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Hangfire.Core.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\System.IO.Pipelines.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\ca\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\de\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\es\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\fa\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\fr\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\nb\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\nl\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt-BR\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt-PT\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\pt\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\zh-TW\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\zh\Hangfire.Core.resources.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.AspNetCore.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.Extensions.Logging.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.AspNetCore.dll
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\Sentry.Extensions.Logging.dll
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csproj.AssemblyReference.cache
+>>>>>>> 47a2c13723f97f16bad7c17e08e4592d69e82ed2
