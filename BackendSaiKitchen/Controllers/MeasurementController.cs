@@ -237,6 +237,7 @@ namespace BackendSaiKitchen.Controllers
                     measurement.IsDeleted = false;
                     inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
                     inquiryworkscope.IsMeasurementDrawing = true;
+                    inquiryworkscope.Comments = customMeasFiles.measurementComment;
                     inquiryworkscope.Measurements.Add(measurement);
                     inquiryWorkscopeRepository.Update(inquiryworkscope);
                     context.SaveChanges();
