@@ -78,6 +78,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiryWS != null)
             {
                 inquiryWS.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryWS.IsDesignApproved = true;
                 inquiryWorkscopeRepository.Update(inquiryWS);
                 context.SaveChanges();
                 List<int?> roleTypeId = new List<int?>();
