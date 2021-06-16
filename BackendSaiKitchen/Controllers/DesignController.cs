@@ -23,7 +23,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId==(int)inquiryStatus.designRejected).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
             Design design = new Design();
             foreach (var file in designCustomModel.base64f3d)
             {
