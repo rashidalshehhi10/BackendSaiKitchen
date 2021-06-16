@@ -14,6 +14,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? Status { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementAssignTo { get; set; }
+        public string MeasurementComment { get; set; }
         public int? WorkScopeId { get; set; }
         public string WorkScopeName { get; set; }
         public int? QuestionaireType { get; set; }

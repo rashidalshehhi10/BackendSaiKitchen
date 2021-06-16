@@ -149,9 +149,9 @@ namespace BackendSaiKitchen.Controllers
         public object AcceptMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            if (inquiryWorkscope !=null)
+            if (inquiryWorkscope != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAccepted;
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designPending;
                 inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
@@ -171,15 +171,20 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineMeasurement(UpdateMeasurementStatusModel updateMeasurementStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            if (inquiryWorkscope!=null)
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                 inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
                 inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
+                inquiryWorkscope.Comments = updateMeasurementStatus.MeasurementComment;
+                Helper.Helper.Each(inquiryWorkscope.Measurements, i => {
+                    i.IsActive = false;
+                    i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
+                });
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 context.SaveChanges();
-                sendNotificationToOneUser("Your measrements is rejected", false, null, null,
+                sendNotificationToOneUser("measurements is rejected \n Reason: "+ updateMeasurementStatus.MeasurementComment, false, null, null,
                     (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
             }
             else

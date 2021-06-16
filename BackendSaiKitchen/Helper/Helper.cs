@@ -2,6 +2,7 @@
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -130,6 +131,12 @@ namespace BackendSaiKitchen.Helper
                 default:
                     return "";
             }
+        }
+
+        public static void Each<T>(IEnumerable<T> items, Action<T> action)
+        {
+            foreach (var item in items)
+                action(item);
         }
     }
 }
