@@ -157,6 +157,7 @@ namespace SaiKitchenBackend.Controllers
 
                 noificationRepository.Create(notification);
 
+                context.SaveChanges();
                 try
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
@@ -201,6 +202,7 @@ namespace SaiKitchenBackend.Controllers
                 notification.IsDeleted = false;
 
                 noificationRepository.Create(notification);
+                context.SaveChanges();
 
                 try
                 {
