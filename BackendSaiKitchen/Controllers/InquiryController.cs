@@ -650,7 +650,7 @@ namespace SaiKitchenBackend.Controllers
              BranchId = x.Inquiry.BranchId,
              InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
              InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
-             NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+             NoOfRevision = x.Designs.Where(y => y.IsDeleted == false).Count()
          }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
