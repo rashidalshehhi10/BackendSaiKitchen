@@ -555,7 +555,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetDesignOfBranch(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == 3 || x.InquiryStatusId == 4) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
             && x.IsDeleted == false).Select(x => new ViewMeasurement()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,
@@ -569,6 +569,7 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
+                InquiryComment=x.Comments,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,

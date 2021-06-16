@@ -73,7 +73,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             if (inquiryWS != null)
             {
-                inquiryWS.InquiryStatusId = (int)inquiryStatus.designAccepted;
+                inquiryWS.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiryWorkscopeRepository.Update(inquiryWS);
                 context.SaveChanges();
                 List<int?> roleTypeId = new List<int?>();
