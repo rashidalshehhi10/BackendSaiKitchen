@@ -521,6 +521,7 @@ namespace SaiKitchenBackend.Controllers
              DesignScheduleDate = x.DesignScheduleDate,
              DesignAssignTo = x.DesignAssignedToNavigation.UserName,
              Status = x.InquiryStatusId,
+             InquiryComment=x.Comments,
              MeasurementScheduleDate = x.MeasurementScheduleDate,
              BuildingAddress = x.Inquiry.Building.BuildingAddress,
              BuildingCondition = x.Inquiry.Building.BuildingCondition,
