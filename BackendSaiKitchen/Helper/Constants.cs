@@ -59,8 +59,12 @@ namespace BackendSaiKitchen.Helper
         measurementAccepted=7,
         measurementRejected=8,
         measurementWaitingForApproval=9,
-        designAccepted=10,
-        designRejected=11
+        designAccepted = 10,
+        designRejected = 11,
+        designWaitingForApproval = 12,
+        quotationAccepted = 13,
+        quotationRejected = 14,
+        quotationWaitingForApproval = 15
 
     }
 

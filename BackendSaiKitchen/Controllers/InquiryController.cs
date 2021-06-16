@@ -508,7 +508,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetApprovalMeasurementOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-         && x.IsDeleted == false && x.Measurements.Any(y=>y.IsActive==true && y.IsDeleted==false)).Include(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false)).Select(x => new ViewMeasurement()
+         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewMeasurement()
          {
              InquiryWorkscopeId = x.InquiryWorkscopeId,
              InquiryId = x.InquiryId,
@@ -521,7 +521,7 @@ namespace SaiKitchenBackend.Controllers
              DesignScheduleDate = x.DesignScheduleDate,
              DesignAssignTo = x.DesignAssignedToNavigation.UserName,
              Status = x.InquiryStatusId,
-             InquiryComment=x.Comments,
+             InquiryComment = x.Comments,
              MeasurementScheduleDate = x.MeasurementScheduleDate,
              BuildingAddress = x.Inquiry.Building.BuildingAddress,
              BuildingCondition = x.Inquiry.Building.BuildingCondition,
@@ -617,6 +617,48 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetApprovalDesignOfBranch(int branchId)
+        {
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewMeasurement()
+         {
+             InquiryWorkscopeId = x.InquiryWorkscopeId,
+             InquiryId = x.InquiryId,
+             InquiryDescription = x.Inquiry.InquiryDescription,
+             InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+             MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
+             WorkScopeId = x.WorkscopeId,
+             WorkScopeName = x.Workscope.WorkScopeName,
+             QuestionaireType = x.Workscope.QuestionaireType,
+             DesignScheduleDate = x.DesignScheduleDate,
+             DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+             Status = x.InquiryStatusId,
+             InquiryComment = x.Comments,
+             MeasurementScheduleDate = x.MeasurementScheduleDate,
+             BuildingAddress = x.Inquiry.Building.BuildingAddress,
+             BuildingCondition = x.Inquiry.Building.BuildingCondition,
+             BuildingFloor = x.Inquiry.Building.BuildingFloor,
+             BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+             InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+             BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
+             IsEscalationRequested = x.Inquiry.IsEscalationRequested,
+             CustomerId = x.Inquiry.CustomerId,
+             CustomerName = x.Inquiry.Customer.CustomerName,
+             CustomerContact = x.Inquiry.Customer.CustomerContact,
+             BranchId = x.Inquiry.BranchId,
+             InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+             InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
+             NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+         }).OrderByDescending(x => x.InquiryId);
+            tableResponse.data = inquiries;
+            tableResponse.recordsTotal = inquiries.Count();
+            tableResponse.recordsFiltered = inquiries.Count();
+            return tableResponse;
+
+
+        }
         #endregion
     }
 }

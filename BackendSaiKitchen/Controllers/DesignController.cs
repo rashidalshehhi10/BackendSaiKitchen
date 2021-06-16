@@ -58,8 +58,12 @@ namespace BackendSaiKitchen.Controllers
                 Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                 Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                roletypeId, Constants.branchId,(int)notificationCategory.Design);
-
+            design.IsActive = true;
+            design.IsDeleted = false;
+            design.DesignComment = designCustomModel.comment;
             design.Files = files;
+            inquiryworkscope.Comments = designCustomModel.comment;
+            inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
             inquiryworkscope.Designs.Add(design);
             inquiryWorkscopeRepository.Update(inquiryworkscope);
             context.SaveChanges();

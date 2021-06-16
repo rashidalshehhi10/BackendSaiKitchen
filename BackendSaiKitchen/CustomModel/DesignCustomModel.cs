@@ -12,5 +12,6 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryWorkScopeId { get; set; }
 
         public List<byte[]> base64f3d { get; set; }
+        public string comment { get; set; }
     }
 }
