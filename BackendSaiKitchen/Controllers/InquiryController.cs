@@ -86,9 +86,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-           var inquiryWorkscope= inquiryWorkscopeRepository.FindByCondition(x =>x.InquiryWorkscopeId==workscopeInquiry.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            inquiryWorkscope.InquiryWorkscopeId =0;
+            var inquiryWorkscope = context.InquiryWorkscopes.AsNoTracking().FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId);
+            inquiryWorkscope.CreatedDate = null;
             inquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
+            inquiryWorkscope.InquiryWorkscopeId = 0;
             inquiryWorkscopeRepository.Create(inquiryWorkscope);
             context.SaveChanges();
             return response;
