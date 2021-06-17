@@ -54,4 +54,9 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignScheduleDate { get; set; }
         public string DesignComment { get; set; }
     }
+    public class WorkscopeInquiry
+    {
+        public int? inquiryWorkscopeId { get; set; }
+        public int? WorkScopeId { get; set; }
+    }
 }

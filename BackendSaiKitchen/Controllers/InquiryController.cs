@@ -81,6 +81,18 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
+        {
+           var inquiryWorkscope= inquiryWorkscopeRepository.FindByCondition(x =>x.InquiryWorkscopeId==workscopeInquiry.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            inquiryWorkscope.InquiryWorkscopeId =0;
+            inquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
+            inquiryWorkscopeRepository.Create(inquiryWorkscope);
+            context.SaveChanges();
+            return response;
+        }
         [HttpPost]
         [Route("[action]")]
         public Object GetWorkscope()
