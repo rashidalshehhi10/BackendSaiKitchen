@@ -2,7 +2,7 @@
 
 namespace BackendSaiKitchen.CustomModel
 {
-    public class ViewInquiry
+    public class ViewInquiryDetail
     {
 
         public int InquiryWorkscopeId { get; set; }
@@ -17,6 +17,7 @@ namespace BackendSaiKitchen.CustomModel
         public string InquiryComment { get; set; }
         public int? WorkScopeId { get; set; }
         public string WorkScopeName { get; set; }
+        public int? QuestionaireType { get; set; }
         public string DesignScheduleDate { get; set; }
         public string DesignAssignTo { get; set; }
         public int? CustomerId { get; set; }
@@ -27,11 +28,12 @@ namespace BackendSaiKitchen.CustomModel
         public string BuildingCondition { get; set; }
         public string BuildingFloor { get; set; }
         public String BuildingReconstruction { get; set; }
+        public String IsOccupied { get; set; }
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public string? InquiryAddedBy { get; set; }
         public Object Actions { get; set; }
-
+        public int? NoOfRevision { get;  set; }
     }
     public class UpdateInquirySchedule
     {
