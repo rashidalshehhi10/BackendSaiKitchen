@@ -14,6 +14,7 @@ namespace BackendSaiKitchen.Helper
     {
         static CultureInfo provider = CultureInfo.InvariantCulture;
         public static IBlobManager blobManager;
+     static   TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
         public static String GenerateToken(int userId)
         {
             byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
@@ -23,14 +24,17 @@ namespace BackendSaiKitchen.Helper
         }
         public static String GetDateTime()
         {
+            DateTime utc = DateTime.UtcNow;
+            DateTime UAE = TimeZoneInfo.ConvertTimeFromUtc(utc, UAETimeZone);
             //04 / 27 / 2021 10:01 AM
-            return DateTime.Now.ToString("MM/dd/yyyy hh:mm tt");
+            return UAE.ToString("MM/dd/yyyy hh:mm tt");
         }
         public static DateTime ConvertToDateTime(String dateTime)
         {
             //04 / 27 / 2021 10:01 AM
             DateTime dateTimeParsed;
             DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt" }, provider, DateTimeStyles.None, out dateTimeParsed);
+
             return dateTimeParsed;
         }
         public static String GetDateFromString(String dateTime)

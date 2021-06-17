@@ -81,6 +81,18 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
+        {
+           var inquiryWorkscope= inquiryWorkscopeRepository.FindByCondition(x =>x.InquiryWorkscopeId==workscopeInquiry.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            inquiryWorkscope.InquiryWorkscopeId =0;
+            inquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
+            inquiryWorkscopeRepository.Create(inquiryWorkscope);
+            context.SaveChanges();
+            return response;
+        }
         [HttpPost]
         [Route("[action]")]
         public Object GetWorkscope()
@@ -102,7 +114,7 @@ namespace SaiKitchenBackend.Controllers
         {
 
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true
-            && x.IsDeleted == false).Select(x => new ViewInquiry()
+            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
@@ -120,6 +132,7 @@ namespace SaiKitchenBackend.Controllers
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
                 BuildingFloor = x.Inquiry.Building.BuildingFloor,
                 BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
                 InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                 BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
                 IsEscalationRequested = x.Inquiry.IsEscalationRequested,
@@ -376,7 +389,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetMeasurementOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            && x.IsDeleted == false).Select(x => new ViewMeasurement()
+            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
@@ -395,6 +408,7 @@ namespace SaiKitchenBackend.Controllers
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
                 BuildingFloor = x.Inquiry.Building.BuildingFloor,
                 BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
                 InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                 BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
                 IsEscalationRequested = x.Inquiry.IsEscalationRequested,
@@ -508,7 +522,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetApprovalMeasurementOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewMeasurement()
+         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewInquiryDetail()
          {
              InquiryWorkscopeId = x.InquiryWorkscopeId,
              InquiryId = x.InquiryId,
@@ -527,6 +541,7 @@ namespace SaiKitchenBackend.Controllers
              BuildingCondition = x.Inquiry.Building.BuildingCondition,
              BuildingFloor = x.Inquiry.Building.BuildingFloor,
              BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+             IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
              InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
              BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
              IsEscalationRequested = x.Inquiry.IsEscalationRequested,
@@ -556,7 +571,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetDesignOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            && x.IsDeleted == false).Select(x => new ViewMeasurement()
+            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
@@ -575,6 +590,7 @@ namespace SaiKitchenBackend.Controllers
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
                 BuildingFloor = x.Inquiry.Building.BuildingFloor,
                 BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
                 InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                 BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
                 IsEscalationRequested = x.Inquiry.IsEscalationRequested,
@@ -622,7 +638,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetApprovalDesignOfBranch(int branchId)
         {
             var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewMeasurement()
+         && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewInquiryDetail()
          {
              InquiryWorkscopeId = x.InquiryWorkscopeId,
              InquiryId = x.InquiryId,
@@ -650,7 +666,7 @@ namespace SaiKitchenBackend.Controllers
              BranchId = x.Inquiry.BranchId,
              InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
              InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
-             NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+             NoOfRevision = x.Designs.Where(y => y.IsDeleted == false).Count()
          }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
