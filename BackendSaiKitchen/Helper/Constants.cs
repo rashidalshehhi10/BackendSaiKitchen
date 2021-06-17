@@ -13,6 +13,7 @@ namespace BackendSaiKitchen.Helper
         public static string wrongFileUpload = "Kindly upload jpg,png or PDF";
         public static string MeasurementFileMissing = "Measurement File missing";
         public static string MeasurementMissing = "Measurement doesnt Exist";
+        public static string DesginMissing = "Design doesnt Exist";
         public static string MeasurementDelayed = " Delayed the Measurement";
         public static string DesignDelayed = "Delayed the Design";
         public static string DesignAdded = "Design Added By";

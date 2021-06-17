@@ -115,22 +115,31 @@ namespace BackendSaiKitchen.Controllers
                 measurement.WardrobeDesignInfo = wDInfo;
                 measurement.MeasurementDetail = measurementDetail;
                 measurementRepository.Create(measurement);
-                context.SaveChanges();
                 response.data = measurement;
 
 
                 List<int?> roletypeId = new List<int?>();
 
                 roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead(
+                                        measurement.MeasurementTakenByNavigation.UserName + " Added a New Measurement",
+                                        true,
+                                        Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                                        Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                                        roletypeId,
+                                        Constants.branchId,
+                                        (int)notificationCategory.Measurement);
+                }
+                catch (Exception e)
+                {
 
-                sendNotificationToHead(
-                    measurement.MeasurementTakenByNavigation.UserName + " Added a New Measurement",
-                    true,
-                    Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
-                    Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
-                    roletypeId,
-                    Constants.branchId,
-                    (int)notificationCategory.Measurement);
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                
+
+                context.SaveChanges();
 
                 measurement.Files = files;
                 return response;
@@ -155,9 +164,19 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
-                context.SaveChanges();
-                sendNotificationToOneUser("you are assign for the new design",
-                    false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                try
+                {
+                    sendNotificationToOneUser("you are assign for the new design",
+                                        false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                    context.SaveChanges();
+                }
+                catch (Exception e)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                
+
             }
             else
             {
@@ -183,9 +202,19 @@ namespace BackendSaiKitchen.Controllers
                     i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
                 });
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                try
+                {
+
+                    sendNotificationToOneUser("measurements is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
+                        (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                }
+                catch (Exception e)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
                 context.SaveChanges();
-                sendNotificationToOneUser("measurements is rejected \n Reason: "+ updateMeasurementStatus.MeasurementComment, false, null, null,
-                    (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+
             }
             else
             {

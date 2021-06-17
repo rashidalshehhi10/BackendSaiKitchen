@@ -2,6 +2,7 @@
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId==(int)inquiryStatus.designRejected).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected).FirstOrDefault();
             Design design = new Design();
             foreach (var file in designCustomModel.base64f3d)
             {
@@ -54,10 +55,19 @@ namespace BackendSaiKitchen.Controllers
             List<int?> roletypeId = new List<int?>();
 
             roletypeId.Add((int)roleType.Manager);
-            sendNotificationToHead(Constants.DesignAdded + Constants.userId, true,
-                Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
-                Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
-               roletypeId, Constants.branchId,(int)notificationCategory.Design);
+            try
+            {
+                sendNotificationToHead(Constants.DesignAdded + Constants.userId, true,
+                                Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                                Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                               roletypeId, Constants.branchId, (int)notificationCategory.Design);
+            }
+            catch (Exception e)
+            {
+
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+            
             design.IsActive = true;
             design.IsDeleted = false;
             design.DesignComment = designCustomModel.comment;
@@ -79,11 +89,18 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiryWS.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiryWorkscopeRepository.Update(inquiryWS);
-                context.SaveChanges();
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
 
-                sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                context.SaveChanges();
 
             }
             else
@@ -104,8 +121,15 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
                 inquiryWorkscopeRepository.Update(inquiryWS);
+                try
+                {
+                    sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
 
-                sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
                 context.SaveChanges();
             }
             else
@@ -116,5 +140,26 @@ namespace BackendSaiKitchen.Controllers
             return response;
 
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ViewDesignbyId(int inquiryWorkscopeId)
+        {
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false && i.InquiryStatusId != (int)inquiryStatus.designPending && i.InquiryStatusId != (int)inquiryStatus.designDelayed && i.Designs.Count > 0)
+                .Include(i => i.Designs.Where(d => d.IsActive == true && d.IsDeleted == false && d.Files.Any(f => f.IsActive == true & f.IsDeleted == false)))
+                .ThenInclude(d => d.Files.Where(f => f.IsActive == true && f.IsDeleted == false)).FirstOrDefault();
+            if (inquiryWorkscope != null)
+            {
+                response.data = inquiryWorkscope;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = Constants.DesginMissing;
+            }
+            return response;
+
+        }
+
     }
 }
