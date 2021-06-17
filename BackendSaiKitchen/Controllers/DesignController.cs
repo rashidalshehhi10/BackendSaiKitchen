@@ -2,6 +2,7 @@
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
@@ -84,19 +85,17 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            if (inquiryWS != null)
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            if (inquiryWorkscope != null)
             {
-                inquiryWS.InquiryStatusId = (int)inquiryStatus.quotationPending;
-                inquiryWS.IsDesignApproved = true;
-                inquiryWorkscopeRepository.Update(inquiryWS);
-             
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryWorkscope.IsDesignApproved = true;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
-
                  try
                 {
-                    sendNotificationToHead(inquiryWS.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -116,16 +115,24 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object DeclineDesign(int id)
+        public object DeclineDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWS = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            if (inquiryWS != null)
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiryWorkscope != null)
             {
-                inquiryWS.InquiryStatusId = (int)inquiryStatus.designRejected;
-                inquiryWorkscopeRepository.Update(inquiryWS);
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
+                inquiryWorkscope.DesignAssignedTo = updateInquiryStatus.DesignAssignedTo;
+                inquiryWorkscope.DesignScheduleDate = updateInquiryStatus.DesignScheduleDate;
+                inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
+                Helper.Helper.Each(inquiryWorkscope.Designs, i => {
+                    i.IsActive = false;
+                    i.DesignComment = updateInquiryStatus.DesignComment;
+                });
+
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 try
                 {
-                    sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWS.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
