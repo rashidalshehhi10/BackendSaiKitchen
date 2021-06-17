@@ -86,19 +86,11 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-           var inquiryWorkscope= inquiryWorkscopeRepository.FindByCondition(x =>x.InquiryWorkscopeId==workscopeInquiry.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            InquiryWorkscope newInquiryWorkscope = new InquiryWorkscope();
-            newInquiryWorkscope.InquiryId = inquiryWorkscope.InquiryId;
-            newInquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
-            newInquiryWorkscope.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
-            newInquiryWorkscope.IsActive = true;
-            newInquiryWorkscope.IsDeleted = false;
-            newInquiryWorkscope.MeasurementAssignedTo = inquiryWorkscope.MeasurementAssignedTo;
-            newInquiryWorkscope.MeasurementScheduleDate = inquiryWorkscope.MeasurementScheduleDate;
-            newInquiryWorkscope.DesignAssignedTo = inquiryWorkscope.DesignAssignedTo;
-            newInquiryWorkscope.DesignScheduleDate = inquiryWorkscope.DesignScheduleDate;
-
-            inquiryWorkscopeRepository.Create(newInquiryWorkscope);
+            var inquiryWorkscope = context.InquiryWorkscopes.AsNoTracking().FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId);
+            inquiryWorkscope.CreatedDate = null;
+            inquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
+            inquiryWorkscope.InquiryWorkscopeId = 0;
+            inquiryWorkscopeRepository.Create(inquiryWorkscope);
             context.SaveChanges();
             return response;
         }
