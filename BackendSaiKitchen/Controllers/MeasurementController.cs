@@ -114,6 +114,7 @@ namespace BackendSaiKitchen.Controllers
                 wDInfo.Accesories = Accesories;
                 measurement.WardrobeDesignInfo = wDInfo;
                 measurement.MeasurementDetail = measurementDetail;
+                measurement.Files = files;
                 measurementRepository.Create(measurement);
                 response.data = measurement;
 
@@ -139,8 +140,7 @@ namespace BackendSaiKitchen.Controllers
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
 
-                context.SaveChanges();
-                measurement.Files = files;
+                context.SaveChanges(); 
                 return response;
 
 

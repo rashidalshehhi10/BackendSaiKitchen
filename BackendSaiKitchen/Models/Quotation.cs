@@ -7,7 +7,6 @@ namespace BackendSaiKitchen.Models
 {
     public partial class Quotation
     {
-        public int QuotationId { get; set; }
         public string CreatedDate { get; set; }
         public string UpdatedDate { get; set; }
         public int? InquiryId { get; set; }
@@ -22,8 +21,8 @@ namespace BackendSaiKitchen.Models
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
 
-        public virtual File ContractFile { get; set; }
+        public virtual ICollection<File> ContractFile { get; set; }
         public virtual Inquiry Inquiry { get; set; }
-        public virtual File QuotationFile { get; set; }
+        public virtual ICollection<File> QuotationFile { get; set; }
     }
 }
