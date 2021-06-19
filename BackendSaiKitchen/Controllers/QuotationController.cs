@@ -57,7 +57,7 @@ namespace BackendSaiKitchen.Controllers
                         });
                     }
                 }
-                quotation.QuotationFile = files;
+                //quotation.QuotationFile = files;
             
                 files.Clear();
                 foreach (var file in customQuotation.ContractFiles)
@@ -78,7 +78,7 @@ namespace BackendSaiKitchen.Controllers
                         });
                     }
                 }
-                quotation.ContractFile = files;
+               // quotation.ContractFile = files;
                 quotationRepositry.Create(quotation);
                 response.data = quotation;
 
@@ -196,7 +196,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId, QuotationFile = files };
+                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId/*, QuotationFile = files */};
                     quotation.IsActive = true;
                     quotation.Description = quotationFile.Comment;
                     quotation.IsDeleted = false;
@@ -256,7 +256,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId, ContractFile = files };
+                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId/*, ContractFile = files */};
                     quotation.IsActive = true;
                     quotation.Description = quotationFile.Comment;
                     quotation.IsDeleted = false;

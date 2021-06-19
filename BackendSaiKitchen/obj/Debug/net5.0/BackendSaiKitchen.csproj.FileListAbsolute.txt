@@ -112,3 +112,4 @@ C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\ref\BackendSaiKitchen.dll
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.pdb
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.genruntimeconfig.cache
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csproj.AssemblyReference.cache
