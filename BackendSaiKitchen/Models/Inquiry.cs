@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public Inquiry()
         {
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
+            Quotations = new HashSet<Quotation>();
         }
 
         public int InquiryId { get; set; }
@@ -36,5 +37,6 @@ namespace BackendSaiKitchen.Models
         public virtual Building Building { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual ICollection<Quotation> Quotations { get; set; }
     }
 }

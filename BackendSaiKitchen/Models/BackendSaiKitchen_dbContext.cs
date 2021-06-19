@@ -42,6 +42,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
+        public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -675,6 +676,38 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.PermissionRoles)
                     .HasForeignKey(d => d.PermissionLevelId)
                     .HasConstraintName("FK_PermissionRole_PermissionLevel");
+            });
+
+            modelBuilder.Entity<Quotation>(entity =>
+            {
+                entity.ToTable("Quotation");
+
+                entity.Property(e => e.QuotationId).ValueGeneratedNever();
+
+                entity.Property(e => e.AdvancePayment).HasMaxLength(500);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.Discount).HasMaxLength(500);
+
+                entity.Property(e => e.TotalAmount).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.ContractFile)
+                    .WithMany(p => p.QuotationContractFiles)
+                    .HasForeignKey(d => d.ContractFileId)
+                    .HasConstraintName("FK_Quotation_ContractFile");
+
+                entity.HasOne(d => d.Inquiry)
+                    .WithMany(p => p.Quotations)
+                    .HasForeignKey(d => d.InquiryId)
+                    .HasConstraintName("FK_Quotation_Inquiry");
+
+                entity.HasOne(d => d.QuotationFile)
+                    .WithMany(p => p.QuotationQuotationFiles)
+                    .HasForeignKey(d => d.QuotationFileId)
+                    .HasConstraintName("FK_Quotation_File");
             });
 
             modelBuilder.Entity<RoleHead>(entity =>
