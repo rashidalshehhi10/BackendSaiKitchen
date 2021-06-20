@@ -118,9 +118,9 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public Object DeleteWorkscopefromInquiry(int inquiryWorkscopeId)
+        public Object DeleteWorkscopefromInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false );
+            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false );
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.IsDeleted = true;
