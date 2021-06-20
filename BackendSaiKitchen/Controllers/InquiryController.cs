@@ -118,6 +118,25 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public Object DeleteWorkscopefromInquiry(int inquiryWorkscopeId)
+        {
+            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false );
+            if (inquiryWorkscope != null)
+            {
+                inquiryWorkscope.IsDeleted = true;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry doesn't exist";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public Object GetWorkscope()
         {
             response.data = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
