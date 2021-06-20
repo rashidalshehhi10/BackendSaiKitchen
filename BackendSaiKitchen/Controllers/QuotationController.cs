@@ -20,6 +20,8 @@ namespace BackendSaiKitchen.Controllers
 
         static List<File> files = new List<File>();
 
+        [HttpPost]
+        [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
             Quotation quotation = new Quotation();
