@@ -613,7 +613,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetDesignOfBranch(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
             && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,
