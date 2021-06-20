@@ -86,12 +86,33 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = context.InquiryWorkscopes.AsNoTracking().FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId);
-            inquiryWorkscope.CreatedDate = null;
-            inquiryWorkscope.WorkscopeId = workscopeInquiry.WorkScopeId;
-            inquiryWorkscope.InquiryWorkscopeId = 0;
-            inquiryWorkscopeRepository.Create(inquiryWorkscope);
-            context.SaveChanges();
+            var inquiryWorkscope = context.InquiryWorkscopes.AsNoTracking().FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false && i.Measurements.Count < 1);
+            if (inquiryWorkscope != null)
+            {
+                inquiryWorkscope.CreatedDate = null;
+                foreach (var workscopeId in workscopeInquiry.WorkScopeId.OfType<int>())
+                {
+
+                    InquiryWorkscope newInquiryWorkscope = new InquiryWorkscope();
+                    newInquiryWorkscope.InquiryId = inquiryWorkscope.InquiryId;
+                    newInquiryWorkscope.WorkscopeId = workscopeId;
+                    newInquiryWorkscope.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
+                    newInquiryWorkscope.IsActive = true;
+                    newInquiryWorkscope.IsDeleted = false;
+                    newInquiryWorkscope.MeasurementAssignedTo = inquiryWorkscope.MeasurementAssignedTo;
+                    newInquiryWorkscope.MeasurementScheduleDate = inquiryWorkscope.MeasurementScheduleDate;
+                    newInquiryWorkscope.DesignAssignedTo = inquiryWorkscope.DesignAssignedTo;
+                    newInquiryWorkscope.DesignScheduleDate = inquiryWorkscope.DesignScheduleDate;
+
+                    inquiryWorkscopeRepository.Create(newInquiryWorkscope);
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry doesn't exist";
+            }
             return response;
         }
 
@@ -398,7 +419,7 @@ namespace SaiKitchenBackend.Controllers
                 InquiryDescription = x.Inquiry.InquiryDescription,
                 InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
                 MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
-                InquiryComment =x.Comments,
+                InquiryComment = x.Comments,
                 WorkScopeId = x.WorkscopeId,
                 WorkScopeName = x.Workscope.WorkScopeName,
                 QuestionaireType = x.Workscope.QuestionaireType,
@@ -586,7 +607,7 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
-                InquiryComment=x.Comments,
+                InquiryComment = x.Comments,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,

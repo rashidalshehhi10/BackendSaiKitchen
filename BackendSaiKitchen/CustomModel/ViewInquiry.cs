@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
@@ -57,6 +58,6 @@ namespace BackendSaiKitchen.CustomModel
     public class WorkscopeInquiry
     {
         public int? inquiryWorkscopeId { get; set; }
-        public int? WorkScopeId { get; set; }
+        public List<int?> WorkScopeId { get; set; }
     }
 }
