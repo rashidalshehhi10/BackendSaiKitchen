@@ -164,6 +164,7 @@ namespace SaiKitchenBackend.Controllers
                 CustomerContact = x.Inquiry.Customer.CustomerContact,
                 BranchId = x.Inquiry.BranchId,
                 InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
+                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId
             }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
