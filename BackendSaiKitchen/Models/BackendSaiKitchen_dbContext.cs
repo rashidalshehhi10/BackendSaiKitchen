@@ -298,6 +298,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
+                entity.HasOne(d => d.Contract)
+                    .WithMany(p => p.FileContracts)
+                    .HasForeignKey(d => d.ContractId)
+                    .HasConstraintName("FK_File_Contract");
+
                 entity.HasOne(d => d.Design)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.DesignId)
@@ -307,6 +312,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.MeasurementId)
                     .HasConstraintName("FK_File_Measurement");
+
+                entity.HasOne(d => d.Quotation)
+                    .WithMany(p => p.FileQuotations)
+                    .HasForeignKey(d => d.QuotationId)
+                    .HasConstraintName("FK_File_Quotation");
             });
 
             modelBuilder.Entity<Inquiry>(entity =>
@@ -694,20 +704,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.ContractFile)
-                    .WithMany(p => p.QuotationContractFiles)
-                    .HasForeignKey(d => d.ContractFileId)
-                    .HasConstraintName("FK_Quotation_ContractFile");
-
                 entity.HasOne(d => d.Inquiry)
                     .WithMany(p => p.Quotations)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Quotation_Inquiry");
-
-                entity.HasOne(d => d.QuotationFile)
-                    .WithMany(p => p.QuotationQuotationFiles)
-                    .HasForeignKey(d => d.QuotationFileId)
-                    .HasConstraintName("FK_Quotation_File");
             });
 
             modelBuilder.Entity<RoleHead>(entity =>

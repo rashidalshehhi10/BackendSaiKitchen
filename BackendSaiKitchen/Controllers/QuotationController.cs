@@ -24,111 +24,129 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
-            Quotation quotation = new Quotation();
-
-            quotation.AdvancePayment = customQuotation.AdvancePayment;
-            quotation.CreatedBy = customQuotation.CreatedBy;
-            quotation.CreatedDate = customQuotation.CreatedDate;
-            quotation.Description = customQuotation.Description;
-            quotation.Discount = customQuotation.Discount;
-            quotation.InquiryId = customQuotation.InquiryId;
-            quotation.IsActive = customQuotation.IsActive;
-            quotation.IsDeleted = customQuotation.IsDeleted;
-            quotation.TotalAmount = customQuotation.TotalAmount;
-            quotation.UpdatedBy = customQuotation.UpdatedBy;
-            quotation.UpdatedDate = customQuotation.UpdatedDate;
-
-            if (customQuotation.QuotationFiles.Count > 0 || customQuotation.ContractFiles.Count > 0)
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == customQuotation.InquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            var _inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == customQuotation.InquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designDelayed || y.InquiryStatusId == (int)inquiryStatus.designRejected || y.InquiryStatusId == (int)inquiryStatus.designPending)).FirstOrDefault();
+            if (inquiry != null && _inquiry == null)
             {
-                files.Clear();
-                foreach (var file in customQuotation.QuotationFiles)
+
+
+                Quotation quotation = new Quotation();
+
+                quotation.AdvancePayment = customQuotation.AdvancePayment;
+                quotation.CreatedBy = customQuotation.CreatedBy;
+                quotation.CreatedDate = customQuotation.CreatedDate;
+                quotation.Description = customQuotation.Description;
+                quotation.Discount = customQuotation.Discount;
+                quotation.InquiryId = customQuotation.InquiryId;
+                quotation.IsActive = customQuotation.IsActive;
+                quotation.IsDeleted = customQuotation.IsDeleted;
+                quotation.TotalAmount = customQuotation.TotalAmount;
+                quotation.UpdatedBy = customQuotation.UpdatedBy;
+                quotation.UpdatedDate = customQuotation.UpdatedDate;
+
+                if (customQuotation.QuotationFiles.Count > 0 || customQuotation.ContractFiles.Count > 0)
                 {
-                    string Fileurl = await Helper.Helper.UploadFileToBlob(file);
-                    if (Fileurl!=null)
+                    files.Clear();
+                    foreach (var file in customQuotation.QuotationFiles)
                     {
-                        files.Add(new File
+                        string Fileurl = await Helper.Helper.UploadFileToBlob(file);
+                        if (Fileurl != null)
                         {
-                            FileUrl = Fileurl,
-                            FileName = Fileurl.Split('.')[0],
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            CreatedDate = Helper.Helper.GetDateTime(),
-                        });
+                            files.Add(new File
+                            {
+                                FileUrl = Fileurl,
+                                FileName = Fileurl.Split('.')[0],
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                            });
+                        }
                     }
-                }
-                //quotation.QuotationFile = files;
-            
-                files.Clear();
-                foreach (var file in customQuotation.ContractFiles)
-                {
-                    string Fileurl = await Helper.Helper.UploadFileToBlob(file);
-                    if (Fileurl != null)
+                    quotation.FileQuotations = files;
+
+                    files.Clear();
+                    foreach (var file in customQuotation.ContractFiles)
                     {
-                        files.Add(new File
+                        string Fileurl = await Helper.Helper.UploadFileToBlob(file);
+                        if (Fileurl != null)
                         {
-                            FileUrl = Fileurl,
-                            FileName = Fileurl.Split('.')[0],
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            CreatedDate = Helper.Helper.GetDateTime(),
-                        });
+                            files.Add(new File
+                            {
+                                FileUrl = Fileurl,
+                                FileName = Fileurl.Split('.')[0],
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                            });
+                        }
                     }
+                    quotation.FileContracts = files;
+                    quotationRepositry.Create(quotation);
+                    response.data = quotation;
+
+
+                    List<int?> roletypeId = new List<int?>();
+
+                    roletypeId.Add((int)roleType.Manager);
+
+
+                    try
+                    {
+                        sendNotificationToHead(
+                           " Added a New Quotation",
+                         true,
+                         Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
+                         Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
+                         roletypeId,
+                         Constants.branchId,
+                         (int)notificationCategory.Quotation);
+
+                        await mailService.SendEmailAsync( new MailRequest() { ToEmail= inquiry.Customer.CustomerEmail, Subject = "Quotation Approve",Body= "Do You Approve on this quotation"/*,Attachments = quotation.FileQuotations*/ });
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+
+                    context.SaveChanges();
+                    return response;
+
+
                 }
-               // quotation.ContractFile = files;
-                quotationRepositry.Create(quotation);
-                response.data = quotation;
-
-
-                List<int?> roletypeId = new List<int?>();
-
-                roletypeId.Add((int)roleType.Manager);
-
-
-                try
+                else
                 {
-                    sendNotificationToHead(
-                       " Added a New Quotation",
-                     true,
-                     Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
-                     Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
-                     roletypeId,
-                     Constants.branchId,
-                     (int)notificationCategory.Quotation);
+                    response.isError = true;
+                    response.errorMessage = Constants.wrongFileUpload;
                 }
-                catch (Exception e)
-                {
-                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                }
-
-                context.SaveChanges();
-                return response;
-
-
             }
             else
             {
                 response.isError = true;
-                response.errorMessage = Constants.wrongFileUpload;
+                response.errorMessage = "Designs are not all accepted";
             }
-
 
             return response;
         }
         [HttpPost]
         [Route("[action]")]
-        public object AcceptQuotation(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
+        public object AcceptQuotation(int inquiryId)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            if (inquiry != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAccepted;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+                }
+
+                inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -141,18 +159,18 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object DeclineQuotation(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
+        public object DeclineQuotation(int  inquiryId)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            if (inquiry != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
-                inquiryWorkscope.Comments = updateMeasurementStatus.MeasurementComment;
-                Helper.Helper.Each(inquiryWorkscope.Measurements, i => {
-                    i.IsActive = false;
-                    i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
-                });
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                }
+
+                inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -163,132 +181,12 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+      
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> AddUpdateQuotationfiles(QuotationFile quotationFile)
+        public object GetAllQuotationsByBranchId()
         {
-            files.Clear();
-            if (quotationFile.base64img != null || quotationFile.base64img.Count > 0)
-            {
-                try
-                {
-                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == quotationFile.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                    foreach (var file in quotationFile.base64img)
-                    {
-                        string fileUrl = await Helper.Helper.UploadFileToBlob(file);
-                        if (fileUrl != null)
-                        {
-                            files.Add(new File()
-                            {
-                                FileUrl = fileUrl,
-                                FileName = fileUrl.Split('.')[0],
-                                IsActive = true,
-                                IsDeleted = false,
-                                UpdatedBy = Constants.userId,
-                                UpdatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                                CreatedDate = Helper.Helper.GetDateTime(),
-
-                            });
-                        }
-                        else
-                        {
-                            response.isError = true;
-                            response.errorMessage = Constants.wrongFileUpload;
-                        }
-                    }
-
-                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId/*, QuotationFile = files */};
-                    quotation.IsActive = true;
-                    quotation.Description = quotationFile.Comment;
-                    quotation.IsDeleted = false;
-                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForApproval;
-                    inquiryworkscope.IsMeasurementDrawing = true;
-                    inquiryworkscope.Comments = quotation.Description;
-                    quotationRepositry.Create(quotation);
-                    inquiryWorkscopeRepository.Update(inquiryworkscope);
-                    context.SaveChanges();
-                }
-                catch (Exception e)
-                {
-                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                    response.isError = true;
-                    response.errorMessage = Constants.QuotationFileMissing;
-                }
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = Constants.QuotationFileMissing;
-            }
-            return response;
-        }
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> AddUpdateContractfiles(QuotationFile quotationFile)
-        {
-            files.Clear();
-            if (quotationFile.base64img != null || quotationFile.base64img.Count > 0)
-            {
-                try
-                {
-                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == quotationFile.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                    foreach (var file in quotationFile.base64img)
-                    {
-                        string fileUrl = await Helper.Helper.UploadFileToBlob(file);
-                        if (fileUrl != null)
-                        {
-                            files.Add(new File()
-                            {
-                                FileUrl = fileUrl,
-                                FileName = fileUrl.Split('.')[0],
-                                IsActive = true,
-                                IsDeleted = false,
-                                UpdatedBy = Constants.userId,
-                                UpdatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                                CreatedDate = Helper.Helper.GetDateTime(),
-
-                            });
-                        }
-                        else
-                        {
-                            response.isError = true;
-                            response.errorMessage = Constants.wrongFileUpload;
-                        }
-                    }
-
-                    Quotation quotation = new Quotation() { UpdatedBy = Constants.userId/*, ContractFile = files */};
-                    quotation.IsActive = true;
-                    quotation.Description = quotationFile.Comment;
-                    quotation.IsDeleted = false;
-                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForApproval;
-                    inquiryworkscope.IsMeasurementDrawing = true;
-                    inquiryworkscope.Comments = quotation.Description;
-                    quotationRepositry.Create(quotation);
-                    inquiryWorkscopeRepository.Update(inquiryworkscope);
-                    context.SaveChanges();
-                }
-                catch (Exception e)
-                {
-                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                    response.isError = true;
-                    response.errorMessage = Constants.QuotationFileMissing;
-                }
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = Constants.QuotationFileMissing;
-            }
-            return response;
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public object GetAllQuotations()
-        {
-            return quotationRepositry.FindByCondition(q => q.IsActive == true &&q.IsDeleted==false);
+            return inquiryRepository.FindByCondition(q => q.IsActive == true && q.IsDeleted == false && q.BranchId == Constants.branchId && q.InquiryWorkscopes.Count > 0).Include(i => i.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAccepted));
         }
 
         [HttpPost]

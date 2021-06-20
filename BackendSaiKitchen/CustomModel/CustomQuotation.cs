@@ -21,7 +21,6 @@ namespace BackendSaiKitchen.CustomModel
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
 
-        public int InquiryWorkscopeId { get; set; }
 
         public List<byte[]> ContractFiles { get; set; }
         public List<byte[]> QuotationFiles { get; set; }

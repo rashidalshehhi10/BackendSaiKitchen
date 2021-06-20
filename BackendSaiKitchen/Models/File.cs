@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -8,12 +7,6 @@ namespace BackendSaiKitchen.Models
 {
     public partial class File
     {
-        public File()
-        {
-            QuotationContractFiles = new HashSet<Quotation>();
-            QuotationQuotationFiles = new HashSet<Quotation>();
-        }
-
         public int FileId { get; set; }
         public string FileName { get; set; }
         public byte[] FileImage { get; set; }
@@ -26,11 +19,12 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? QuotationId { get; set; }
+        public int? ContractId { get; set; }
 
+        public virtual Quotation Contract { get; set; }
         public virtual Design Design { get; set; }
         public virtual Measurement Measurement { get; set; }
-        [NotMapped]
-        public virtual ICollection<Quotation> QuotationContractFiles { get; set; }
-        public virtual ICollection<Quotation> QuotationQuotationFiles { get; set; }
+        public virtual Quotation Quotation { get; set; }
     }
 }
