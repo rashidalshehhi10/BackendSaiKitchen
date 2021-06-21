@@ -41,7 +41,7 @@ namespace BackendSaiKitchen
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("http://localhost:8080/", "http://localhost:3000", "http://localhost:3000/", "http://localhost:8080", "https://saikitchen.azurewebsites.net/", "https://saikitchen.azurewebsites.net", "http://saikitchen.azurewebsites.net/", "http://saikitchen.azurewebsites.net")
+                    builder => builder.WithOrigins("http://localhost:8080/", "http://localhost:3000", "http://localhost:3000/", "http://localhost:8080", "https://saikitchen.azurewebsites.net/", "https://saikitchen.azurewebsites.net", "http://saikitchen.azurewebsites.net/", "http://saikitchen.azurewebsites.net","*")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
             });
