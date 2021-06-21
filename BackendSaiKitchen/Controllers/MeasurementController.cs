@@ -126,8 +126,7 @@ namespace BackendSaiKitchen.Controllers
              
                 try
                 {
-                    sendNotificationToHead(
-                     measurement.MeasurementTakenByNavigation.UserName + " Added a New Measurement",
+                    sendNotificationToHead( Constants.MeasurementAdded,
                      true,
                      Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                      Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
@@ -164,7 +163,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 try {
-                    sendNotificationToOneUser("you are assign for the new design",
+                    sendNotificationToOneUser(Constants.DesignAssign,
                        false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
@@ -265,6 +264,24 @@ namespace BackendSaiKitchen.Controllers
                     inquiryworkscope.Comments = customMeasFiles.measurementComment;
                     inquiryworkscope.Measurements.Add(measurement);
                     inquiryWorkscopeRepository.Update(inquiryworkscope);
+                    List<int?> roletypeId = new List<int?>();
+
+                    roletypeId.Add((int)roleType.Manager);
+                    try
+                    {
+                        sendNotificationToHead(Constants.MeasurementAdded,
+                         true,
+                         Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                         Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                         roletypeId,
+                         Constants.branchId,
+                         (int)notificationCategory.Measurement);
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+
                     context.SaveChanges();
                 }
                 catch (Exception e)

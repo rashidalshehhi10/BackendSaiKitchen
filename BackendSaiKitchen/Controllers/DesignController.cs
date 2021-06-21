@@ -58,7 +58,7 @@ namespace BackendSaiKitchen.Controllers
            
             try
             {
-                sendNotificationToHead(Constants.DesignAdded+" " + inquiryworkscope.DesignAssignedToNavigation.UserName, true,
+                sendNotificationToHead(Constants.DesignAdded, true,
                     Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                     Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                    roletypeId, Constants.branchId, (int)notificationCategory.Design);

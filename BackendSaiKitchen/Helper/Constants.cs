@@ -18,8 +18,10 @@ namespace BackendSaiKitchen.Helper
         public static string DesginMissing = "Design doesnt Exist";
         public static string QuotationMissing = "Quotation Doesnt Exist";
         public static string MeasurementDelayed = " Delayed the Measurement";
+        public static string MeasurementAdded = "New Measurement added";
+        public static string DesignAssign = "You are for new Design";
         public static string DesignDelayed = "Delayed the Design";
-        public static string DesignAdded = "Design Added By";
+        public static string DesignAdded = "New Design added";
         public static int userId;
         public static int userRoleId;
         public static int branchId;
