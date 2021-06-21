@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SaiKitchenBackend.Controllers
 {
@@ -165,8 +164,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                  //      PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
-                        Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
+                       PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                       // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
 
                     }
                 }
@@ -213,8 +212,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                      //  PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
-                        Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
+                       PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                        //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
                     }
                 }
 
