@@ -183,6 +183,7 @@ namespace SaiKitchenBackend.Controllers
                 CustomerContact = x.Inquiry.Customer.CustomerContact,
                 BranchId = x.Inquiry.BranchId,
                 InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
+                InquiryAddedById = x.Inquiry.AddedBy,
                 NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId
             }).OrderByDescending(x => x.InquiryId);
@@ -594,6 +595,7 @@ namespace SaiKitchenBackend.Controllers
              BranchId = x.Inquiry.BranchId,
              InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
              InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
+             InquiryAddedById = x.Inquiry.AddedBy,
              NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
          }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
@@ -709,6 +711,7 @@ namespace SaiKitchenBackend.Controllers
              BranchId = x.Inquiry.BranchId,
              InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
              InquiryAddedBy = x.Inquiry.AddedByNavigation.UserName,
+             InquiryAddedById = x.Inquiry.AddedBy,
              NoOfRevision = x.Designs.Where(y => y.IsDeleted == false).Count()
          }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;

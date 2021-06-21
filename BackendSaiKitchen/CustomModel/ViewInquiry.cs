@@ -33,6 +33,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public string? InquiryAddedBy { get; set; }
+        public int? InquiryAddedById { get; set; }
         public Object Actions { get; set; }
         public int? NoOfRevision { get;  set; }
     }
