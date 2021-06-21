@@ -17,6 +17,24 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
+        {
+            response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending &&
+            y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x=>x.Measurements.Where(y=>y.IsActive==true && y.IsDeleted==false));
+            return response;
+        }
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
+        {
+            response.data = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending &&
+            y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false));
+            return response;
+        }
 
         static List<File> files = new List<File>();
 
@@ -24,6 +42,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
+            var quotationInquiry = inquiryRepository.FindByCondition(x =>  x.InquiryId == customQuotation.InquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count()== x.InquiryWorkscopes.Where(y =>y.InquiryStatusId==(int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count())).Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false));
             var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == customQuotation.InquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
             var _inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == customQuotation.InquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designDelayed || y.InquiryStatusId == (int)inquiryStatus.designRejected || y.InquiryStatusId == (int)inquiryStatus.designPending)).FirstOrDefault();
             if (inquiry != null && _inquiry == null)
@@ -193,6 +212,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetQuotationById(int inquiryId)
         {
+
             var quotation = quotationRepositry.FindByCondition(q => q.InquiryId == inquiryId && q.IsActive == true && q.IsDeleted == false).FirstOrDefault();
             if (quotation != null)
             {
