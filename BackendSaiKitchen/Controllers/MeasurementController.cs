@@ -202,7 +202,7 @@ namespace BackendSaiKitchen.Controllers
              
                 try
                 {
-                    sendNotificationToOneUser("measurements is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
+                    sendNotificationToOneUser("Measurement is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
                        (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
