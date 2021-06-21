@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Helper
         public static string QuotationMissing = "Quotation Doesnt Exist";
         public static string MeasurementDelayed = " Delayed the Measurement";
         public static string MeasurementAdded = "New Measurement added";
-        public static string DesignAssign = "You are for new Design";
+        public static string DesignAssign = "You assign for new Design";
         public static string DesignDelayed = "Delayed the Design";
         public static string DesignAdded = "New Design added";
         public static int userId;
