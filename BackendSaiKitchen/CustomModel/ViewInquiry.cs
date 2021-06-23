@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignScheduleDate { get; set; }
         public string DesignAssignTo { get; set; }
         public int? CustomerId { get; set; }
+        public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
