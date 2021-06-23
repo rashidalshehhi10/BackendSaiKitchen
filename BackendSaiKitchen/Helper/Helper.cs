@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using VimeoDotNet;
+using VimeoDotNet.Net;
 
 namespace BackendSaiKitchen.Helper
 {
@@ -14,7 +17,9 @@ namespace BackendSaiKitchen.Helper
     {
         static CultureInfo provider = CultureInfo.InvariantCulture;
         public static IBlobManager blobManager;
-     static   TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
+
+
+     static TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
         public static String GenerateToken(int userId)
         {
             byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
@@ -83,6 +88,8 @@ namespace BackendSaiKitchen.Helper
             string encrypted = Convert.ToBase64String(b);
             return encrypted;
         }
+
+
         public static async Task<string> UploadFileToBlob(byte[] fileByte)
         {
             string fileUrl = "";
@@ -107,6 +114,67 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
+        public static async Task<string> UploadUpdateVideo(byte[] file)
+        {
+
+            string fileUrl=" ";
+            try
+            {
+                if (file != null)
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                    var exet = GuessFileType(file);
+                   // fileUrl = Guid.NewGuid().ToString() + "." + exet;
+                    if (exet == "mp4")
+                    {
+
+
+                        VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
+                        BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
+                        var authcheck = await vimeoClient.GetAccountInformationAsync();
+
+                        if (authcheck.Name != null)
+                        {
+                            IUploadRequest uploadRequest = new UploadRequest();
+                            int chunksize;
+                            int contentlength = file.Length;
+                            int temp = contentlength / 1024;
+                            if (temp > 1)
+                            {
+                                chunksize = temp / 1024;
+                                chunksize = chunksize * 1048576;
+                            }
+                            else
+                            {
+                                chunksize = 1048576; 
+                            }
+                            uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize, null);
+                            fileUrl = uploadRequest.ClipId.ToString();
+                            
+                        }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException(Constants.DesignVideoFileMissing);
+                    }
+                }
+                else
+                {
+                    throw new FileNotFoundException(Constants.DesignVideoFileMissing);
+                }
+
+            }
+                catch (Exception e)
+            {
+
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+
+            return fileUrl;
+        }
+
         public static string GuessFileType(byte[] file)
         {
             string f = Convert.ToBase64String(file);
@@ -118,6 +186,7 @@ namespace BackendSaiKitchen.Helper
                 case "/9J/4":
                     return "jpg";
                 case "AAAAF":
+                case "AAAAI":
                     return "mp4";
                 case "JVBER":
                     return "pdf";

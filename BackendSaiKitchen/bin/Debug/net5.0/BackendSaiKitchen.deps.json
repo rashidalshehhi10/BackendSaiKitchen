@@ -36,6 +36,7 @@
           "Azure.Storage.Blobs": "12.8.4",
           "FirebaseAdmin": "2.0.0",
           "Hangfire.Core": "1.7.23",
+          "JetBrains.Annotations": "2021.1.0",
           "MailKit": "2.11.1",
           "Microsoft.AspNetCore.Http": "2.2.2",
           "Microsoft.AspNetCore.Http.Features": "5.0.6",
@@ -59,6 +60,7 @@
           "Twilio": "5.58.0",
           "Twilio.AspNet.Common": "5.37.2",
           "Twilio.AspNet.Core": "5.37.2",
+          "VimeoDotNet": "2.1.1",
           "Microsoft.AspNetCore.Antiforgery": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions.Reference": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "5.0.0.0",
@@ -559,6 +561,17 @@
             "assemblyVersion": "2.8.0.0",
             "fileVersion": "2.8.26.1919"
           }
+        }
+      },
+      "JetBrains.Annotations/2021.1.0": {
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {
+            "assemblyVersion": "2021.1.0.0",
+            "fileVersion": "2021.1.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
         }
       },
       "MailKit/2.11.1": {
@@ -1572,7 +1585,11 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.Collections.Immutable/5.0.0": {},
+      "System.Collections.Immutable/5.0.0": {
+        "compile": {
+          "lib/netstandard2.0/System.Collections.Immutable.dll": {}
+        }
+      },
       "System.Collections.NonGeneric/4.3.0": {
         "dependencies": {
           "System.Diagnostics.Debug": "4.3.0",
@@ -1599,7 +1616,11 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.ComponentModel.Annotations/5.0.0": {},
+      "System.ComponentModel.Annotations/5.0.0": {
+        "compile": {
+          "ref/netstandard2.1/System.ComponentModel.Annotations.dll": {}
+        }
+      },
       "System.ComponentModel.Primitives/4.3.0": {
         "dependencies": {
           "System.ComponentModel": "4.3.0",
@@ -2524,6 +2545,21 @@
         },
         "compile": {
           "lib/netstandard1.6/Twilio.AspNet.Core.dll": {}
+        }
+      },
+      "VimeoDotNet/2.1.1": {
+        "dependencies": {
+          "JetBrains.Annotations": "2021.1.0",
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/VimeoDotNet.dll": {
+            "assemblyVersion": "2.2020.522.0",
+            "fileVersion": "2.2020.522.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/VimeoDotNet.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
@@ -4286,6 +4322,13 @@
       "path": "humanizer.core/2.8.26",
       "hashPath": "humanizer.core.2.8.26.nupkg.sha512"
     },
+    "JetBrains.Annotations/2021.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-n9JSw5Z+F+6gp9vSv4aLH6p/bx3GAYA6FZVq1wJq/TJySv/kPgFKLGFeS7A8Xa5X4/GWorh5gd43yjamUgnBNA==",
+      "path": "jetbrains.annotations/2021.1.0",
+      "hashPath": "jetbrains.annotations.2021.1.0.nupkg.sha512"
+    },
     "MailKit/2.11.1": {
       "type": "package",
       "serviceable": true,
@@ -5650,6 +5693,13 @@
       "sha512": "sha512-kEmsczResMWJ1lHnhZRKhWVE2eiBuXWAUF6tsQDAeXWIOREmBpUxNIU5LI47ss8miSj7oIPxpM8yz5GYjZP9QQ==",
       "path": "twilio.aspnet.core/5.37.2",
       "hashPath": "twilio.aspnet.core.5.37.2.nupkg.sha512"
+    },
+    "VimeoDotNet/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2tSie1+hWlCHaRJMs7duaIk6CNB3u8Yx1xqrT4Jyg5Ok5Fo1i/qi8sDZsSnSPooeyRIIrT8Ed52Crfq+pYF/aA==",
+      "path": "vimeodotnet/2.1.1",
+      "hashPath": "vimeodotnet.2.1.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
       "type": "referenceassembly",

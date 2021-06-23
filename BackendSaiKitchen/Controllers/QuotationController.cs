@@ -23,7 +23,7 @@ namespace BackendSaiKitchen.Controllers
         {
             response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.FileDesigns.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false));
             return response;
         }
@@ -32,8 +32,9 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
         {
             response.data = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-            && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending &&
-            y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false));
+                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.FileDesigns.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false));
             return response;
         }
 
@@ -200,30 +201,5 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-
-        [HttpPost]
-        [Route("[action]")]
-        public object GetAllQuotationsByBranchId()
-        {
-            return inquiryRepository.FindByCondition(q => q.IsActive == true && q.IsDeleted == false && q.BranchId == Constants.branchId && q.InquiryWorkscopes.Count > 0).Include(i => i.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAccepted));
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public object GetQuotationById(int inquiryId)
-        {
-
-            var quotation = quotationRepositry.FindByCondition(q => q.InquiryId == inquiryId && q.IsActive == true && q.IsDeleted == false).FirstOrDefault();
-            if (quotation != null)
-            {
-                response.data = quotation;
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = Constants.QuotationMissing;
-            }
-            return response;
-        }
     }
 }

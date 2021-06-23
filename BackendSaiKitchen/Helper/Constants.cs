@@ -6,12 +6,15 @@ namespace BackendSaiKitchen.Helper
     {
         public static string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
         public static string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/files/";
+        public static string VimeoUrl = "https://vimeo.com/";
+        public static string VimeoAccessToken = "30fd2e2feeccc9b6752294a38ec950e5";
         public static string loginErrormessage = "Incorrect Email or Password";
         public static string inquiryOnAnotherBranchMessage = " generated inquiry on another branch";
         public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
         public static string measurementAssign = " You are assigned for the new measurement at ";
         public static string wrongFileUpload = "Kindly upload jpg,png or PDF";
         public static string MeasurementFileMissing = "Measurement File missing";
+        public static string DesignVideoFileMissing = "Design Video File Missing";
         public static string QuotationFileMissing = "Quotation File Missing";
         public static string ContractFileMissing = "Contract File Missing";
         public static string MeasurementMissing = "Measurement doesnt Exist";

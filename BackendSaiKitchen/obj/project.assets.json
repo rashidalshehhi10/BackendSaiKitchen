@@ -194,6 +194,15 @@
           "lib/netstandard2.0/Humanizer.dll": {}
         }
       },
+      "JetBrains.Annotations/2021.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
+        }
+      },
       "MailKit/2.11.1": {
         "type": "package",
         "dependencies": {
@@ -3200,6 +3209,19 @@
         "runtime": {
           "lib/netstandard1.6/Twilio.AspNet.Core.dll": {}
         }
+      },
+      "VimeoDotNet/2.1.1": {
+        "type": "package",
+        "dependencies": {
+          "JetBrains.Annotations": "2020.3.0",
+          "Newtonsoft.Json": "12.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/VimeoDotNet.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/VimeoDotNet.dll": {}
+        }
       }
     }
   },
@@ -3497,6 +3519,28 @@
         "lib/netstandard2.0/Humanizer.dll",
         "lib/netstandard2.0/Humanizer.xml",
         "logo.png"
+      ]
+    },
+    "JetBrains.Annotations/2021.1.0": {
+      "sha512": "n9JSw5Z+F+6gp9vSv4aLH6p/bx3GAYA6FZVq1wJq/TJySv/kPgFKLGFeS7A8Xa5X4/GWorh5gd43yjamUgnBNA==",
+      "type": "package",
+      "path": "jetbrains.annotations/2021.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "jetbrains.annotations.2021.1.0.nupkg.sha512",
+        "jetbrains.annotations.nuspec",
+        "lib/net20/JetBrains.Annotations.dll",
+        "lib/net20/JetBrains.Annotations.xml",
+        "lib/netstandard1.0/JetBrains.Annotations.deps.json",
+        "lib/netstandard1.0/JetBrains.Annotations.dll",
+        "lib/netstandard1.0/JetBrains.Annotations.xml",
+        "lib/netstandard2.0/JetBrains.Annotations.deps.json",
+        "lib/netstandard2.0/JetBrains.Annotations.dll",
+        "lib/netstandard2.0/JetBrains.Annotations.xml",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.dll",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.xml"
       ]
     },
     "MailKit/2.11.1": {
@@ -10144,6 +10188,23 @@
         "twilio.aspnet.core.5.37.2.nupkg.sha512",
         "twilio.aspnet.core.nuspec"
       ]
+    },
+    "VimeoDotNet/2.1.1": {
+      "sha512": "2tSie1+hWlCHaRJMs7duaIk6CNB3u8Yx1xqrT4Jyg5Ok5Fo1i/qi8sDZsSnSPooeyRIIrT8Ed52Crfq+pYF/aA==",
+      "type": "package",
+      "path": "vimeodotnet/2.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/VimeoDotNet.dll",
+        "lib/net45/VimeoDotNet.xml",
+        "lib/netstandard1.3/VimeoDotNet.dll",
+        "lib/netstandard1.3/VimeoDotNet.xml",
+        "lib/netstandard2.0/VimeoDotNet.dll",
+        "lib/netstandard2.0/VimeoDotNet.xml",
+        "vimeodotnet.2.1.1.nupkg.sha512",
+        "vimeodotnet.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -10151,6 +10212,7 @@
       "Azure.Storage.Blobs >= 12.8.4",
       "FirebaseAdmin >= 2.0.0",
       "Hangfire.Core >= 1.7.23",
+      "JetBrains.Annotations >= 2021.1.0",
       "MailKit >= 2.11.1",
       "Microsoft.AspNetCore.Http >= 2.2.2",
       "Microsoft.AspNetCore.Http.Features >= 5.0.6",
@@ -10173,27 +10235,28 @@
       "System.Linq.Queryable >= 4.3.0",
       "Twilio >= 5.58.0",
       "Twilio.AspNet.Common >= 5.37.2",
-      "Twilio.AspNet.Core >= 5.37.2"
+      "Twilio.AspNet.Core >= 5.37.2",
+      "VimeoDotNet >= 2.1.1"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\samee\\.nuget\\packages\\": {},
+    "C:\\Users\\G.force_sy\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "projectUniqueName": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
       "projectName": "BackendSaiKitchen",
-      "projectPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
-      "packagesPath": "C:\\Users\\samee\\.nuget\\packages\\",
-      "outputPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
+      "projectPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "packagesPath": "C:\\Users\\G.force_sy\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\samee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\G.force_sy\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -10231,6 +10294,10 @@
           "Hangfire.Core": {
             "target": "Package",
             "version": "[1.7.23, )"
+          },
+          "JetBrains.Annotations": {
+            "target": "Package",
+            "version": "[2021.1.0, )"
           },
           "MailKit": {
             "target": "Package",
@@ -10327,6 +10394,10 @@
           "Twilio.AspNet.Core": {
             "target": "Package",
             "version": "[5.37.2, )"
+          },
+          "VimeoDotNet": {
+            "target": "Package",
+            "version": "[2.1.1, )"
           }
         },
         "imports": [
@@ -10347,7 +10418,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   },

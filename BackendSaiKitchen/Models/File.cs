@@ -21,10 +21,12 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
         public int? QuotationId { get; set; }
         public int? ContractId { get; set; }
+        public int? VideoId { get; set; }
 
         public virtual Quotation Contract { get; set; }
         public virtual Design Design { get; set; }
         public virtual Measurement Measurement { get; set; }
         public virtual Quotation Quotation { get; set; }
+        public virtual Design Video { get; set; }
     }
 }

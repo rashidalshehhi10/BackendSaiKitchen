@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -23,6 +24,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
+           
             files.Clear();
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
             Design design = new Design();
@@ -52,6 +54,28 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
+            design.FileDesigns = files;
+            files.Clear();
+            foreach (var file in designCustomModel.videobase64)
+            {
+                string fileUrl = await Helper.Helper.UploadUpdateVideo(file);
+
+                if (fileUrl != null)
+                {
+                    files.Add(new File()
+                    {
+                        FileUrl = fileUrl,
+                        FileName = fileUrl,
+                        IsActive = true,
+                        IsDeleted = false,
+                        UpdatedBy = Constants.userId,
+                        UpdatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                    });
+                }
+            }
+            design.FileVideos = files;
             List<int?> roletypeId = new List<int?>();
 
             roletypeId.Add((int)roleType.Manager);
@@ -68,11 +92,9 @@ namespace BackendSaiKitchen.Controllers
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
 
-            context.SaveChanges();
             design.IsActive = true;
             design.IsDeleted = false;
             design.DesignComment = designCustomModel.comment;
-            design.Files = files;
             inquiryworkscope.Comments = designCustomModel.comment;
             inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
             inquiryworkscope.Designs.Add(design);
@@ -154,7 +176,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval  && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval  && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.FileDesigns.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.FileDesigns.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
             if (inquiryworkscope != null)
             {
                 response.data = inquiryworkscope;
@@ -164,6 +186,16 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = Constants.DesginMissing;
             }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> UplaodVideo(byte[] file)
+        {
+             
+            
+            response.data = await Helper.Helper.UploadUpdateVideo(file);
             return response;
         }
     }
