@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? CustomerId { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
+        public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
         public string BuildingTypeOfUnit { get; set; }
