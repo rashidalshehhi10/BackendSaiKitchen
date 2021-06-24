@@ -87,25 +87,35 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object AcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
+        public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval;
                 inquiryWorkscope.IsDesignApproved = true;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
                  try
                 {
-                    sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + " Upload the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry "+inquiryWorkscope.InquiryWorkscopeId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
 
+                try
+                {
+                    //(String toEmail, String inquiryCode, String measurementScheduleDate, String assignTo, String contactNumber, String buildingAddress)
+                    await mailService.SendEmailAsync(new MailRequest() { ToEmail=inquiryWorkscope.Inquiry.Customer.CustomerEmail,Subject="Design Approval of "+inquiryWorkscope.Workscope.WorkScopeName,Body="Review Design on this link "+Constants.CRMBaseUrl+ "/viewdesign.html?inquiryWorkscopeId="+inquiryWorkscope.InquiryWorkscopeId });
+                }
+
+                catch (Exception ex)
+                {
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
                 context.SaveChanges();
             }
             else
