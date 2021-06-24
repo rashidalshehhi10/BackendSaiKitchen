@@ -14,5 +14,6 @@ namespace BackendSaiKitchen.CustomModel
 
 
         public List<byte[]> base64img { get; set; }
+        public List<byte[]> videobase64 { get; set; }
     }
 }

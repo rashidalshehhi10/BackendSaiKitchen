@@ -23,7 +23,7 @@ namespace BackendSaiKitchen.Controllers
         {
             response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.FileDesigns.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false));
             return response;
         }
@@ -33,7 +33,7 @@ namespace BackendSaiKitchen.Controllers
         {
             response.data = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.FileDesigns.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false));
             return response;
         }
@@ -70,13 +70,15 @@ namespace BackendSaiKitchen.Controllers
                     files.Clear();
                     foreach (var file in customQuotation.QuotationFiles)
                     {
-                        string Fileurl = await Helper.Helper.UploadFileToBlob(file);
-                        if (Fileurl != null)
+                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        if (fileUrl != null)
                         {
                             files.Add(new File
                             {
-                                FileUrl = Fileurl,
-                                FileName = Fileurl.Split('.')[0],
+                                FileUrl = fileUrl.Item1,
+                                FileName = fileUrl.Item1.Split('.')[0],
+                                FileContentType = fileUrl.Item2,
+                                IsImage = true,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,
@@ -91,13 +93,15 @@ namespace BackendSaiKitchen.Controllers
                     files.Clear();
                     foreach (var file in customQuotation.ContractFiles)
                     {
-                        string Fileurl = await Helper.Helper.UploadFileToBlob(file);
-                        if (Fileurl != null)
+                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        if (fileUrl != null)
                         {
                             files.Add(new File
                             {
-                                FileUrl = Fileurl,
-                                FileName = Fileurl.Split('.')[0],
+                                FileUrl = fileUrl.Item1,
+                                FileName = fileUrl.Item1.Split('.')[0],
+                                FileContentType = fileUrl.Item2,
+                                IsImage = true,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,

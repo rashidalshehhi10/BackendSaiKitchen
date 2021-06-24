@@ -90,16 +90,17 @@ namespace BackendSaiKitchen.Helper
         }
 
 
-        public static async Task<string> UploadFileToBlob(byte[] fileByte)
+        public static async Task<Tuple<string, string>> UploadFileToBlob(byte[] fileByte)
         {
             string fileUrl = "";
+            string ext = "";
             if (fileByte != null)
             {
                 MemoryStream stream = new MemoryStream(fileByte);
-                var exet = GuessFileType(fileByte);
-                fileUrl = Guid.NewGuid().ToString() + "." + exet;
+                ext = GuessFileType(fileByte);
+                fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-                if (exet == "png" || exet == "jpg" || exet == "pdf")
+                if (ext == "png" || ext == "jpg" || ext == "pdf")
                 {
                     await blobManager.Upload(new Blob() { File = blob });
                 }
@@ -111,26 +112,23 @@ namespace BackendSaiKitchen.Helper
             else { 
                 throw new FileNotFoundException(Constants.MeasurementFileMissing); 
             }
-            return fileUrl;
+            return new Tuple<string, string>(fileUrl, ext);
         }
 
-        public static async Task<string> UploadUpdateVideo(byte[] file)
+        public static async Task<Tuple<string, string>> UploadUpdateVideo(byte[] file)
         {
-
-            string fileUrl=" ";
+            string fileUrl="";
+            string ext = "";
             try
             {
                 if (file != null)
                 {
                     ServicePointManager.Expect100Continue = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                    var exet = GuessFileType(file);
+                    ext = GuessFileType(file);
                    // fileUrl = Guid.NewGuid().ToString() + "." + exet;
-                    if (exet == "mp4")
+                    if (ext == "mp4")
                     {
-
-
                         VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
                         BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
                         var authcheck = await vimeoClient.GetAccountInformationAsync();
@@ -168,11 +166,9 @@ namespace BackendSaiKitchen.Helper
             }
                 catch (Exception e)
             {
-
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
-
-            return fileUrl;
+            return new Tuple<string, string>(fileUrl, ext);
         }
 
         public static string GuessFileType(byte[] file)

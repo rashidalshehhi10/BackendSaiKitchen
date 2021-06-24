@@ -11,6 +11,8 @@ namespace BackendSaiKitchen.Models
         public string FileName { get; set; }
         public byte[] FileImage { get; set; }
         public string FileUrl { get; set; }
+        public string FileContentType { get; set; }
+        public bool? IsImage { get; set; }
         public int? MeasurementId { get; set; }
         public int? DesignId { get; set; }
         public bool? IsActive { get; set; }
@@ -21,12 +23,10 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
         public int? QuotationId { get; set; }
         public int? ContractId { get; set; }
-        public int? VideoId { get; set; }
 
         public virtual Quotation Contract { get; set; }
         public virtual Design Design { get; set; }
         public virtual Measurement Measurement { get; set; }
         public virtual Quotation Quotation { get; set; }
-        public virtual Design Video { get; set; }
     }
 }

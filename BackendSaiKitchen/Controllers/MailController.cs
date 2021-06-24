@@ -19,7 +19,6 @@ namespace BackendSaiKitchen.Controllers
         {
             await mailService.SendEmailAsync(request);
             return Ok();
-
         }
         [HttpPost("welcome")]
         public async Task<IActionResult> SendWelcomeMail([FromForm] PasswordRequest request)

@@ -28,16 +28,19 @@ namespace BackendSaiKitchen.Controllers
             files.Clear();
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
             Design design = new Design();
+            
             foreach (var file in designCustomModel.base64f3d)
             {
-                string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                var fileUrl = await Helper.Helper.UploadFileToBlob(file);
 
                 if (fileUrl != null)
                 {
-                    files.Add(new File()
+                    design.Files.Add(new File()
                     {
-                        FileUrl = fileUrl,
-                        FileName = fileUrl.Split('.')[0],
+                        FileUrl = fileUrl.Item1,
+                        FileName = fileUrl.Item1.Split('.')[0],
+                        FileContentType = fileUrl.Item2,
+                        IsImage = true,
                         IsActive = true,
                         IsDeleted = false,
                         UpdatedBy = Constants.userId,
@@ -54,18 +57,18 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
-            design.FileDesigns = files;
-            files.Clear();
             foreach (var file in designCustomModel.videobase64)
             {
-                string fileUrl = await Helper.Helper.UploadUpdateVideo(file);
+                var fileUrl = await Helper.Helper.UploadUpdateVideo(file);
 
                 if (fileUrl != null)
                 {
-                    files.Add(new File()
+                    design.Files.Add(new File()
                     {
-                        FileUrl = fileUrl,
-                        FileName = fileUrl,
+                        FileUrl = fileUrl.Item1,
+                        FileName = fileUrl.Item1.Split('.')[0],
+                        FileContentType = fileUrl.Item2,
+                        IsImage = false,
                         IsActive = true,
                         IsDeleted = false,
                         UpdatedBy = Constants.userId,
@@ -75,7 +78,7 @@ namespace BackendSaiKitchen.Controllers
                     });
                 }
             }
-            design.FileVideos = files;
+            
             List<int?> roletypeId = new List<int?>();
 
             roletypeId.Add((int)roleType.Manager);
@@ -176,7 +179,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval  && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.FileDesigns.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.FileDesigns.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval  && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
             if (inquiryworkscope != null)
             {
                 response.data = inquiryworkscope;

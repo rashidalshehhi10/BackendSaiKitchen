@@ -9,8 +9,7 @@ namespace BackendSaiKitchen.Models
     {
         public Design()
         {
-            FileDesigns = new HashSet<File>();
-            FileVideos = new HashSet<File>();
+            Files = new HashSet<File>();
         }
 
         public int DesignId { get; set; }
@@ -33,7 +32,6 @@ namespace BackendSaiKitchen.Models
         public virtual User DesignApprovedByNavigation { get; set; }
         public virtual User DesignTakenByNavigation { get; set; }
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }
-        public virtual ICollection<File> FileDesigns { get; set; }
-        public virtual ICollection<File> FileVideos { get; set; }
+        public virtual ICollection<File> Files { get; set; }
     }
 }

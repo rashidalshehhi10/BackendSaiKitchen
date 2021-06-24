@@ -304,7 +304,7 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_File_Contract");
 
                 entity.HasOne(d => d.Design)
-                    .WithMany(p => p.FileDesigns)
+                    .WithMany(p => p.Files)
                     .HasForeignKey(d => d.DesignId)
                     .HasConstraintName("FK_File_Design");
 
@@ -317,11 +317,6 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.FileQuotations)
                     .HasForeignKey(d => d.QuotationId)
                     .HasConstraintName("FK_File_Quotation");
-
-                entity.HasOne(d => d.Video)
-                    .WithMany(p => p.FileVideos)
-                    .HasForeignKey(d => d.VideoId)
-                    .HasConstraintName("FK_File_DesignVideo");
             });
 
             modelBuilder.Entity<Inquiry>(entity =>

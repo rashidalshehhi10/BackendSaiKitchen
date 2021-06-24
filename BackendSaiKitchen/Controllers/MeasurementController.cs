@@ -84,14 +84,16 @@ namespace BackendSaiKitchen.Controllers
             {
                 foreach (var file in measurementVM.base64img)
                 {
-                    string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                    var fileUrl = await Helper.Helper.UploadFileToBlob(file);
 
                     if (fileUrl != null)
                     {
                         files.Add(new File()
                         {
-                            FileUrl = fileUrl,
-                            FileName = fileUrl.Split('.')[0],
+                            FileUrl = fileUrl.Item1,
+                            FileName = fileUrl.Item1.Split('.')[0],
+                            FileContentType = fileUrl.Item2,
+                            IsImage = true,
                             IsActive = true,
                             IsDeleted = false,
                             UpdatedBy = Constants.userId,
@@ -232,13 +234,15 @@ namespace BackendSaiKitchen.Controllers
                     var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                     foreach (var file in customMeasFiles.base64img)
                     {
-                        string fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
                         if (fileUrl != null)
                         {
                             files.Add(new File()
                             {
-                                FileUrl = fileUrl,
-                                FileName = fileUrl.Split('.')[0],
+                                FileUrl = fileUrl.Item1,
+                                FileName = fileUrl.Item1.Split('.')[0],
+                                FileContentType = fileUrl.Item2,
+                                IsImage=true,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,
@@ -255,6 +259,27 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
+                    foreach (var file in customMeasFiles.videobase64)
+                    {
+                        var fileUrl = await Helper.Helper.UploadUpdateVideo(file);
+
+                        if (fileUrl != null)
+                        {
+                            files.Add(new File()
+                            {
+                                FileUrl = fileUrl.Item1,
+                                FileName = fileUrl.Item1.Split('.')[0],
+                                FileContentType = fileUrl.Item2,
+                                IsImage = false,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                            });
+                        }
+                    }
                     Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
                     measurement.IsActive = true;
                     measurement.MeasurementComment = customMeasFiles.measurementComment;
