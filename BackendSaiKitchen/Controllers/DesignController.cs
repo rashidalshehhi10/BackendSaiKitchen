@@ -57,27 +57,6 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
-            foreach (var file in designCustomModel.videobase64)
-            {
-                var fileUrl = await Helper.Helper.UploadUpdateVideo(file);
-
-                if (fileUrl != null)
-                {
-                    design.Files.Add(new File()
-                    {
-                        FileUrl = fileUrl.Item1,
-                        FileName = fileUrl.Item1.Split('.')[0],
-                        FileContentType = fileUrl.Item2,
-                        IsImage = false,
-                        IsActive = true,
-                        IsDeleted = false,
-                        UpdatedBy = Constants.userId,
-                        UpdatedDate = Helper.Helper.GetDateTime(),
-                        CreatedBy = Constants.userId,
-                        CreatedDate = Helper.Helper.GetDateTime(),
-                    });
-                }
-            }
             
             List<int?> roletypeId = new List<int?>();
 
