@@ -73,7 +73,9 @@ namespace BackendSaiKitchen.Helper
         designWaitingForApproval = 12,
         quotationAccepted = 13,
         quotationRejected = 14,
-        quotationWaitingForApproval = 15
+        quotationWaitingForApproval = 15,
+        designWaitingForCustomerApproval = 16,
+        designRejectedByClient = 17,
 
     }
 
