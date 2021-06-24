@@ -168,7 +168,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval  && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId &&( x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval ||x.InquiryStatusId==(int)inquiryStatus.designWaitingForCustomerApproval) && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
             if (inquiryworkscope != null)
             {
                 response.data = inquiryworkscope;
