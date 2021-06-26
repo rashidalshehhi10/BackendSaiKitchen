@@ -136,19 +136,21 @@ namespace BackendSaiKitchen.Helper
                         if (authcheck.Name != null)
                         {
                             IUploadRequest uploadRequest = new UploadRequest();
-                            int chunksize;
+                            int chunksize =0;
                             int contentlength = file.Length;
-                            int temp = contentlength / 1024;
-                            if (temp > 1)
+                           // int temp = contentlength / 1024;
+                            if (contentlength > 1048576)
                             {
-                                chunksize = temp / 1024;
-                                chunksize = chunksize * 1048576;
+                                chunksize = contentlength / 10;
+                                //chunksize = chunksize / 10;
+                               // chunksize = chunksize * 1048576;
                             }
                             else
                             {
                                 chunksize = 1048576; 
                             }
-                            uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize, null);
+                            
+                            uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent,chunksize, null);
                             fileUrl = uploadRequest.ClipId.ToString();
                             
                         }

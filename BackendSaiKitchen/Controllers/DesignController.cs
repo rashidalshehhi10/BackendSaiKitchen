@@ -108,7 +108,6 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    //(String toEmail, String inquiryCode, String measurementScheduleDate, String assignTo, String contactNumber, String buildingAddress)
                     await mailService.SendEmailAsync(new MailRequest() { ToEmail=inquiryWorkscope.Inquiry.Customer.CustomerEmail,Subject="Design Approval of "+inquiryWorkscope.Workscope.WorkScopeName,Body="Review Design on this link "+Constants.CRMBaseUrl+ "/viewdesign.html?inquiryWorkscopeId="+inquiryWorkscope.InquiryWorkscopeId });
                 }
 
@@ -126,6 +125,8 @@ namespace BackendSaiKitchen.Controllers
 
             return response;
         }
+
+        
 
         [HttpPost]
         [Route("[action]")]
@@ -179,6 +180,74 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = Constants.DesginMissing;
             }
             return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientAcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
+        {
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+
+
+            if (inquiryWorkscope != null)
+            {
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryWorkscope.IsDesignApproved = true;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                List<int?> roleTypeId = new List<int?>();
+                roleTypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "Customer Accepted the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
+            return response;
+
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientRejectDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
+        {
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+
+
+            if (inquiryWorkscope != null)
+            {
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
+                inquiryWorkscope.IsDesignApproved = false;
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                List<int?> roleTypeId = new List<int?>();
+                roleTypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToOneUser("Inquiry" + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
+                        false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" +inquiryWorkscope.Comments, false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
+            return response;
+
         }
 
         [HttpPost]
