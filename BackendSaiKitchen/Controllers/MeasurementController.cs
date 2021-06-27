@@ -84,7 +84,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 foreach (var file in measurementVM.base64img)
                 {
-                    var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                    var fileUrl = await Helper.Helper.UploadFile(file);
 
                     if (fileUrl != null)
                     {
@@ -234,7 +234,7 @@ namespace BackendSaiKitchen.Controllers
                     var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                     foreach (var file in customMeasFiles.base64img)
                     {
-                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             files.Add(new File()
@@ -261,7 +261,7 @@ namespace BackendSaiKitchen.Controllers
 
                     foreach (var file in customMeasFiles.videobase64)
                     {
-                        var fileUrl = await Helper.Helper.UploadUpdateVideo(file);
+                        var fileUrl = await Helper.Helper.UploadFile(file);
 
                         if (fileUrl != null)
                         {

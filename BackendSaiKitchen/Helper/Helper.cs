@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Helper
         public static IBlobManager blobManager;
 
 
-     static TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
+        static TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
         public static String GenerateToken(int userId)
         {
             byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
@@ -89,88 +89,96 @@ namespace BackendSaiKitchen.Helper
             return encrypted;
         }
 
-
-        public static async Task<Tuple<string, string>> UploadFileToBlob(byte[] fileByte)
+        public static async Task<Tuple<string, string>> UploadFile(byte[] fileByte)
         {
+
             string fileUrl = "";
             string ext = "";
             if (fileByte != null)
             {
-                MemoryStream stream = new MemoryStream(fileByte);
                 ext = GuessFileType(fileByte);
-                fileUrl = Guid.NewGuid().ToString() + "." + ext;
-                IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
                 if (ext == "png" || ext == "jpg" || ext == "pdf")
                 {
-                    await blobManager.Upload(new Blob() { File = blob });
+
+                    fileUrl = await UploadFileToBlob(fileByte, ext);
+                }
+                else if (ext == "mp4")
+                {
+                    fileUrl = await UploadUpdateVideo(fileByte);
                 }
                 else
                 {
                     throw new FileNotFoundException(Constants.MeasurementFileMissing);
                 }
             }
-            else { 
-                throw new FileNotFoundException(Constants.MeasurementFileMissing); 
+            else
+            {
+                throw new FileNotFoundException(Constants.MeasurementFileMissing);
             }
             return new Tuple<string, string>(fileUrl, ext);
         }
-
-        public static async Task<Tuple<string, string>> UploadUpdateVideo(byte[] file)
+        public static async Task<string> UploadFileToBlob(byte[] fileByte, string ext)
         {
-            string fileUrl="";
-            string ext = "";
+            string fileUrl = "";
+
+            MemoryStream stream = new MemoryStream(fileByte);
+            ext = GuessFileType(fileByte);
+            fileUrl = Guid.NewGuid().ToString() + "." + ext;
+            IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
+            if (ext == "png" || ext == "jpg" || ext == "pdf")
+            {
+                await blobManager.Upload(new Blob() { File = blob });
+            }
+            else
+            {
+                throw new FileNotFoundException(Constants.MeasurementFileMissing);
+            }
+
+            return fileUrl;
+        }
+
+        public static async Task<string> UploadUpdateVideo(byte[] file)
+        {
+            string fileUrl = "";
             try
             {
-                if (file != null)
-                {
-                    ServicePointManager.Expect100Continue = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    ext = GuessFileType(file);
-                   // fileUrl = Guid.NewGuid().ToString() + "." + exet;
-                    if (ext == "mp4")
-                    {
-                        VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
-                        BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
-                        var authcheck = await vimeoClient.GetAccountInformationAsync();
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                // fileUrl = Guid.NewGuid().ToString() + "." + exet;
 
-                        if (authcheck.Name != null)
-                        {
-                            IUploadRequest uploadRequest = new UploadRequest();
-                            int chunksize =0;
-                            int contentlength = file.Length;
-                           // int temp = contentlength / 1024;
-                            if (contentlength > 1048576)
-                            {
-                                chunksize = contentlength / 10;
-                                //chunksize = chunksize / 10;
-                               // chunksize = chunksize * 1048576;
-                            }
-                            else
-                            {
-                                chunksize = 1048576; 
-                            }
-                            
-                            uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent,chunksize, null);
-                            fileUrl = uploadRequest.ClipId.ToString();
-                            
-                        }
+                VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
+                BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
+                var authcheck = await vimeoClient.GetAccountInformationAsync();
+
+                if (authcheck.Name != null)
+                {
+                    IUploadRequest uploadRequest = new UploadRequest();
+                    int chunksize = 0;
+                    int contentlength = file.Length;
+                    // int temp = contentlength / 1024;
+                    if (contentlength > 1048576)
+                    {
+                        chunksize = contentlength / 10;
+                        //chunksize = chunksize / 10;
+                        // chunksize = chunksize * 1048576;
                     }
                     else
                     {
-                        throw new FileNotFoundException(Constants.DesignVideoFileMissing);
+                        chunksize = 1048576;
                     }
-                }
-                else
-                {
-                    throw new FileNotFoundException(Constants.DesignVideoFileMissing);
+
+                    uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize, null);
+                    fileUrl = uploadRequest.ClipId.ToString();
+
                 }
 
+
             }
-                catch (Exception e)
+            catch (Exception e)
             {
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
-            return new Tuple<string, string>(fileUrl, ext);
+            return fileUrl;
         }
 
         public static string GuessFileType(byte[] file)

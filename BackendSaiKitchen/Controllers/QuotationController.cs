@@ -70,7 +70,7 @@ namespace BackendSaiKitchen.Controllers
                     files.Clear();
                     foreach (var file in customQuotation.QuotationFiles)
                     {
-                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             files.Add(new File
@@ -93,7 +93,7 @@ namespace BackendSaiKitchen.Controllers
                     files.Clear();
                     foreach (var file in customQuotation.ContractFiles)
                     {
-                        var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                        var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             files.Add(new File

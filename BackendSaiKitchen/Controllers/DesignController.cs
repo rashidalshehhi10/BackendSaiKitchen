@@ -31,7 +31,7 @@ namespace BackendSaiKitchen.Controllers
             
             foreach (var file in designCustomModel.base64f3d)
             {
-                var fileUrl = await Helper.Helper.UploadFileToBlob(file);
+                var fileUrl = await Helper.Helper.UploadFile(file);
 
                 if (fileUrl != null)
                 {
@@ -256,7 +256,7 @@ namespace BackendSaiKitchen.Controllers
         {
              
             
-            response.data = await Helper.Helper.UploadUpdateVideo(file);
+            response.data = await Helper.Helper.UploadFile(file);
             return response;
         }
     }
