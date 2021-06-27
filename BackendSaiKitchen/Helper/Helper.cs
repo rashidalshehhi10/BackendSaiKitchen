@@ -120,20 +120,17 @@ namespace BackendSaiKitchen.Helper
         public static async Task<string> UploadFileToBlob(byte[] fileByte, string ext)
         {
             string fileUrl = "";
-
-            MemoryStream stream = new MemoryStream(fileByte);
-            ext = GuessFileType(fileByte);
-            fileUrl = Guid.NewGuid().ToString() + "." + ext;
-            IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-            if (ext == "png" || ext == "jpg" || ext == "pdf")
+            try
             {
+                MemoryStream stream = new MemoryStream(fileByte);
+                fileUrl = Guid.NewGuid().ToString() + "." + ext;
+                IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
                 await blobManager.Upload(new Blob() { File = blob });
             }
-            else
+            catch (Exception e)
             {
-                throw new FileNotFoundException(Constants.MeasurementFileMissing);
+                Sentry.SentrySdk.CaptureMessage(e.Message);
             }
-
             return fileUrl;
         }
 
