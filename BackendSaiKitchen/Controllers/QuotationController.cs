@@ -31,13 +31,35 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
         {
-            //response.data = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-            //    && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
-            //    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
-            //    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false));
+
             var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending 
-                 && y.IsActive == true && y.IsDeleted == false).Count())).Include(x=>x.Customer).Include(x=>x.InquiryWorkscopes);
+                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count())).Include(x=>x.Quotations.Where(y=>y.IsDeleted==false)).Include(x=>x.Building).Include(x=>x.Customer).Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false) ).ThenInclude(x=>x.Workscope).Select(x => new ViewInquiryDetail()
+            {
+                InquiryId = x.InquiryId,
+                InquiryDescription = x.InquiryDescription,
+                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                WorkScopeName = x.InquiryWorkscopes.Select(y=>y.Workscope.WorkScopeName).First(),
+                WorkScopeCount= x.InquiryWorkscopes.Count,
+                Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                BuildingAddress = x.Building.BuildingAddress,
+                BuildingCondition = x.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested,
+                CustomerId = x.CustomerId,
+                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                CustomerName = x.Customer.CustomerName,
+                CustomerEmail = x.Customer.CustomerEmail,
+                CustomerContact = x.Customer.CustomerContact,
+                BranchId = x.BranchId,
+                InquiryAddedBy = x.AddedByNavigation.UserName,
+                InquiryAddedById = x.AddedBy,
+                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+            }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
             tableResponse.recordsFiltered = inquiries.Count();
