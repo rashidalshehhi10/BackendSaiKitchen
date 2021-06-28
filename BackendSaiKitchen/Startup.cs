@@ -2,6 +2,7 @@ using Azure.Storage.Blobs;
 using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using Serilog.Context;
-using Hangfire;
 using Sentry.AspNetCore;
+using Serilog.Context;
 
 namespace BackendSaiKitchen
 {
@@ -41,7 +41,7 @@ namespace BackendSaiKitchen
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
-                    builder => builder.WithOrigins("http://localhost:8080/", "http://localhost:3000", "http://localhost:3000/", "http://localhost:8080", "https://saikitchen.azurewebsites.net/", "https://saikitchen.azurewebsites.net", "http://saikitchen.azurewebsites.net/", "http://saikitchen.azurewebsites.net","*")
+                    builder => builder.WithOrigins("http://localhost:8080/", "http://localhost:3000", "http://localhost:3000/", "http://localhost:8080", "https://saikitchen.azurewebsites.net/", "https://saikitchen.azurewebsites.net", "http://saikitchen.azurewebsites.net/", "http://saikitchen.azurewebsites.net", "*")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
             });
@@ -50,7 +50,7 @@ namespace BackendSaiKitchen
             //FirebaseApp.Create();
 
             services.AddControllers();
-           
+
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -59,8 +59,8 @@ namespace BackendSaiKitchen
             });
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
-            
-            
+
+
             services.AddScoped(x =>
             new BlobServiceClient(Configuration.GetConnectionString("AzureStorge")));
 

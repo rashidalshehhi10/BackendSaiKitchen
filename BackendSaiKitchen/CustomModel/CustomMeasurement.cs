@@ -1,9 +1,4 @@
-﻿using BackendSaiKitchen.Models;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
@@ -36,9 +31,9 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementComment { get; set; }
 
         public List<byte[]> base64img { get; set; }
-        public  List<CustomAccossries> Accesories { get; set; }
+        public List<CustomAccossries> Accesories { get; set; }
 
- 
+
 
     }
 

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -24,11 +23,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
         {
-           
+
             files.Clear();
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId==(int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
             Design design = new Design();
-            
+
             foreach (var file in designCustomModel.base64f3d)
             {
                 var fileUrl = await Helper.Helper.UploadFile(file);
@@ -47,8 +46,8 @@ namespace BackendSaiKitchen.Controllers
                         UpdatedDate = Helper.Helper.GetDateTime(),
                         CreatedBy = Constants.userId,
                         CreatedDate = Helper.Helper.GetDateTime(),
-                        
-                    }) ;
+
+                    });
 
                 }
                 else
@@ -57,11 +56,11 @@ namespace BackendSaiKitchen.Controllers
                     response.errorMessage = Constants.wrongFileUpload;
                 }
             }
-            
+
             List<int?> roletypeId = new List<int?>();
 
             roletypeId.Add((int)roleType.Manager);
-           
+
             try
             {
                 sendNotificationToHead(Constants.DesignAdded, true,
@@ -89,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x=>x.Workscope).Include(x=>x.Inquiry ).ThenInclude(y=>y.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval;
@@ -97,9 +96,9 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
-                 try
+                try
                 {
-                    sendNotificationToHead("Inquiry "+inquiryWorkscope.InquiryWorkscopeId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -108,12 +107,16 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail, Subject = "Design Approval of " + inquiryWorkscope.Workscope.WorkScopeName, Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryWorkscopeId=" + inquiryWorkscope.InquiryWorkscopeId +
+                    await mailService.SendEmailAsync(new MailRequest()
+                    {
+                        ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail,
+                        Subject = "Design Approval of " + inquiryWorkscope.Workscope.WorkScopeName,
+                        Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryWorkscopeId=" + inquiryWorkscope.InquiryWorkscopeId +
                         "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiryWorkscope.InquiryWorkscopeId +
                             "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiryWorkscope.InquiryWorkscopeId
 
                     });
-                 
+
                 }
 
                 catch (Exception ex)
@@ -131,7 +134,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        
+
 
         [HttpPost]
         [Route("[action]")]
@@ -144,7 +147,8 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscope.DesignAssignedTo = updateInquiryStatus.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateInquiryStatus.DesignScheduleDate;
                 inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
-                Helper.Helper.Each(inquiryWorkscope.Designs, i => {
+                Helper.Helper.Each(inquiryWorkscope.Designs, i =>
+                {
                     i.IsActive = false;
                     i.DesignComment = updateInquiryStatus.DesignComment;
                 });
@@ -159,7 +163,7 @@ namespace BackendSaiKitchen.Controllers
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
 
-                context.SaveChanges(); 
+                context.SaveChanges();
             }
             else
             {
@@ -174,7 +178,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
         {
-            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId &&( x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval ||x.InquiryStatusId==(int)inquiryStatus.designWaitingForCustomerApproval) && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval) && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
             if (inquiryworkscope != null)
             {
                 response.data = inquiryworkscope;
@@ -238,7 +242,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     sendNotificationToOneUser("Inquiry" + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
                         false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, Constants.branchId, (int)notificationCategory.Design);
-                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" +inquiryWorkscope.Comments, false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -259,8 +263,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UplaodVideo(byte[] file)
         {
-             
-            
+
+
             response.data = await Helper.Helper.UploadFile(file);
             return response;
         }

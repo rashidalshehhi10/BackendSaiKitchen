@@ -17,7 +17,7 @@ namespace SaiKitchenBackend.Controllers
     public class UserController : BaseController
     {
 
-        [HttpHead,HttpPost]
+        [HttpHead, HttpPost]
         [Route("")]
         public Object User()
         {
@@ -51,7 +51,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> GetAllUserofOneBranchAsync(int branchId)
         {
-            var userList = userRepository.FindByCondition(x =>x.UserRoles.Any(y=>y.IsActive==true && y.IsDeleted==false && y.BranchRole.IsActive == true && y.BranchRole.IsActive == false && y.Branch.IsActive == true && y.Branch.IsActive == false) &&x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == branchId && y.IsActive == true && y.IsDeleted == false)).Include(obj => obj.UserRoles.Where(x => x.BranchId == branchId && x.BranchRole.IsActive==true && x.IsDeleted==false && x.IsActive == true && x.IsDeleted == false));
+            var userList = userRepository.FindByCondition(x => x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsActive == false && y.Branch.IsActive == true && y.Branch.IsActive == false) && x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == branchId && y.IsActive == true && y.IsDeleted == false)).Include(obj => obj.UserRoles.Where(x => x.BranchId == branchId && x.BranchRole.IsActive == true && x.IsDeleted == false && x.IsActive == true && x.IsDeleted == false));
             var brnchRole = userRoleRepository.GetAll().Where(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Join(branchRoleRepository.GetAll(),
                        userRole => userRole.BranchRoleId,
                        branchRole => branchRole.BranchRoleId,
@@ -90,7 +90,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetMeasurementUsers(int branchId)
         {
-            var users = context.Users.Where(x => x.UserRoles.Any(y => y.BranchId == branchId && y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.IsDeleted == false && y.BranchRole.PermissionRoles.Any(z =>z.PermissionId==(int)permission.ManageMeasurement && z.IsActive == true && z.IsDeleted == false && z.PermissionLevelId >= (int)permissionLevel.Create)) && x.IsActive == true && x.IsDeleted == false).Select(x => new User() { UserId = x.UserId, UserName = x.UserName });
+            var users = context.Users.Where(x => x.UserRoles.Any(y => y.BranchId == branchId && y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.IsDeleted == false && y.BranchRole.PermissionRoles.Any(z => z.PermissionId == (int)permission.ManageMeasurement && z.IsActive == true && z.IsDeleted == false && z.PermissionLevelId >= (int)permissionLevel.Create)) && x.IsActive == true && x.IsDeleted == false).Select(x => new User() { UserId = x.UserId, UserName = x.UserName });
             response.data = users;
             return response;
         }
@@ -132,9 +132,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object LoginUser(User user)
         {
-            User loggedinUser = context.Users.Where(x => x.UserEmail == user.UserEmail && x.UserPassword == user.UserPassword && 
-            x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.Branch.IsActive == true 
-            && y.Branch.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.BranchRole.RoleType.IsActive==true && y.BranchRole.RoleType.IsDeleted==false)).FirstOrDefault();
+            User loggedinUser = context.Users.Where(x => x.UserEmail == user.UserEmail && x.UserPassword == user.UserPassword &&
+            x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.Branch.IsActive == true
+            && y.Branch.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.BranchRole.RoleType.IsActive == true && y.BranchRole.RoleType.IsDeleted == false)).FirstOrDefault();
             if (loggedinUser != null)
             {
                 loggedinUser.UserToken = Helper.GenerateToken(loggedinUser.UserId);
@@ -182,7 +182,7 @@ namespace SaiKitchenBackend.Controllers
 
         private void getLoginUserData(User loggedinUser)
         {
-            var loggedInUserRoles = userRoleRepository.FindByCondition(x => x.UserId == loggedinUser.UserId && x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Include(x => x.BranchRole.PermissionRoles.Where(z => z.IsActive == true && z.IsDeleted == false)).Include(x=>x.BranchRole.RoleType).ToList();
+            var loggedInUserRoles = userRoleRepository.FindByCondition(x => x.UserId == loggedinUser.UserId && x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Include(x => x.BranchRole.PermissionRoles.Where(z => z.IsActive == true && z.IsDeleted == false)).Include(x => x.BranchRole.RoleType).ToList();
             var branchRole = branchRoleRepository.FindByCondition(x => loggedInUserRoles.Select(z => z.BranchRoleId).Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).ToList();
 
             loggedinUser.UserPassword = "";

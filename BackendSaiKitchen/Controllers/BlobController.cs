@@ -3,11 +3,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
@@ -20,46 +16,46 @@ namespace BackendSaiKitchen.Controllers
             _blobManager = blobManager;
         }
 
-       [HttpPost]
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Add_Updatefiles(byte[] files)
         {
 
-                if (files != null)
-                {
+            if (files != null)
+            {
                 var stream = new MemoryStream(files);
                 string exet = Helper.Helper.GuessFileType(files);
-                IFormFile blob = new FormFile(stream, 0, files.Length, "Name."+ exet, "FileName."+exet);
+                IFormFile blob = new FormFile(stream, 0, files.Length, "Name." + exet, "FileName." + exet);
 
-                    if (exet == "png" || exet == "jpg" || exet == "application/pdf")
-                    {
-                        await _blobManager.Upload(new Blob() { File = blob });
-                    }
-                    else
-                    {
-                        response.isError = true;
-                        response.errorMessage = "you can only upload type jpeg, png or pdf";
-                    }
-
+                if (exet == "png" || exet == "jpg" || exet == "application/pdf")
+                {
+                    await _blobManager.Upload(new Blob() { File = blob });
                 }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "you can only upload type jpeg, png or pdf";
+                }
+
+            }
             return Ok();
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Add_Updatefile([FromForm]Blob File)
+        public async Task<IActionResult> Add_Updatefile([FromForm] Blob File)
         {
-                if (File.File != null)
+            if (File.File != null)
+            {
+                if (File.File.ContentType == "image/png" || File.File.ContentType == "image/jpeg" || File.File.ContentType == "application/pdf")
                 {
-                    if (File.File.ContentType == "image/png" || File.File.ContentType == "image/jpeg" || File.File.ContentType == "application/pdf")
-                    {
-                        await _blobManager.Upload(File);
-                    }
-                    else
-                    {
-                        response.isError = true;
-                        response.errorMessage = "you can only upload type jpeg,png or pdf";
-                    }
+                    await _blobManager.Upload(File);
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "you can only upload type jpeg,png or pdf";
+                }
             }
             return Ok();
         }

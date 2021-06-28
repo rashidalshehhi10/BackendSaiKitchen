@@ -1,5 +1,4 @@
-﻿using Azure.Storage.Blobs;
-using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using BackendSaiKitchen.Repository;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace SaiKitchenBackend.Controllers
@@ -20,7 +18,7 @@ namespace SaiKitchenBackend.Controllers
     public class BaseController : Controller
     {
 
-     
+
         public DbSaiKitchenContext context = new DbSaiKitchenContext();
 
         public ServiceResponse response = new ServiceResponse();
@@ -113,9 +111,10 @@ namespace SaiKitchenBackend.Controllers
                 //_ = int.TryParse(context.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "UserId").Value.FirstOrDefault(), out Constants.userId);
                 //Constants.userToken = context.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "UserToken").Value.FirstOrDefault();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
 
-                Serilog.Log.Error("Error: UserId="+Constants.userId+" Error="+ ex.Message+" "+ex.ToString()); 
+                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
             }
         }
 
@@ -164,8 +163,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                       PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
-                       // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
+                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                        // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
 
                     }
                 }
@@ -212,7 +211,7 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                       PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
                     }
                 }
@@ -224,7 +223,7 @@ namespace SaiKitchenBackend.Controllers
                 }
             }
 
-            
+
 
 
         }

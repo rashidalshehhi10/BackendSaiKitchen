@@ -38,7 +38,7 @@ namespace BackendSaiKitchen.CustomModel
         public string? InquiryAddedBy { get; set; }
         public int? InquiryAddedById { get; set; }
         public Object Actions { get; set; }
-        public int? NoOfRevision { get;  set; }
+        public int? NoOfRevision { get; set; }
     }
     public class UpdateInquirySchedule
     {

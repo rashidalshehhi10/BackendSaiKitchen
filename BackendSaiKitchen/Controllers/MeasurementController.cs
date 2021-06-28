@@ -125,10 +125,10 @@ namespace BackendSaiKitchen.Controllers
 
                 roletypeId.Add((int)roleType.Manager);
 
-             
+
                 try
                 {
-                    sendNotificationToHead( Constants.MeasurementAdded,
+                    sendNotificationToHead(Constants.MeasurementAdded,
                      true,
                      Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                      Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
@@ -141,7 +141,7 @@ namespace BackendSaiKitchen.Controllers
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
 
-                context.SaveChanges(); 
+                context.SaveChanges();
                 return response;
 
 
@@ -164,7 +164,8 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
-                try {
+                try
+                {
                     sendNotificationToOneUser(Constants.DesignAssign,
                        false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
@@ -172,7 +173,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
-               
+
                 context.SaveChanges();
             }
             else
@@ -194,13 +195,14 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
                 inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
                 inquiryWorkscope.Comments = updateMeasurementStatus.MeasurementComment;
-                Helper.Helper.Each(inquiryWorkscope.Measurements, i => {
+                Helper.Helper.Each(inquiryWorkscope.Measurements, i =>
+                {
                     i.IsActive = false;
                     i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
                 });
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
-             
-             
+
+
                 try
                 {
                     sendNotificationToOneUser("Measurement is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
@@ -242,7 +244,7 @@ namespace BackendSaiKitchen.Controllers
                                 FileUrl = fileUrl.Item1,
                                 FileName = fileUrl.Item1.Split('.')[0],
                                 FileContentType = fileUrl.Item2,
-                                IsImage=true,
+                                IsImage = true,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,

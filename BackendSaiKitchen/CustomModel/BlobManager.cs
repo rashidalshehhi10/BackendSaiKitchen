@@ -1,18 +1,14 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using BackendSaiKitchen.Models;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.CustomModel
 {
-    
-    public class BlobManager: IBlobManager
+
+    public class BlobManager : IBlobManager
     {
-       
+
 
         private readonly BlobServiceClient _blobServiceClient;
         public BlobManager(BlobServiceClient blobServiceClient)
