@@ -120,7 +120,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteWorkscopefromInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false );
+            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false);
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.IsDeleted = true;
@@ -179,7 +179,7 @@ namespace SaiKitchenBackend.Controllers
                 BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
                 IsEscalationRequested = x.Inquiry.IsEscalationRequested,
                 CustomerId = x.Inquiry.CustomerId,
-                CustomerCode= "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
+                CustomerCode = "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
                 CustomerName = x.Inquiry.Customer.CustomerName,
                 CustomerEmail = x.Inquiry.Customer.CustomerEmail,
                 CustomerContact = x.Inquiry.Customer.CustomerContact,
@@ -296,7 +296,6 @@ namespace SaiKitchenBackend.Controllers
                 if (inquiry.InquiryWorkscopes.FirstOrDefault().InquiryStatusId <= 2)
                 {
                     updateInquirySchedule.InquiryStatusId = Helper.ConvertToDateTime(updateInquirySchedule.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
-
                 }
                 else if (updateInquirySchedule.DesignScheduleDate != null && inquiry.InquiryWorkscopes.FirstOrDefault().InquiryStatusId <= 4)
                 {
@@ -337,7 +336,6 @@ namespace SaiKitchenBackend.Controllers
 
 
         #region workscope
-
         [HttpPost]
         [Route("[action]")]
         public object GetAllWorkscope()
@@ -608,8 +606,6 @@ namespace SaiKitchenBackend.Controllers
             tableResponse.recordsTotal = inquiries.Count();
             tableResponse.recordsFiltered = inquiries.Count();
             return tableResponse;
-
-
         }
 
         #endregion
@@ -690,7 +686,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetApprovalDesignOfBranch(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.AddedBy == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId==(int) inquiryStatus.designRejectedByCustomer) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
          && x.IsDeleted == false && x.Measurements.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).Select(x => new ViewInquiryDetail()
          {
              InquiryWorkscopeId = x.InquiryWorkscopeId,

@@ -5,6 +5,7 @@ namespace BackendSaiKitchen.Helper
     public class Constants
     {
         public static string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
+        public static string ServerBaseURL = "https://backendsaikitchen.azurewebsites.net/";
         public static string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/files/";
         public static string VimeoUrl = "https://vimeo.com/";
         public static string VimeoAccessToken = "00378b95cc11173f483f7f6b602f6790";
@@ -75,8 +76,7 @@ namespace BackendSaiKitchen.Helper
         quotationRejected = 14,
         quotationWaitingForApproval = 15,
         designWaitingForCustomerApproval = 16,
-        designRejectedByClient = 17,
-        designRejectedByCustomer=18,
+        designRejectedByCustomer = 17
 
     }
 

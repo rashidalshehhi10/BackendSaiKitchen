@@ -108,9 +108,12 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    await mailService.SendEmailAsync(new MailRequest() { ToEmail=inquiryWorkscope.Inquiry.Customer.CustomerEmail,Subject="Design Approval of "+inquiryWorkscope.Workscope.WorkScopeName,Body="Review Design on this link "+Constants.CRMBaseUrl+ "/viewdesign.html?inquiryWorkscopeId="+inquiryWorkscope.InquiryWorkscopeId+
-                        "\n Kindly click on this link if approve the design " +  Url.Action("ClientAcceptDesign", "DesignController", new { id = inquiryWorkscope.InquiryWorkscopeId })
+                    await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail, Subject = "Design Approval of " + inquiryWorkscope.Workscope.WorkScopeName, Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryWorkscopeId=" + inquiryWorkscope.InquiryWorkscopeId +
+                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "Design/ClientAcceptDesign?id=" + inquiryWorkscope.InquiryId+
+                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "Design/ClientRejectDesign?id=" + inquiryWorkscope.InquiryId
+
                     });
+                 
                 }
 
                 catch (Exception ex)
@@ -219,9 +222,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ClientRejectDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
+        public object ClientRejectDesign(int id)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
 
 
             if (inquiryWorkscope != null)
