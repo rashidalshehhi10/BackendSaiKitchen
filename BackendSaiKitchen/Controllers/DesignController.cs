@@ -109,8 +109,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail, Subject = "Design Approval of " + inquiryWorkscope.Workscope.WorkScopeName, Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryWorkscopeId=" + inquiryWorkscope.InquiryWorkscopeId +
-                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "Design/ClientAcceptDesign?id=" + inquiryWorkscope.InquiryId+
-                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "Design/ClientRejectDesign?id=" + inquiryWorkscope.InquiryId
+                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiryWorkscope.InquiryWorkscopeId +
+                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiryWorkscope.InquiryWorkscopeId
 
                     });
                  
