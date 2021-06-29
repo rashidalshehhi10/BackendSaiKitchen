@@ -129,30 +129,8 @@ namespace BackendSaiKitchen.Controllers
                             });
                         }
                     }
-                    quotation.FileQuotations = files;
+                    quotation.Files = files;
 
-                    files.Clear();
-                    foreach (var file in customQuotation.ContractFiles)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(file);
-                        if (fileUrl != null)
-                        {
-                            files.Add(new File
-                            {
-                                FileUrl = fileUrl.Item1,
-                                FileName = fileUrl.Item1.Split('.')[0],
-                                FileContentType = fileUrl.Item2,
-                                IsImage = true,
-                                IsActive = true,
-                                IsDeleted = false,
-                                UpdatedBy = Constants.userId,
-                                UpdatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                                CreatedDate = Helper.Helper.GetDateTime(),
-                            });
-                        }
-                    }
-                    quotation.FileContracts = files;
                     quotationRepositry.Create(quotation);
                     response.data = quotation;
 

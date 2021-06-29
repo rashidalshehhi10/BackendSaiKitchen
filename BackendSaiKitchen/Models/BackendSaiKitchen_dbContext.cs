@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -296,11 +298,6 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.Contract)
-                    .WithMany(p => p.FileContracts)
-                    .HasForeignKey(d => d.ContractId)
-                    .HasConstraintName("FK_File_Contract");
-
                 entity.HasOne(d => d.Design)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.DesignId)
@@ -312,7 +309,7 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_File_Measurement");
 
                 entity.HasOne(d => d.Quotation)
-                    .WithMany(p => p.FileQuotations)
+                    .WithMany(p => p.Files)
                     .HasForeignKey(d => d.QuotationId)
                     .HasConstraintName("FK_File_Quotation");
             });
