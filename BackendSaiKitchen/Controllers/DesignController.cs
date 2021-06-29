@@ -191,7 +191,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("[action]")]
         public object ClientAcceptDesign(int id)
         {
@@ -224,7 +224,7 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("[action]")]
         public object ClientRejectDesign(int id)
         {
