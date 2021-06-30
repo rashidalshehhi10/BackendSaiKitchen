@@ -19,8 +19,8 @@ namespace BackendSaiKitchen.Models
         public string AdvancePayment { get; set; }
         public string TotalAmount { get; set; }
         public string Discount { get; set; }
-        public bool? IsDeleted { get; set; }
         public bool? IsActive { get; set; }
+        public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
         public string CreatedDate { get; set; }
