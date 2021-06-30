@@ -95,16 +95,12 @@ namespace BackendSaiKitchen.Controllers
                 Quotation quotation = new Quotation();
 
                 quotation.AdvancePayment = customQuotation.AdvancePayment;
-                quotation.CreatedBy = customQuotation.CreatedBy;
-                quotation.CreatedDate = customQuotation.CreatedDate;
                 quotation.Description = customQuotation.Description;
                 quotation.Discount = customQuotation.Discount;
                 quotation.InquiryId = customQuotation.InquiryId;
-                quotation.IsActive = customQuotation.IsActive;
-                quotation.IsDeleted = customQuotation.IsDeleted;
+                quotation.IsActive = true;
+                quotation.IsDeleted = false;
                 quotation.TotalAmount = customQuotation.TotalAmount;
-                quotation.UpdatedBy = customQuotation.UpdatedBy;
-                quotation.UpdatedDate = customQuotation.UpdatedDate;
 
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
