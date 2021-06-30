@@ -15,6 +15,7 @@ namespace BackendSaiKitchen.Models
         public int QuotationId { get; set; }
         public int? InquiryId { get; set; }
         public string Description { get; set; }
+        public string QuotationValidityDate { get; set; }
         public string AdvancePayment { get; set; }
         public string TotalAmount { get; set; }
         public string Discount { get; set; }

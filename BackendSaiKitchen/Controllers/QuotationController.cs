@@ -98,6 +98,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.Description = customQuotation.Description;
                 quotation.Discount = customQuotation.Discount;
                 quotation.InquiryId = customQuotation.InquiryId;
+                quotation.QuotationValidityDate = customQuotation.QuotationValidityDate;
                 quotation.IsActive = true;
                 quotation.IsDeleted = false;
                 quotation.TotalAmount = customQuotation.TotalAmount;

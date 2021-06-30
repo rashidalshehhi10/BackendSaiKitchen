@@ -695,6 +695,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.Discount).HasMaxLength(500);
 
+                entity.Property(e => e.QuotationValidityDate).HasMaxLength(50);
+
                 entity.Property(e => e.TotalAmount).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
