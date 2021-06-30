@@ -261,27 +261,6 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    foreach (var file in customMeasFiles.videobase64)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(file);
-
-                        if (fileUrl != null)
-                        {
-                            files.Add(new File()
-                            {
-                                FileUrl = fileUrl.Item1,
-                                FileName = fileUrl.Item1.Split('.')[0],
-                                FileContentType = fileUrl.Item2,
-                                IsImage = false,
-                                IsActive = true,
-                                IsDeleted = false,
-                                UpdatedBy = Constants.userId,
-                                UpdatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                                CreatedDate = Helper.Helper.GetDateTime(),
-                            });
-                        }
-                    }
                     Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
                     measurement.IsActive = true;
                     measurement.MeasurementComment = customMeasFiles.measurementComment;

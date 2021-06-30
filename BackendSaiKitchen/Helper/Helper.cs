@@ -108,7 +108,7 @@ namespace BackendSaiKitchen.Helper
                 }
                 else
                 {
-                    throw new FileNotFoundException(Constants.MeasurementFileMissing);
+                    throw new FileNotFoundException(Constants.wrongFileUpload);
                 }
             }
             else
@@ -197,6 +197,7 @@ namespace BackendSaiKitchen.Helper
             {
                 case "IVBOR":
                     return "png";
+                case "/9J/2":
                 case "/9J/4":
                     return "jpg";
                 case "AAAAF":
