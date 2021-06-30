@@ -106,7 +106,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.UpdatedBy = customQuotation.UpdatedBy;
                 quotation.UpdatedDate = customQuotation.UpdatedDate;
 
-                if (customQuotation.QuotationFiles.Count > 0 || customQuotation.ContractFiles.Count > 0)
+                if (customQuotation.QuotationFiles.Count > 0)
                 {
                     files.Clear();
                     foreach (var file in customQuotation.QuotationFiles)

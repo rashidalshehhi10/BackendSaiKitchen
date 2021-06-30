@@ -19,24 +19,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? UpdatedBy { get; set; }
 
 
-        public List<byte[]> ContractFiles { get; set; }
         public List<byte[]> QuotationFiles { get; set; }
     }
 
-    public class QuotationFile
-    {
-        public int Ininquiryworkscopeid { get; set; }
-        public string Comment { get; set; }
-
-
-        public List<byte[]> base64img { get; set; }
-    }
-    public class ContractFile
-    {
-        public int Ininquiryworkscopeid { get; set; }
-        public string Comment { get; set; }
-
-
-        public List<byte[]> base64img { get; set; }
-    }
 }
