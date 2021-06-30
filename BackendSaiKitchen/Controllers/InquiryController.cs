@@ -18,7 +18,7 @@ namespace SaiKitchenBackend.Controllers
         public async Task<object> AddInquiryAsync(Inquiry inquiry)
         {
             inquiry.InquiryStartDate = Helper.GetDateTime();
-            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId==Constants.branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (customer != null)
             {
                 customer.CustomerName = inquiry.Customer.CustomerName;
@@ -39,12 +39,16 @@ namespace SaiKitchenBackend.Controllers
             {
                 try
                 {
-                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId != inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact  && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                     if (anotherBranchCustomer != null)
                     {
                         List<int?> roletypeId = new List<int?>();
                         roletypeId.Add((int)roleType.Manager);
                         sendNotificationToHead(anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
+                    }
+                    else
+                    {
+                        customer = inquiry.Customer;
                     }
                 }
 
@@ -67,7 +71,7 @@ namespace SaiKitchenBackend.Controllers
 
             inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
             //inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserFcmtoken
-            response.data = inquiry;
+            response.data = "";
             try
             {
                 //(String toEmail, String inquiryCode, String measurementScheduleDate, String assignTo, String contactNumber, String buildingAddress)
