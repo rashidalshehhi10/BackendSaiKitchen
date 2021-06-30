@@ -117,6 +117,16 @@ namespace BackendSaiKitchen.Helper
             }
             return new Tuple<string, string>(fileUrl, ext);
         }
+        public static IFormFile ConvertBytestoIFormFile(byte[] fileByte)
+        {
+            string fileUrl = "";
+            var ext = GuessFileType(fileByte);
+            MemoryStream stream = new MemoryStream(fileByte);
+            fileUrl = Guid.NewGuid().ToString() + "." + ext;
+            IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
+            return blob;
+        }
+
         public static async Task<string> UploadFileToBlob(byte[] fileByte, string ext)
         {
             string fileUrl = "";
