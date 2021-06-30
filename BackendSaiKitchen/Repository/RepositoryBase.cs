@@ -11,9 +11,9 @@ namespace BackendSaiKitchen.Repository
     {
 
         string[] excluded = new[] { "CreatedDate", "CreatedBy" };
-        protected DbSaiKitchenContext RepositoryContext { get; set; }
+        protected BackendSaiKitchen_dbContext RepositoryContext { get; set; }
         protected DbSet<T> DbSet { get; set; }
-        public Repository(DbSaiKitchenContext repositoryContext)
+        public Repository(BackendSaiKitchen_dbContext repositoryContext)
         {
             if (repositoryContext == null)
                 throw new ArgumentNullException("repositoryContext");

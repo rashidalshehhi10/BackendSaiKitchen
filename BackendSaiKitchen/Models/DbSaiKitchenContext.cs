@@ -40,6 +40,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
+        public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }

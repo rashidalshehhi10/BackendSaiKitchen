@@ -33,7 +33,7 @@ namespace BackendSaiKitchen
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sai Kitchen Documentation", Version = "v1" });
 
             });
-            services.AddDbContextPool<DbSaiKitchenContext>(options => options.UseSqlServer("Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;"));
+            services.AddDbContextPool<BackendSaiKitchen_dbContext>(options => options.UseSqlServer("Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;"));
 
             //services.AddDbContext<DbSaiKitchenContext>(ServiceLifetime.Transient);
             // Add Cors

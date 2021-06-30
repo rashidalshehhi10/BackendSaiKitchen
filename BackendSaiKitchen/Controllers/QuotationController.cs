@@ -124,7 +124,7 @@ namespace BackendSaiKitchen.Controllers
                                 CreatedDate = Helper.Helper.GetDateTime(),
                             });
                         }
-                        formFile.Add(Helper.Helper.ConvertBytestoIFormFile(file));
+                        //formFile.Add(Helper.Helper.ConvertBytestoIFormFile(file));
                     }
                     quotation.Files = files;
                     quotationRepositry.Create(quotation);
@@ -139,7 +139,7 @@ namespace BackendSaiKitchen.Controllers
                          roletypeId,
                          Constants.branchId,
                          (int)notificationCategory.Quotation);
-                        await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry "+quotation.InquiryId, Body = "Review Quotation on attachment ",Attachments = formFile });
+                        await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at "+ Constants.CRMBaseUrl + "/viewquotation.html?inquiryId="+inquiry.InquiryId });
                     context.SaveChanges();
                 }
                 else

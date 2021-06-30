@@ -19,7 +19,7 @@ namespace SaiKitchenBackend.Controllers
     {
 
 
-        public DbSaiKitchenContext context = new DbSaiKitchenContext();
+        public BackendSaiKitchen_dbContext context = new BackendSaiKitchen_dbContext();
 
         public ServiceResponse response = new ServiceResponse();
         public TableResponse tableResponse = new TableResponse();

@@ -687,8 +687,6 @@ namespace BackendSaiKitchen.Models
             {
                 entity.ToTable("Quotation");
 
-                entity.Property(e => e.QuotationId).ValueGeneratedNever();
-
                 entity.Property(e => e.AdvancePayment).HasMaxLength(500);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
