@@ -92,10 +92,7 @@ namespace BackendSaiKitchen.Controllers
 
             if (inquiry != null)
             {
-
-
                 Quotation quotation = new Quotation();
-
                 quotation.AdvancePayment = customQuotation.AdvancePayment;
                 quotation.Description = customQuotation.Description;
                 quotation.Discount = customQuotation.Discount;
@@ -104,7 +101,6 @@ namespace BackendSaiKitchen.Controllers
                 quotation.IsActive = true;
                 quotation.IsDeleted = false;
                 quotation.TotalAmount = customQuotation.TotalAmount;
-
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
                     files.Clear();
@@ -131,18 +127,10 @@ namespace BackendSaiKitchen.Controllers
                         formFile.Add(Helper.Helper.ConvertBytestoIFormFile(file));
                     }
                     quotation.Files = files;
-
                     quotationRepositry.Create(quotation);
                     response.data = quotation;
-
-
                     List<int?> roletypeId = new List<int?>();
-
                     roletypeId.Add((int)roleType.Manager);
-
-
-                    try
-                    {
                         sendNotificationToHead(
                            " Added a New Quotation",
                          true,
@@ -151,23 +139,13 @@ namespace BackendSaiKitchen.Controllers
                          roletypeId,
                          Constants.branchId,
                          (int)notificationCategory.Quotation);
-
                         await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry "+quotation.InquiryId, Body = "Review Quotation on attachment ",Attachments = formFile });
-                    }
-                    catch (Exception e)
-                    {
-                        Sentry.SentrySdk.CaptureMessage(e.Message);
-                    }
-
                     context.SaveChanges();
-                    return response;
-
-
                 }
                 else
                 {
                     response.isError = true;
-                    response.errorMessage = Constants.wrongFileUpload;
+                    response.errorMessage = Constants.QuotationFileMissing;
                 }
             }
             else
@@ -175,7 +153,6 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Designs are not all accepted";
             }
-
             return response;
         }
         [HttpPost]
