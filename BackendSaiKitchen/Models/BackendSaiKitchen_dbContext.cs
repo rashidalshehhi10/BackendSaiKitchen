@@ -42,6 +42,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
+        public virtual DbSet<Promo> Promos { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
@@ -273,6 +274,8 @@ namespace BackendSaiKitchen.Models
             {
                 entity.HasKey(e => e.FeesId);
 
+                entity.Property(e => e.FeesId).ValueGeneratedNever();
+
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.FeesAmount).HasMaxLength(500);
@@ -331,6 +334,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.InquiryName).HasMaxLength(500);
 
                 entity.Property(e => e.InquiryStartDate).HasMaxLength(50);
+
+                entity.Property(e => e.MeasurementFees).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
@@ -481,11 +486,6 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.MeasurementName).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
-
-                entity.HasOne(d => d.Fees)
-                    .WithMany(p => p.Measurements)
-                    .HasForeignKey(d => d.FeesId)
-                    .HasConstraintName("FK_Measurement_Fees");
 
                 entity.HasOne(d => d.InquiryWorkscope)
                     .WithMany(p => p.Measurements)
@@ -681,6 +681,27 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.PermissionRoles)
                     .HasForeignKey(d => d.PermissionLevelId)
                     .HasConstraintName("FK_PermissionRole_PermissionLevel");
+            });
+
+            modelBuilder.Entity<Promo>(entity =>
+            {
+                entity.ToTable("Promo");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.IsPercentage).HasColumnName("isPercentage");
+
+                entity.Property(e => e.PromoCode).HasMaxLength(500);
+
+                entity.Property(e => e.PromoDiscount).HasMaxLength(50);
+
+                entity.Property(e => e.PromoExpiryDate).HasMaxLength(50);
+
+                entity.Property(e => e.PromoName).HasMaxLength(500);
+
+                entity.Property(e => e.PromoStartDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Quotation>(entity =>

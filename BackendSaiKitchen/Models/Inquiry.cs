@@ -20,6 +20,7 @@ namespace BackendSaiKitchen.Models
         public string InquiryStartDate { get; set; }
         public string InquiryDueDate { get; set; }
         public string InquiryEndDate { get; set; }
+        public string MeasurementFees { get; set; }
         public int? CustomerId { get; set; }
         public int? BranchId { get; set; }
         public int? BuildingId { get; set; }

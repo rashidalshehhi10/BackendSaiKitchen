@@ -18,7 +18,6 @@ namespace BackendSaiKitchen.Models
         public int? MeasurementDetailId { get; set; }
         public int? MeasurementStatusId { get; set; }
         public string MeasurementComment { get; set; }
-        public int? FeesId { get; set; }
         public int? InquiryWorkscopeId { get; set; }
         public int? MeasurementTakenBy { get; set; }
         public int? KitchenDesignInfoId { get; set; }
@@ -33,7 +32,6 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
-        public virtual Fee Fees { get; set; }
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }
         public virtual KitchenDesignInfo KitchenDesignInfo { get; set; }
         public virtual User MeasurementApprovedByNavigation { get; set; }

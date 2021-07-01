@@ -7,11 +7,6 @@ namespace BackendSaiKitchen.Models
 {
     public partial class Fee
     {
-        public Fee()
-        {
-            Measurements = new HashSet<Measurement>();
-        }
-
         public int FeesId { get; set; }
         public string FeesName { get; set; }
         public string FeesDescription { get; set; }
@@ -22,7 +17,5 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
-
-        public virtual ICollection<Measurement> Measurements { get; set; }
     }
 }

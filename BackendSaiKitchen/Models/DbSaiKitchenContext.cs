@@ -477,10 +477,6 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.Fees)
-                    .WithMany(p => p.Measurements)
-                    .HasForeignKey(d => d.FeesId)
-                    .HasConstraintName("FK_Measurement_Fees");
 
                 entity.HasOne(d => d.InquiryWorkscope)
                     .WithMany(p => p.Measurements)
