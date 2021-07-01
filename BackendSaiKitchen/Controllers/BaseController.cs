@@ -42,6 +42,8 @@ namespace SaiKitchenBackend.Controllers
         public Repository<RoleType> roleTypeRepository;
         public Repository<Inquiry> inquiryRepository;
         public Repository<WorkScope> workScopeRepository;
+        public Repository<Fee> feesRepository;
+        public Repository<Promo> promoRepository;
         public Repository<Notification> noificationRepository;
         public Repository<InquiryWorkscope> inquiryWorkscopeRepository;
         public Repository<Measurement> measurementRepository;
@@ -66,6 +68,8 @@ namespace SaiKitchenBackend.Controllers
             roleTypeRepository = new Repository<RoleType>(context);
             inquiryRepository = new Repository<Inquiry>(context);
             workScopeRepository = new Repository<WorkScope>(context);
+            feesRepository = new Repository<Fee>(context);
+            promoRepository = new Repository<Promo>(context);
             noificationRepository = new Repository<Notification>(context);
             inquiryWorkscopeRepository = new Repository<InquiryWorkscope>(context);
             measurementRepository = new Repository<Measurement>(context);
