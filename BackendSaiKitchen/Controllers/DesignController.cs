@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,8 @@ namespace BackendSaiKitchen.Controllers
         }
 
         static List<File> files = new List<File>();
+
+        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)
@@ -84,6 +87,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
@@ -135,7 +139,7 @@ namespace BackendSaiKitchen.Controllers
         }
 
 
-
+        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object DeclineDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
@@ -174,6 +178,7 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
+        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
@@ -259,14 +264,5 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> UplaodVideo(byte[] file)
-        {
-
-
-            response.data = await Helper.Helper.UploadFile(file);
-            return response;
-        }
     }
 }

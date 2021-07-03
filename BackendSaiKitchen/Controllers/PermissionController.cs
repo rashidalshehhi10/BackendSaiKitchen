@@ -1,4 +1,6 @@
-﻿using BackendSaiKitchen.Models;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -7,7 +9,7 @@ namespace SaiKitchenBackend.Controllers
 {
     public class PermissionController : BaseController
     {
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetPermissions()
@@ -18,7 +20,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddPermission(Permission permission)
@@ -31,7 +33,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddPermissionRole(PermissionRole permissionRole)
@@ -43,6 +45,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object UpdatePermissionRole(PermissionRole permissionRole)

@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace SaiKitchenBackend.Controllers
 {
     public class InquiryController : BaseController
     {
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddInquiryAsync(Inquiry inquiry)
@@ -94,6 +96,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
@@ -128,6 +131,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteWorkscopefromInquiry(WorkscopeInquiry workscopeInquiry)
@@ -147,6 +151,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetWorkscope()
@@ -155,6 +160,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetAllInquiries()
@@ -162,6 +168,8 @@ namespace SaiKitchenBackend.Controllers
             response.data = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes);
             return response;
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetInquiriesOfBranch(int branchId)
@@ -212,6 +220,8 @@ namespace SaiKitchenBackend.Controllers
         {
             return "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId;
         }
+
+
         [HttpGet]
         [Route("[action]")]
         public void CheckScheduleDate()
@@ -298,6 +308,7 @@ namespace SaiKitchenBackend.Controllers
             context.SaveChanges();
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object UpdateInquiryScheduleDate(UpdateInquirySchedule updateInquirySchedule)
@@ -349,6 +360,8 @@ namespace SaiKitchenBackend.Controllers
 
 
         #region workscope
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllWorkscope()
@@ -356,6 +369,8 @@ namespace SaiKitchenBackend.Controllers
             return workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
 
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public object GetWorkscopeById(int workScopeId)
@@ -368,6 +383,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object AddWorkscope(WorkScope workscope)
@@ -397,6 +414,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object EditWorkscope(WorkScope workscope)
@@ -418,6 +437,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object DeleteWorkscope(int workScopeId)
@@ -440,7 +461,7 @@ namespace SaiKitchenBackend.Controllers
 
         #region Measurement 
 
-
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetMeasurementOfBranch(int branchId)
@@ -485,7 +506,7 @@ namespace SaiKitchenBackend.Controllers
             return tableResponse;
         }
 
-
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> UpdateMeasurementDetailsAsync(Inquiry inquiry)
@@ -553,6 +574,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object AddMeaurementtoInquiry(Measurement measurement)
@@ -577,6 +600,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetApprovalMeasurementOfBranch(int branchId)
@@ -627,6 +651,7 @@ namespace SaiKitchenBackend.Controllers
 
         #region design
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetDesignOfBranch(int branchId)
@@ -671,7 +696,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object AddDesigntoInquiry(Measurement measurement)
@@ -696,6 +721,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetApprovalDesignOfBranch(int branchId)

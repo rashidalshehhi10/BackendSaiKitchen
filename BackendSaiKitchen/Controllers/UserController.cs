@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace SaiKitchenBackend.Controllers
             return Ok();
         }
 
-
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public async Task<object> GetAllUserAsync()
@@ -45,8 +46,7 @@ namespace SaiKitchenBackend.Controllers
 
         }
 
-
-
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public async Task<object> GetAllUserofOneBranchAsync(int branchId)
@@ -62,6 +62,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> RegisterUserAsync(User user)
@@ -85,7 +86,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetMeasurementUsers(int branchId)
@@ -96,7 +97,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetDesignUsers(int branchId)
@@ -191,6 +192,7 @@ namespace SaiKitchenBackend.Controllers
             dicResponse.Add("branchRole", branchRole);
         }
 
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteUser(int userId)
@@ -209,6 +211,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+
         [HttpPost]
         [Route("[action]")]
         public Object SetNewPassword(NewPassword newPassword)

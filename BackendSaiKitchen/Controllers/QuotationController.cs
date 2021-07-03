@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,8 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
+
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
@@ -40,6 +43,8 @@ namespace BackendSaiKitchen.Controllers
             return response;
 
         }
+
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
@@ -83,6 +88,7 @@ namespace BackendSaiKitchen.Controllers
         static List<File> files = new List<File>();
         static List<IFormFile> formFile = new List<IFormFile>();
 
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
@@ -164,6 +170,8 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object AcceptQuotation(int inquiryId)
@@ -188,6 +196,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object DeclineQuotation(int inquiryId)
