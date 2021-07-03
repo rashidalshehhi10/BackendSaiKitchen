@@ -68,6 +68,14 @@ namespace SaiKitchenBackend.Controllers
             {
                 sendNotificationToOneUser(Constants.measurementAssign + "" + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
             }
+            if (!(bool)inquiry.IsMeasurementProvidedByCustomer)
+            {
+                inquiry.MeasurementFees = feesRepository.FindByCondition(x => x.FeesId == 1 && x.IsActive == true && x.IsDeleted == false).FirstOrDefault().FeesAmount;
+            }
+            else
+            {
+                inquiry.MeasurementFees = "0";
+            }
             inquiryRepository.Create(inquiry);
             context.SaveChanges();
 
@@ -181,6 +189,7 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
+                IsMeasurementProvidedByCustomer=x.Inquiry.IsMeasurementProvidedByCustomer,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
@@ -472,6 +481,7 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
+                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
