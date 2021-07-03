@@ -8,12 +8,14 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.ActionFilters
 {
     public class AuthFilter : ActionFilterAttribute
     {
+        public ServiceResponse response = new ServiceResponse();
         public int permission { get; set; }
         //private int level;
         public int level { get; set; }
@@ -52,14 +54,20 @@ namespace BackendSaiKitchen.ActionFilters
                                     .Include(y => y.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false))
                                     .ThenInclude(x => x.PermissionLevel).FirstOrDefault();
 
-                var userperlevel = userPermissions.PermissionRoles.Where(x => x.PermissionId == permission).FirstOrDefault()?.PermissionLevelId;
+                var userperlevel = userPermissions?.PermissionRoles.Where(x => x.PermissionId == permission)?.FirstOrDefault()?.PermissionLevelId;
 
-                if (userperlevel == null ||userperlevel - level < 0)
-                    context.Result = new UnauthorizedResult();
+                if (userperlevel == null ||userperlevel - level < 0) {
+
+                    response.isError = true;
+                    response.errorMessage = Constants.UnAuthorizedUser;
+                    context.Result = new OkObjectResult(response);
+                }
             }
             catch (Exception)
             {
-                context.Result = new UnauthorizedResult(); 
+                response.isError = true;
+                response.errorMessage = Constants.UnAuthorizedUser;
+                context.Result = new OkObjectResult(response);
             }
             
             

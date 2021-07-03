@@ -26,6 +26,7 @@ namespace BackendSaiKitchen.Helper
         public static string DesignAssign = "You assign for new Design";
         public static string DesignDelayed = "Delayed the Design";
         public static string DesignAdded = "New Design added";
+        public static string UnAuthorizedUser = "You are not authorized to perform this action, Kindly contact the admin";
         public static int userId;
         public static int userRoleId;
         public static int branchId;
