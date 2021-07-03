@@ -1,4 +1,6 @@
-﻿using BackendSaiKitchen.Models;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +11,7 @@ namespace SaiKitchenBackend.Controllers
     public class PromoController : BaseController
     {
 
-
+        [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllPromo()
@@ -17,6 +19,8 @@ namespace SaiKitchenBackend.Controllers
             return promoRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
 
         }
+
+        [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public object GetPromoById(int promoId)
@@ -29,6 +33,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public object AddPromo(Promo promo)
@@ -64,6 +70,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object EditPromo(Promo promo)
@@ -91,6 +99,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public object DeletePromo(int promoId)
