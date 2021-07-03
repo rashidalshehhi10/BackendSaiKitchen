@@ -22,7 +22,7 @@ namespace SaiKitchenBackend.Controllers
             // Find your Account Sid and Token at twilio.com/console
             // and set the environment variables. See http://twil.io/secure
             string accountSid = "ACb1325ec580f878d09d7a1a0d6ef65f95";
-            string authToken = "31a47f95a1a0bf58ce7d8a4b7583e60a";
+            string authToken = "17af5471eeb895ca1c7ce30bed19dc82";
 
             TwilioClient.Init(accountSid, authToken);
 
@@ -42,7 +42,7 @@ namespace SaiKitchenBackend.Controllers
 
             var messageOptions = new CreateMessageOptions(
                 new PhoneNumber("whatsapp:+971545552471"));
-            messageOptions.From = new PhoneNumber("whatsapp:+14155238886");
+            messageOptions.From = new PhoneNumber("whatsapp:+18544000012");
             messageOptions.Body = "Your Yummy Cupcakes Company order of 1 dozen frosted cupcakes has shipped and should be delivered on July 10, 2019. Details: http://www.yummycupcakes.com/";
             //messageOptions.MediaUrl = new System.Collections.Generic.List<Uri> {new Uri("https://saikitchenstorage.blob.core.windows.net/files/eb2b1f50-342c-4bb6-b175-75100a319e74.pdf") };
             var message = MessageResource.Create(messageOptions);
