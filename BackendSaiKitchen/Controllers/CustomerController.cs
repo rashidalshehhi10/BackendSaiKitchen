@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,7 @@ namespace SaiKitchenBackend.Controllers
 
             //Console.WriteLine(message.Sid);
         }
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetAllCustomer()
@@ -60,6 +62,8 @@ namespace SaiKitchenBackend.Controllers
             return customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
             { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId });
         }
+
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetCustomerOfBranch(int branchId)
@@ -79,6 +83,8 @@ namespace SaiKitchenBackend.Controllers
             });
             return v;
         }
+
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetCustomerbyId(int customerId)
@@ -88,6 +94,8 @@ namespace SaiKitchenBackend.Controllers
             { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
             return response;
         }
+
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetCustomerbyContact(String customerContact)
@@ -104,6 +112,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddCustomer(Customer customer)
@@ -142,6 +152,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetContactStatus()
@@ -150,6 +161,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetWayOfContacts()
@@ -159,7 +171,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Escalate)]
         [HttpPost]
         [Route("[action]")]
         public Object EscalateCustomer(int customerId)
@@ -179,7 +191,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteCustomer(int customerId)

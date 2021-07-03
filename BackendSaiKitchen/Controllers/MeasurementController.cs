@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,8 @@ namespace BackendSaiKitchen.Controllers
         }
         static List<File> files = new List<File>();
         static List<Accesory> Accesories = new List<Accesory>();
+
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddMeasrmuent(CustomMeasurement measurementVM)
@@ -153,6 +156,8 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object AcceptMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
@@ -184,6 +189,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object DeclineMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
@@ -223,7 +229,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddUpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
@@ -304,6 +310,8 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllMeasurement()
@@ -311,6 +319,7 @@ namespace BackendSaiKitchen.Controllers
             return measurementRepository.FindByCondition(m => m.IsActive == true && m.IsDeleted == false);
         }
 
+        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object ViewMeasurementById(int inquiryWorkscopeId)

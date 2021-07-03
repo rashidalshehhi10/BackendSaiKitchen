@@ -1,4 +1,6 @@
-﻿using BackendSaiKitchen.Models;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +11,7 @@ namespace SaiKitchenBackend.Controllers
     public class FeesController : BaseController
     {
 
-
+        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllFees()
@@ -17,6 +19,8 @@ namespace SaiKitchenBackend.Controllers
             return feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
 
         }
+
+        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public object GetFeesById(int feesId)
@@ -29,6 +33,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public object AddFees(Fee fee)
@@ -58,6 +64,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public object EditFees(Fee fee)
@@ -79,6 +87,8 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public object DeleteFees(int feesId)

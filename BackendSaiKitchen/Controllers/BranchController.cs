@@ -1,4 +1,6 @@
-﻿using BackendSaiKitchen.Models;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +10,7 @@ namespace SaiKitchenBackend.Controllers
 {
     public class BranchController : BaseController
     {
-
+        [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranches()
@@ -17,7 +19,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoles()
@@ -26,6 +28,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoleById(int branchRoleId)
@@ -43,7 +46,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetBranchTypes()
@@ -53,6 +56,8 @@ namespace SaiKitchenBackend.Controllers
             response.data = branchTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
+
+        [AuthFilter((int)permission.b, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetRoleTypes()
@@ -61,6 +66,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddBranch(Branch branch)
@@ -71,7 +77,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddBranchRole(BranchRole branchRole)
@@ -83,6 +89,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public Object UpdateBranchRole(BranchRole branchRole)
@@ -94,7 +101,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
+        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteBranchRole(int branchRoleId)
@@ -114,6 +121,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteBranch(int branchId)
