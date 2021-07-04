@@ -20,7 +20,7 @@ namespace SaiKitchenBackend.Controllers
         public async Task<object> AddInquiryAsync(Inquiry inquiry)
         {
             inquiry.InquiryStartDate = Helper.GetDateTime();
-            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId==Constants.branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId==inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (customer != null)
             {
                 customer.CustomerName = inquiry.Customer.CustomerName;

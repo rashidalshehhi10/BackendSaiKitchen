@@ -16,7 +16,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetAllPromo()
         {
-            return promoRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            return promoRepository.FindByCondition(x => x.IsDeleted == false);
 
         }
 
