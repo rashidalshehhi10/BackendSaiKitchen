@@ -34,6 +34,19 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public object GetPromoByCode(String promoCode)
+        {
+            response.data = promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (response.data == null)
+            {
+                response.isError = true;
+                response.errorMessage = "Promo doesn't Exist";
+            }
+            return response;
+        }
+
         [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
