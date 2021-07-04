@@ -16,8 +16,8 @@ namespace BackendSaiKitchen.Models
         public string PaymentName { get; set; }
         public string PaymentDetail { get; set; }
         public int? PaymentAmount { get; set; }
-        public int? PaymentType { get; set; }
-        public int? PaymentStatus { get; set; }
+        public int? PaymentTypeId { get; set; }
+        public int? PaymentStatusId { get; set; }
         public int? InquiryId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
@@ -27,6 +27,8 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
+        public virtual PaymentStatus PaymentStatus { get; set; }
+        public virtual PaymentType PaymentType { get; set; }
         public virtual ICollection<File> Files { get; set; }
     }
 }

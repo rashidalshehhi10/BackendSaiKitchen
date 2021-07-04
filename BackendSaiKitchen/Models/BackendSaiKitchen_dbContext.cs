@@ -40,6 +40,8 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentStatus> PaymentStatuses { get; set; }
+        public virtual DbSet<PaymentType> PaymentTypes { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
@@ -658,6 +660,46 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Payment_Inquiry");
+
+                entity.HasOne(d => d.PaymentStatus)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.PaymentStatusId)
+                    .HasConstraintName("FK_Payment_PaymentStatus");
+
+                entity.HasOne(d => d.PaymentType)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.PaymentTypeId)
+                    .HasConstraintName("FK_Payment_PaymentType");
+            });
+
+            modelBuilder.Entity<PaymentStatus>(entity =>
+            {
+                entity.ToTable("PaymentStatus");
+
+                entity.Property(e => e.PaymentStatusId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PaymentStatusDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PaymentStatusName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<PaymentType>(entity =>
+            {
+                entity.ToTable("PaymentType");
+
+                entity.Property(e => e.PaymentTypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PaymentTypeDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PaymentTypeName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Permission>(entity =>
