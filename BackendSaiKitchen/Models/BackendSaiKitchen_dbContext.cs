@@ -39,6 +39,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<MeasurementDetailInfo> MeasurementDetailInfos { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
@@ -311,6 +312,11 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.MeasurementId)
                     .HasConstraintName("FK_File_Measurement");
 
+                entity.HasOne(d => d.Payment)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.Paymentid)
+                    .HasConstraintName("FK_File_Payment");
+
                 entity.HasOne(d => d.Quotation)
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.QuotationId)
@@ -337,6 +343,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.MeasurementFees).HasMaxLength(50);
 
+                entity.Property(e => e.PromoDiscount).HasMaxLength(50);
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.AddedByNavigation)
@@ -358,6 +366,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("FK_Inquiry_Customer");
+
+                entity.HasOne(d => d.Promo)
+                    .WithMany(p => p.Inquiries)
+                    .HasForeignKey(d => d.PromoId)
+                    .HasConstraintName("FK_Inquiry_Promo");
             });
 
             modelBuilder.Entity<InquiryStatus>(entity =>
@@ -627,6 +640,24 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.NotificationCategoryName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.ToTable("Payment");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PaymentDetail).HasMaxLength(500);
+
+                entity.Property(e => e.PaymentName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Inquiry)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.InquiryId)
+                    .HasConstraintName("FK_Payment_Inquiry");
             });
 
             modelBuilder.Entity<Permission>(entity =>

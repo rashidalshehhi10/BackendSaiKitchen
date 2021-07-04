@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public Inquiry()
         {
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
+            Payments = new HashSet<Payment>();
             Quotations = new HashSet<Quotation>();
         }
 
@@ -25,6 +26,8 @@ namespace BackendSaiKitchen.Models
         public int? CustomerId { get; set; }
         public int? BranchId { get; set; }
         public int? BuildingId { get; set; }
+        public int? PromoId { get; set; }
+        public string PromoDiscount { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public int? AddedBy { get; set; }
         public bool? IsActive { get; set; }
@@ -38,7 +41,9 @@ namespace BackendSaiKitchen.Models
         public virtual Branch Branch { get; set; }
         public virtual Building Building { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual Promo Promo { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Quotation> Quotations { get; set; }
     }
 }
