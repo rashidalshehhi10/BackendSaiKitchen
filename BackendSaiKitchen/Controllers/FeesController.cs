@@ -20,7 +20,7 @@ namespace SaiKitchenBackend.Controllers
 
         }
 
-        [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public object GetFeesById(int feesId)
