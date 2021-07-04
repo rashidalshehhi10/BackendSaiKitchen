@@ -10,7 +10,7 @@ namespace SaiKitchenBackend.Controllers
 {
     public class BranchController : BaseController
     {
-        [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranches()
@@ -19,7 +19,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoles()
