@@ -44,6 +44,7 @@ namespace SaiKitchenBackend.Controllers
                     Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact  && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                     if (anotherBranchCustomer != null)
                     {
+                        customer = anotherBranchCustomer;
                         List<int?> roletypeId = new List<int?>();
                         roletypeId.Add((int)roleType.Manager);
                         sendNotificationToHead(anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
