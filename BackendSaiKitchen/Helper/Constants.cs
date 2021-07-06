@@ -23,6 +23,7 @@ namespace BackendSaiKitchen.Helper
         public static string QuotationMissing = "Quotation Doesnt Exist";
         public static string MeasurementDelayed = " Delayed the Measurement";
         public static string MeasurementAdded = "New Measurement added";
+        public static string PaymentAdded = "New Payment added";
         public static string DesignAssign = "You assign for new Design";
         public static string DesignDelayed = "Delayed the Design";
         public static string DesignAdded = "New Design added";
@@ -106,7 +107,29 @@ namespace BackendSaiKitchen.Helper
         Other = 9
     }
 
+    public enum paymentstatus
+    {
+        Pending = 1,
+        WaitingofApproval = 2,
+        Approved = 3,
+        Rejected = 4
+    }
 
+    public enum paymenttype
+    {
+        Measurement = 1,
+        AdvancePayment = 2,
+        BeforeDelivery = 3,
+        OnDelivery = 4
+    }
+
+    public enum paymentMode
+    {
+        Cash = 1,
+        Cheque = 2,
+        PaybyCard = 3,
+        OnlinePayment = 4
+    }
 }
 public class ServiceResponse
 {
