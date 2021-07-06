@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.Models
         public int? PromoCurrency { get; set; }
         public string PromoStartDate { get; set; }
         public string PromoExpiryDate { get; set; }
+        public bool? IsMeasurementPromo { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }

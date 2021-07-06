@@ -71,6 +71,7 @@ namespace SaiKitchenBackend.Controllers
                     oldPromo.PromoExpiryDate = promo.PromoExpiryDate;
                     oldPromo.PromoTermsAndCondition = promo.PromoTermsAndCondition;
                     oldPromo.IsPercentage = promo.IsPercentage;
+                    oldPromo.IsMeasurementPromo = promo.IsMeasurementPromo;
                     promoRepository.Update(oldPromo);
                     context.SaveChanges();
                     response.data = oldPromo;
