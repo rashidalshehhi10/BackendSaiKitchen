@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,7 +97,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                  .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                  .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            
+
             if (inquiry != null)
             {
                 Quotation quotation = new Quotation();
@@ -136,7 +135,7 @@ namespace BackendSaiKitchen.Controllers
                         //formFile.Add(Helper.Helper.ConvertBytestoIFormFile(file));
                     }
                     quotation.Files = files;
-                   foreach(var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     }
@@ -146,15 +145,15 @@ namespace BackendSaiKitchen.Controllers
                     response.data = null;
                     List<int?> roletypeId = new List<int?>();
                     roletypeId.Add((int)roleType.Manager);
-                        sendNotificationToHead(
-                           " Added a New Quotation",
-                         true,
-                         Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
-                         Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
-                         roletypeId,
-                         Constants.branchId,
-                         (int)notificationCategory.Quotation);
-                        await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at "+ Constants.CRMBaseUrl + "/viewquotation.html?inquiryId="+inquiry.InquiryId });
+                    sendNotificationToHead(
+                       " Added a New Quotation",
+                     true,
+                     Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
+                     Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
+                     roletypeId,
+                     Constants.branchId,
+                     (int)notificationCategory.Quotation);
+                    await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId });
                     context.SaveChanges();
                 }
                 else
