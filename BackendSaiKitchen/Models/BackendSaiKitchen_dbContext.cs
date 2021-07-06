@@ -40,6 +40,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentMode> PaymentModes { get; set; }
         public virtual DbSet<PaymentStatus> PaymentStatuses { get; set; }
         public virtual DbSet<PaymentType> PaymentTypes { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
@@ -661,6 +662,11 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Payment_Inquiry");
 
+                entity.HasOne(d => d.PaymentMode)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.PaymentModeId)
+                    .HasConstraintName("FK_Payment_PaymentMode");
+
                 entity.HasOne(d => d.PaymentStatus)
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.PaymentStatusId)
@@ -670,6 +676,21 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.PaymentTypeId)
                     .HasConstraintName("FK_Payment_PaymentType");
+            });
+
+            modelBuilder.Entity<PaymentMode>(entity =>
+            {
+                entity.ToTable("PaymentMode");
+
+                entity.Property(e => e.PaymentModeId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PaymentModeDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PaymentModeName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<PaymentStatus>(entity =>

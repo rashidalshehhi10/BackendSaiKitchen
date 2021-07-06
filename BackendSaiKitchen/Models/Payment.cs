@@ -18,6 +18,7 @@ namespace BackendSaiKitchen.Models
         public int? PaymentAmount { get; set; }
         public int? PaymentTypeId { get; set; }
         public int? PaymentStatusId { get; set; }
+        public int? PaymentModeId { get; set; }
         public int? InquiryId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
@@ -27,6 +28,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
+        public virtual PaymentMode PaymentMode { get; set; }
         public virtual PaymentStatus PaymentStatus { get; set; }
         public virtual PaymentType PaymentType { get; set; }
         public virtual ICollection<File> Files { get; set; }
