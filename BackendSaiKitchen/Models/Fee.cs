@@ -11,6 +11,7 @@ namespace BackendSaiKitchen.Models
         public string FeesName { get; set; }
         public string FeesDescription { get; set; }
         public string FeesAmount { get; set; }
+        public bool? IsPercentage { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
