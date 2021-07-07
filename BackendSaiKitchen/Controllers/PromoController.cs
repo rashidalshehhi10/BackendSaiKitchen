@@ -25,7 +25,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetPromoById(int promoId)
         {
-            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId  && x.IsDeleted == false).FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
@@ -67,16 +67,15 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object AddPromo(Promo promo)
         {
-            if (promo.PromoId==0)
+            Promo oldPromo = promoRepository.FindByCondition(x => (x.PromoId == promo.PromoId|| x.PromoCode==promo.PromoCode) && x.IsDeleted == false).FirstOrDefault();
+
+            if (oldPromo == null)
             {
                 promoRepository.Create(promo);
                 context.SaveChanges();
             }
             else
             {
-                Promo oldPromo = promoRepository.FindByCondition(x => x.PromoId == promo.PromoId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                if (oldPromo != null)
-                {
                     oldPromo.PromoName = promo.PromoName;
                     oldPromo.PromoStartDate = promo.PromoStartDate;
                     oldPromo.PromoCode = promo.PromoCode;
@@ -98,12 +97,7 @@ namespace SaiKitchenBackend.Controllers
                     promoRepository.Update(oldPromo);
                     context.SaveChanges();
                     response.data = oldPromo;
-                }
-                else
-                {
-                    response.isError = true;
-                    response.errorMessage = "Promo doesn't exist";
-                }
+                
             }
             return response;
         }
