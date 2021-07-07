@@ -34,11 +34,18 @@ namespace BackendSaiKitchen.Helper
             //04 / 27 / 2021 10:01 AM
             return UAE.ToString("MM/dd/yyyy hh:mm tt");
         }
+        public static String GetDate()
+        {
+            DateTime utc = DateTime.UtcNow;
+            DateTime UAE = TimeZoneInfo.ConvertTimeFromUtc(utc, UAETimeZone);
+            //04 / 27 / 2021 10:01 AM
+            return UAE.ToString("MM/dd/yyyy");
+        }
         public static DateTime ConvertToDateTime(String dateTime)
         {
             //04 / 27 / 2021 10:01 AM
             DateTime dateTimeParsed;
-            DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt" }, provider, DateTimeStyles.None, out dateTimeParsed);
+            DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" }, provider, DateTimeStyles.None, out dateTimeParsed);
 
             return dateTimeParsed;
         }

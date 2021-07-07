@@ -38,11 +38,26 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetPromoByCode(String promoCode)
         {
-            response.data = promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (response.data == null)
+           var promo= promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (promo == null)
             {
                 response.isError = true;
                 response.errorMessage = "Promo doesn't Exist";
+            }
+            else
+            {
+                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
+                {
+                    response.data = promo;
+                }
+                else
+                {
+                    promo.IsActive = false;
+                    promoRepository.Update(promo);
+                    context.SaveChanges();
+                    response.isError = true;
+                    response.errorMessage = "Promo doesn't Exist";
+                }
             }
             return response;
         }
