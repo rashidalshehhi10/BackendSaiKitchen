@@ -87,6 +87,14 @@ namespace SaiKitchenBackend.Controllers
                     oldPromo.PromoTermsAndCondition = promo.PromoTermsAndCondition;
                     oldPromo.IsPercentage = promo.IsPercentage;
                     oldPromo.IsMeasurementPromo = promo.IsMeasurementPromo;
+                    if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
+                    {
+                        oldPromo.IsActive = true;
+                    }
+                    else
+                    {
+                        oldPromo.IsActive = false;
+                    }
                     promoRepository.Update(oldPromo);
                     context.SaveChanges();
                     response.data = oldPromo;
