@@ -34,7 +34,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object GetPromoByCode(String promoCode)
         {
