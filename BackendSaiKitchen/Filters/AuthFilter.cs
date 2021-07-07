@@ -51,8 +51,6 @@ namespace BackendSaiKitchen.ActionFilters
                 int.TryParse(branchRoleId[0], out Constants.branchRoleId);
             try
             {
-                if (Constants.userId != 2)
-                {
                     var userPermissions = branchRoleRepository.FindByCondition(x => x.BranchRoleId == Constants.branchRoleId && x.IsActive == true && x.IsDeleted == false)
                                         .Include(y => y.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false))
                                         .ThenInclude(x => x.Permission)
@@ -67,7 +65,7 @@ namespace BackendSaiKitchen.ActionFilters
                         response.errorMessage = Constants.UnAuthorizedUser;
                         context.Result = new OkObjectResult(response);
                     }
-                }
+                
             }
             catch (Exception)
             {

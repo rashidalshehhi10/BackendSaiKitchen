@@ -87,6 +87,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+
         [HttpPost]
         [Route("[action]")]
         public object AcceptPayment(UpdatePaymentStatus updatePayment)
@@ -118,6 +119,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+
         [HttpPost]
         [Route("[action]")]
         public object DeclinePayment(UpdatePaymentStatus updatePayment)
@@ -148,6 +150,7 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
 
         [HttpPost]
         [Route("[action]")]
