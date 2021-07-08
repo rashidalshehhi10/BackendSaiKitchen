@@ -108,6 +108,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.QuotationValidityDate = customQuotation.QuotationValidityDate;
                 quotation.IsActive = true;
                 quotation.IsDeleted = false;
+                quotation.Amount = customQuotation.Amount;
                 quotation.TotalAmount = customQuotation.TotalAmount;
                 if (customQuotation.QuotationFiles.Count > 0)
                 {

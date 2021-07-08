@@ -12,6 +12,7 @@ namespace BackendSaiKitchen.CustomModel
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public string Description { get; set; }
+        public string Amount { get; set; }
         public string TotalAmount { get; set; }
         public string AdvancePayment { get; set; }
         public string QuotationValidityDate { get; set; }
