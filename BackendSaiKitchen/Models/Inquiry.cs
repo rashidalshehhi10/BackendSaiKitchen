@@ -28,6 +28,7 @@ namespace BackendSaiKitchen.Models
         public int? BuildingId { get; set; }
         public int? PromoId { get; set; }
         public string PromoDiscount { get; set; }
+        public bool? IsMeasurementPromo { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public int? AddedBy { get; set; }
         public bool? IsActive { get; set; }
