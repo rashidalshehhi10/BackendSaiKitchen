@@ -334,6 +334,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.InquiryCode).HasMaxLength(4000);
 
+                entity.Property(e => e.InquiryComment).HasMaxLength(500);
+
                 entity.Property(e => e.InquiryDescription).HasMaxLength(500);
 
                 entity.Property(e => e.InquiryDueDate).HasMaxLength(50);
@@ -815,6 +817,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.TotalAmount).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.Vat).HasMaxLength(50);
 
                 entity.HasOne(d => d.Inquiry)
                     .WithMany(p => p.Quotations)
