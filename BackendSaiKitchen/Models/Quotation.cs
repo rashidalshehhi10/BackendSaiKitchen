@@ -17,6 +17,7 @@ namespace BackendSaiKitchen.Models
         public string Description { get; set; }
         public string QuotationValidityDate { get; set; }
         public string AdvancePayment { get; set; }
+        public string Amount { get; set; }
         public string TotalAmount { get; set; }
         public string Discount { get; set; }
         public bool? IsActive { get; set; }

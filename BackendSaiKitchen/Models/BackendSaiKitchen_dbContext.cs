@@ -804,6 +804,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.AdvancePayment).HasMaxLength(500);
 
+                entity.Property(e => e.Amount).HasMaxLength(50);
+
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.Discount).HasMaxLength(500);

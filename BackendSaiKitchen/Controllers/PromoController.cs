@@ -97,7 +97,6 @@ namespace SaiKitchenBackend.Controllers
                     promoRepository.Update(oldPromo);
                     context.SaveChanges();
                     response.data = oldPromo;
-                
             }
             return response;
         }
