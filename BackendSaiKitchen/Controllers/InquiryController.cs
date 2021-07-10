@@ -77,6 +77,16 @@ namespace SaiKitchenBackend.Controllers
             {
                 inquiry.MeasurementFees = "0";
             }
+            //if (inquiry.Payments.Count > 0)
+            //{
+                foreach(var payment in inquiry.Payments)
+                {
+                    payment.CreatedDate = Helper.GetDateTime();
+                    payment.CreatedBy = Constants.userId;
+                    payment.UpdatedBy = Constants.userId;
+                    payment.UpdatedDate = Helper.GetDateTime();
+                }
+            //}
             inquiryRepository.Create(inquiry);
             context.SaveChanges();
 

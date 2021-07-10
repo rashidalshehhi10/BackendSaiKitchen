@@ -111,6 +111,10 @@ namespace BackendSaiKitchen.Controllers
                 quotation.IsDeleted = false;
                 quotation.Amount = customQuotation.Amount;
                 quotation.TotalAmount = customQuotation.TotalAmount;
+                quotation.CreatedDate = Helper.Helper.GetDateTime();
+                quotation.CreatedBy = Constants.userId;
+                quotation.UpdatedBy = Constants.userId;
+                quotation.UpdatedDate = Helper.Helper.GetDateTime();
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
                     files.Clear();
@@ -151,6 +155,10 @@ namespace BackendSaiKitchen.Controllers
                     payment.PaymentAmount = customQuotation.PaymentAmount;
                     payment.IsActive = true;
                     payment.IsDeleted = false;
+                    payment.CreatedDate = Helper.Helper.GetDateTime();
+                    payment.CreatedBy = Constants.userId;
+                    payment.UpdatedBy = Constants.userId;
+                    payment.UpdatedDate = Helper.Helper.GetDateTime();
                     inquiry.Payments.Add(payment);
                     //quotationRepositry.Create(quotation);
                     inquiryRepository.Update(inquiry);
