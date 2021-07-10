@@ -83,8 +83,20 @@ namespace BackendSaiKitchen.Helper
         quotationRejected = 14,
         quotationWaitingForCustomerApproval = 15,
         designWaitingForCustomerApproval = 16,
-        designRejectedByCustomer = 17
-
+        designRejectedByCustomer = 17,
+        checklistPending = 18,
+        checklistAccepted = 19,
+        checklistRejected = 20,
+        jobOrderPending = 21,
+        jobOrderCreated = 22,
+        jobOrderApproved = 23,
+        jobOrderRejected = 24,
+        jobOrderWaitingForApproval = 25,
+        jobOrderDelayed = 26,
+        jobOrderCompleted = 27,
+        deliveryPending = 28,
+        unabletoDeliver = 29,
+        delivered = 30
     }
 
     public enum roleType

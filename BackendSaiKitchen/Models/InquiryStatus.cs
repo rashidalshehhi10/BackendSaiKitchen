@@ -9,6 +9,7 @@ namespace BackendSaiKitchen.Models
     {
         public InquiryStatus()
         {
+            Inquiries = new HashSet<Inquiry>();
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
         }
 
@@ -22,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
+        public virtual ICollection<Inquiry> Inquiries { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
     }
 }

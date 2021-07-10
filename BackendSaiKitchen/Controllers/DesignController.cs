@@ -213,9 +213,10 @@ namespace BackendSaiKitchen.Controllers
                 foreach(var inquiryWorkscope in inquiry.InquiryWorkscopes) { 
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiryWorkscope.IsDesignApproved = true;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
                
                 }
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
                 try
@@ -250,8 +251,9 @@ namespace BackendSaiKitchen.Controllers
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
                     inquiryWorkscope.IsDesignApproved = false;
-                    inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
+
+                inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
                 try

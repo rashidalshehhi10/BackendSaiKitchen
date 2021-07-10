@@ -372,6 +372,11 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("FK_Inquiry_Customer");
 
+                entity.HasOne(d => d.InquiryStatus)
+                    .WithMany(p => p.Inquiries)
+                    .HasForeignKey(d => d.InquiryStatusId)
+                    .HasConstraintName("FK_Inquiry_InquiryStatus");
+
                 entity.HasOne(d => d.Promo)
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.PromoId)

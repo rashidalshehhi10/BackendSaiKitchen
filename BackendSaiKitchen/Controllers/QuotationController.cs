@@ -196,6 +196,9 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
                 }
 
+
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -219,6 +222,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                 }
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();

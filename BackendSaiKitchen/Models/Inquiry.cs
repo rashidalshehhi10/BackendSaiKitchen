@@ -31,6 +31,7 @@ namespace BackendSaiKitchen.Models
         public string PromoDiscount { get; set; }
         public bool? IsMeasurementPromo { get; set; }
         public bool? IsEscalationRequested { get; set; }
+        public int? InquiryStatusId { get; set; }
         public int? AddedBy { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
@@ -43,6 +44,7 @@ namespace BackendSaiKitchen.Models
         public virtual Branch Branch { get; set; }
         public virtual Building Building { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual InquiryStatus InquiryStatus { get; set; }
         public virtual Promo Promo { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
