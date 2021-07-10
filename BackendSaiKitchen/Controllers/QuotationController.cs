@@ -165,7 +165,17 @@ namespace BackendSaiKitchen.Controllers
                      roletypeId,
                      Constants.branchId,
                      (int)notificationCategory.Quotation);
-                    await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId });
+
+                    await mailService.SendEmailAsync(new MailRequest()
+                    {
+                        ToEmail = inquiry.Customer.CustomerEmail,
+                        Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        Body = "Review Quotation on this link " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId +
+                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?id=" + inquiry.InquiryId +
+                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?id=" + inquiry.InquiryId
+                    });
+
+                    //await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId });
                     context.SaveChanges();
                 }
                 else
@@ -183,7 +193,7 @@ namespace BackendSaiKitchen.Controllers
         }
 
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
-        [HttpPost]
+        [HttpGet]
         [Route("[action]")]
         public object AcceptQuotation(int inquiryId)
         {
@@ -211,7 +221,7 @@ namespace BackendSaiKitchen.Controllers
         }
 
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
-        [HttpPost]
+        [HttpGet]
         [Route("[action]")]
         public object DeclineQuotation(int inquiryId)
         {
