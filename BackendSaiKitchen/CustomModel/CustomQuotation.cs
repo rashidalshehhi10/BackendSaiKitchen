@@ -18,6 +18,16 @@ namespace BackendSaiKitchen.CustomModel
         public string AdvancePayment { get; set; }
         public string QuotationValidityDate { get; set; }
         public string Discount { get; set; }
+
+
+        public string PaymentName { get; set; }
+        public string PaymentDetail { get; set; }
+        public int? PaymentAmount { get; set; }
+        public int? PaymentTypeId { get; set; }
+        public int? PaymentStatusId { get; set; }
+        public int? PaymentModeId { get; set; }
+        public int? FeesId { get; set; }
+
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
 

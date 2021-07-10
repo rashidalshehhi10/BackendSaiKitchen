@@ -53,7 +53,9 @@ namespace BackendSaiKitchen.Helper
         ManageQuotation = 9,
         ManageWorkscope = 10,
         ManageFees = 11,
-        ManagePromo = 12
+        ManagePromo = 12,
+        ManageChecklist = 13,
+        ManageJobOrder = 14
     }
     public enum permissionLevel
     {

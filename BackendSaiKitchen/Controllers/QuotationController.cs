@@ -142,6 +142,16 @@ namespace BackendSaiKitchen.Controllers
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     }
                     inquiry.Quotations.Add(quotation);
+                    Payment payment = new Payment();
+                    payment.InquiryId = customQuotation.InquiryId;
+                    payment.PaymentName = customQuotation.PaymentName;
+                    payment.PaymentStatusId = 1;
+                    payment.PaymentTypeId = 2;
+                    payment.PaymentDetail = customQuotation.PaymentDetail;
+                    payment.PaymentAmount = customQuotation.PaymentAmount;
+                    payment.IsActive = true;
+                    payment.IsDeleted = false;
+                    inquiry.Payments.Add(payment);
                     //quotationRepositry.Create(quotation);
                     inquiryRepository.Update(inquiry);
                     response.data = null;
