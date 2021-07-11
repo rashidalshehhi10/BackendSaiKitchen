@@ -96,7 +96,11 @@ namespace BackendSaiKitchen.Helper
         jobOrderCompleted = 27,
         deliveryPending = 28,
         unabletoDeliver = 29,
-        delivered = 30
+        delivered = 30,
+        waitingForMeasurmenetFees = 31,
+        waitingForAdvance = 32,
+        waitingForBeforeDeliveryPayment = 33,
+        waitingForAfterDeliveryPayment = 34
     }
 
     public enum roleType
