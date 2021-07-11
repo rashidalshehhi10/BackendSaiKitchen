@@ -32,6 +32,8 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Inquiry> Inquiries { get; set; }
         public virtual DbSet<InquiryStatus> InquiryStatuses { get; set; }
         public virtual DbSet<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual DbSet<JobOrder> JobOrders { get; set; }
+        public virtual DbSet<JobOrderDetail> JobOrderDetails { get; set; }
         public virtual DbSet<KitchenDesignInfo> KitchenDesignInfos { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Measurement> Measurements { get; set; }
@@ -434,6 +436,63 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.InquiryWorkscopes)
                     .HasForeignKey(d => d.WorkscopeId)
                     .HasConstraintName("FK_InquiryMeasurement_WorkScope");
+            });
+
+            modelBuilder.Entity<JobOrder>(entity =>
+            {
+                entity.ToTable("JobOrder");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.JobOrderDelayReason).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderDeliveryDate).HasMaxLength(50);
+
+                entity.Property(e => e.JobOrderDescription).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderExpectedDeadline).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderName).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderRequestedComments).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderRequestedDeadline).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Inquiry)
+                    .WithMany(p => p.JobOrders)
+                    .HasForeignKey(d => d.InquiryId)
+                    .HasConstraintName("FK_JobOrder_Inquiry");
+            });
+
+            modelBuilder.Entity<JobOrderDetail>(entity =>
+            {
+                entity.ToTable("JobOrderDetail");
+
+                entity.Property(e => e.CountertopFixingDate).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.JobOrderDetailDescription).HasMaxLength(500);
+
+                entity.Property(e => e.JobOrderDetailName).HasMaxLength(50);
+
+                entity.Property(e => e.MaterialAvailabilityDate).HasMaxLength(50);
+
+                entity.Property(e => e.MaterialDeliveryFinalDate).HasMaxLength(50);
+
+                entity.Property(e => e.MissingDocuments).HasMaxLength(500);
+
+                entity.Property(e => e.ProductionCompletionDate).HasMaxLength(50);
+
+                entity.Property(e => e.Remarks).HasMaxLength(500);
+
+                entity.Property(e => e.ShopDrawingCompletionDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.WoodenWorkCompletionDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<KitchenDesignInfo>(entity =>
