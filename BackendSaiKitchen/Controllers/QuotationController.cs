@@ -179,8 +179,8 @@ namespace BackendSaiKitchen.Controllers
                         ToEmail = inquiry.Customer.CustomerEmail,
                         Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                         Body = "Review Quotation on this link " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId +
-                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?id=" + inquiry.InquiryId +
-                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?id=" + inquiry.InquiryId
+                        "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId +
+                            "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId
                     });
 
                     //await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId });
@@ -200,12 +200,13 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
+        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpGet]
         [Route("[action]")]
         public object AcceptQuotation(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).FirstOrDefault();
             if (inquiry != null)
             {
 
