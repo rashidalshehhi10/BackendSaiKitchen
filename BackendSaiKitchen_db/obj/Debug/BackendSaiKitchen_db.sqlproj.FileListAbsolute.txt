@@ -13,3 +13,4 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\Model.xml
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\refactor.xml
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\postdeploy.sql
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\predeploy.sql
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\BackendSaiKitchen_db.sqlproj.AssemblyReference.cache
