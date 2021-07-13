@@ -67,8 +67,9 @@ namespace BackendSaiKitchen.ActionFilters
                     }
                 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Sentry.SentrySdk.CaptureMessage("BranchRoleId= "+ Constants.branchRoleId + " \n"+e.Message);
                 response.isError = true;
                 response.errorMessage = Constants.UnAuthorizedUser;
                 context.Result = new OkObjectResult(response);
