@@ -65,7 +65,6 @@ namespace BackendSaiKitchen.ActionFilters
                         response.errorMessage = Constants.UnAuthorizedUser;
                         context.Result = new OkObjectResult(response);
                     }
-                
             }
             catch (Exception e)
             {
