@@ -24,7 +24,7 @@ namespace SaiKitchenBackend.Controllers
             Console.WriteLine(user);
             response.data = noificationRepository.FindByCondition(x => (x.UserId == user.UserId || user.UserRoles.Contains(x.UserRole)) && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationResponse()
             { notificationId = x.NotificationId, notificationContent = x.NotificationContent, notificationAcceptAction = x.NotificationAcceptAction, notificationDeclineAction = x.NotificationDeclineAction, notificationCategoryId = x.NotificationCategoryId,
-                notificationCategoryName = x.NotificationCategory.NotificationCategoryName, isActionable = x.IsActionable, createdDate = x.CreatedDate }).OrderByDescending(x => x.notificationId).ToList().TakeLast(30);
+                notificationCategoryName = x.NotificationCategory.NotificationCategoryName, isActionable = x.IsActionable, createdDate = x.CreatedDate }).OrderByDescending(x => x.notificationId).ToList().Take(30);
             return response;
         }
 
