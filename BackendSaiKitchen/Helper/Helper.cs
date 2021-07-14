@@ -237,8 +237,8 @@ namespace BackendSaiKitchen.Helper
 
         public static string AddPayment(long amount)
         {
-            try { 
-
+            try {
+                amount *= 100;
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
