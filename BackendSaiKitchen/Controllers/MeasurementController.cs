@@ -319,7 +319,7 @@ namespace BackendSaiKitchen.Controllers
             return measurementRepository.FindByCondition(m => m.IsActive == true && m.IsDeleted == false);
         }
 
-        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object ViewMeasurementById(int inquiryWorkscopeId)

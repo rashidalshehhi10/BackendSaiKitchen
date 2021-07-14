@@ -50,7 +50,7 @@
           "Newtonsoft.Json": "13.0.1",
           "Sentry.AspNetCore": "3.5.0",
           "Serilog.Sinks.MSSqlServer": "5.6.0",
-          "Stripe.net": "39.57.0",
+          "Stripe.net": "39.58.0",
           "Swashbuckle.AspNetCore": "6.1.1",
           "System.Collections": "4.3.0",
           "System.Data.Entity.Repository": "2.0.0.1",
@@ -1512,15 +1512,15 @@
           "lib/netstandard2.0/Serilog.Sinks.PeriodicBatching.dll": {}
         }
       },
-      "Stripe.net/39.57.0": {
+      "Stripe.net/39.58.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.Configuration.ConfigurationManager": "5.0.0"
         },
         "runtime": {
           "lib/net5.0/Stripe.net.dll": {
-            "assemblyVersion": "39.57.0.0",
-            "fileVersion": "39.57.0.0"
+            "assemblyVersion": "39.58.0.0",
+            "fileVersion": "39.58.0.0"
           }
         },
         "compile": {
@@ -5004,12 +5004,12 @@
       "path": "serilog.sinks.periodicbatching/2.3.0",
       "hashPath": "serilog.sinks.periodicbatching.2.3.0.nupkg.sha512"
     },
-    "Stripe.net/39.57.0": {
+    "Stripe.net/39.58.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2m2whHAIhf6M8yFBlZ71LUXf7HtO0XsBJcTLOXzJLsYtYYqc1myRIYsegZj546YEiHBs7J4NM2mUdfNkOV6jOg==",
-      "path": "stripe.net/39.57.0",
-      "hashPath": "stripe.net.39.57.0.nupkg.sha512"
+      "sha512": "sha512-qihKrsE+DJj7QElyb6ZjJ3mQvYhZgiahkfOZYH8gtDkNi1Ot152TNayKRDLZ7QSgWOcFsMgTY/Z+3lls2vzGcA==",
+      "path": "stripe.net/39.58.0",
+      "hashPath": "stripe.net.39.58.0.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/6.1.1": {
       "type": "package",

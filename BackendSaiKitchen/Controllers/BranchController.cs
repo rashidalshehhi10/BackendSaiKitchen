@@ -82,7 +82,13 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddBranchRole(BranchRole branchRole)
         {
+            if (branchRole.BranchRoleId == 0) { 
             branchRoleRepository.Create(branchRole);
+            }
+            else
+            {
+                branchRoleRepository.Update(branchRole);
+            }
             context.SaveChanges();
             response.data = branchRole;
             //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();

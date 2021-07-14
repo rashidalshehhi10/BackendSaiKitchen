@@ -81,6 +81,7 @@ namespace SaiKitchenBackend.Controllers
             //{
                 foreach(var payment in inquiry.Payments)
                 {
+                Helper.AddPayment(Convert.ToInt64(payment.PaymentAmount));
                     payment.CreatedDate = Helper.GetDateTime();
                     payment.CreatedBy = Constants.userId;
                     payment.UpdatedBy = Constants.userId;

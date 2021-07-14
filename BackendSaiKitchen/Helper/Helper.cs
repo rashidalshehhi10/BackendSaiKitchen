@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -232,6 +233,26 @@ namespace BackendSaiKitchen.Helper
         {
             foreach (var item in items)
                 action(item);
+        }
+
+        public static string AddPayment(long amount)
+        {
+            try { 
+
+                var paymentIntents = new PaymentIntentService();
+                var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
+                {
+                    Amount = amount,
+                    Currency = "aed",
+                });
+                return paymentIntent.ClientSecret;
+            }
+            catch(Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+
+            return "";
         }
     }
 }

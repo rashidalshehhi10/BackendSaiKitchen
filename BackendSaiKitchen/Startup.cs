@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Sentry.AspNetCore;
 using Serilog.Context;
+using Stripe;
 
 namespace BackendSaiKitchen
 {
@@ -70,6 +71,8 @@ namespace BackendSaiKitchen
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            StripeConfiguration.ApiKey = "sk_test_51JA8pgAtqGclDTLoAv6UT77NclL3nUSuGYSuK1tIM0SfQKOfx7I3hj6offRjpkw9sSztIbQE6OnGOQNBFVYkvlSQ00H2xue74N";
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

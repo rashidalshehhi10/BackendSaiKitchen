@@ -1523,7 +1523,7 @@
           "lib/netstandard2.0/Serilog.Sinks.PeriodicBatching.dll": {}
         }
       },
-      "Stripe.net/39.57.0": {
+      "Stripe.net/39.58.0": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "12.0.3",
@@ -5433,10 +5433,10 @@
         "serilog.sinks.periodicbatching.nuspec"
       ]
     },
-    "Stripe.net/39.57.0": {
-      "sha512": "2m2whHAIhf6M8yFBlZ71LUXf7HtO0XsBJcTLOXzJLsYtYYqc1myRIYsegZj546YEiHBs7J4NM2mUdfNkOV6jOg==",
+    "Stripe.net/39.58.0": {
+      "sha512": "qihKrsE+DJj7QElyb6ZjJ3mQvYhZgiahkfOZYH8gtDkNi1Ot152TNayKRDLZ7QSgWOcFsMgTY/Z+3lls2vzGcA==",
       "type": "package",
-      "path": "stripe.net/39.57.0",
+      "path": "stripe.net/39.58.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -5451,7 +5451,7 @@
         "lib/netstandard2.0/Stripe.net.dll",
         "lib/netstandard2.0/Stripe.net.pdb",
         "lib/netstandard2.0/Stripe.net.xml",
-        "stripe.net.39.57.0.nupkg.sha512",
+        "stripe.net.39.58.0.nupkg.sha512",
         "stripe.net.nuspec"
       ]
     },
@@ -10273,7 +10273,7 @@
       "Newtonsoft.Json >= 13.0.1",
       "Sentry.AspNetCore >= 3.5.0",
       "Serilog.Sinks.MSSqlServer >= 5.6.0",
-      "Stripe.net >= 39.57.0",
+      "Stripe.net >= 39.58.0",
       "Swashbuckle.AspNetCore >= 6.1.1",
       "System.Collections >= 4.3.0",
       "System.Data.Entity.Repository >= 2.0.0.1",
@@ -10405,7 +10405,7 @@
           },
           "Stripe.net": {
             "target": "Package",
-            "version": "[39.57.0, )"
+            "version": "[39.58.0, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
