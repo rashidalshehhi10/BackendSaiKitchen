@@ -22,7 +22,7 @@ namespace BackendSaiKitchen.CustomModel
 
         public string PaymentName { get; set; }
         public string PaymentDetail { get; set; }
-        public int? PaymentAmount { get; set; }
+        public decimal? PaymentAmount { get; set; }
         public int? PaymentTypeId { get; set; }
         public int? PaymentStatusId { get; set; }
         public int? PaymentModeId { get; set; }

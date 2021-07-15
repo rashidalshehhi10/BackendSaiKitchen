@@ -88,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
         static List<File> files = new List<File>();
         static List<IFormFile> formFile = new List<IFormFile>();
 
-        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
@@ -174,6 +174,7 @@ namespace BackendSaiKitchen.Controllers
                      roletypeId,
                      Constants.branchId,
                      (int)notificationCategory.Quotation);
+                    Helper.Helper.AddPayment((long)payment.PaymentAmount);
 
                     //await mailService.SendEmailAsync(new MailRequest()
                     //{
@@ -183,6 +184,7 @@ namespace BackendSaiKitchen.Controllers
                     //    "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId +
                     //        "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId
                     //});
+                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, quotation.AdvancePayment, quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount, quotation.QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
 
                     //await mailService.SendEmailAsync(new MailRequest() { ToEmail = inquiry.Customer.CustomerEmail, Subject = "Quotation Approval of Inquiry IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, Body = "Review Quotation at " + Constants.CRMBaseUrl + "/viewquotation.html?inquiryId=" + inquiry.InquiryId });
