@@ -82,11 +82,16 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddBranchRole(BranchRole branchRole)
         {
-            if (branchRole.BranchRoleId == 0) { 
-            branchRoleRepository.Create(branchRole);
+            if (branchRole.BranchRoleId == 0)
+            {
+                branchRole.IsActive = true;
+                branchRole.IsDeleted = false;
+                branchRoleRepository.Create(branchRole);
             }
             else
             {
+                branchRole.IsActive = true;
+                branchRole.IsDeleted = false;
                 branchRoleRepository.Update(branchRole);
             }
             context.SaveChanges();
