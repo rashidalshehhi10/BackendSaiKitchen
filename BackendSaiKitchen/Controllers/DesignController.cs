@@ -87,7 +87,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
@@ -117,15 +117,16 @@ namespace BackendSaiKitchen.Controllers
                 if (inquiry != null) { 
                 try
                 {
-                    //await mailService.SendEmailAsync(new MailRequest()
-                    //{
-                    //    ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail,
-                    //    Subject = "Design Approval of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                    //    Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryId=" + inquiry.InquiryId +
-                    //    "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiry.InquiryId +
-                    //        "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiry.InquiryId
+                        //await mailService.SendEmailAsync(new MailRequest()
+                        //{
+                        //    ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail,
+                        //    Subject = "Design Approval of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        //    Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryId=" + inquiry.InquiryId +
+                        //    "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiry.InquiryId +
+                        //        "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiry.InquiryId
 
-                    //});
+                        //});
+                        inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                         await mailService.SendDesignEmailAsync(inquiry.Customer.CustomerEmail,inquiry.InquiryCode, Constants.CRMBaseUrl + "/viewdesign.html?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiry.InquiryId) ;
 
                     }

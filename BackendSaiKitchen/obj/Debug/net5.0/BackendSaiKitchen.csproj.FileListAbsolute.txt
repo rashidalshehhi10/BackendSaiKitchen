@@ -233,4 +233,6 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKi
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\ref\BackendSaiKitchen.dll
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.pdb
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.genruntimeconfig.cache
-D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.csproj.AssemblyReference.cache
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\attach.png
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\DesignReviewTemplate.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\QuotationApprovalTemplate.html
