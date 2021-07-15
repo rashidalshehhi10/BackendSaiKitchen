@@ -87,7 +87,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
+        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
