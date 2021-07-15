@@ -143,6 +143,36 @@ namespace BackendSaiKitchen.Helper
             }
         }
 
+        public async Task SendDesignEmailAsync(String toEmail, String inquiryCode, String reviewDesignURL, String approveDesignURL, String rejectDesignURL)
+        {
+            try
+            {
+                string FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\DesignReviewTemplate.html";
+                StreamReader str = new StreamReader(FilePath);
+                string MailText = str.ReadToEnd();
+                str.Close();
+                MailText = MailText.Replace("[ApproveDesignURL]", approveDesignURL).Replace("[RejectDesignURL]", rejectDesignURL).Replace("[ReviewDesignURL]", reviewDesignURL);
+                var email = new MimeMessage();
+                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = "New Inquiry";
+                var builder = new BodyBuilder();
+                builder.HtmlBody = MailText;
+                email.Body = builder.ToMessageBody();
+                using var smtp = new SmtpClient();
+                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+                await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+            }
+
+            catch (Exception ex)
+            {
+
+                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+            }
+        }
+
 
     }
 }
