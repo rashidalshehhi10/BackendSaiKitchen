@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
 
-        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
