@@ -28,7 +28,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoleById(int branchRoleId)
@@ -77,7 +77,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddBranchRole(BranchRole branchRole)
@@ -90,12 +90,20 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                branchRole.IsActive = true;
-                branchRole.IsDeleted = false;
-                branchRoleRepository.Update(branchRole);
+              var oldBranchrole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRole.BranchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                oldBranchrole.BranchRoleName = branchRole.BranchRoleName;
+                oldBranchrole.BranchRoleDescription = branchRole.BranchRoleDescription;
+                oldBranchrole.RoleTypeId = branchRole.RoleTypeId;
+                oldBranchrole.PermissionRoles = branchRole.PermissionRoles;
+                oldBranchrole.RoleHeads = branchRole.RoleHeads;
+                oldBranchrole.IsActive = true;
+                oldBranchrole.IsDeleted = false;
+
+
+                branchRoleRepository.Update(oldBranchrole);
             }
             context.SaveChanges();
-            response.data = branchRole;
+            response.data = "";
             //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();
             return response;
         }
