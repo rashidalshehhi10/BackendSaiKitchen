@@ -132,9 +132,17 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteBranchRole(int branchRoleId)
         {
-            BranchRole branchRole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId).FirstOrDefault();
+            BranchRole branchRole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId)
+                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.User).FirstOrDefault();
             if (branchRole != null)
             {
+                
+                foreach (var userrole in branchRole.UserRoles)
+                {
+                    userRoleRepository.Delete(userrole);
+                    userRepository.Delete(userrole.User);
+                }
                 branchRoleRepository.Delete(branchRole);
                 context.SaveChanges();
                 response.data = "Deleted";
@@ -147,14 +155,22 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+
         [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public Object DeleteBranch(int branchId)
         {
-            Branch branch = branchRepository.FindByCondition(x => x.BranchId == branchId).FirstOrDefault();
+            Branch branch = branchRepository.FindByCondition(x => x.BranchId == branchId)
+                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.User).FirstOrDefault();
             if (branch != null)
             {
+                foreach (var userrole in branch.UserRoles)
+                {
+                    userRoleRepository.Delete(userrole);
+                    userRepository.Delete(userrole.User);
+                }
                 branchRepository.Delete(branch);
                 context.SaveChanges();
                 response.data = "Deleted";
