@@ -4,6 +4,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SaiKitchenBackend.Controllers
@@ -27,14 +28,14 @@ namespace SaiKitchenBackend.Controllers
             response.data = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
-
+        Dictionary<object, object> dic = new Dictionary<object, object>();
         //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoleById(int branchRoleId)
         {
 
-            response.data = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            var branchRole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             //var permissionRole = permissionRoleRepository.GetAll().Where(x => x.IsActive == true && x.IsDeleted == false).Join(permissionRepository.GetAll(),
             //         permissionRole => permissionRole.PermissionId,
             //         permission => permission.PermissionId,
@@ -43,6 +44,12 @@ namespace SaiKitchenBackend.Controllers
             //                    branchRole => branchRole.BranchRoleId,
             //                    roleHead => roleHead.EmployeeRoleId,
             //                    (branchRole, roleHead) => new { branchRole = branchRole, roleHead = roleHead }).Where(x=>x.branchRole.BranchRoleId==x.roleHead.EmployeeRoleId).ToList();
+
+           var roleHeadsId= branchRole.RoleHeads.Select(x => x.HeadRoleId).ToList();
+           var roleHeads = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId));
+            dic.Add("branchRole",branchRole);
+            dic.Add("roleHeads",roleHeads);
+            response.data = dic;
             return response;
         }
 
