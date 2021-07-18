@@ -128,7 +128,8 @@ namespace SaiKitchenBackend.Controllers
         public void sendNotificationToHead(string content, bool isActionable, String acceptAction, String declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
         {
             var branchRoleIds = branchRoleRepository.FindByCondition(x => roleTypeId.Contains(x.RoleTypeId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.BranchRoleId).ToList();
-            List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault()) && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
+            List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault())
+            && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
             {
                 userRoleId = x.UserRoleId,
                 user = x.User,
@@ -179,7 +180,7 @@ namespace SaiKitchenBackend.Controllers
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
             }
-
+            context.SaveChanges();
 
         }
 
