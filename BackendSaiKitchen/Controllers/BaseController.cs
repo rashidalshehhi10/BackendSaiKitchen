@@ -131,6 +131,7 @@ namespace SaiKitchenBackend.Controllers
             List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault()) && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
             {
                 userRoleId = x.UserRoleId,
+                user = x.User,
                 NotificationContent = content,
                 NotificationCategoryId = categoryId,
                 IsActionable = isActionable,
@@ -152,6 +153,7 @@ namespace SaiKitchenBackend.Controllers
                 notification.NotificationDeclineAction = notificationModel.NotificationDeclineAction;
                 notification.UserRoleId = notificationModel.userRoleId;
                 notification.NotificationCategoryId = notificationModel.NotificationCategoryId;
+                notification.User = notificationModel.user;
                 notification.UserRoleId = notificationModel.userRoleId;
                 notification.BranchId = notificationModel.BranchId;
                 notification.IsActive = true;
@@ -176,8 +178,6 @@ namespace SaiKitchenBackend.Controllers
 
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
-
-                context.SaveChanges();
             }
 
 
