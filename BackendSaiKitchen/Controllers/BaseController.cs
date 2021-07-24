@@ -147,6 +147,8 @@ namespace SaiKitchenBackend.Controllers
             //List<NotificationModel> notifications = notificationModel.ToList();
             foreach (var notificationModel in notificationsModel)
             {
+                Notification notification = new Notification();
+
                 notification.NotificationContent = notificationModel.NotificationContent;
                 notification.IsActionable = notificationModel.IsActionable;
                 notification.IsRead = false;
