@@ -21,6 +21,8 @@ namespace BackendSaiKitchen.Models
         public string TotalAmount { get; set; }
         public string Vat { get; set; }
         public string Discount { get; set; }
+        public bool? IsInstallment { get; set; }
+        public int? NoOfInstallment { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }

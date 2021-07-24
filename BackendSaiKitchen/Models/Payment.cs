@@ -19,6 +19,7 @@ namespace BackendSaiKitchen.Models
         public int? PaymentTypeId { get; set; }
         public int? PaymentStatusId { get; set; }
         public int? PaymentModeId { get; set; }
+        public string PaymentExpectedDate { get; set; }
         public int? FeesId { get; set; }
         public int? InquiryId { get; set; }
         public bool? IsActive { get; set; }

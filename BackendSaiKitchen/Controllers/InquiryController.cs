@@ -353,12 +353,10 @@ namespace SaiKitchenBackend.Controllers
                     var userRoles = userRoleRepository.FindByCondition(x => inquiry.AddedByNavigation.UserRoles.Where(y => y.UserRoleId == x.UserRoleId).Any() && x.IsActive == true && x.IsDeleted == false).Include(x => x.BranchRole).Include(x => x.BranchRole.RoleHeads).ToList();
                     var roleHeadsId = userRoles.FirstOrDefault().BranchRole.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.HeadRoleId).ToList();
                     var roleTypeId = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.RoleTypeId).ToList();
-
                     sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
-
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
             }

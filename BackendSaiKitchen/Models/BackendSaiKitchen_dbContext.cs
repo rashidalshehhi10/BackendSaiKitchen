@@ -721,6 +721,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.PaymentDetail).HasMaxLength(500);
 
+                entity.Property(e => e.PaymentExpectedDate).HasMaxLength(50);
+
                 entity.Property(e => e.PaymentName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
