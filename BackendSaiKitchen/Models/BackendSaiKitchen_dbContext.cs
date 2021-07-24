@@ -719,6 +719,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.PaymentAmount).HasColumnType("decimal(18, 0)");
 
+                entity.Property(e => e.PaymentAmountinPercentage).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.PaymentDetail).HasMaxLength(500);
 
                 entity.Property(e => e.PaymentExpectedDate).HasMaxLength(50);

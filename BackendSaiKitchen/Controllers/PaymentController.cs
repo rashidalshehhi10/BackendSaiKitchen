@@ -44,9 +44,7 @@ namespace BackendSaiKitchen.Controllers
                         UpdatedDate = Helper.Helper.GetDateTime(),
                         CreatedBy = Constants.userId,
                         CreatedDate = Helper.Helper.GetDateTime(),
-
                     });
-
                 }
                 else
                 {
