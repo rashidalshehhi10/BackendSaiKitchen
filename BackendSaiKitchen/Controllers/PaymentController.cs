@@ -72,7 +72,7 @@ namespace BackendSaiKitchen.Controllers
             _payment.UpdatedBy = payment.UpdatedBy;
             _payment.PaymentName = payment.PaymentName;
             _payment.PaymentStatus = payment.PaymentStatus;
-            _payment.PaymentStatusId = (int)paymentstatus.WaitingofApproval;
+            _payment.PaymentStatusId = (int)paymentstatus.PaymentCreated;
             _payment.PaymentTypeId = payment.PaymentTypeId;
             _payment.InquiryId = payment.InquiryId;
             _payment.PaymentModeId = payment.PaymentModeId;
@@ -96,8 +96,8 @@ namespace BackendSaiKitchen.Controllers
                 
                 try
                 {
-                    var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.WaitingofApproval).FirstOrDefault();
-                    payment.PaymentStatusId = (int)paymentstatus.Approved;
+                    var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval).FirstOrDefault();
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     inquiryRepository.Update(inquiry);
                     context.SaveChanges();
 
@@ -128,8 +128,8 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.WaitingofApproval).FirstOrDefault();
-                    payment.PaymentStatusId = (int)paymentstatus.Rejected;
+                    var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval).FirstOrDefault();
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentRejected;
                     inquiryRepository.Update(inquiry);
                     context.SaveChanges();
 

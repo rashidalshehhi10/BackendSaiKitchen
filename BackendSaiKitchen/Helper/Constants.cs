@@ -127,10 +127,16 @@ namespace BackendSaiKitchen.Helper
 
     public enum paymentstatus
     {
-        Pending = 1,
-        WaitingofApproval = 2,
-        Approved = 3,
-        Rejected = 4
+        PaymentCreated = 1,
+        PaymentPending = 2,
+        PaymentWaitingofApproval = 3,
+        PaymentApproved = 4,
+        PaymentRejected = 5,
+        InstallmentCreated = 6,
+        InstallmentPending = 7,
+        InstallmentWaitingofApproval = 8,
+        InstallmentApproved = 9,
+        InstallmentRejected = 10
     }
 
     public enum paymenttype
