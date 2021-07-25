@@ -26,4 +26,10 @@ namespace BackendSaiKitchen.CustomModel
 
 
     }
+
+    public class UpdateQuotationStatus
+    {
+        public int inquiryId { get; set; }
+        public string reason { get; set; }
+    }
 }

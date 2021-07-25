@@ -326,5 +326,69 @@ namespace BackendSaiKitchen.Controllers
             return response;
 
         }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientApproveQuotation(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+                foreach (var payment in inquiry.Payments)
+                {
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                }
+
+                inquiryRepository.Update(inquiry);
+                response.data = inquiry;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = false;
+                response.errorMessage = "inquiry does not exist";
+            }
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientRejectQuotation(UpdateQuotationStatus updateQuotation)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                foreach (var payment in inquiry.Payments)
+                {
+                    payment.IsActive = false;
+                   // payment.PaymentStatusId =(int)paymentstatus.PaymentRejected;
+                }
+
+                foreach (var quotation in inquiry.Quotations)
+                {
+                    quotation.IsActive = false;
+                    quotation.Description = updateQuotation.reason;
+                }
+                inquiryRepository.Update(inquiry);
+                response.data = inquiry;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Doesn't Exist";
+            }
+            
+            return response;
+        }
     }
 }
