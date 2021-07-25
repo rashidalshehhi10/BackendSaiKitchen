@@ -304,8 +304,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
         {
-            //var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
-            //    .SelectMany(x => x.Customer.CustomerName x.Customer.CustomerEmail);
+            response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+                .Select(x => new ViewQuotation {CustomerName=x.Customer.CustomerName ,CustomerEmail = x.Customer.CustomerEmail, CustomerContact = x.Customer.CustomerContact,BuildingAddress=x.Building.BuildingAddress,CreatedDate=x.Quotations.OrderBy(y=>y.QuotationId).LastOrDefault(y =>y.IsActive==true && y.IsDeleted==false).CreatedDate });
             return response;
 
         }
