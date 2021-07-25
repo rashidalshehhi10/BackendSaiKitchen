@@ -13,10 +13,10 @@ namespace BackendSaiKitchen.CustomModel
         public string SerialNo { get; set; }
         public string Description { get; set; }
         public int Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
-        public decimal Discount { get; set; }//promoCode
-        public decimal Amount { get; set; }
-        public decimal Vat { get; set; }
-        public decimal MeasurementFees { get; set; }//payment.paymnettypeid ==1.measurement.amount 
+        public string Discount { get; set; }//promoCode
+        public string Amount { get; set; }
+        public string Vat { get; set; }
+        public string MeasurementFees { get; set; }//payment.paymnettypeid ==1.measurement.amount 
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }

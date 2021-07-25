@@ -305,7 +305,24 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
         {
             response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
-                .Select(x => new ViewQuotation {CustomerName=x.Customer.CustomerName ,CustomerEmail = x.Customer.CustomerEmail, CustomerContact = x.Customer.CustomerContact,BuildingAddress=x.Building.BuildingAddress,CreatedDate=x.Quotations.OrderBy(y=>y.QuotationId).LastOrDefault(y =>y.IsActive==true && y.IsDeleted==false).CreatedDate });
+                .Select(x => new ViewQuotation
+                {
+                    InvoiceNo = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
+                    CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
+                    ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
+                    //SerialNo =
+                    Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
+                    //Quantity = x.InquiryWorkscopes.Where(y => y.InquiryWorkscopeId ==)
+                    Discount = x.PromoDiscount,
+                    Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
+                    Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
+                    MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BuildingAddress = x.Building.BuildingAddress,
+                   // inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
+                }); 
             return response;
 
         }
