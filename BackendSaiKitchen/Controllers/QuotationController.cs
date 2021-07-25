@@ -152,7 +152,7 @@ namespace BackendSaiKitchen.Controllers
                     }
                     inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
-                    if ((bool)customQuotation.IsInstallment)
+                    if (customQuotation.IsInstallment==true)
                     {
 
                         for (int i = 0; i < customQuotation.Payments.Count; i++)
