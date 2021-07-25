@@ -20,7 +20,7 @@ namespace SaiKitchenBackend.Controllers
         public async Task<object> AddInquiryAsync(Inquiry inquiry)
         {
             inquiry.InquiryStartDate = Helper.GetDateTime();
-            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId==inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.BranchId == inquiry.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (customer != null)
             {
                 customer.CustomerName = inquiry.Customer.CustomerName;
@@ -41,7 +41,7 @@ namespace SaiKitchenBackend.Controllers
             {
                 try
                 {
-                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact  && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    Customer anotherBranchCustomer = customerRepository.FindByCondition(x => x.CustomerContact == inquiry.Customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                     if (anotherBranchCustomer != null)
                     {
                         customer = anotherBranchCustomer;
@@ -79,15 +79,15 @@ namespace SaiKitchenBackend.Controllers
             }
             //if (inquiry.Payments.Count > 0)
             //{
-                foreach(var payment in inquiry.Payments)
-                {
-                payment.PaymentStatusId= (int)paymentstatus.PaymentApproved;
+            foreach (var payment in inquiry.Payments)
+            {
+                payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                 Helper.AddPayment((long)payment.PaymentAmount);
-                    payment.CreatedDate = Helper.GetDateTime();
-                    payment.CreatedBy = Constants.userId;
-                    payment.UpdatedBy = Constants.userId;
-                    payment.UpdatedDate = Helper.GetDateTime();
-                }
+                payment.CreatedDate = Helper.GetDateTime();
+                payment.CreatedBy = Constants.userId;
+                payment.UpdatedBy = Constants.userId;
+                payment.UpdatedDate = Helper.GetDateTime();
+            }
             //}
             inquiryRepository.Create(inquiry);
             context.SaveChanges();
@@ -202,7 +202,7 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
-                IsMeasurementProvidedByCustomer=x.Inquiry.IsMeasurementProvidedByCustomer,
+                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,

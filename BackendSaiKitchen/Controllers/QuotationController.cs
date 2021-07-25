@@ -152,17 +152,17 @@ namespace BackendSaiKitchen.Controllers
                     }
                     inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
-                    if (customQuotation.IsInstallment==true)
+                     if (customQuotation.IsInstallment==true)
                     {
 
                         for (int i = 0; i < customQuotation.Payments.Count; i++)
                         {
                             Payment payment = new Payment();
-                            var pay = customQuotation.Payments[0];
+                            var pay = customQuotation.Payments[i];
                             percent += (decimal)pay.PaymentAmountinPercentage;
                             if (customQuotation.Payments.Count - 1 == i)
                             {
-                                payment.PaymentAmountinPercentage += (100 - percent);
+                                pay.PaymentAmountinPercentage += (100 - percent);
                             }
                             payment.PaymentAmountinPercentage = pay.PaymentAmountinPercentage;
                             payment.InquiryId = customQuotation.InquiryId;
