@@ -300,6 +300,14 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> ViewQuotationForCustomer(int inquiryId)
+        {
+            //var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+            //    .SelectMany(x => x.Customer.CustomerName x.Customer.CustomerEmail);
+            return response;
 
+        }
     }
 }
