@@ -150,6 +150,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     }
+                    inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
                     if (customQuotation.IsInstallment == true)
