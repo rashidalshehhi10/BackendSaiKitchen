@@ -162,7 +162,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AcceptMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designPending;
@@ -194,7 +194,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;

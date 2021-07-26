@@ -53,13 +53,14 @@ namespace BackendSaiKitchen.CustomModel
     }
     public class UpdateInquiryWorkscopeStatusModel
     {
-        public int InquiryWorkscopeId { get; set; }
+        public int Id { get; set; }
         public int? MeasurementAssignedTo { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementComment { get; set; }
         public int? DesignAssignedTo { get; set; }
         public string DesignScheduleDate { get; set; }
         public string DesignComment { get; set; }
+        public int FeedBackReaction { get; set; }
     }
     public class WorkscopeInquiry
     {

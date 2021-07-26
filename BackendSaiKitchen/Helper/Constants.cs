@@ -155,6 +155,17 @@ namespace BackendSaiKitchen.Helper
         PaybyCard = 3,
         OnlinePayment = 4
     }
+
+    public enum FeedBackReaction
+    {
+        Exhausted = 1,
+        Angery = 2,
+        Sad = 3,
+        Neutral = 4,
+        Satisfied = 5,
+        Cool = 6,
+        Blessed = 7
+    }
 }
 public class ServiceResponse
 {

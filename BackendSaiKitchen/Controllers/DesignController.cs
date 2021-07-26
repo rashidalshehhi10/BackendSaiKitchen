@@ -92,7 +92,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval;
@@ -152,7 +152,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.InquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
@@ -242,10 +242,10 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public object ClientRejectDesign(int id)
+        public object ClientRejectDesign(UpdateInquiryWorkscopeStatusModel updateInquiry)
         {
 
-            var inquiry = inquiryRepository.FindByCondition(i => i.InquiryId == id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(i => i.InquiryId == updateInquiry.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope).FirstOrDefault();
 
             if (inquiry != null)
             {
@@ -253,6 +253,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
                     inquiryWorkscope.IsDesignApproved = false;
+                    inquiryWorkscope.FeedbackReaction = updateInquiry.FeedBackReaction;
                 }
 
                 inquiryRepository.Update(inquiry);
