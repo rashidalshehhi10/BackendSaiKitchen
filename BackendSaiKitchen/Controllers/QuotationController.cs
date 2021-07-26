@@ -312,7 +312,7 @@ namespace BackendSaiKitchen.Controllers
                     ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
                     //SerialNo =
                     Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
-                    //Quantity = x.InquiryWorkscopes.Where(y => y.InquiryWorkscopeId ==)
+                   // Quantity = x.InquiryWorkscopes.Where(y => y.WorkscopeId == y.Workscope.WorkScopeId).Count(),
                     Discount = x.PromoDiscount,
                     Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
@@ -321,12 +321,12 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BuildingAddress = x.Building.BuildingAddress,
+                    //inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive==true && y.IsDeleted ==false && y.WorkscopeId == y.Workscope.WorkScopeId).Workscope.WorkScopeName
+                });
                    // inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
-                }); 
             return response;
 
         }
-
 
         [HttpPost]
         [Route("[action]")]

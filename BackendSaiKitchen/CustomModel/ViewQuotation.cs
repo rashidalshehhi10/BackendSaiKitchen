@@ -12,7 +12,7 @@ namespace BackendSaiKitchen.CustomModel
         public string ValidDate { get; set; }
         public string SerialNo { get; set; }
         public string Description { get; set; }
-        public int Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
+        public List<string> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public string Discount { get; set; }//promoCode
         public string Amount { get; set; }
         public string Vat { get; set; }
