@@ -183,7 +183,7 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedDate = Helper.Helper.GetDateTime(),
 
                             });
-                            Helper.Helper.AddPayment((long)paymentAmount);
+                            Helper.Helper.AddPayment(paymentAmount);
 
                         }
                     }
@@ -207,7 +207,7 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedDate = Helper.Helper.GetDateTime(),
 
                             });
-                            Helper.Helper.AddPayment((long)pay.PaymentAmount);
+                            Helper.Helper.AddPayment(pay.PaymentAmount);
                         }
                     }
 
@@ -304,7 +304,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
         {
-            response.data = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+            inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList().ForEach(c => {
+                int a = c.InquiryWorkscopeId;
+            });
+
+            ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
                     InvoiceNo = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
@@ -312,7 +316,6 @@ namespace BackendSaiKitchen.Controllers
                     ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
                     //SerialNo =
                     Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
-                   // Quantity = x.InquiryWorkscopes.Where(y => y.WorkscopeId == y.Workscope.WorkScopeId).Count(),
                     Discount = x.PromoDiscount,
                     Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
@@ -321,9 +324,20 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BuildingAddress = x.Building.BuildingAddress,
-                    //inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive==true && y.IsDeleted ==false && y.WorkscopeId == y.Workscope.WorkScopeId).Workscope.WorkScopeName
-                });
-                   // inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
+                    //Quantity = x.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(y => y).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
+
+            //inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive==true && y.IsDeleted ==false && y.WorkscopeId == y.Workscope.WorkScopeId).Workscope.WorkScopeName
+        }).FirstOrDefault();
+
+            var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
+           
+            //.Select(z=>z.Key
+
+        //    ));
+        //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
+        //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
+        //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
+        response.data = viewQuotation;
             return response;
 
         }
@@ -370,7 +384,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.IsActive = false;
-                   // payment.PaymentStatusId =(int)paymentstatus.PaymentRejected;
+                    // payment.PaymentStatusId =(int)paymentstatus.PaymentRejected;
                 }
 
                 foreach (var quotation in inquiry.Quotations)
@@ -387,7 +401,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Doesn't Exist";
             }
-            
+
             return response;
         }
     }

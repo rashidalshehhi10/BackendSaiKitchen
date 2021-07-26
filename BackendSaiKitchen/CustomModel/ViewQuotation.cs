@@ -10,9 +10,7 @@ namespace BackendSaiKitchen.CustomModel
         public string InvoiceNo { get; set; } // "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
         public string CreatedDate { get; set; }
         public string ValidDate { get; set; }
-        public string SerialNo { get; set; }
         public string Description { get; set; }
-        public List<string> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public string Discount { get; set; }//promoCode
         public string Amount { get; set; }
         public string Vat { get; set; }
@@ -21,10 +19,16 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
+        public String inquiryWorkScopeNames { get; set; }
+        public List<object> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
+        public List<InvoiceDetail> invoiceDetails { get; set; }
 
-        public List<string> inquiryWorkScopeNames { get; set; }
+    }
+    public class InvoiceDetail
+    {
 
-
+        public String inquiryWorkScopeNames { get; set; }
+        public String Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
     }
 
     public class UpdateQuotationStatus

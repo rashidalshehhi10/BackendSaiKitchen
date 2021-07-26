@@ -235,14 +235,14 @@ namespace BackendSaiKitchen.Helper
                 action(item);
         }
 
-        public static string AddPayment(long amount)
+        public static string AddPayment(decimal? amount)
         {
             try {
                 amount *= 100;
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
-                    Amount = amount,
+                    Amount = (long?)amount,
                     Currency = "aed",
                 });
                 return paymentIntent.ClientSecret;

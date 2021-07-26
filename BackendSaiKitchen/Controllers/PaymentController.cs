@@ -18,6 +18,12 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
 
+        //[HttpPost]
+        //[Route("[action]")]
+        //public void TestPayment(decimal? amount)
+        //{
+        //    Helper.Helper.AddPayment(amount);
+        //}
         
         [HttpPost]
         [Route("[action]")]
