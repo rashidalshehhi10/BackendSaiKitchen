@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.Models
         public string DesignScheduleDate { get; set; }
         public bool? IsDesignApproved { get; set; }
         public string Comments { get; set; }
+        public int? FeedbackReaction { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
