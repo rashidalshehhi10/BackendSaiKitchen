@@ -86,7 +86,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetMeasurementUsers(int branchId)
@@ -97,7 +97,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetDesignUsers(int branchId)

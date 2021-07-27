@@ -339,6 +339,7 @@ namespace BackendSaiKitchen.Controllers
              {
                  Count = count,
              });
+
           //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
           //  {
           //      Quantity = count.ToString(),
