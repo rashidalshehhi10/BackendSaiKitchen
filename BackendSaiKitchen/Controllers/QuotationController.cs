@@ -304,9 +304,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
         {
-            inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList().ForEach(c => {
-                int a = c.InquiryWorkscopeId;
-            });
+            //inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList().ForEach(c => {
+            //    int a = c.InquiryWorkscopeId;
+            //});
+            List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
 
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
@@ -324,21 +325,21 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BuildingAddress = x.Building.BuildingAddress,
-                    //Quantity = x.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(y => y).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
+                    Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
+                    Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
+                    inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList()
+                }).FirstOrDefault();
 
-            //inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive==true && y.IsDeleted ==false && y.WorkscopeId == y.Workscope.WorkScopeId).Workscope.WorkScopeName
-        }).FirstOrDefault();
 
 
-
-         var i=   (from xx in context.InquiryWorkscopes
-             group xx.InquiryWorkscopeId by xx into g
-             let count = g.Count()
-             orderby count descending
-             select new
-             {
-                 Count = count,
-             });
+         //var i=   (from xx in context.InquiryWorkscopes
+         //    group xx.InquiryWorkscopeId by xx into g
+         //    let count = g.Count()
+         //    orderby count descending
+         //    select new
+         //    {
+         //        Count = count,
+         //    });
 
           //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
           //  {

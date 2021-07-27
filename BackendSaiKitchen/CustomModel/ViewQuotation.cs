@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendSaiKitchen.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,9 +20,10 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
-        public String inquiryWorkScopeNames { get; set; }
-        public List<object> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
+        public List<string> inquiryWorkScopeNames { get; set; }
+        public List<int> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public List<InvoiceDetail> invoiceDetails { get; set; }
+        public ICollection<File> Files { get; set; }
 
     }
     public class InvoiceDetail
