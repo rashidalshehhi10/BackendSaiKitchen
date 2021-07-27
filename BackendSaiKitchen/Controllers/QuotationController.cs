@@ -329,7 +329,22 @@ namespace BackendSaiKitchen.Controllers
             //inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive==true && y.IsDeleted ==false && y.WorkscopeId == y.Workscope.WorkScopeId).Workscope.WorkScopeName
         }).FirstOrDefault();
 
-            var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
+
+
+         var i=   (from xx in context.InquiryWorkscopes
+             group xx.InquiryWorkscopeId by xx into g
+             let count = g.Count()
+             orderby count descending
+             select new
+             {
+                 Count = count,
+             });
+          //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
+          //  {
+          //      Quantity = count.ToString(),
+          //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
+          //  }),
+            //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
            
             //.Select(z=>z.Key
 

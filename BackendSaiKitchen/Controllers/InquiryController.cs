@@ -164,7 +164,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetWorkscope()
