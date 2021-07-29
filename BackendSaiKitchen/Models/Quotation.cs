@@ -29,6 +29,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string CreatedDate { get; set; }
         public string UpdatedDate { get; set; }
+        public int? FeedBackReactionId { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
         public virtual ICollection<File> Files { get; set; }

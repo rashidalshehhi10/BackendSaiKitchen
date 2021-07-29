@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -308,7 +309,7 @@ namespace BackendSaiKitchen.Controllers
             //    int a = c.InquiryWorkscopeId;
             //});
             List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
-
+            List<TermsAndCondition> terms = termsAndConditionsRepositry.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
@@ -325,18 +326,30 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BuildingAddress = x.Building.BuildingAddress,
+                    BranchAddress =x.Branch.BranchAddress,
+                    BranchContact =x.Branch.BranchContact,
+                    TermsAndConditionsDetail = terms,
                     Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
                     inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
                 }).FirstOrDefault();
-            viewQuotation.invoiceDetails = new List<InvoiceDetail>();
-            for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
+            try
             {
-                viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
-            }
+                viewQuotation.invoiceDetails = new List<InvoiceDetail>();
+                for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
+                {
+                    viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
+                }
 
+            }
+            catch (Exception ex)
+            {
+
+                Serilog.Log.Error(ex.Message);
+            }
+            
            
             //var i=   (from xx in context.InquiryWorkscopes
             //    group xx.InquiryWorkscopeId by xx into g
@@ -414,6 +427,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     quotation.IsActive = false;
                     quotation.Description = updateQuotation.reason;
+                    quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                 }
                 inquiryRepository.Update(inquiry);
                 response.data = inquiry;

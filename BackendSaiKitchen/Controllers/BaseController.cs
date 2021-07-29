@@ -49,6 +49,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<Measurement> measurementRepository;
         public Repository<File> fileRepository;
         public Repository<Quotation> quotationRepositry;
+        public Repository<TermsAndCondition> termsAndConditionsRepositry;
         public Dictionary<object, object> dicResponse = new Dictionary<object, object>();
 
 
@@ -76,6 +77,7 @@ namespace SaiKitchenBackend.Controllers
             fileRepository = new Repository<File>(context);
             accesoryRepository = new Repository<Accesory>(context);
             quotationRepositry = new Repository<Quotation>(context);
+            termsAndConditionsRepositry = new Repository<TermsAndCondition>(context);
 
         }
         override

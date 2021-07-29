@@ -52,6 +52,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
+        public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<WardrobeDesignInformation> WardrobeDesignInformations { get; set; }
@@ -924,6 +925,17 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.RoleTypeName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<TermsAndCondition>(entity =>
+            {
+                entity.HasKey(e => e.TermsAndConditionsId);
+
+                entity.Property(e => e.TermsAndConditionsId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });

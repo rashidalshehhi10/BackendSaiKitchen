@@ -20,6 +20,9 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
+        public string BranchAddress { get; set; }
+        public string BranchContact { get; set; }
+        public List<TermsAndCondition> TermsAndConditionsDetail { get; set; }
         public List<string> inquiryWorkScopeNames { get; set; }
         public List<int> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public List<InvoiceDetail> invoiceDetails { get; set; }
@@ -37,5 +40,6 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         public string reason { get; set; }
+        public int FeedBackReactionId { get; set; }
     }
 }
