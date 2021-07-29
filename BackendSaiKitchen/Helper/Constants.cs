@@ -100,7 +100,8 @@ namespace BackendSaiKitchen.Helper
         waitingForMeasurmenetFees = 31,
         waitingForAdvance = 32,
         waitingForBeforeDeliveryPayment = 33,
-        waitingForAfterDeliveryPayment = 34
+        waitingForAfterDeliveryPayment = 34,
+        inquiryCompleted =35
     }
 
     public enum roleType

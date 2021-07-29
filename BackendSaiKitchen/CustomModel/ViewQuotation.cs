@@ -24,7 +24,7 @@ namespace BackendSaiKitchen.CustomModel
         public List<int> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public List<InvoiceDetail> invoiceDetails { get; set; }
         public ICollection<File> Files { get; set; }
-
+        public string TotalAmount { get; set; }
     }
     public class InvoiceDetail
     {
