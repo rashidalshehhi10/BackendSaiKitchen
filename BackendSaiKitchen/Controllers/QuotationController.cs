@@ -330,33 +330,37 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
-                }).FirstOrDefault();  
+                }).FirstOrDefault();
+            viewQuotation.invoiceDetails = new List<InvoiceDetail>();
+            for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
+            {
+                viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
+            }
 
-
-
-         //var i=   (from xx in context.InquiryWorkscopes
-         //    group xx.InquiryWorkscopeId by xx into g
-         //    let count = g.Count()
-         //    orderby count descending
-         //    select new
-         //    {
-         //        Count = count,
-         //    });
-
-          //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
-          //  {
-          //      Quantity = count.ToString(),
-          //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
-          //  }),
-            //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
            
+            //var i=   (from xx in context.InquiryWorkscopes
+            //    group xx.InquiryWorkscopeId by xx into g
+            //    let count = g.Count()
+            //    orderby count descending
+            //    select new
+            //    {
+            //        Count = count,
+            //    });
+
+            //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
+            //  {
+            //      Quantity = count.ToString(),
+            //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
+            //  }),
+            //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
+
             //.Select(z=>z.Key
 
-        //    ));
-        //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
-        //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
-        //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
-        response.data = viewQuotation;
+            //    ));
+            //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
+            //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
+            //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
+            response.data = viewQuotation;
             return response;
 
         }

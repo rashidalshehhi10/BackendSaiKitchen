@@ -30,7 +30,7 @@ namespace BackendSaiKitchen.CustomModel
     {
 
         public String inquiryWorkScopeNames { get; set; }
-        public String Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
+        public int Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
     }
 
     public class UpdateQuotationStatus
