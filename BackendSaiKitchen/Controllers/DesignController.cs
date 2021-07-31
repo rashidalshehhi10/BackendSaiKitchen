@@ -205,7 +205,7 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object ViewDesignById(int inquiryWorkscopeId)
