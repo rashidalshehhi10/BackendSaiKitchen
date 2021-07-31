@@ -53,6 +53,9 @@
     <None Update="EmailTemplate\attach.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="EmailTemplate\DesignReviewTemplate - Copy.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="EmailTemplate\DesignReviewTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

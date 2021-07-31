@@ -151,7 +151,8 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
-                MailText = MailText.Replace("[ApproveDesignURL]", approveDesignURL).Replace("[RejectDesignURL]", rejectDesignURL).Replace("[ReviewDesignURL]", reviewDesignURL);
+                MailText = MailText.Replace("[ReviewDesignURL]", reviewDesignURL);
+                //MailText = MailText.Replace("[ApproveDesignURL]", approveDesignURL).Replace("[RejectDesignURL]", rejectDesignURL).Replace("[ReviewDesignURL]", reviewDesignURL);
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(toEmail));

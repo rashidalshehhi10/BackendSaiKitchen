@@ -223,7 +223,8 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpGet]
+
+        [HttpPost]
         [Route("[action]")]
         public object ClientAcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
@@ -272,7 +273,7 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object ClientRejectDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
