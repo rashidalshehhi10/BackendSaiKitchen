@@ -65,6 +65,9 @@
     <None Update="EmailTemplate\NewInquiryTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="EmailTemplate\QuotationApprovalTemplate - Copy.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="EmailTemplate\QuotationApprovalTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

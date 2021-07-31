@@ -174,7 +174,7 @@ namespace BackendSaiKitchen.Helper
             }
         }
 
-        public async Task SendQuotationEmailAsync(String toEmail, String inquiryCode, String advancePaymentRate, String amount, String promo,String vAT,String totalAmount,String validityTill,String approveQuotationURL,String rejectQuotationURL)
+        public async Task SendQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo,String vAT,String totalAmount,String validityTill,String approveQuotationURL,String rejectQuotationURL)
         {
             try
             {
@@ -182,7 +182,8 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
-                MailText = MailText.Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
+                //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
+                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(toEmail));

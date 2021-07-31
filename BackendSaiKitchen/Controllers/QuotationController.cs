@@ -229,7 +229,7 @@ namespace BackendSaiKitchen.Controllers
 
 
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, quotation.AdvancePayment, quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount, quotation.QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
+                    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, Constants.CRMBaseUrl + "/invoice.html?inquiryId=" + inquiry.InquiryId, quotation.AdvancePayment, quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount, quotation.QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
 
 
                     context.SaveChanges();

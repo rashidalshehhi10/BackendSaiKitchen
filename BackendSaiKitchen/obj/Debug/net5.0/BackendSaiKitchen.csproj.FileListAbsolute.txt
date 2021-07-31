@@ -119,3 +119,4 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\ref\BackendS
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.pdb
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\obj\Debug\net5.0\BackendSaiKitchen.genruntimeconfig.cache
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\DesignReviewTemplate - Copy.html
+D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\EmailTemplate\QuotationApprovalTemplate - Copy.html
