@@ -10,8 +10,8 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int CustomerRegistered { get; set; }
         public int InquiryCompleted { get; set; }
-        public List<string> MeasurementScheduleDate { get; set; }
-        public List<string> DesignScheduledate { get; set; }
+        public List<InquiryWorkscope> MeasurementScheduleDate { get; set; }
+        public List<InquiryWorkscope> DesignScheduledate { get; set; }
         public List<string> InquiryCode { get; set; }
         public List<string> WorkscopeName { get; set; }
         public List<Calendar> calendar { get; set; }

@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.CustomModel
         public string Discount { get; set; }
         public bool? IsInstallment { get; set; }
         public int? NoOfInstallment { get; set; }
+        public int PaymentTypeId { get; set; }
 
         public List<Payment> Payments { get; set; }
 

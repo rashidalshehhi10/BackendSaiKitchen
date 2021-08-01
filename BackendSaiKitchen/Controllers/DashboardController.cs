@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -20,17 +21,17 @@ namespace BackendSaiKitchen.Controllers
                {
                    CustomerRegistered = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false).Count(),
                    InquiryCompleted = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.inquiryCompleted).Count(),
-                   InquiryCode = x.Inquiries.OrderBy(y => y.InquiryId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.Inquiry.InquiryCode).ToList(),
-                   MeasurementScheduleDate = x.Inquiries.OrderBy(y => y.InquiryId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.MeasurementScheduleDate).ToList(),
-                   DesignScheduledate = x.Inquiries.OrderBy(y => y.InquiryId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.DesignScheduleDate).ToList(),
-                   WorkscopeName = x.Inquiries.OrderBy(y => y.InquiryId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.Workscope.WorkScopeName).ToList()
+                   InquiryCode = x.Inquiries.OrderBy(y => y.InquiryId).Where(y => y.IsActive == true && y.IsDeleted == false).Select(y => y.InquiryCode).ToList(),
+                   MeasurementScheduleDate = inquiryWorkscopeRepository.FindByCondition(y => x.Inquiries.Any(z => z.InquiryId == y.InquiryId && y.IsActive == true && y.IsDeleted == false)).ToList(),
+                   //DesignScheduledate = x.Inquiries.OrderBy(y => y.InquiryId).FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.DesignScheduleDate).ToList(),
+                   WorkscopeName = x.Inquiries.OrderBy(y => y.InquiryId).FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).InquiryWorkscopes.Select(z => z.Workscope.WorkScopeName).ToList()
                }).FirstOrDefault();
             try
             {
                 dashborad.calendar = new List<Calendar>();
                 for (int i = 0; i < dashborad.InquiryCode.Count; i++)
                 {
-                    dashborad.calendar.Add(new Calendar { DesignScheduledate = dashborad.DesignScheduledate[i], MeasurementScheduleDate = dashborad.MeasurementScheduleDate[i], InquiryCode = dashborad.InquiryCode[i], WorkscopeName = dashborad.WorkscopeName[i] });
+                    dashborad.calendar.Add(new Calendar { DesignScheduledate = dashborad.MeasurementScheduleDate[i].DesignScheduleDate, MeasurementScheduleDate = dashborad.MeasurementScheduleDate[i].MeasurementScheduleDate, InquiryCode = dashborad.InquiryCode[i], WorkscopeName = dashborad.WorkscopeName[i] });
                 }
             }
             catch (Exception ex)

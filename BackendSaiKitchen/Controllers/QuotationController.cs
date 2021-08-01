@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,8 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == false && y.IsDeleted ==false)).ThenInclude(x => x.Fees).FirstOrDefault();
             if (inquiry == null)
             {
                 response.isError = true;
@@ -86,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
             return tableResponse;
         }
 
-        static List<File> files = new List<File>();
+        static List<Models.File> files = new List<Models.File>();
         static List<IFormFile> formFile = new List<IFormFile>();
 
         //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
@@ -120,7 +122,6 @@ namespace BackendSaiKitchen.Controllers
                 quotation.UpdatedBy = Constants.userId;
                 quotation.UpdatedDate = Helper.Helper.GetDateTime();
 
-
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
                     files.Clear();
@@ -130,7 +131,7 @@ namespace BackendSaiKitchen.Controllers
                         var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
-                            files.Add(new File
+                            files.Add(new Models.File
                             {
                                 FileUrl = fileUrl.Item1,
                                 FileName = fileUrl.Item1.Split('.')[0],
@@ -197,7 +198,7 @@ namespace BackendSaiKitchen.Controllers
                                 InquiryId = customQuotation.InquiryId,
                                 PaymentName = pay.PaymentName,
                                 PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                                PaymentTypeId = (int)paymenttype.AdvancePayment,
+                                PaymentTypeId = customQuotation.PaymentTypeId,
                                 PaymentDetail = pay.PaymentDetail,
                                 PaymentAmount = pay.PaymentAmount,
                                 IsActive = true,
@@ -439,6 +440,37 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = "Inquiry Doesn't Exist";
             }
 
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object stripe(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                decimal d = 0;
+                long totalamount = 0;
+                foreach (var quotaion in inquiry.Quotations)
+                {
+                    d = Convert.ToDecimal(quotaion.TotalAmount);
+                    totalamount += Convert.ToInt64(d);
+                }
+                var paymentIntents = new PaymentIntentService();
+                var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
+                {
+                    Amount = totalamount,
+                    Currency = "aed",
+                });
+                response.data = paymentIntent.ClientSecret;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            
             return response;
         }
     }
