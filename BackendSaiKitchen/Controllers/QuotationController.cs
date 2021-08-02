@@ -161,6 +161,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
+                    var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount)- ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
                     if (customQuotation.IsInstallment == true)
                     {
 
@@ -173,14 +174,14 @@ namespace BackendSaiKitchen.Controllers
                                 pay.PaymentAmountinPercentage += (100 - percent);
                             }
                            // var ad
-                            var paymentAmount = decimal.Parse(customQuotation.TotalAmount) * pay.PaymentAmountinPercentage / 100;
+                            var paymentAmount = amountwithoutAdvance * pay.PaymentAmountinPercentage / 100;
                             inquiry.Payments.Add(new Payment()
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
                                 PaymentName = pay.PaymentName,
-                                PaymentStatusId = (int)paymentstatus.InstallmentCreated,
-                                PaymentTypeId = (int)paymenttype.Installment,
+                                PaymentStatusId =customQuotation.PaymentTypeId==(int)paymenttype.AdvancePayment? (int)paymentstatus.PaymentCreated : (int)paymentstatus.InstallmentCreated,
+                                PaymentTypeId = customQuotation.PaymentTypeId,
                                 PaymentDetail = pay.PaymentDetail,
                                 PaymentAmount = paymentAmount,
                                 PaymentExpectedDate = pay.PaymentExpectedDate,
@@ -192,7 +193,7 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedDate = Helper.Helper.GetDateTime(),
 
                             });
-                            Helper.Helper.AddPayment(paymentAmount);
+                            //Helper.Helper.AddPayment(paymentAmount);
 
                         }
                     }
@@ -216,7 +217,7 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedDate = Helper.Helper.GetDateTime(),
 
                             });
-                            Helper.Helper.AddPayment(pay.PaymentAmount);
+                            //Helper.Helper.AddPayment(pay.PaymentAmount);
                         }
                     }
 
@@ -317,7 +318,7 @@ namespace BackendSaiKitchen.Controllers
             //    int a = c.InquiryWorkscopeId;
             //});
             List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
-            List<TermsAndCondition> terms = termsAndConditionsRepositry.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
@@ -459,32 +460,45 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
             if (inquiry != null)
             {
                 decimal d = 0;
-                long totalamount = 0;
+                long amount = 0;
                 foreach (var quotaion in inquiry.Quotations)
                 {
-                    d = Convert.ToDecimal(quotaion.TotalAmount);
-                    totalamount += Convert.ToInt64(d);
+                    d = (decimal.Parse(quotaion.AdvancePayment) * (decimal.Parse(quotaion.TotalAmount) / 100));
+                    amount += Convert.ToInt64(d);
                 }
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
-                    Amount = totalamount,
+                    Amount = amount,
                     Currency = "aed",
                 });
-                response.data = paymentIntent.ClientSecret;
+
+                var payment = paymentRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.PaymentTypeId == (int)paymenttype.AdvancePayment && x.PaymentAmount == amount).FirstOrDefault();
+                if (payment != null)
+                {
+                    payment.ClientSecret = paymentIntent.ClientSecret;
+                    payment.PaymentModeId = (int)paymentMode.OnlinePayment;
+                    response.data = paymentIntent.ClientSecret;
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "No Payment Generated";
+                }
             }
             else
             {
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            
+
             return response;
         }
+
     }
 }

@@ -48,8 +48,9 @@ namespace SaiKitchenBackend.Controllers
         public Repository<InquiryWorkscope> inquiryWorkscopeRepository;
         public Repository<Measurement> measurementRepository;
         public Repository<File> fileRepository;
-        public Repository<Quotation> quotationRepositry;
-        public Repository<TermsAndCondition> termsAndConditionsRepositry;
+        public Repository<Quotation> quotationRepository;
+        public Repository<TermsAndCondition> termsAndConditionsRepository;
+        public Repository<Payment> paymentRepository;
         public Dictionary<object, object> dicResponse = new Dictionary<object, object>();
 
 
@@ -76,8 +77,9 @@ namespace SaiKitchenBackend.Controllers
             measurementRepository = new Repository<Measurement>(context);
             fileRepository = new Repository<File>(context);
             accesoryRepository = new Repository<Accesory>(context);
-            quotationRepositry = new Repository<Quotation>(context);
-            termsAndConditionsRepositry = new Repository<TermsAndCondition>(context);
+            quotationRepository = new Repository<Quotation>(context);
+            termsAndConditionsRepository = new Repository<TermsAndCondition>(context);
+            paymentRepository = new Repository<Payment>(context);
 
         }
         override
