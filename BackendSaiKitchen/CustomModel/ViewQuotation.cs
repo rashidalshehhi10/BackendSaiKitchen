@@ -42,4 +42,10 @@ namespace BackendSaiKitchen.CustomModel
         public string reason { get; set; }
         public int FeedBackReactionId { get; set; }
     }
+
+    public class GetfeesForQuotation
+    {
+        public Inquiry inquiry { get; set; }
+        public List<Fee> fees { get; set; }
+    }
 }

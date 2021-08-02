@@ -34,7 +34,13 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .FirstOrDefault();
-            if (inquiry == null)
+            
+            GetfeesForQuotation getfees = new GetfeesForQuotation()
+            {
+                inquiry = inquiry,
+                fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+            };
+            if (getfees == null)
             {
                 response.isError = true;
                 response.errorMessage = "No Inquiry Found";
@@ -42,7 +48,7 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                response.data = inquiry;
+                response.data = getfees;
             }
             return response;
         }
@@ -166,6 +172,7 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 pay.PaymentAmountinPercentage += (100 - percent);
                             }
+                           // var ad
                             var paymentAmount = decimal.Parse(customQuotation.TotalAmount) * pay.PaymentAmountinPercentage / 100;
                             inquiry.Payments.Add(new Payment()
                             {
@@ -266,8 +273,7 @@ namespace BackendSaiKitchen.Controllers
 
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
-             //inquiry.Quotations.LastOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -292,7 +298,6 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
-             
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
@@ -383,9 +388,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ClientApproveQuotation(int inquiryId)
+        public object ClientApproveQuotation(UpdateQuotationStatus updateQuotation)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -396,6 +401,11 @@ namespace BackendSaiKitchen.Controllers
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                 }
 
+                foreach (var quotation in inquiry.Quotations)
+                {
+                    quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
+                    quotation.Description = updateQuotation.reason;
+                }
                 inquiryRepository.Update(inquiry);
                 response.data = inquiry;
                 context.SaveChanges();
@@ -449,21 +459,21 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-           
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 decimal d = 0;
-                long amount = 0;
+                long totalamount = 0;
                 foreach (var quotaion in inquiry.Quotations)
                 {
-                    d = Convert.ToDecimal(Convert.ToDouble(quotaion.AdvancePayment)*(Convert.ToDouble(quotaion.TotalAmount)/100));
-                    amount += Convert.ToInt64(d);
+                    d = Convert.ToDecimal(quotaion.TotalAmount);
+                    totalamount += Convert.ToInt64(d);
                 }
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
-                    Amount = amount,
+                    Amount = totalamount,
                     Currency = "aed",
                 });
                 response.data = paymentIntent.ClientSecret;

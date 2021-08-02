@@ -10,19 +10,22 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int CustomerRegistered { get; set; }
         public int InquiryCompleted { get; set; }
-        public List<InquiryWorkscope> MeasurementScheduleDate { get; set; }
-        public List<InquiryWorkscope> DesignScheduledate { get; set; }
-        public List<string> InquiryCode { get; set; }
-        public List<string> WorkscopeName { get; set; }
+        //public List<string> MeasurementScheduleDate { get; set; }
+        //public List<string> DesignScheduledate { get; set; }
+        //public List<string> InquiryCode { get; set; }
+        //public List<string> WorkscopeName { get; set; }
         public List<Calendar> calendar { get; set; }
 
     }
 
     public class Calendar
     {
+        public int InquiryId { get; set; }
+        public int InquiryWorkscopeId { get; set; }
         public string InquiryCode { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string DesignScheduledate { get; set; }
         public string WorkscopeName { get; set; }
+        public int InquiryworkscopeStatusId { get; set; }
     }
 }
