@@ -29,6 +29,8 @@ namespace BackendSaiKitchen.Models
         public int? CreatedBy { get; set; }
         public string UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
+        public string PaymentIntentToken { get; set; }
+        public string ClientSecret { get; set; }
 
         public virtual Fee Fees { get; set; }
         public virtual Inquiry Inquiry { get; set; }

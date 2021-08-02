@@ -266,7 +266,8 @@ namespace BackendSaiKitchen.Controllers
 
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
-
+             //inquiry.Quotations.LastOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -291,6 +292,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+             
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
@@ -448,19 +450,20 @@ namespace BackendSaiKitchen.Controllers
         public object stripe(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+           
             if (inquiry != null)
             {
                 decimal d = 0;
-                long totalamount = 0;
+                long amount = 0;
                 foreach (var quotaion in inquiry.Quotations)
                 {
-                    d = Convert.ToDecimal(quotaion.TotalAmount);
-                    totalamount += Convert.ToInt64(d);
+                    d = Convert.ToDecimal(Convert.ToDouble(quotaion.AdvancePayment)*(Convert.ToDouble(quotaion.TotalAmount)/100));
+                    amount += Convert.ToInt64(d);
                 }
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
-                    Amount = totalamount,
+                    Amount = amount,
                     Currency = "aed",
                 });
                 response.data = paymentIntent.ClientSecret;
