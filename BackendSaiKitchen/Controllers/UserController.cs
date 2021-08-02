@@ -62,6 +62,23 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> GetUserByid(int userId)
+        {
+           
+          var user = userRepository.FindByCondition(x=>x.UserId==userId && x.IsActive==true && x.IsDeleted==false).FirstOrDefault();
+       
+            if (user == null)
+            {
+                response.isError = true;
+                response.errorMessage = "User doesn\'t exist";
+            }
+            response.data = user;
+            return response;
+        }
+
         [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]

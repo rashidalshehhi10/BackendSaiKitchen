@@ -17,6 +17,8 @@ namespace BackendSaiKitchen.CustomModel
         public string TotalAmount { get; set; }
         public string Vat { get; set; }
         public string AdvancePayment { get; set; }
+        public string BeforeInstallation { get; set; }
+        public string AfterDelivery { get; set; }
         public string QuotationValidityDate { get; set; }
         public string Discount { get; set; }
         public bool? IsInstallment { get; set; }

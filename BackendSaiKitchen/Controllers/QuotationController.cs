@@ -162,6 +162,24 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
                     var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount)- ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
+                    inquiry.Payments.Add(new Payment()
+                    {
+                        PaymentAmountinPercentage = decimal.Parse(customQuotation.AdvancePayment),
+                        InquiryId = customQuotation.InquiryId,
+                        PaymentName = "Advance Payment",
+                        PaymentStatusId =  (int)paymentstatus.PaymentCreated ,
+                        PaymentTypeId = (int)paymenttype.AdvancePayment,
+                        PaymentDetail = "Advance Payment of "+customQuotation.InquiryId,
+                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount)/100)*decimal.Parse(customQuotation.AdvancePayment),
+                        PaymentExpectedDate = customQuotation.QuotationValidityDate,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                        UpdatedBy = Constants.userId,
+                        UpdatedDate = Helper.Helper.GetDateTime(),
+
+                    });
                     if (customQuotation.IsInstallment == true)
                     {
 
@@ -173,15 +191,15 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 pay.PaymentAmountinPercentage += (100 - percent);
                             }
-                           // var ad
-                            var paymentAmount = amountwithoutAdvance * pay.PaymentAmountinPercentage / 100;
+
+                            var paymentAmount = (amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage;
                             inquiry.Payments.Add(new Payment()
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
                                 PaymentName = pay.PaymentName,
-                                PaymentStatusId =customQuotation.PaymentTypeId==(int)paymenttype.AdvancePayment? (int)paymentstatus.PaymentCreated : (int)paymentstatus.InstallmentCreated,
-                                PaymentTypeId = customQuotation.PaymentTypeId,
+                                PaymentStatusId =(int)paymentstatus.InstallmentCreated,
+                                PaymentTypeId =(int) paymenttype.Installment,
                                 PaymentDetail = pay.PaymentDetail,
                                 PaymentAmount = paymentAmount,
                                 PaymentExpectedDate = pay.PaymentExpectedDate,
