@@ -118,6 +118,8 @@ namespace BackendSaiKitchen.Controllers
             {
                 Quotation quotation = new Quotation();
                 quotation.AdvancePayment = customQuotation.AdvancePayment;
+                quotation.BeforeInstallation = customQuotation.BeforeInstallation;
+                quotation.AfterDelivery = customQuotation.AfterDelivery;
                 quotation.Description = customQuotation.Description;
                 quotation.Discount = customQuotation.Discount;
                 quotation.InquiryId = customQuotation.InquiryId;
@@ -165,10 +167,9 @@ namespace BackendSaiKitchen.Controllers
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     }
                     inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
-                    inquiry.Quotations.Add(quotation);
                     decimal percent = 0;
                     var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount)- ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
-                    inquiry.Payments.Add(new Payment()
+                    quotation.Payments.Add(new Payment()
                     {
                         PaymentAmountinPercentage = decimal.Parse(customQuotation.AdvancePayment),
                         InquiryId = customQuotation.InquiryId,
@@ -245,6 +246,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
+                    inquiry.Quotations.Add(quotation);
                     inquiryRepository.Update(inquiry);
                     response.data = null;
 

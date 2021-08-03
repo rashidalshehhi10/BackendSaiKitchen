@@ -23,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public string PaymentExpectedDate { get; set; }
         public int? FeesId { get; set; }
         public int? InquiryId { get; set; }
+        public int? QuotationId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public string CreatedDate { get; set; }
@@ -37,6 +38,7 @@ namespace BackendSaiKitchen.Models
         public virtual PaymentMode PaymentMode { get; set; }
         public virtual PaymentStatus PaymentStatus { get; set; }
         public virtual PaymentType PaymentType { get; set; }
+        public virtual Quotation Quotation { get; set; }
         public virtual ICollection<File> Files { get; set; }
     }
 }
