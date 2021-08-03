@@ -88,7 +88,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> RegisterUserAsync(User user)
         {
-            User oldUser = userRepository.FindByCondition(x => (x.UserId==user.UserId || x.UserEmail == user.UserEmail) && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            User oldUser = userRepository.FindByCondition(x => (x.UserId == user.UserId || x.UserEmail == user.UserEmail) && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
             if (oldUser == null ||user.UserId==0)
             {
                 userRepository.Create(user);
