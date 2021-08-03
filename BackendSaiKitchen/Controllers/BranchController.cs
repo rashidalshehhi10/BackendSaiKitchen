@@ -53,6 +53,24 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public Object GetBranchById(int branchId)
+        {
+            var branch = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (branch !=null)
+            {
+                response.data = branch;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Branch Not Found";
+
+            }
+            return response;
+        }
+
         [AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
