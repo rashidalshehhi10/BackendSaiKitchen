@@ -34,7 +34,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .FirstOrDefault();
-            
+            if (inquiry != null) { 
             GetfeesForQuotation getfees = new GetfeesForQuotation()
             {
                 inquiry = inquiry,
@@ -49,6 +49,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                 response.data = getfees;
+            }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "No Inquiry Found";
             }
             return response;
         }
