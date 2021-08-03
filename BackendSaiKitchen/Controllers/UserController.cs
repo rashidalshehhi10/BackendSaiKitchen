@@ -68,8 +68,12 @@ namespace SaiKitchenBackend.Controllers
         public async Task<object> GetUserByid(int userId)
         {
            
-          var user = userRepository.FindByCondition(x=>x.UserId==userId && x.IsActive==true && x.IsDeleted==false).FirstOrDefault();
-       
+          var user = userRepository.FindByCondition(x=>x.UserId==userId && x.IsActive==true && x.IsDeleted==false)
+                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Branch)
+                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.BranchRole).FirstOrDefault();
+
             if (user == null)
             {
                 response.isError = true;
