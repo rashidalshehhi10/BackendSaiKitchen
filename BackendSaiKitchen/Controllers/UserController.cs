@@ -84,11 +84,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> RegisterUserAsync(User user)
         {
-            User oldUser = userRepository.FindByCondition(x => x.UserEmail == user.UserEmail && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            User oldUser = userRepository.FindByCondition(x => (x.UserId==user.UserId || x.UserEmail == user.UserEmail) && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (oldUser == null)
             {
                 userRepository.Create(user);
-                context.SaveChanges();
                 await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
                 //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
                 response.isError = false;
@@ -96,9 +95,11 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                response.isError = true;
-                response.errorMessage = "User already Exist";
+                user.IsActive = true;
+                user.IsDeleted = false;
+                userRepository.Update(user);
             }
+            context.SaveChanges();
             return response;
         }
 
