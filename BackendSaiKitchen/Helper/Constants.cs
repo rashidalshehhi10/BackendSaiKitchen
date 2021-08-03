@@ -144,9 +144,11 @@ namespace BackendSaiKitchen.Helper
     {
         Measurement = 1,
         AdvancePayment = 2,
-        BeforeDelivery = 3,
-        OnDelivery = 4,
-        Installment = 5
+        BeforeInstallation = 3,
+        AfterDelivery = 4,
+        Installment = 5,
+        EngineeringFees=6,
+        ExtraCharges=7
     }
 
     public enum paymentMode
