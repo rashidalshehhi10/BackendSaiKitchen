@@ -85,7 +85,7 @@ namespace SaiKitchenBackend.Controllers
         public async Task<object> RegisterUserAsync(User user)
         {
             User oldUser = userRepository.FindByCondition(x => (x.UserId==user.UserId || x.UserEmail == user.UserEmail) && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (oldUser == null)
+            if (oldUser == null ||user.UserId==0)
             {
                 userRepository.Create(user);
                 await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
