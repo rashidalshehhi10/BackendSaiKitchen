@@ -200,7 +200,7 @@ namespace BackendSaiKitchen.Controllers
                             }
 
                             var paymentAmount = (amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage;
-                            inquiry.Payments.Add(new Payment()
+                            quotation.Payments.Add(new Payment()
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
@@ -226,7 +226,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (var pay in customQuotation.Payments)
                         {
-                            inquiry.Payments.Add(new Payment()
+                            quotation.Payments.Add(new Payment()
                             {
                                 InquiryId = customQuotation.InquiryId,
                                 PaymentName = pay.PaymentName,
