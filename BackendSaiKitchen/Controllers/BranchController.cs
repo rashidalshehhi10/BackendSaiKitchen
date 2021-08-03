@@ -96,7 +96,14 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddBranch(Branch branch)
         {
-            branchRepository.Create(branch);
+            if (branch.BranchId != 0)
+            {
+                branchRepository.Update(branch);
+            }
+            else
+            {
+                branchRepository.Create(branch);
+            }
             context.SaveChanges();
             response.data = branch;
             return response;
