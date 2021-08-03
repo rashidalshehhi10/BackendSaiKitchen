@@ -34,22 +34,23 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .FirstOrDefault();
-            if (inquiry != null) { 
-            GetfeesForQuotation getfees = new GetfeesForQuotation()
+            if (inquiry != null)
             {
-                inquiry = inquiry,
-                fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
-            };
-            if (getfees == null)
-            {
-                response.isError = true;
-                response.errorMessage = "No Inquiry Found";
-            }
-            else
-            {
-                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                response.data = getfees;
-            }
+                GetfeesForQuotation getfees = new GetfeesForQuotation()
+                {
+                    inquiry = inquiry,
+                    fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                };
+                if (getfees == null)
+                {
+                    response.isError = true;
+                    response.errorMessage = "No Inquiry Found";
+                }
+                else
+                {
+                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                    response.data = getfees;
+                }
             }
             else
             {
@@ -168,16 +169,16 @@ namespace BackendSaiKitchen.Controllers
                     }
                     inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     decimal percent = 0;
-                    var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount)- ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
+                    var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount) - ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
                     quotation.Payments.Add(new Payment()
                     {
                         PaymentAmountinPercentage = decimal.Parse(customQuotation.AdvancePayment),
                         InquiryId = customQuotation.InquiryId,
                         PaymentName = "Advance Payment",
-                        PaymentStatusId =  (int)paymentstatus.PaymentCreated ,
+                        PaymentStatusId = (int)paymentstatus.PaymentCreated,
                         PaymentTypeId = (int)paymenttype.AdvancePayment,
-                        PaymentDetail = "Advance Payment of "+customQuotation.InquiryId,
-                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount)/100)*decimal.Parse(customQuotation.AdvancePayment),
+                        PaymentDetail = "Advance Payment of " + customQuotation.InquiryId,
+                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment),
                         PaymentExpectedDate = customQuotation.QuotationValidityDate,
                         IsActive = true,
                         IsDeleted = false,
@@ -205,8 +206,8 @@ namespace BackendSaiKitchen.Controllers
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
                                 PaymentName = pay.PaymentName,
-                                PaymentStatusId =(int)paymentstatus.InstallmentCreated,
-                                PaymentTypeId =(int) paymenttype.Installment,
+                                PaymentStatusId = (int)paymentstatus.InstallmentCreated,
+                                PaymentTypeId = (int)paymenttype.Installment,
                                 PaymentDetail = pay.PaymentDetail,
                                 PaymentAmount = paymentAmount,
                                 PaymentExpectedDate = pay.PaymentExpectedDate,
@@ -242,7 +243,7 @@ namespace BackendSaiKitchen.Controllers
                             UpdatedDate = Helper.Helper.GetDateTime(),
 
                         });
-                        customQuotation.AfterDelivery = (100 - (decimal.Parse(customQuotation.BeforeInstallation) +decimal.Parse(customQuotation.AdvancePayment))).ToString();
+                        customQuotation.AfterDelivery = (100 - (decimal.Parse(customQuotation.BeforeInstallation) + decimal.Parse(customQuotation.AdvancePayment))).ToString();
                         quotation.Payments.Add(new Payment()
                         {
                             PaymentAmountinPercentage = decimal.Parse(customQuotation.AfterDelivery),
@@ -378,8 +379,8 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BuildingAddress = x.Building.BuildingAddress,
-                    BranchAddress =x.Branch.BranchAddress,
-                    BranchContact =x.Branch.BranchContact,
+                    BranchAddress = x.Branch.BranchAddress,
+                    BranchContact = x.Branch.BranchContact,
                     TermsAndConditionsDetail = terms,
                     Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
@@ -401,8 +402,8 @@ namespace BackendSaiKitchen.Controllers
 
                 Serilog.Log.Error(ex.Message);
             }
-            
-           
+
+
             //var i=   (from xx in context.InquiryWorkscopes
             //    group xx.InquiryWorkscopeId by xx into g
             //    let count = g.Count()
@@ -503,36 +504,29 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).LastOrDefault();
 
             if (inquiry != null)
             {
                 decimal d = 0;
                 long amount = 0;
-                foreach (var quotaion in inquiry.Quotations)
-                {
-                    d = (decimal.Parse(quotaion.AdvancePayment) * (decimal.Parse(quotaion.TotalAmount) / 100));
-                    amount += Convert.ToInt64(d);
-                }
+                //foreach (var quotaion in inquiry.Quotations)
+                //{
+                d = decimal.Parse(inquiry.Quotations.LastOrDefault().AdvancePayment) * (decimal.Parse(inquiry.Quotations.LastOrDefault().TotalAmount) / 100);
+                amount += Convert.ToInt64(d);
+                //}
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
                     Amount = amount,
                     Currency = "aed",
                 });
-
-                var payment = paymentRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.PaymentTypeId == (int)paymenttype.AdvancePayment && x.PaymentAmount == amount).FirstOrDefault();
-                if (payment != null)
-                {
-                    payment.ClientSecret = paymentIntent.ClientSecret;
-                    payment.PaymentModeId = (int)paymentMode.OnlinePayment;
-                    response.data = paymentIntent.ClientSecret;
-                }
-                else
-                {
-                    response.isError = true;
-                    response.errorMessage = "No Payment Generated";
-                }
+                inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentStatusId = (int)paymentstatus.PaymentPending;
+                inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentModeId = (int)paymentMode.OnlinePayment;
+                inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).ClientSecret = paymentIntent.ClientSecret;
+                response.data = paymentIntent.ClientSecret;
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
