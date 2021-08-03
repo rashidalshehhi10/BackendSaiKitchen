@@ -247,7 +247,7 @@ namespace BackendSaiKitchen.Controllers
                         {
                             PaymentAmountinPercentage = decimal.Parse(customQuotation.AfterDelivery),
                             InquiryId = customQuotation.InquiryId,
-                            PaymentName = "Before Installation",
+                            PaymentName = "After Delivery",
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.AfterDelivery,
                             PaymentDetail = "After Delivery of " + customQuotation.InquiryId,
