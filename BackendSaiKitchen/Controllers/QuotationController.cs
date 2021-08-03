@@ -504,7 +504,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).LastOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
