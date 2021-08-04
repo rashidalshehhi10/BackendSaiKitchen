@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Sentry.AspNetCore;
 using Serilog.Context;
 using Stripe;
+using System;
 
 namespace BackendSaiKitchen
 {
@@ -90,14 +91,6 @@ namespace BackendSaiKitchen
 
 
             app.UseAuthorization();
-            // below code is needed to get User name for Log             
-            app.Use(async (httpContext, next) =>
-            {
-                var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
-                LogContext.PushProperty("Username", userName); //Push user in LogContext;  
-                await next.Invoke();
-            }
-            );
 
             app.UseEndpoints(endpoints =>
             {
@@ -106,6 +99,18 @@ namespace BackendSaiKitchen
             // Enable automatic tracing integration.
             // Make sure to put this middleware right after `UseRouting()`.
             app.UseSentryTracing();
+            try
+            {
+                // below code is needed to get User name for Log             
+                app.Use(async (httpContext, next) =>
+                {
+                    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
+                LogContext.PushProperty("Username", userName); //Push user in LogContext;  
+                await next.Invoke();
+                }
+                );
+            }
+            catch (Exception) { }
         }
     }
 }
