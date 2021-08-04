@@ -90,20 +90,36 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> RegisterUserAsync(User user)
         {
-            User oldUser = userRepository.FindByCondition(x => (x.UserId == user.UserId || x.UserEmail == user.UserEmail) && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
-            if (oldUser == null)
+            if (user.UserId != 0)
             {
+                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
+                if (oldUser != null) { 
+                user.IsActive = true;
+                user.IsDeleted = false;
+                userRepository.Update(user);
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "User doesn't Exist";
+                }
+            }
+            else
+            {
+                User oldUser = userRepository.FindByCondition(x => x.UserEmail == user.UserEmail && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
+                if (oldUser == null) { 
                 userRepository.Create(user);
                 await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
                 //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
                 response.isError = false;
                 response.errorMessage = "Success";
-            }
-            else
-            {
-                user.IsActive = true;
-                user.IsDeleted = false;
-                userRepository.Update(user);
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "User already Exist";
+
+                }
             }
             context.SaveChanges();
             return response;
