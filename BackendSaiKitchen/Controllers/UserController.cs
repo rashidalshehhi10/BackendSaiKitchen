@@ -92,7 +92,7 @@ namespace SaiKitchenBackend.Controllers
         {
             if (user.UserId != 0)
             {
-                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
+                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (oldUser != null) { 
                 user.IsActive = true;
                 user.IsDeleted = false;
