@@ -179,7 +179,7 @@ namespace BackendSaiKitchen.Controllers
                         PaymentStatusId = (int)paymentstatus.PaymentCreated,
                         PaymentTypeId = (int)paymenttype.AdvancePayment,
                         PaymentDetail = "Advance Payment of " + customQuotation.InquiryId,
-                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment),
+                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment)*100,
                         PaymentExpectedDate = customQuotation.QuotationValidityDate,
                         IsActive = true,
                         IsDeleted = false,
@@ -201,7 +201,7 @@ namespace BackendSaiKitchen.Controllers
                                 pay.PaymentAmountinPercentage += (100 - percent);
                             }
 
-                            var paymentAmount = (amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage;
+                            var paymentAmount = ((amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage) * 100;
                             quotation.Payments.Add(new Payment()
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
@@ -234,7 +234,7 @@ namespace BackendSaiKitchen.Controllers
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.BeforeInstallation,
                             PaymentDetail = "Before Installation of " + customQuotation.InquiryId,
-                            PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.BeforeInstallation),
+                            PaymentAmount = ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.BeforeInstallation)) * 100,
                             PaymentExpectedDate = "",
                             IsActive = true,
                             IsDeleted = false,
@@ -253,7 +253,7 @@ namespace BackendSaiKitchen.Controllers
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.AfterDelivery,
                             PaymentDetail = "After Delivery of " + customQuotation.InquiryId,
-                            PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AfterDelivery),
+                            PaymentAmount = ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AfterDelivery)) * 100,
                             PaymentExpectedDate = "",
                             IsActive = true,
                             IsDeleted = false,
@@ -526,7 +526,7 @@ namespace BackendSaiKitchen.Controllers
                 long amount = 0;
                 //foreach (var quotaion in inquiry.Quotations)
                 //{
-                d = decimal.Parse(inquiry.Quotations.LastOrDefault().AdvancePayment) * (decimal.Parse(inquiry.Quotations.LastOrDefault().TotalAmount) / 100);
+                d = (decimal.Parse(inquiry.Quotations.LastOrDefault().AdvancePayment) * (decimal.Parse(inquiry.Quotations.LastOrDefault().TotalAmount) / 100))*100;
                 amount += Convert.ToInt64(d);
                 //}
                 var paymentIntents = new PaymentIntentService();
