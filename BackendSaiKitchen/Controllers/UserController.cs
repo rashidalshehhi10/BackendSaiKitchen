@@ -96,7 +96,10 @@ namespace SaiKitchenBackend.Controllers
                 if (oldUser != null) { 
                 user.IsActive = true;
                 user.IsDeleted = false;
-                userRepository.Update(user);
+                userRepository.Update(user); context.SaveChanges();
+
+                    response.isError = false;
+                    response.errorMessage = "Success";
                 }
                 else
                 {
@@ -109,7 +112,8 @@ namespace SaiKitchenBackend.Controllers
                 User oldUser = userRepository.FindByCondition(x => x.UserEmail == user.UserEmail && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
                 if (oldUser == null) { 
                 userRepository.Create(user);
-                await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
+                    context.SaveChanges();
+                    await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
                 //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
                 response.isError = false;
                 response.errorMessage = "Success";
@@ -121,7 +125,6 @@ namespace SaiKitchenBackend.Controllers
 
                 }
             }
-            context.SaveChanges();
             return response;
         }
 
