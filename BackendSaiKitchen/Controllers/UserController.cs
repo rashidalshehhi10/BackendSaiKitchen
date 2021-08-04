@@ -92,11 +92,14 @@ namespace SaiKitchenBackend.Controllers
         {
             if (user.UserId != 0)
             {
-                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                if (oldUser != null) { 
-                user.IsActive = true;
-                user.IsDeleted = false;
-                userRepository.Update(user); 
+                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).Include(x=>x.UserRoles.Where(y=>y.IsActive==true && y.IsDeleted==false)).AsNoTracking().FirstOrDefault();
+                if (oldUser != null) {
+                    oldUser.UserRoles.ToList().ForEach(x => x.IsDeleted = true);
+                    oldUser.UserRoles.Add(user.UserRoles.FirstOrDefault());
+                    oldUser.UserEmail = user.UserEmail;
+                    oldUser.UserName = user.UserName;
+                    oldUser.UserMobile = user.UserMobile;
+                userRepository.Update(oldUser); 
                     context.SaveChanges();
 
                     response.isError = false;
