@@ -439,7 +439,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentIntentToken == updateQuotation.PaymentIntentToken && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
@@ -452,9 +452,11 @@ namespace BackendSaiKitchen.Controllers
                 }
                 foreach (var payment in inquiry.Payments)
                 {
+                    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment) { 
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     payment.ClientSecret = updateQuotation.ClientSecret;
                     payment.PaymentMethod = updateQuotation.PaymentMethod;
+                    }
                 }
 
                 foreach (var quotation in inquiry.Quotations)
@@ -532,8 +534,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     Amount = amount,
                     Currency = "aed",
-                    ReceiptEmail = inquiry.Customer.CustomerEmail,
-                    Customer = inquiry.Customer.CustomerId.ToString()
+                    ReceiptEmail = inquiry.Customer.CustomerEmail
 
                 });
                 inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentStatusId = (int)paymentstatus.PaymentPending;
