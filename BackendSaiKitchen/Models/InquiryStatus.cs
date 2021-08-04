@@ -11,6 +11,7 @@ namespace BackendSaiKitchen.Models
         {
             Inquiries = new HashSet<Inquiry>();
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
+            Quotations = new HashSet<Quotation>();
         }
 
         public int InquiryStatusId { get; set; }
@@ -25,5 +26,6 @@ namespace BackendSaiKitchen.Models
 
         public virtual ICollection<Inquiry> Inquiries { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual ICollection<Quotation> Quotations { get; set; }
     }
 }

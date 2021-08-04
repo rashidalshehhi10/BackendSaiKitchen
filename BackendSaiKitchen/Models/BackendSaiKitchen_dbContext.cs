@@ -905,6 +905,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Quotations)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Quotation_Inquiry");
+
+                entity.HasOne(d => d.QuotationStatus)
+                    .WithMany(p => p.Quotations)
+                    .HasForeignKey(d => d.QuotationStatusId)
+                    .HasConstraintName("FK_Quotation_InquiryStatus");
             });
 
             modelBuilder.Entity<RoleHead>(entity =>

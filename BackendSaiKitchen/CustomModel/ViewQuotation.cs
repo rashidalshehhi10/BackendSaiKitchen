@@ -41,6 +41,10 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public string reason { get; set; }
         public int FeedBackReactionId { get; set; }
+
+        public string PaymentIntentToken { get; set; }
+        public string ClientSecret { get; set; }
+        public string PaymentMethod { get; set; }
     }
 
     public class GetfeesForQuotation

@@ -132,6 +132,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.TotalAmount = customQuotation.TotalAmount;
                 quotation.IsInstallment = customQuotation.IsInstallment;
                 quotation.NoOfInstallment = customQuotation.NoOfInstallment;
+                quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                 quotation.CreatedDate = Helper.Helper.GetDateTime();
                 quotation.CreatedBy = Constants.userId;
                 quotation.UpdatedBy = Constants.userId;
@@ -436,14 +437,24 @@ namespace BackendSaiKitchen.Controllers
         public object ClientApproveQuotation(UpdateQuotationStatus updateQuotation)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+               .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentIntentToken == updateQuotation.PaymentIntentToken && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
+
+                foreach (var workscope in inquiry.InquiryWorkscopes)
+                {
+
+                    workscope.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+                }
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                    payment.ClientSecret = updateQuotation.ClientSecret;
+                    payment.PaymentMethod = updateQuotation.PaymentMethod;
                 }
 
                 foreach (var quotation in inquiry.Quotations)
@@ -469,12 +480,13 @@ namespace BackendSaiKitchen.Controllers
         public object ClientRejectQuotation(UpdateQuotationStatus updateQuotation)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationRejected;
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.IsActive = false;
@@ -504,7 +516,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Customer).Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
@@ -520,6 +532,9 @@ namespace BackendSaiKitchen.Controllers
                 {
                     Amount = amount,
                     Currency = "aed",
+                    ReceiptEmail = inquiry.Customer.CustomerEmail,
+                    Customer = inquiry.Customer.CustomerId.ToString()
+
                 });
                 inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentStatusId = (int)paymentstatus.PaymentPending;
                 inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentModeId = (int)paymentMode.OnlinePayment;

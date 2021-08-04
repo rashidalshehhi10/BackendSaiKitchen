@@ -27,6 +27,7 @@ namespace BackendSaiKitchen.Models
         public bool? IsInstallment { get; set; }
         public int? NoOfInstallment { get; set; }
         public int? FeedBackReactionId { get; set; }
+        public int? QuotationStatusId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -35,6 +36,7 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
+        public virtual InquiryStatus QuotationStatus { get; set; }
         public virtual ICollection<File> Files { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
     }
