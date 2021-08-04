@@ -25,7 +25,7 @@ namespace SaiKitchenBackend.Controllers
             return Ok();
         }
 
-        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public async Task<object> GetAllUserAsync()
@@ -41,7 +41,7 @@ namespace SaiKitchenBackend.Controllers
             //          (userRole, branch) => new { userRole = userRole, branch = branch }).ToList();
             var userList =  userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Branch)
-                .Include(y=>y.UserRoles.Where(x=>x.IsActive==true && x.IsDeleted==false)).ThenInclude(x=>x.BranchRole);
+                .Include(y=>y.UserRoles.Where(x=>x.IsActive==true && x.IsDeleted==false)).ThenInclude(x=>x.BranchRole).AsNoTracking();
             await userList.ForEachAsync((x) => { x.UserPassword = null; });
 
             response.data = userList.ToList();
@@ -85,7 +85,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> RegisterUserAsync(User user)
@@ -96,7 +96,8 @@ namespace SaiKitchenBackend.Controllers
                 if (oldUser != null) { 
                 user.IsActive = true;
                 user.IsDeleted = false;
-                userRepository.Update(user); context.SaveChanges();
+                userRepository.Update(user); 
+                    context.SaveChanges();
 
                     response.isError = false;
                     response.errorMessage = "Success";
