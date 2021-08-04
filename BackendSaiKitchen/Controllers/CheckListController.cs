@@ -14,16 +14,50 @@ namespace BackendSaiKitchen.Controllers
     {
         [HttpPost]
         [Route("[action]")]
-        public object InquiryChecklist(int inquiryId)
+        public object GetAllInquiryChecklist()
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance)
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false 
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
+                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
+                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment)));
+            if (inquiries != null)
+            {
+                response.data = inquiries;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "there is no inquiries to Check";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object InquiryChecklist(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false 
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance|| x.InquiryStatusId == (int)inquiryStatus.checklistPending))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false 
+                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
+                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if(inquiry != null)
             {
                 List<int?> roleTypeId = new List<int?>();
