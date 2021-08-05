@@ -468,13 +468,15 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
-                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
+
+                int status = updateQuotation.PaymentMethod != null ? (int)inquiryStatus.checklistPending : (int)inquiryStatus.quotationAccepted;
+                inquiry.InquiryStatusId = status;
+                inquiry.Quotations.FirstOrDefault().QuotationStatusId = status;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
 
-                    workscope.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
+                    workscope.InquiryStatusId = status;
                 }
                 foreach (var payment in inquiry.Payments)
                 {
