@@ -9,6 +9,7 @@ namespace BackendSaiKitchen.Models
     {
         public int TermsAndConditionsId { get; set; }
         public string TermsAndConditionsDetail { get; set; }
+        public bool? IsInstallmentTerms { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }

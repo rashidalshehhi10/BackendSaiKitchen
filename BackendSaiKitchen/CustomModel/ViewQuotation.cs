@@ -16,7 +16,11 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementFee { get; set; }
         public string Amount { get; set; }
         public string Vat { get; set; }
-        public string MeasurementFees { get; set; }//payment.paymnettypeid ==1.measurement.amount 
+        public string MeasurementFees { get; set; }//payment.p
+        public string AdvancePayment { get; set; }
+        public string BeforeInstallation { get; set; }
+        public string IsInstallment { get; set; }
+        public string AfterDelivery { get; set; }
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }

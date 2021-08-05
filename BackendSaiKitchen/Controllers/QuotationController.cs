@@ -376,7 +376,10 @@ namespace BackendSaiKitchen.Controllers
                     MeasurementFee=x.Payments.FirstOrDefault(y=>y.PaymentTypeId==(int) paymenttype.Measurement && y.PaymentStatusId==(int) paymentstatus.PaymentApproved && y.IsActive==true && y.IsDeleted==false).PaymentAmount.ToString(),
                     Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
-                    MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
+                    //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
+                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
@@ -404,7 +407,7 @@ namespace BackendSaiKitchen.Controllers
 
                 Serilog.Log.Error(ex.Message);
             }
-
+            //viewQuotation.TermsAndConditionsDetail.ForEach((x) => { x.TermsAndConditionsDetail });
 
             //var i=   (from xx in context.InquiryWorkscopes
             //    group xx.InquiryWorkscopeId by xx into g
