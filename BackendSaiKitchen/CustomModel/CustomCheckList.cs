@@ -11,6 +11,10 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public int inquirystatusId { get; set; }
     }
+    public class Inquirychecklist
+    {
+        public Inquiry inquiry { get; set; }
+    }
 
     public class CheckListByBranch
     {
