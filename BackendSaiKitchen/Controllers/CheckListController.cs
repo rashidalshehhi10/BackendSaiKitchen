@@ -28,6 +28,8 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include (x => x.Building).Include(x => x.Customer)
+                .Include(x => x.InquiryWorkscopes.Where (y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Workscope)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
                 && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
