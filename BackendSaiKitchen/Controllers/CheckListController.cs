@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.Helper;
+﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
 
+                _jobOrder.JobOrderName = jobOrder.JobOrderName;
                 _jobOrder.JobOrderDescription = jobOrder.JobOrderDescription;
                 _jobOrder.JobOrderDeliveryDate = jobOrder.JobOrderDeliveryDate;
                 _jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
@@ -115,26 +117,26 @@ namespace BackendSaiKitchen.Controllers
         }
 
         [HttpPost]
-        [Route("[action]")]
-        public object RejectinquiryChecklist(JobOrder jobOrder)
+        [Route("[action]")] 
+        public object RejectinquiryChecklist(CustomCheckList reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == jobOrder.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.checklistRejected;
+                inquiry.InquiryStatusId = reject.inquirystatusId;
                 
-                _jobOrder.JobOrderDelayReason = jobOrder.JobOrderDelayReason;
-                _jobOrder.JobOrderDescription = jobOrder.JobOrderDescription;
-                _jobOrder.JobOrderDeliveryDate = jobOrder.JobOrderDeliveryDate;
-                _jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
-                _jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
-                _jobOrder.IsActive = true;
-                _jobOrder.IsDeleted = false;
-                inquiry.JobOrders.Add(_jobOrder);
+                //_jobOrder.JobOrderDelayReason = jobOrder.JobOrderDelayReason;
+                //_jobOrder.JobOrderDescription = jobOrder.JobOrderDescription;
+                //_jobOrder.JobOrderDeliveryDate = jobOrder.JobOrderDeliveryDate;
+                //_jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
+                //_jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
+                //_jobOrder.IsActive = true;
+                //_jobOrder.IsDeleted = false;
+                //inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
-                response.data = jobOrder;
+                response.data = inquiry;
             }
             else
             {
