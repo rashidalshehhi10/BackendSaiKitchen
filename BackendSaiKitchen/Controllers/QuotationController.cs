@@ -394,6 +394,7 @@ namespace BackendSaiKitchen.Controllers
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
                 }).FirstOrDefault();
+            if (viewQuotation != null) { 
             try
             {
                 viewQuotation.invoiceDetails = new List<InvoiceDetail>();
@@ -446,6 +447,13 @@ namespace BackendSaiKitchen.Controllers
             //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
             //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
             response.data = viewQuotation;
+            }
+            else
+            {
+                response.errorMessage = "No Inquiry";
+                response.isError = true;
+
+            }
             return response;
 
         }
