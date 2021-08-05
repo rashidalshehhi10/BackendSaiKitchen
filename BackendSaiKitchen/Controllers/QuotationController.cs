@@ -475,6 +475,7 @@ namespace BackendSaiKitchen.Controllers
                         payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                         payment.ClientSecret = updateQuotation.ClientSecret;
                         payment.PaymentMethod = updateQuotation.PaymentMethod;
+                        payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
                     }
                 }
 
