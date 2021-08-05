@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementFees { get; set; }//payment.p
         public string AdvancePayment { get; set; }
         public string BeforeInstallation { get; set; }
-        public string IsInstallment { get; set; }
+        public bool? IsInstallment { get; set; }
         public string AfterDelivery { get; set; }
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
@@ -46,7 +46,6 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public string reason { get; set; }
         public int FeedBackReactionId { get; set; }
-
         public string PaymentIntentToken { get; set; }
         public string ClientSecret { get; set; }
         public string PaymentMethod { get; set; }
