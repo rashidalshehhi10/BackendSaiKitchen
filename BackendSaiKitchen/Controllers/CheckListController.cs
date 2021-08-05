@@ -15,9 +15,9 @@ namespace BackendSaiKitchen.Controllers
     {
         [HttpPost]
         [Route("[action]")]
-        public object GetAllInquiryChecklist()
+        public object GetinquiryChecklistDetailsById(int inquiryId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false 
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -29,7 +29,27 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
-                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment)));
+                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
+            if (inquiry != null)
+            {
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+                
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetAllInquiryChecklist()
+        {
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending));
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -46,19 +66,35 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId 
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
-                .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
-                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
-                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment)));
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending)).Select(x => new CheckListByBranch
+            {
+                InquiryId = x.InquiryId,
+                QuotationNo = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" +x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive ==true && y.IsDeleted== false).QuotationId,
+                InquiryDescription = x.InquiryDescription,
+                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                WorkScopeCount = x.InquiryWorkscopes.Count,
+                Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                BuildingAddress = x.Building.BuildingAddress,
+                BuildingCondition = x.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested,
+                CustomerId = x.CustomerId,
+                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                CustomerName = x.Customer.CustomerName,
+                CustomerEmail = x.Customer.CustomerEmail,
+                CustomerContact = x.Customer.CustomerContact,
+                BranchId = x.BranchId,
+                InquiryAddedBy = x.AddedByNavigation.UserName,
+                InquiryAddedById = x.AddedBy,
+                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+            });
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -154,15 +190,6 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = reject.inquirystatusId;
-                
-                //_jobOrder.JobOrderDelayReason = jobOrder.JobOrderDelayReason;
-                //_jobOrder.JobOrderDescription = jobOrder.JobOrderDescription;
-                //_jobOrder.JobOrderDeliveryDate = jobOrder.JobOrderDeliveryDate;
-                //_jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
-                //_jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
-                //_jobOrder.IsActive = true;
-                //_jobOrder.IsDeleted = false;
-                //inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;
