@@ -372,7 +372,8 @@ namespace BackendSaiKitchen.Controllers
                     ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
                     //SerialNo =
                     Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
-                    Discount = x.PromoDiscount,
+                    Discount = x.IsMeasurementPromo==false?x.PromoDiscount:"0",
+                    MeasurementFee=x.Payments.FirstOrDefault(y=>y.PaymentTypeId==(int) paymenttype.Measurement && y.PaymentStatusId==(int) paymentstatus.PaymentApproved && y.IsActive==true && y.IsDeleted==false).PaymentAmount.ToString(),
                     Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
                     MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,

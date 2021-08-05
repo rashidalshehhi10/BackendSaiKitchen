@@ -13,6 +13,7 @@ namespace BackendSaiKitchen.CustomModel
         public string ValidDate { get; set; }
         public string Description { get; set; }
         public string Discount { get; set; }//promoCode
+        public string MeasurementFee { get; set; }
         public string Amount { get; set; }
         public string Vat { get; set; }
         public string MeasurementFees { get; set; }//payment.paymnettypeid ==1.measurement.amount 
