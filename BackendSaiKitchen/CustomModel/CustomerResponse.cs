@@ -13,6 +13,7 @@
         public string CustomerNationality { get; set; }
         public string CustomerNationalId { get; set; }
         public int? ContactStatusId { get; set; }
+        public string? ContactStatus { get; set; }
         public int? WayofContactId { get; set; }
         public int? TotalCustomers { get; set; }
         public int? ContactedCustomers { get; set; }

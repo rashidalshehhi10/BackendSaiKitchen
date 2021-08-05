@@ -69,8 +69,28 @@ namespace SaiKitchenBackend.Controllers
         public Object GetCustomerOfBranch(int branchId)
         {
 
-            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, Code = "CS" + x.Branch.BranchId + "" + x.CustomerId, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).ToList();
+            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+                .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
+            { 
+                CustomerId = x.CustomerId,
+                CustomerName = x.CustomerName,
+                CustomerContact = x.CustomerContact,
+                CustomerEmail = x.CustomerEmail,
+                Code = "CS" + x.Branch.BranchId + "" + x.CustomerId,
+                BranchId = x.Branch.BranchId,
+                BranchName = x.Branch.BranchName,
+                UserId = x.User.UserId,
+                UserName = x.User.UserName,
+                CustomerCity = x.CustomerCity,
+                CustomerCountry = x.CustomerCountry,
+                CustomerNationality = x.CustomerNationality,
+                WayofContactId = x.WayofContactId,
+                ContactStatusId = x.ContactStatusId,
+                ContactStatus = x.ContactStatus.ContactStatusName,
+                CustomerAddress = x.CustomerAddress,
+                CustomerNationalId = x.CustomerNationalId 
+            }).ToList();
             int? total = v.Count();
             int? contacted = v.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = v.Where(x => x.ContactStatusId == 2).Count();
