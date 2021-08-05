@@ -17,8 +17,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquiryChecklistDetailsById(int inquiryId)
         {
-            Inquirychecklist inquirychecklist = new Inquirychecklist();
-             inquirychecklist.inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -28,12 +27,27 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include (x => x.Building).Include(x => x.Customer)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
                 && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
-            if (inquirychecklist.inquiry != null)
+            if (inquiry != null)
             {
-                response.data = inquirychecklist;
+                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                {
+                    inquiry = inquiry,
+                    fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                };
+                if (inquirychecklist == null)
+                {
+                    response.isError = true;
+                    response.errorMessage = "No Inquiry Found";
+                }
+                else
+                {
+                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                    response.data = inquirychecklist;
+                }
             }
             else
             {
@@ -76,7 +90,7 @@ namespace BackendSaiKitchen.Controllers
                 InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                 WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                 WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                Status = x.InquiryStatusId,
                 BuildingAddress = x.Building.BuildingAddress,
                 BuildingCondition = x.Building.BuildingCondition,
                 BuildingFloor = x.Building.BuildingFloor,
