@@ -44,7 +44,7 @@ namespace BackendSaiKitchen.Controllers
                 if (getfees == null)
                 {
                     response.isError = true;
-                    response.errorMessage = "No Inquiry Found";
+                    response.errorMessage = "Inquiry doesnt exist";
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "No Inquiry Found";
+                response.errorMessage = "Inquiry doesnt exist";
             }
             return response;
         }
@@ -378,9 +378,10 @@ namespace BackendSaiKitchen.Controllers
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
                     IsInstallment = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).IsInstallment,
                     //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
-                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.PaymentStatusId == (int)paymentstatus.PaymentPending && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
-                    BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
-                    AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery  && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    installments = x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Installment  && y.IsActive == true && y.IsDeleted == false).ToList(),
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
@@ -450,7 +451,7 @@ namespace BackendSaiKitchen.Controllers
             }
             else
             {
-                response.errorMessage = "No Inquiry";
+                response.errorMessage = "Inquiry doesnt exist";
                 response.isError = true;
 
             }
