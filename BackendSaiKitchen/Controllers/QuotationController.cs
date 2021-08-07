@@ -488,6 +488,10 @@ namespace BackendSaiKitchen.Controllers
                         payment.PaymentMethod = updateQuotation.PaymentMethod;
                         payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
                     }
+                    else
+                    {
+                        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
+                    }
                 }
 
                 foreach (var quotation in inquiry.Quotations)
