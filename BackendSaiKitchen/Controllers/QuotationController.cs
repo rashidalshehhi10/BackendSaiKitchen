@@ -206,10 +206,10 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
-                                PaymentName = pay.PaymentName,
+                                PaymentName = "Installment "+(i+1),
                                 PaymentStatusId = (int)paymentstatus.InstallmentCreated,
                                 PaymentTypeId = (int)paymenttype.Installment,
-                                PaymentDetail = pay.PaymentDetail,
+                                PaymentDetail = "Installment of "+customQuotation.InquiryId,
                                 PaymentAmount = Decimal.Truncate((decimal)paymentAmount),
                                 PaymentExpectedDate = pay.PaymentExpectedDate,
                                 IsActive = true,
