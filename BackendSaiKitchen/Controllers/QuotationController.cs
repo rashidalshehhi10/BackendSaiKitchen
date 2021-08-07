@@ -480,6 +480,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 foreach (var payment in inquiry.Payments)
                 {
+                    payment.PaymentModeId = updateQuotation.SelectedPaymentMode;
                     if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
                     {
                         payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;

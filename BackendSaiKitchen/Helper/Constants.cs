@@ -156,7 +156,7 @@ namespace BackendSaiKitchen.Helper
     {
         Cash = 1,
         Cheque = 2,
-        PaybyCard = 3,
+        OfflinePaybyCard = 3,
         OnlinePayment = 4
     }
 

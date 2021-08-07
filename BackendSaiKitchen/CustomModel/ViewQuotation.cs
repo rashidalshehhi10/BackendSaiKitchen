@@ -49,6 +49,7 @@ namespace BackendSaiKitchen.CustomModel
         public string PaymentIntentToken { get; set; }
         public string ClientSecret { get; set; }
         public string PaymentMethod { get; set; }
+        public int SelectedPaymentMode { get; set; }
     }
 
     public class GetfeesForQuotation
