@@ -411,13 +411,36 @@ namespace BackendSaiKitchen.Controllers
 
                     Serilog.Log.Error(ex.Message);
                 }
+
                 viewQuotation.TermsAndConditionsDetail.RemoveAll(x => x.IsInstallmentTerms != viewQuotation.IsInstallment);
+
+                if (viewQuotation.IsInstallment==true)
+                {
+                    for (int i = 0; i < viewQuotation.installments.Count - 1; i++)
+                    {
+                        viewQuotation.TermsAndConditionsDetail.Add(new TermsAndCondition() { TermsAndConditionsDetail= viewQuotation.TermsAndConditionsDetail[1].TermsAndConditionsDetail,IsInstallmentTerms=true});
+                    }
+                }
+                int j = -1;
                 viewQuotation.TermsAndConditionsDetail.ForEach((x) => {
                     if (x.IsInstallmentTerms == viewQuotation.IsInstallment)
                     {
                         if (viewQuotation.IsInstallment == false)
                         {
                             x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%").Replace("[BeforeInstallation]", viewQuotation.BeforeInstallation + "%").Replace("[AfterDelivery]", viewQuotation.AfterDelivery + "%");
+                        }
+                        else
+                        {
+                            if (j == -1)
+                            {
+                                x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%");
+                            }
+                            else
+                            {
+                                x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[noofInstallment]", (j+1) + "").Replace("[installmentPercentage]", viewQuotation.installments[j].PaymentAmountinPercentage + "%").Replace("[installmentDate]", viewQuotation.installments[j].PaymentExpectedDate + "");
+                            }
+
+                            j++;
                         }
                     }
                     else
