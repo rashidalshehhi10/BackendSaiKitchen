@@ -179,7 +179,7 @@ namespace BackendSaiKitchen.Controllers
                         PaymentStatusId = (int)paymentstatus.PaymentCreated,
                         PaymentTypeId = (int)paymenttype.AdvancePayment,
                         PaymentDetail = "Advance Payment of " + customQuotation.InquiryId,
-                        PaymentAmount = (decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment) * 100,
+                        PaymentAmount = Decimal.Truncate((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment) * 100),
                         PaymentExpectedDate = customQuotation.QuotationValidityDate,
                         IsActive = true,
                         IsDeleted = false,
@@ -198,7 +198,7 @@ namespace BackendSaiKitchen.Controllers
                             percent += (decimal)pay.PaymentAmountinPercentage;
                             if (customQuotation.Payments.Count - 1 == i)
                             {
-                                pay.PaymentAmountinPercentage += (100 - percent);
+                                pay.PaymentAmountinPercentage += ((100 - decimal.Parse(customQuotation.AdvancePayment)) - percent);
                             }
 
                             var paymentAmount = ((amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage) * 100;
@@ -210,7 +210,7 @@ namespace BackendSaiKitchen.Controllers
                                 PaymentStatusId = (int)paymentstatus.InstallmentCreated,
                                 PaymentTypeId = (int)paymenttype.Installment,
                                 PaymentDetail = pay.PaymentDetail,
-                                PaymentAmount = paymentAmount,
+                                PaymentAmount = Decimal.Truncate((decimal)paymentAmount),
                                 PaymentExpectedDate = pay.PaymentExpectedDate,
                                 IsActive = true,
                                 IsDeleted = false,
@@ -234,7 +234,7 @@ namespace BackendSaiKitchen.Controllers
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.BeforeInstallation,
                             PaymentDetail = "Before Installation of " + customQuotation.InquiryId,
-                            PaymentAmount = ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.BeforeInstallation)) * 100,
+                            PaymentAmount = Decimal.Truncate(((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.BeforeInstallation)) * 100),
                             PaymentExpectedDate = "",
                             IsActive = true,
                             IsDeleted = false,
@@ -253,7 +253,7 @@ namespace BackendSaiKitchen.Controllers
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.AfterDelivery,
                             PaymentDetail = "After Delivery of " + customQuotation.InquiryId,
-                            PaymentAmount = ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AfterDelivery)) * 100,
+                            PaymentAmount = Decimal.Truncate(((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AfterDelivery)) * 100),
                             PaymentExpectedDate = "",
                             IsActive = true,
                             IsDeleted = false,
@@ -380,8 +380,8 @@ namespace BackendSaiKitchen.Controllers
                     //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
                     AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
-                    AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery  && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
-                    installments = x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Installment  && y.IsActive == true && y.IsDeleted == false).ToList(),
+                    AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    installments = x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Installment && y.IsActive == true && y.IsDeleted == false).ToList(),
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
@@ -395,59 +395,60 @@ namespace BackendSaiKitchen.Controllers
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
                 }).FirstOrDefault();
-            if (viewQuotation != null) { 
-            try
+            if (viewQuotation != null)
             {
-                viewQuotation.invoiceDetails = new List<InvoiceDetail>();
-                for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
+                try
                 {
-                    viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                Serilog.Log.Error(ex.Message);
-            }
-            viewQuotation.TermsAndConditionsDetail.RemoveAll(x => x.IsInstallmentTerms != viewQuotation.IsInstallment);
-            viewQuotation.TermsAndConditionsDetail.ForEach((x) => {
-                if (x.IsInstallmentTerms == viewQuotation.IsInstallment)
-                {
-                    if (viewQuotation.IsInstallment == false)
+                    viewQuotation.invoiceDetails = new List<InvoiceDetail>();
+                    for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
                     {
-                        x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment+"%").Replace("[BeforeInstallation]", viewQuotation.BeforeInstallation+"%").Replace("[AfterDelivery]", viewQuotation.AfterDelivery+"%");
+                        viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
                     }
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    //viewQuotation.TermsAndConditionsDetail.Remove(x);
+
+                    Serilog.Log.Error(ex.Message);
                 }
-            });
+                viewQuotation.TermsAndConditionsDetail.RemoveAll(x => x.IsInstallmentTerms != viewQuotation.IsInstallment);
+                viewQuotation.TermsAndConditionsDetail.ForEach((x) => {
+                    if (x.IsInstallmentTerms == viewQuotation.IsInstallment)
+                    {
+                        if (viewQuotation.IsInstallment == false)
+                        {
+                            x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%").Replace("[BeforeInstallation]", viewQuotation.BeforeInstallation + "%").Replace("[AfterDelivery]", viewQuotation.AfterDelivery + "%");
+                        }
+                    }
+                    else
+                    {
+                        //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                    }
+                });
 
-            //var i=   (from xx in context.InquiryWorkscopes
-            //    group xx.InquiryWorkscopeId by xx into g
-            //    let count = g.Count()
-            //    orderby count descending
-            //    select new
-            //    {
-            //        Count = count,
-            //    });
+                //var i=   (from xx in context.InquiryWorkscopes
+                //    group xx.InquiryWorkscopeId by xx into g
+                //    let count = g.Count()
+                //    orderby count descending
+                //    select new
+                //    {
+                //        Count = count,
+                //    });
 
-            //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
-            //  {
-            //      Quantity = count.ToString(),
-            //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
-            //  }),
-            //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
+                //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
+                //  {
+                //      Quantity = count.ToString(),
+                //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
+                //  }),
+                //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
 
-            //.Select(z=>z.Key
+                //.Select(z=>z.Key
 
-            //    ));
-            //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
-            //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
-            //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
-            response.data = viewQuotation;
+                //    ));
+                //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
+                //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
+                //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
+                response.data = viewQuotation;
             }
             else
             {
