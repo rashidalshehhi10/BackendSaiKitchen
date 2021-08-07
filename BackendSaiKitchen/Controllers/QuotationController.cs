@@ -378,7 +378,7 @@ namespace BackendSaiKitchen.Controllers
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
                     IsInstallment = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).IsInstallment,
                     //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
-                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.PaymentStatusId == (int)paymentstatus.PaymentPending && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.PaymentStatusId == (int)paymentstatus.PaymentCreated && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     CustomerName = x.Customer.CustomerName,
@@ -475,7 +475,6 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
-
                     workscope.InquiryStatusId = status;
                 }
                 foreach (var payment in inquiry.Payments)
