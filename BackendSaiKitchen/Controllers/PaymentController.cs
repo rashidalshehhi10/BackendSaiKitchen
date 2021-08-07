@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.ActionFilters;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,26 @@ namespace BackendSaiKitchen.Controllers
         //{
         //    Helper.Helper.AddPayment(amount);
         //}
-        
+
+        //[AuthFilter((int)permission.ManagePayment, (int)permissionLevel.Read)]
+        [HttpPost]
+        [Route("[action]")]
+        public object GetAllInquiryForPayment()
+        {
+            var payments = paymentRepository.FindByCondition(x => x.PaymentStatusId != (int)paymentstatus.PaymentApproved && x.PaymentStatusId != (int)paymentstatus.InstallmentApproved && x.IsActive==true && x.IsDeleted==false).GroupBy(x=>x.InquiryId).ToList();
+              
+            if (payments != null)
+            {
+                response.data = payments;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "payments does not Exist";
+            }
+            return response;
+        }
+
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddPayment(Payment payment)
