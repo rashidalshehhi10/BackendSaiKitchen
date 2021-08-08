@@ -79,9 +79,14 @@ namespace SaiKitchenBackend.Controllers
             }
             //if (inquiry.Payments.Count > 0)
             //{
+
             foreach (var payment in inquiry.Payments)
             {
                 payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                payment.PaymentModeId = (int)paymentMode.Cash;
+                payment.PaymentTypeId = (int)paymenttype.Measurement;
+                payment.IsActive = true;
+                payment.IsDeleted = false;
                 Helper.AddPayment(payment.PaymentAmount);
                 payment.CreatedDate = Helper.GetDateTime();
                 payment.CreatedBy = Constants.userId;
