@@ -543,7 +543,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
