@@ -171,25 +171,22 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveinquiryChecklist(JobOrder jobOrder)
+        public object ApproveinquiryChecklist(CustomCheckList approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == jobOrder.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            JobOrder _jobOrder = new JobOrder();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            //JobOrder _jobOrder = new JobOrder();
             if (inquiry!=null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
-
-                _jobOrder.JobOrderName = jobOrder.JobOrderName;
-                _jobOrder.JobOrderDescription = jobOrder.JobOrderDescription;
-                _jobOrder.JobOrderDeliveryDate = jobOrder.JobOrderDeliveryDate;
-                _jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
-                _jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
-                _jobOrder.IsActive = true;
-                _jobOrder.IsDeleted = false;
-                inquiry.JobOrders.Add(_jobOrder);
+                foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryworkscope.FeedbackReaction = approve.feedbackreaction;
+                }
+                inquiry.JobOrders.Add(approve.JobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
-                response.data = jobOrder;
+                response.data = approve.JobOrder;
             }
             else
             {
@@ -203,11 +200,16 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")] 
         public object RejectinquiryChecklist(CustomCheckList reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = reject.inquirystatusId;
+                foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryworkscope.FeedbackReaction = reject.feedbackreaction;
+                }
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;

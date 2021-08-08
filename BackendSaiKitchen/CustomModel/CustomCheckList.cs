@@ -10,6 +10,8 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         public int inquirystatusId { get; set; }
+        public JobOrder JobOrder { get; set; }
+        public int feedbackreaction { get; set; }
     }
     public class Inquirychecklist
     {
