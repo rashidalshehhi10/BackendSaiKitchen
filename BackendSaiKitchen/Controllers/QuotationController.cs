@@ -146,7 +146,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == customQuotation.InquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.quotationPending && y.IsActive == true && y.IsDeleted == false).Count()))
+                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                  .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                  .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -333,7 +333,7 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "Designs are not all accepted";
+                response.errorMessage = "Inquiry doesnt exist";
             }
             return response;
         }
@@ -580,7 +580,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y =>y.PaymentTypeId!=(int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
@@ -589,7 +589,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.IsActive = false;
-                    // payment.PaymentStatusId =(int)paymentstatus.PaymentRejected;
+                    //payment.PaymentStatusId = (int)paymentstatus.PaymentRejected;
                 }
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
