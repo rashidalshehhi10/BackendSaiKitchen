@@ -34,4 +34,10 @@ namespace BackendSaiKitchen.CustomModel
         public List<byte[]> QuotationFiles { get; set; }
     }
 
+    public class UploadPdf
+    {
+        public int inquiryId { get; set; }
+        public byte[] Pdf { get; set; }
+    }
+
 }
