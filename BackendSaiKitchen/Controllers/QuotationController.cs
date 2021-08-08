@@ -541,6 +541,7 @@ namespace BackendSaiKitchen.Controllers
         public object ClientRejectQuotation(UpdateQuotationStatus updateQuotation)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
@@ -552,6 +553,11 @@ namespace BackendSaiKitchen.Controllers
                 {
                     payment.IsActive = false;
                     // payment.PaymentStatusId =(int)paymentstatus.PaymentRejected;
+                }
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                 }
 
                 foreach (var quotation in inquiry.Quotations)
