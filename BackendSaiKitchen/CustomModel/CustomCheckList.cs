@@ -6,12 +6,23 @@ using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.CustomModel
 {
-    public class CustomCheckList
+    public class CustomCheckListapprove
     {
         public int inquiryId { get; set; }
-        public int inquirystatusId { get; set; }
-        public JobOrder JobOrder { get; set; }
-        public int feedbackreaction { get; set; }
+        //public int inquirystatusId { get; set; }
+        public string InstallationDate { get; set; }
+        public string? Comment { get; set; }
+        public string? fileplace { get; set; }
+        public byte[] file { get; set; }
+    }
+
+    public class CustomCheckListReject
+    {
+        public int inquiryId { get; set; }
+        public string Comment { get; set; }
+        public int inquiystatusId { get; set; }
+        public List<string> Change { get; set; }
+
     }
     public class Inquirychecklist
     {

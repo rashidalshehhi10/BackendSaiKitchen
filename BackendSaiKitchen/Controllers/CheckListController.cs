@@ -171,22 +171,43 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveinquiryChecklist(CustomCheckList approve)
+        public async Task<object> ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            //JobOrder _jobOrder = new JobOrder();
-            if (inquiry!=null)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(z => z.IsActive == true && z.IsDeleted == false)
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            JobOrder _jobOrder = new JobOrder();
+            if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
-                foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+                _jobOrder.JobOrderExpectedDeadline = approve.InstallationDate;
+                _jobOrder.JobOrderRequestedComments = approve.Comment;
+
+                var fileurl = await Helper.Helper.UploadFile(approve.file);
+                if (approve.fileplace != null)
                 {
-                    inquiryworkscope.FeedbackReaction = approve.feedbackreaction;
+                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                    {
+                        switch (approve.fileplace)
+                        {
+                            case "Measurement":
+
+                                break;
+                            case "Design":
+
+                                break;
+                            case "Quotation":
+
+                                break;
+                        }
+                    }
                 }
-                inquiry.JobOrders.Add(approve.JobOrder);
+                inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
-                response.data = approve.JobOrder;
             }
             else
             {
@@ -197,19 +218,17 @@ namespace BackendSaiKitchen.Controllers
         }
 
         [HttpPost]
-        [Route("[action]")] 
-        public object RejectinquiryChecklist(CustomCheckList reject)
+        [Route("[action]")]
+        public object RejectinquiryChecklist(CustomCheckListReject reject)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = reject.inquirystatusId;
-                foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
-                {
-                    inquiryworkscope.FeedbackReaction = reject.feedbackreaction;
-                }
+                inquiry.InquiryStatusId = reject.inquiystatusId;
+                inquiry.InquiryComment = reject.Comment;
+                //Need To Change
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;
