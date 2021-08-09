@@ -1,4 +1,3 @@
-D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\web.config
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\appsettings.Development.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\appsettings.json
 D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\bin\Debug\net5.0\sai-kitchencrm-firebase-adminsdk-tmg5e-454a2caa79.json
