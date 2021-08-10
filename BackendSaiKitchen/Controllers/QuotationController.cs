@@ -497,6 +497,8 @@ namespace BackendSaiKitchen.Controllers
 
                 int status = updateQuotation.PaymentMethod != null ? (int)inquiryStatus.checklistPending : (int)inquiryStatus.quotationAccepted;
                 inquiry.InquiryStatusId = status;
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+
                 inquiry.Quotations.FirstOrDefault().QuotationStatusId = status;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
@@ -523,6 +525,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
+                    //quotation. = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
+                  
 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
                     quotation.Files.Add(new Models.File

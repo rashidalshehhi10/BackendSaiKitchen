@@ -20,6 +20,15 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        //[AuthFilter((int)permission.ManageBranch, (int)permissionLevel.Read)]
+        [HttpGet]
+        [Route("[action]")]
+        public Object GetBranchByType(int typeId)
+        {
+
+            response.data = branchRepository.FindByCondition(x =>x.BranchTypeId== typeId && x.IsActive == true && x.IsDeleted == false).ToList();
+            return response;
+        }
         //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
