@@ -718,7 +718,7 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
-                entity.Property(e => e.PaymentAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.PaymentAmount).HasColumnType("decimal(38, 0)");
 
                 entity.Property(e => e.PaymentAmountinPercentage).HasColumnType("decimal(18, 0)");
 
@@ -894,6 +894,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.Discount).HasMaxLength(500);
 
                 entity.Property(e => e.IsInstallment).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.QuotationCode).HasMaxLength(500);
 
                 entity.Property(e => e.QuotationValidityDate).HasMaxLength(50);
 
