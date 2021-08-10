@@ -10,19 +10,31 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         //public int inquirystatusId { get; set; }
-        public string InstallationDate { get; set; }
+        public string PrefferdDateByClient { get; set; }
         public string? Comment { get; set; }
-        public string? fileplace { get; set; }
-        public byte[] file { get; set; }
+        public List<AddFileonChecklist> addFileonChecklists { get; set; }
+        
     }
-
+    public class AddFileonChecklist
+    {
+        public int inquiryworkscopeId { get; set; }
+        public int documentType { get; set; }
+        public List<byte[]> files { get; set; }
+    }
     public class CustomCheckListReject
     {
         public int inquiryId { get; set; }
-        public string Comment { get; set; }
-        public int inquiystatusId { get; set; }
-        public List<string> Change { get; set; }
+       // public string Comment { get; set; }
+       // public int inquiystatusId { get; set; }
+       // public List<string> Change { get; set; }
+       public List<Addrejection> Addrejections { get; set; }
+    }
 
+    public class Addrejection
+    {
+        public int inquiryWorkscopeId { get; set; }
+        public int rejectionType { get; set; }
+        public string reason { get; set; }
     }
     public class Inquirychecklist
     {

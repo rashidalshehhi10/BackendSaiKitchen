@@ -176,32 +176,67 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(z => z.IsActive == true && z.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(z => z.Designs.Where(y => y.IsActive ==true && y.IsDeleted == false))
+                .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
-                _jobOrder.JobOrderExpectedDeadline = approve.InstallationDate;
+                _jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 _jobOrder.JobOrderRequestedComments = approve.Comment;
 
-                var fileurl = await Helper.Helper.UploadFile(approve.file);
-                if (approve.fileplace != null)
+                if (approve.addFileonChecklists.Count != 0)
                 {
-                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                    for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {
-                        switch (approve.fileplace)
+                        var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == approve.addFileonChecklists[i].inquiryworkscopeId && x.IsActive == true && x.IsDeleted == false);
+                        foreach (var file in approve.addFileonChecklists[i].files)
                         {
-                            case "Measurement":
+                            var fileUrl = await Helper.Helper.UploadFile(file);
 
-                                break;
-                            case "Design":
-
-                                break;
-                            case "Quotation":
-
-                                break;
+                            switch (approve.addFileonChecklists[i].documentType)
+                            {
+                                case (int)permission.ManageMeasurement:
+                                    var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                    measurement.Files.Add(new Models.File
+                                    {
+                                        FileUrl = fileUrl.Item1,
+                                        FileName = fileUrl.Item1.Split('.')[0],
+                                        FileContentType = fileUrl.Item2,
+                                        IsImage = false,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                    });
+                                    break;
+                                case (int)permission.ManageDesign:
+                                    var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                    design.Files.Add(new Models.File
+                                    {
+                                        FileUrl = fileUrl.Item1,
+                                        FileName = fileUrl.Item1.Split('.')[0],
+                                        FileContentType = fileUrl.Item2,
+                                        IsImage = false,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                    });
+                                    break;
+                                case (int)permission.ManageQuotation:
+                                    var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                    quotation.Files.Add(new Models.File
+                                    {
+                                        FileUrl = fileUrl.Item1,
+                                        FileName = fileUrl.Item1.Split('.')[0],
+                                        FileContentType = fileUrl.Item2,
+                                        IsImage = false,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                    });
+                                    break;
+                            }
                         }
                     }
                 }
@@ -226,9 +261,7 @@ namespace BackendSaiKitchen.Controllers
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = reject.inquiystatusId;
-                inquiry.InquiryComment = reject.Comment;
-                //Need To Change
+                
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;
@@ -240,5 +273,6 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
     }
 }

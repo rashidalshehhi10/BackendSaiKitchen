@@ -595,41 +595,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> UploadPDFForQuotation(UploadPdf pdf)
-        {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == pdf.inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-
-            if (inquiry != null)
-            {
-                foreach (var quotation in inquiry.Quotations)
-                {
-                    if (quotation != null)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(pdf.Pdf);
-                        quotation.Files.Add(new Models.File
-                        {
-                            FileUrl = fileUrl.Item1,
-                            FileName = fileUrl.Item1.Split('.')[0],
-                            FileContentType = fileUrl.Item2,
-                            IsImage = true,
-                            IsActive = true,
-                            IsDeleted = false,
-                        });
-                    }
-                }
-                inquiryRepository.Update(inquiry);
-                context.SaveChanges();
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = "Inquiry Not Found";
-            }
-            return response;
-        }
+        
 
         [HttpPost]
         [Route("[action]")]

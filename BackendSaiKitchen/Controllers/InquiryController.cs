@@ -374,6 +374,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        
 
         #region workscope
 
@@ -469,6 +470,27 @@ namespace SaiKitchenBackend.Controllers
             {
                 response.isError = true;
                 response.errorMessage = "WorkScope doesnt exist";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetWorkscopesByinquiryId(int inquiryId)
+        {
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId)
+                .Select(x => new {
+                x.Workscope.WorkScopeName,
+                x.InquiryWorkscopeId
+                });
+            if (inquiryworkscope != null)
+            {
+                response.data = inquiryworkscope;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
             }
             return response;
         }
