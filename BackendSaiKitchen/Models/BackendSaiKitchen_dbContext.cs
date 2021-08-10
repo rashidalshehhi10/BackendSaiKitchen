@@ -895,6 +895,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.IsInstallment).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.ProposalReferenceNumber).HasMaxLength(500);
+
                 entity.Property(e => e.QuotationCode).HasMaxLength(500);
 
                 entity.Property(e => e.QuotationValidityDate).HasMaxLength(50);

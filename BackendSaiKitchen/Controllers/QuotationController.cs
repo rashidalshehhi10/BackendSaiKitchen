@@ -126,6 +126,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.InquiryId = customQuotation.InquiryId;
                 quotation.QuotationValidityDate = customQuotation.QuotationValidityDate;
                 quotation.Vat = customQuotation.Vat;
+                quotation.ProposalReferenceNumber = customQuotation.ProposalReferenceNumber;
                 quotation.IsActive = true;
                 quotation.IsDeleted = false;
                 quotation.Amount = customQuotation.Amount;

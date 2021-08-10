@@ -25,6 +25,7 @@ namespace BackendSaiKitchen.Models
         public string TotalAmount { get; set; }
         public string Vat { get; set; }
         public string Discount { get; set; }
+        public string ProposalReferenceNumber { get; set; }
         public bool? IsInstallment { get; set; }
         public int? NoOfInstallment { get; set; }
         public int? FeedBackReactionId { get; set; }
