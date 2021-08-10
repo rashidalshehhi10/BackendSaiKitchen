@@ -261,7 +261,28 @@ namespace BackendSaiKitchen.Controllers
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                
+                foreach (var reason in reject.Addrejections)
+                {
+                    var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == reason.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false);
+                    switch (reason.rejectionType)
+                    {
+                        case (int)permission.ManageMeasurement:
+                            inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
+                            inquiryworkscope.Comments = reason.reason;
+                            break;
+
+                        case (int)permission.ManageDesign:
+                            inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
+                            inquiryworkscope.Comments = reason.reason;
+                            break;
+
+                        case (int)permission.ManageQuotation:
+                            inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                            inquiry.InquiryComment = reason.reason;
+                            break;
+                    }
+                }
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;

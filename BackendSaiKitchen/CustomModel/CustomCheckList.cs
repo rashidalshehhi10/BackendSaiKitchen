@@ -24,9 +24,6 @@ namespace BackendSaiKitchen.CustomModel
     public class CustomCheckListReject
     {
         public int inquiryId { get; set; }
-       // public string Comment { get; set; }
-       // public int inquiystatusId { get; set; }
-       // public List<string> Change { get; set; }
        public List<Addrejection> Addrejections { get; set; }
     }
 
