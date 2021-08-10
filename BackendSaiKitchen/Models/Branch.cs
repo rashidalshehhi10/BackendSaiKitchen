@@ -12,6 +12,7 @@ namespace BackendSaiKitchen.Models
             CustomerBranches = new HashSet<CustomerBranch>();
             Customers = new HashSet<Customer>();
             Inquiries = new HashSet<Inquiry>();
+            JobOrders = new HashSet<JobOrder>();
             Notifications = new HashSet<Notification>();
             UserRoles = new HashSet<UserRole>();
         }
@@ -32,6 +33,7 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<CustomerBranch> CustomerBranches { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Inquiry> Inquiries { get; set; }
+        public virtual ICollection<JobOrder> JobOrders { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

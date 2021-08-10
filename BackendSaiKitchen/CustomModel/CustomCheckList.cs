@@ -9,7 +9,7 @@ namespace BackendSaiKitchen.CustomModel
     public class CustomCheckListapprove
     {
         public int inquiryId { get; set; }
-        //public int inquirystatusId { get; set; }
+        public int factoryId { get; set; }
         public string PrefferdDateByClient { get; set; }
         public string? Comment { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }

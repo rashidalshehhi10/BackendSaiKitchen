@@ -188,6 +188,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
                 _jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 _jobOrder.JobOrderRequestedComments = approve.Comment;
+                _jobOrder.FactoryId = approve.factoryId;
 
                 if (approve.addFileonChecklists.Count != 0)
                 {

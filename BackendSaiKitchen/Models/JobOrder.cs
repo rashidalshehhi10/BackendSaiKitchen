@@ -22,7 +22,9 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? FactoryId { get; set; }
 
+        public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
     }
 }

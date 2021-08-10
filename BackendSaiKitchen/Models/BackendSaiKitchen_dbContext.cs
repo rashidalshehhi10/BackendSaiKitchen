@@ -461,6 +461,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
+                entity.HasOne(d => d.Factory)
+                    .WithMany(p => p.JobOrders)
+                    .HasForeignKey(d => d.FactoryId)
+                    .HasConstraintName("FK_JobOrder_Branch");
+
                 entity.HasOne(d => d.Inquiry)
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.InquiryId)
