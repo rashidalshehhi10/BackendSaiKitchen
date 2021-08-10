@@ -22,7 +22,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetPaymentByCode(string code)
         {
-            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved || y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             return response;
         }
         //[HttpPost]
