@@ -60,42 +60,6 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> UploadPDFForQuotation(UploadPdf pdf)
-        {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == pdf.inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-
-            if (inquiry != null)
-            {
-                foreach (var quotation in inquiry.Quotations)
-                {
-                    if (quotation != null)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(pdf.Pdf);
-                        quotation.Files.Add(new Models.File
-                        {
-                            FileUrl = fileUrl.Item1,
-                            FileName = fileUrl.Item1.Split('.')[0],
-                            FileContentType = fileUrl.Item2,
-                            IsImage = true,
-                            IsActive = true,
-                            IsDeleted = false,
-                        });
-                    }
-                }
-                inquiryRepository.Update(inquiry);
-                context.SaveChanges();
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = "Inquiry Not Found";
-            }
-            return response;
-        }
-
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
@@ -522,11 +486,11 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ClientApproveQuotation(UpdateQuotationStatus updateQuotation)
+        public async Task<object> ClientApproveQuotationAsync(UpdateQuotationStatus updateQuotation)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false)).ThenInclude(x=>x.Files.Where(y=>y.IsActive==true && y.IsDeleted==false))
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -559,6 +523,17 @@ namespace BackendSaiKitchen.Controllers
                 {
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
+
+                    var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
+                    quotation.Files.Add(new Models.File
+                    {
+                        FileUrl = fileUrl.Item1,
+                        FileName = fileUrl.Item1.Split('.')[0],
+                        FileContentType = fileUrl.Item2,
+                        IsImage = false,
+                        IsActive = true,
+                        IsDeleted = false,
+                    });
                 }
                 inquiryRepository.Update(inquiry);
                 response.data = inquiry;
@@ -613,6 +588,42 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = "Inquiry Doesn't Exist";
             }
 
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> UploadPDFForQuotation(UploadPdf pdf)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == pdf.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                foreach (var quotation in inquiry.Quotations)
+                {
+                    if (quotation != null)
+                    {
+                        var fileUrl = await Helper.Helper.UploadFile(pdf.Pdf);
+                        quotation.Files.Add(new Models.File
+                        {
+                            FileUrl = fileUrl.Item1,
+                            FileName = fileUrl.Item1.Split('.')[0],
+                            FileContentType = fileUrl.Item2,
+                            IsImage = true,
+                            IsActive = true,
+                            IsDeleted = false,
+                        });
+                    }
+                }
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
             return response;
         }
 
