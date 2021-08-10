@@ -18,7 +18,13 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
-
+        [HttpPost]
+        [Route("[action]")]
+        public object GetPaymentByCode(string code)
+        {
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved || y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            return response;
+        }
         //[HttpPost]
         //[Route("[action]")]
         //public void TestPayment(decimal? amount)
@@ -31,8 +37,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllInquiryForPayment()
         {
-            var payments = paymentRepository.FindByCondition(x => x.PaymentStatusId != (int)paymentstatus.PaymentApproved && x.PaymentStatusId != (int)paymentstatus.InstallmentApproved && x.IsActive==true && x.IsDeleted==false).GroupBy(x=>x.InquiryId).ToList();
-              
+            var payments = paymentRepository.FindByCondition(x => x.PaymentStatusId != (int)paymentstatus.PaymentApproved && x.PaymentStatusId != (int)paymentstatus.InstallmentApproved && x.IsActive == true && x.IsDeleted == false).GroupBy(x => x.InquiryId).ToList();
+
             if (payments != null)
             {
                 response.data = payments;
@@ -119,7 +125,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updatePayment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (inquiry != null)
             {
-                
+
                 try
                 {
                     var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval).FirstOrDefault();
