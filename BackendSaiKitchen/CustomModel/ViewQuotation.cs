@@ -20,6 +20,7 @@ namespace BackendSaiKitchen.CustomModel
         public string AdvancePayment { get; set; }
         public string BeforeInstallation { get; set; }
         public bool? IsInstallment { get; set; }
+        public string ProposalReferenceNumber { get; set; }
         public List<Payment> installments { get; set; }
         public string AfterDelivery { get; set; }
         public string CustomerName { get; set; }

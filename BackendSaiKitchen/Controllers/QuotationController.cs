@@ -21,7 +21,7 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
 
-        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
@@ -389,6 +389,7 @@ namespace BackendSaiKitchen.Controllers
                     BuildingAddress = x.Building.BuildingAddress,
                     BranchAddress = x.Branch.BranchAddress,
                     BranchContact = x.Branch.BranchContact,
+                    ProposalReferenceNumber=x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                     TermsAndConditionsDetail = terms,
                     Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
