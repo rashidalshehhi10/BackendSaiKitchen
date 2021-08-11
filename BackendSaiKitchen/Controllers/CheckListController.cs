@@ -195,49 +195,60 @@ namespace BackendSaiKitchen.Controllers
                     for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {
                         var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == approve.addFileonChecklists[i].inquiryworkscopeId && x.IsActive == true && x.IsDeleted == false);
-                        foreach (var file in approve.addFileonChecklists[i].files)
+                        try
                         {
-                            var fileUrl = await Helper.Helper.UploadFile(file);
-
-                            switch (approve.addFileonChecklists[i].documentType)
+                            foreach (var file in approve.addFileonChecklists[i].files)
                             {
-                                case (int)permission.ManageMeasurement:
-                                    var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                    measurement.Files.Add(new Models.File
+                                if (file != null)
+                                {
+                                    var fileUrl = await Helper.Helper.UploadFile(file);
+
+                                    switch (approve.addFileonChecklists[i].documentType)
                                     {
-                                        FileUrl = fileUrl.Item1,
-                                        FileName = fileUrl.Item1.Split('.')[0],
-                                        FileContentType = fileUrl.Item2,
-                                        IsImage = false,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                    });
-                                    break;
-                                case (int)permission.ManageDesign:
-                                    var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                    design.Files.Add(new Models.File
-                                    {
-                                        FileUrl = fileUrl.Item1,
-                                        FileName = fileUrl.Item1.Split('.')[0],
-                                        FileContentType = fileUrl.Item2,
-                                        IsImage = false,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                    });
-                                    break;
-                                case (int)permission.ManageQuotation:
-                                    var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                    quotation.Files.Add(new Models.File
-                                    {
-                                        FileUrl = fileUrl.Item1,
-                                        FileName = fileUrl.Item1.Split('.')[0],
-                                        FileContentType = fileUrl.Item2,
-                                        IsImage = false,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                    });
-                                    break;
+                                        case (int)permission.ManageMeasurement:
+                                            var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                            measurement.Files.Add(new Models.File
+                                            {
+                                                FileUrl = fileUrl.Item1,
+                                                FileName = fileUrl.Item1.Split('.')[0],
+                                                FileContentType = fileUrl.Item2,
+                                                IsImage = false,
+                                                IsActive = true,
+                                                IsDeleted = false,
+                                            });
+                                            break;
+                                        case (int)permission.ManageDesign:
+                                            var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                            design.Files.Add(new Models.File
+                                            {
+                                                FileUrl = fileUrl.Item1,
+                                                FileName = fileUrl.Item1.Split('.')[0],
+                                                FileContentType = fileUrl.Item2,
+                                                IsImage = false,
+                                                IsActive = true,
+                                                IsDeleted = false,
+                                            });
+                                            break;
+                                        case (int)permission.ManageQuotation:
+                                            var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                            quotation.Files.Add(new Models.File
+                                            {
+                                                FileUrl = fileUrl.Item1,
+                                                FileName = fileUrl.Item1.Split('.')[0],
+                                                FileContentType = fileUrl.Item2,
+                                                IsImage = false,
+                                                IsActive = true,
+                                                IsDeleted = false,
+                                            });
+                                            break;
+                                    }
+                                }
+
                             }
+                        }
+                        catch(Exception ex)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(ex.Message);
                         }
                     }
                 }
