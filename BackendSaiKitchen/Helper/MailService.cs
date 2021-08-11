@@ -1,9 +1,11 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -156,7 +158,7 @@ namespace BackendSaiKitchen.Helper
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(toEmail));
-                email.Subject = "Design Review of "+inquiryCode;
+                email.Subject = "Design Review of " + inquiryCode;
                 var builder = new BodyBuilder();
                 builder.HtmlBody = MailText;
                 email.Body = builder.ToMessageBody();
@@ -174,7 +176,7 @@ namespace BackendSaiKitchen.Helper
             }
         }
 
-        public async Task SendQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo,String vAT,String totalAmount,String validityTill,String approveQuotationURL,String rejectQuotationURL)
+        public async Task SendQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo, String vAT, String totalAmount, String validityTill, String approveQuotationURL, String rejectQuotationURL)
         {
             try
             {
@@ -187,7 +189,37 @@ namespace BackendSaiKitchen.Helper
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(toEmail));
-                email.Subject = "Quotation Approval of "+inquiryCode;
+                email.Subject = "Quotation Approval of " + inquiryCode;
+                var builder = new BodyBuilder();
+                builder.HtmlBody = MailText;
+                email.Body = builder.ToMessageBody();
+                using var smtp = new SmtpClient();
+                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+                await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+            }
+
+            catch (Exception ex)
+            {
+
+                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+            }
+        }
+        public async Task ApproveQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo, String vAT, String totalAmount, String validityTill, String approveQuotationURL, String rejectQuotationURL, List<IFormFile> Attachments)
+        {
+            try
+            {
+                string FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\QuotationApprovalTemplate.html";
+                StreamReader str = new StreamReader(FilePath);
+                string MailText = str.ReadToEnd();
+                str.Close();
+                //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
+                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
+                var email = new MimeMessage();
+                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = "Quotation Approval of " + inquiryCode;
                 var builder = new BodyBuilder();
                 builder.HtmlBody = MailText;
                 email.Body = builder.ToMessageBody();
