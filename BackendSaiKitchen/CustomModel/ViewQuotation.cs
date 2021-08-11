@@ -8,7 +8,7 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class ViewQuotation
     {
-        public string InvoiceNo { get; set; } // "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
+        public string InvoiceNo { get; set; } // "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
         public string CreatedDate { get; set; }
         public string ValidDate { get; set; }
         public string Description { get; set; }

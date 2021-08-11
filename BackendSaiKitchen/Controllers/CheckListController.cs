@@ -88,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
             && (x.InquiryStatusId == (int)inquiryStatus.checklistPending)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
-                QuotationNo = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" +x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive ==true && y.IsDeleted== false).QuotationId,
+                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" +x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive ==true && y.IsDeleted== false).QuotationId,
                 InquiryDescription = x.InquiryDescription,
                 InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                 WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),

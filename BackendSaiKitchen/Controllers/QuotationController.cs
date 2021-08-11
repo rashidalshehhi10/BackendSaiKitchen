@@ -368,7 +368,7 @@ namespace BackendSaiKitchen.Controllers
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
-                    InvoiceNo = "INV" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
+                    InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
                     CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
                     ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
                     //SerialNo =
@@ -526,7 +526,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
-                    quotation.QuotationCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
+                    quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
                   
 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
