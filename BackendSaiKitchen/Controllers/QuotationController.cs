@@ -542,13 +542,13 @@ namespace BackendSaiKitchen.Controllers
                         IsActive = true,
                         IsDeleted = false,
                     });
-                    foreach (var file in quotation.Files)
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                    }
+                    //foreach (var file in quotation.Files)
+                    //{
+                    //    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    //}
                 }
                 inquiryRepository.Update(inquiry);
-                await mailService.SendEmailAsync(new MailRequest { Subject="Quotation Files",ToEmail=inquiry.Customer.CustomerEmail,Body="Quotation File",Attachments=files});
+                //await mailService.SendEmailAsync(new MailRequest { Subject="Quotation Files",ToEmail=inquiry.Customer.CustomerEmail,Body="Quotation File",Attachments=files});
                 response.data = inquiry;
                 context.SaveChanges();
             }
