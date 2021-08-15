@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
+using NPOI.XWPF.UserModel;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -253,6 +254,74 @@ namespace BackendSaiKitchen.Helper
             }
 
             return "";
+        }
+        List<XWPFParagraph> paragraphs=new List<XWPFParagraph>();
+        public static void GenerateInvoice()
+        {
+          FileStream fileStream=  new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            XWPFDocument wordDocument = new XWPFDocument(fileStream);
+
+            //for (int i = 0; i < wordDocument.BodyElements.Count; i++)
+            //{
+            //    wordDocument.BodyElements[i].Body.Tables[0]a.ReplaceText("[invoiceCode]", "INV000");
+            //    wordDocument.BodyElements[i].ReplaceText("[createdDate]", "14/08/2021");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerName]", "Sameer".ToUpper());
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerEmail]", "sameer71095@gmail.com");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerContact]", "971545552471");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerAddress]", "Villa 50, Al Khamaari St Jumeira 3, Dubai");
+            //    wordDocument.BodyElements[i].ReplaceText("[isPaid]", "");
+            //    wordDocument.BodyElements[i].ReplaceText("[inquiryCode]", "IN111332");
+            //    wordDocument.BodyElements[i].ReplaceText("[WorkScopeName]", "Kitchen");
+            //    wordDocument.BodyElements[i].ReplaceText("[Amount]", "1000");
+            //    wordDocument.BodyElements[i].ReplaceText("[Discount]", "15");
+            //    wordDocument.BodyElements[i].ReplaceText("[TaxAmount]", "5");
+            //    wordDocument.BodyElements[i].ReplaceText("[TotalAmount]", "850");
+            //    wordDocument.BodyElements[i].ReplaceText("[MeasurementFee]", "250");
+            //    wordDocument.BodyElements[i].ReplaceText("[PaymentAmount]", "200");
+            //    wordDocument.BodyElements[i].ReplaceText("[EnglishAmount]", "Two hundred only");
+
+            //    //paragraphs.Add(word);
+            //    //paragraphs .Add= word.Text.Replace("[CustomerName]", "Sameer");
+            //}
+            for (int i = 0; i < wordDocument.Paragraphs.Count; i++)
+            {
+                wordDocument.Paragraphs[i].ReplaceText("[invoiceCode]", "INV000");
+                wordDocument.Paragraphs[i].ReplaceText("[createdDate]", "14/08/2021");
+                wordDocument.Paragraphs[i].ReplaceText("[CustomerName]", "Sameer".ToUpper());
+                wordDocument.Paragraphs[i].ReplaceText("[CustomerEmail]", "sameer71095@gmail.com");
+                wordDocument.Paragraphs[i].ReplaceText("[CustomerContact]", "971545552471");
+                wordDocument.Paragraphs[i].ReplaceText("[CustomerAddress]", "Villa 50, Al Khamaari St Jumeira 3, Dubai");
+                wordDocument.Paragraphs[i].ReplaceText("[isPaid]", "");
+                wordDocument.Paragraphs[i].ReplaceText("[inquiryCode]", "IN111332");
+                wordDocument.Paragraphs[i].ReplaceText("[WorkScopeName]", "Kitchen");
+                wordDocument.Paragraphs[i].ReplaceText("[Amount]", "1000");
+                wordDocument.Paragraphs[i].ReplaceText("[Discount]", "15");
+                wordDocument.Paragraphs[i].ReplaceText("[TaxAmount]", "5");
+                wordDocument.Paragraphs[i].ReplaceText("[TotalAmount]", "850");
+                wordDocument.Paragraphs[i].ReplaceText("[MeasurementFee]", "250");
+                wordDocument.Paragraphs[i].ReplaceText("[PaymentAmount]", "200");
+                wordDocument.Paragraphs[i].ReplaceText("[EnglishAmount]", "Two hundred only");
+
+                //paragraphs.Add(word);
+                //paragraphs .Add= word.Text.Replace("[CustomerName]", "Sameer");
+            }
+            using (FileStream file = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice2.docx", FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                wordDocument.Write(file);
+                file.Close();
+            }
+
+            //XWPFDocument doc = new XWPFDocument();
+            //doc.CreateParagraph();
+            //using (FileStream sw = System.IO.File.OpenWrite(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx"))
+            //{
+            //  foreach(var v in doc.Paragraphs)
+            //    {
+
+            //    }
+            //doc.Write(sw);
+            //}
+
         }
     }
 }

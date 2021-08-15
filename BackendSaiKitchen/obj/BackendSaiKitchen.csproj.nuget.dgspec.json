@@ -96,6 +96,10 @@
               "target": "Package",
               "version": "[5.0.4, )"
             },
+            "Microsoft.Office.Interop.Word": {
+              "target": "Package",
+              "version": "[15.0.4797.1003, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.10.13, )"
@@ -103,6 +107,10 @@
             "MimeKit": {
               "target": "Package",
               "version": "[2.11.0, )"
+            },
+            "NPOI": {
+              "target": "Package",
+              "version": "[2.5.4, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",

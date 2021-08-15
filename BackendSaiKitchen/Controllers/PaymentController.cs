@@ -18,7 +18,15 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
+
         [HttpPost]
+        [Route("[action]")]
+        public void InvoiceGenerator()
+        {
+           Helper.Helper.GenerateInvoice();
+
+        }
+            [HttpPost]
         [Route("[action]")]
         public object GetPaymentByCode(string code)
         {
@@ -116,6 +124,7 @@ namespace BackendSaiKitchen.Controllers
             response.data = inquiry;
             return response;
         }
+
 
 
         [HttpPost]
