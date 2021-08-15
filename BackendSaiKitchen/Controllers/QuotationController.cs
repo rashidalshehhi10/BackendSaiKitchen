@@ -490,9 +490,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ClientApproveQuotationAsync(UpdateQuotationStatus updateQuotation)
         {
+            List<IFormFile> files = new List<IFormFile>();
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false)).ThenInclude(x=>x.Files.Where(y=>y.IsActive==true && y.IsDeleted==false))
+                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x=>x.Files.Where(y=>y.IsActive==true && y.IsDeleted==false))
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -540,8 +542,13 @@ namespace BackendSaiKitchen.Controllers
                         IsActive = true,
                         IsDeleted = false,
                     });
+                    foreach (var file in quotation.Files)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    }
                 }
                 inquiryRepository.Update(inquiry);
+                await mailService.SendEmailAsync(new MailRequest { Subject="Quotation Files",ToEmail=inquiry.Customer.CustomerEmail,Body="Quotation File",Attachments=files});
                 response.data = inquiry;
                 context.SaveChanges();
             }
@@ -636,6 +643,14 @@ namespace BackendSaiKitchen.Controllers
             }
 
             return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult> read(string filename)
+        {
+            var imgdata = await Helper.Helper.GetFile(filename);
+            return File(imgdata, "Image/"+Helper.Helper.GuessFileType(imgdata));
         }
 
     }

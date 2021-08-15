@@ -145,13 +145,19 @@ namespace BackendSaiKitchen.Helper
                 MemoryStream stream = new MemoryStream(fileByte);
                 fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-                await blobManager.Upload(new Blob() { File = blob });
+                await blobManager.Upload(new Blob() { File = blob }) ;
             }
             catch (Exception e)
             {
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
             return fileUrl;
+        }
+
+        public static async Task<byte[]> GetFile(string filename)
+        {
+            byte[] image = await blobManager.Read(filename);
+            return image;
         }
 
         public static async Task<string> UploadUpdateVideo(byte[] file)
