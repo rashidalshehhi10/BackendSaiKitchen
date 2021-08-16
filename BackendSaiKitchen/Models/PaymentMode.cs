@@ -7,11 +7,6 @@ namespace BackendSaiKitchen.Models
 {
     public partial class PaymentMode
     {
-        public PaymentMode()
-        {
-            Payments = new HashSet<Payment>();
-        }
-
         public int PaymentModeId { get; set; }
         public string PaymentModeName { get; set; }
         public string PaymentModeDescription { get; set; }
@@ -21,7 +16,5 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
-
-        public virtual ICollection<Payment> Payments { get; set; }
     }
 }

@@ -207,7 +207,7 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = customQuotation.InquiryId,
-                                PaymentName = "Installment " + (i + 1),
+                                PaymentName = "Installment# " + (i + 1),
                                 PaymentStatusId = (int)paymentstatus.InstallmentCreated,
                                 PaymentTypeId = (int)paymenttype.Installment,
                                 PaymentDetail = "Installment of " + customQuotation.InquiryId,
@@ -518,7 +518,9 @@ namespace BackendSaiKitchen.Controllers
                         payment.ClientSecret = updateQuotation.ClientSecret;
                         payment.PaymentMethod = updateQuotation.PaymentMethod;
                         payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
-                    }
+                        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
+            
+                        }
                     else
                     {
                         payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
@@ -530,6 +532,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
+
                   
 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);

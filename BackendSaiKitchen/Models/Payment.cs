@@ -27,6 +27,9 @@ namespace BackendSaiKitchen.Models
         public string PaymentIntentToken { get; set; }
         public string ClientSecret { get; set; }
         public string PaymentMethod { get; set; }
+        public string InvoiceCode { get; set; }
+        public string PaymentIntentResponse { get; set; }
+        public string PaymentResponse { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public string CreatedDate { get; set; }
@@ -36,7 +39,6 @@ namespace BackendSaiKitchen.Models
 
         public virtual Fee Fees { get; set; }
         public virtual Inquiry Inquiry { get; set; }
-        public virtual PaymentMode PaymentMode { get; set; }
         public virtual PaymentStatus PaymentStatus { get; set; }
         public virtual PaymentType PaymentType { get; set; }
         public virtual Quotation Quotation { get; set; }

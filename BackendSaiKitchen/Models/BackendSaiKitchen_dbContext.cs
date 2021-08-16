@@ -745,11 +745,6 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Payment_Inquiry");
 
-                entity.HasOne(d => d.PaymentMode)
-                    .WithMany(p => p.Payments)
-                    .HasForeignKey(d => d.PaymentModeId)
-                    .HasConstraintName("FK_Payment_PaymentMode");
-
                 entity.HasOne(d => d.PaymentStatus)
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.PaymentStatusId)
