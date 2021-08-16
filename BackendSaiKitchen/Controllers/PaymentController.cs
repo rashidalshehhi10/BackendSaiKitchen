@@ -23,14 +23,128 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public void InvoiceGenerator()
         {
-           Helper.Helper.GenerateInvoice();
+            Helper.Helper.GenerateInvoice();
 
         }
-            [HttpPost]
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetQuotationDetailsFromCode(string code)
+        {
+            int? inquiryId = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.FirstOrDefault()?.InquiryId;
+            if (inquiryId != null)
+            {
+                List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
+                List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+                ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                    .Select(x => new ViewQuotation
+                    {
+                        InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true & y.IsDeleted == false).QuotationId,
+                        CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
+                        ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
+                    //SerialNo =
+                    Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
+                        Discount = x.IsMeasurementPromo == false ? x.PromoDiscount : "0",
+                        MeasurementFee = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false).PaymentAmount.ToString(),
+                        Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
+                        Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
+                        IsInstallment = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).IsInstallment,
+                    //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
+                    AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                        BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                        AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
+                        installments = x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Installment && y.IsActive == true && y.IsDeleted == false).ToList(),
+                        CustomerName = x.Customer.CustomerName,
+                        CustomerEmail = x.Customer.CustomerEmail,
+                        CustomerContact = x.Customer.CustomerContact,
+                        BuildingAddress = x.Building.BuildingAddress,
+                        BranchAddress = x.Branch.BranchAddress,
+                        BranchContact = x.Branch.BranchContact,
+                        ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
+                        TermsAndConditionsDetail = terms,
+                        Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
+                        Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
+                    inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
+                        TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
+
+                    }).FirstOrDefault();
+                if (viewQuotation != null)
+                {
+                    try
+                    {
+                        viewQuotation.invoiceDetails = new List<InvoiceDetail>();
+                        for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
+                        {
+                            viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Serilog.Log.Error(ex.Message);
+                    }
+
+                    viewQuotation.TermsAndConditionsDetail.RemoveAll(x => x.IsInstallmentTerms != viewQuotation.IsInstallment);
+
+                    if (viewQuotation.IsInstallment == true)
+                    {
+                        for (int i = 0; i < viewQuotation.installments.Count - 1; i++)
+                        {
+                            viewQuotation.TermsAndConditionsDetail.Add(new TermsAndCondition() { TermsAndConditionsDetail = viewQuotation.TermsAndConditionsDetail[1].TermsAndConditionsDetail, IsInstallmentTerms = true });
+                        }
+                    }
+                    int j = -1;
+                    viewQuotation.TermsAndConditionsDetail.ForEach((x) =>
+                    {
+                        if (x.IsInstallmentTerms == viewQuotation.IsInstallment)
+                        {
+                            if (viewQuotation.IsInstallment == false)
+                            {
+                                x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%").Replace("[BeforeInstallation]", viewQuotation.BeforeInstallation + "%").Replace("[AfterDelivery]", viewQuotation.AfterDelivery + "%");
+                            }
+                            else
+                            {
+                                if (j == -1)
+                                {
+                                    x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%");
+                                }
+                                else
+                                {
+                                    x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[noofInstallment]", (j + 1) + "").Replace("[installmentPercentage]", viewQuotation.installments[j].PaymentAmountinPercentage + "%").Replace("[installmentDate]", viewQuotation.installments[j].PaymentExpectedDate + "");
+                                }
+
+                                j++;
+                            }
+                        }
+                        else
+                        {
+                            //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                        }
+                    });
+                    response.data = viewQuotation;
+                }
+                else
+                {
+                    response.errorMessage = "Inquiry doesnt exist";
+                    response.isError = true;
+
+                }
+            }
+            else
+            {
+                response.errorMessage = "Inquiry doesnt exist";
+                response.isError = true;
+
+            }
+            return response;
+
+        }
+        [HttpPost]
         [Route("[action]")]
         public object GetPaymentByCode(string code)
         {
-            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             return response;
         }
         //[HttpPost]

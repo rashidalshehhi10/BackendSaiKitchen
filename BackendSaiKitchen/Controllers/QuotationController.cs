@@ -503,7 +503,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryStatusId = status;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
-                inquiry.Quotations.FirstOrDefault().QuotationStatusId = status;
+                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
