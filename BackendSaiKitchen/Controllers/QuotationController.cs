@@ -650,10 +650,18 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> read(string filename)
+        public async Task<object> read(int quotationid)
         {
-            var imgdata = await Helper.Helper.GetFile(filename);
-            return File(imgdata, "Image/"+Helper.Helper.GuessFileType(imgdata));
+            var quotation = quotationRepository.FindByCondition(x => x.QuotationId == quotationid && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Files.Where((y => y.IsActive == true && y.IsDeleted == false))).FirstOrDefault();
+            List<IFormFile> files = new List<IFormFile>();
+            foreach (var file in quotation.Files)
+            {
+                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+            }
+            await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = "ali_burhan1993@outlook.com", Body = "Quotation File", Attachments = files });
+            return response;
+
         }
 
     }

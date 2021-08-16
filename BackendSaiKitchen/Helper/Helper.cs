@@ -132,7 +132,11 @@ namespace BackendSaiKitchen.Helper
             var ext = GuessFileType(fileByte);
             MemoryStream stream = new MemoryStream(fileByte);
             fileUrl = Guid.NewGuid().ToString() + "." + ext;
-            IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
+            IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = ext == "pdf" ? "application/" + ext : "image/" + ext
+            };
 
             return blob;
         }
