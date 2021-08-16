@@ -545,13 +545,13 @@ namespace BackendSaiKitchen.Controllers
                         IsActive = true,
                         IsDeleted = false,
                     });
-                    //foreach (var file in quotation.Files)
-                    //{
-                    //    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                    //}
+                    foreach (var file in quotation.Files)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    }
                 }
                 inquiryRepository.Update(inquiry);
-                //await mailService.SendEmailAsync(new MailRequest { Subject="Quotation Files",ToEmail=inquiry.Customer.CustomerEmail,Body="Quotation File",Attachments=files});
+                await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
                 response.data = inquiry;
                 context.SaveChanges();
             }
@@ -648,21 +648,6 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> read(int quotationid)
-        {
-            var quotation = quotationRepository.FindByCondition(x => x.QuotationId == quotationid && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Files.Where((y => y.IsActive == true && y.IsDeleted == false))).FirstOrDefault();
-            List<IFormFile> files = new List<IFormFile>();
-            foreach (var file in quotation.Files)
-            {
-                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-            }
-            await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = "ali_burhan1993@outlook.com", Body = "Quotation File", Attachments = files });
-            return response;
-
-        }
 
     }
 }
