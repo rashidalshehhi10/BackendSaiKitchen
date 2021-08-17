@@ -14,7 +14,7 @@ namespace BackendSaiKitchen.Controllers
     {
         [HttpPost]
         [Route("[action]")]
-        public object ViewDashborad()
+        public object ViewDashboard()
         {
             var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
                 .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -31,11 +31,13 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Branch)
                 .FirstOrDefault();
-            Dashborad dashborad = new Dashborad();
-            var roletypeid = user.UserRoles.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).BranchRole.RoleTypeId;
-            var branchid = user.UserRoles.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).BranchId;
+           
+                Dashborad dashborad = new Dashborad();
             if (user != null)
             {
+                var roletypeid = user.UserRoles.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).BranchRole.RoleTypeId;
+            var branchid = user.UserRoles.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).BranchId;
+           
 
 
                 if (roletypeid == (int)roleType.Manager)
