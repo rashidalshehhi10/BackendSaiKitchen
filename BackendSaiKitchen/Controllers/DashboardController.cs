@@ -54,7 +54,7 @@ namespace BackendSaiKitchen.Controllers
 
                 };
                     dashborad.calendar = new List<Calendar>();
-                    foreach (var inquiry in user.Inquiries)
+                    foreach (var inquiry in branch.Inquiries)
                     {
                         foreach (var inworkscope in inquiry.InquiryWorkscopes)
                         {
