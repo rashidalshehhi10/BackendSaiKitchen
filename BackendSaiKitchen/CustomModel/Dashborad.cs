@@ -10,6 +10,19 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int CustomerRegistered { get; set; }
         public int InquiryCompleted { get; set; }
+        public int CustomerContacted { get; set; }
+        public int CustomerNeedtoContact { get; set; }
+        public int TotalInquiries { get; set; }
+        public int Totalquotations { get; set; }
+        public int QuotationAccepted { get; set; }
+        public int QuotationRejected { get; set; }
+        public int TotalJoborder { get; set; }
+        public int InquiryIncomplete { get; set; }
+        //public int Invoicegenerated { get; set; }
+        //public int InvoicePaid { get; set; }
+        //public int TotalCashPayment { get; set; }
+        //public int TotalChequePayment { get; set; }
+        //public int TotalOnlinePayment { get; set; }
         //public List<string> MeasurementScheduleDate { get; set; }
         //public List<string> DesignScheduledate { get; set; }
         //public List<string> InquiryCode { get; set; }
