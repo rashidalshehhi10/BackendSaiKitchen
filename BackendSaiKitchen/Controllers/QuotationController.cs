@@ -533,8 +533,8 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Description = updateQuotation.reason;
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
 
-                  
 
+                    if (updateQuotation.Pdf.Length > 0 && updateQuotation.Pdf!=null) { 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
                     quotation.Files.Add(new Models.File
                     {
@@ -545,10 +545,12 @@ namespace BackendSaiKitchen.Controllers
                         IsActive = true,
                         IsDeleted = false,
                     });
+                    }
                     foreach (var file in quotation.Files)
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
                     }
+                    
                 }
                 inquiryRepository.Update(inquiry);
                 await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });

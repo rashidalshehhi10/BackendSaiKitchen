@@ -14,7 +14,7 @@ namespace BackendSaiKitchen.Controllers
     {
         [HttpPost]
         [Route("[action]")]
-        public object ViewDashborad()
+        public object ViewDashboard()
         {
             //Dashborad dashborad = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
             //   .Select(x => new Dashborad
