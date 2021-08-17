@@ -63,8 +63,8 @@ namespace BackendSaiKitchen.Controllers
                             InquiryId = inquiry.InquiryId,
                             InquiryWorkscopeId = inworkscope.InquiryWorkscopeId,
                             InquiryCode = inquiry.InquiryCode,
-                            MeasurementScheduleDate = inworkscope.MeasurementScheduleDate,
-                            DesignScheduledate = inworkscope.DesignScheduleDate,
+                            MeasurementScheduleDate = inworkscope.MeasurementAssignedTo == Constants.userId? inworkscope.MeasurementScheduleDate : "",
+                            DesignScheduledate = inworkscope.DesignAssignedTo == Constants.userId ? inworkscope.DesignScheduleDate : "",
                             WorkscopeName = inworkscope.Workscope.WorkScopeName,
                             InquiryworkscopeStatusId = (int)inworkscope.InquiryStatusId
                         });
