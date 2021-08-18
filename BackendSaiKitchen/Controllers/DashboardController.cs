@@ -17,61 +17,53 @@ namespace BackendSaiKitchen.Controllers
         public object ViewDashboard()
         {
             var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
-                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(y => y.BranchRole)
                 .FirstOrDefault();
            
-                Dashborad dashborad = new Dashborad();
+                Dashborad dashborad;
             if (user != null)
             {
-             
-                var branch = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId)
-                    .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false))
-                    .ThenInclude(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false && (z.MeasurementAssignedTo == Constants.userId || z.DesignAssignedTo == Constants.userId)))
-                    .ThenInclude(x => x.Workscope)
-                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(y => y.Payments.Where(z => z.IsActive == true && z.IsDeleted == false))
-                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(y => y.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false))
-                    .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(y => y.BranchRole)
-                    .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(x => x.Branch).FirstOrDefault();
-                dashborad = new Dashborad()
-                {
-                    CustomerRegistered = branch.Customers.Count(),
-                    InquiryCompleted = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.inquiryCompleted).Count(),
-                    InquiryIncomplete = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Count(),
-                    TotalInquiries = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
-                    CustomerContacted = branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == 1).Count(),
-                    CustomerNeedtoContact = branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == 2).Count(),
-                    Totalquotations = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).Select(y => y.Quotations).Count(),
-                    QuotationAccepted = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),
-                    QuotationRejected = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationRejected).Count(),
-                    TotalJoborder = branch.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated).Count()
-
-                };
-                    dashborad.calendar = new List<Calendar>();
-                    foreach (var inquiry in branch.Inquiries)
+                 dashborad = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                    .Select(x => new Dashborad
                     {
-                        foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                        CustomerContacted = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false && y.ContactStatusId == 1).Count(),
+                        CustomerNeedtoContact = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false && y.ContactStatusId == 2).Count(),
+                        CustomerRegistered =x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false).Count(),
+                        InquiryCompleted =x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId ==(int)inquiryStatus.inquiryCompleted).Count(),
+                        InquiryIncomplete = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Count(),
+                        Totalquotations = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).Select(y => y.Quotations).Count(),
+                        QuotationAccepted =x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),
+                        QuotationRejected =x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationRejected).Count(),
+                        TotalJoborder = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated).Count(),
+                        TotalInquiries=x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                    }).FirstOrDefault();
+
+                var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                    .ThenInclude(y => y.Workscope);
+                    
+                    dashborad.calendar = new List<Calendar>();
+                foreach (var inquiry in inquiries)
+                {
+                    foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                    {
+                        if (inworkscope.DesignAssignedTo == Constants.userId || inworkscope.MeasurementAssignedTo == Constants.userId)
                         {
-                        dashborad.calendar.Add(new Calendar
-                        {
-                            InquiryId = inquiry.InquiryId,
-                            InquiryWorkscopeId = inworkscope.InquiryWorkscopeId,
-                            InquiryCode = inquiry.InquiryCode,
-                            MeasurementScheduleDate = inworkscope.MeasurementAssignedTo == Constants.userId? inworkscope.MeasurementScheduleDate : "",
-                            DesignScheduledate = inworkscope.DesignAssignedTo == Constants.userId ? inworkscope.DesignScheduleDate : "",
-                            WorkscopeName = inworkscope.Workscope.WorkScopeName,
-                            InquiryworkscopeStatusId = (int)inworkscope.InquiryStatusId
-                        });
+                            dashborad.calendar.Add(new Calendar
+                            {
+                                InquiryId = (int)inworkscope.InquiryId,
+                                InquiryWorkscopeId = inworkscope.InquiryWorkscopeId,
+                                MeasurementScheduleDate = inworkscope.MeasurementAssignedTo == Constants.userId ? inworkscope.MeasurementScheduleDate : "",
+                                DesignScheduledate = inworkscope.DesignAssignedTo == Constants.userId ? inworkscope.DesignScheduleDate : "",
+                                WorkscopeName = inworkscope.Workscope.WorkScopeName,
+                                InquiryworkscopeStatusId = (int)inworkscope.InquiryStatusId,
+                                InquiryCode = inquiry.InquiryCode
+                            });
                         }
+
                     }
+                }
                 
-                
+                response.data = dashborad;
 
             }
             else
@@ -79,7 +71,6 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "User Not Found";
             }
-            response.data = dashborad;
             return response;
         }
     }
