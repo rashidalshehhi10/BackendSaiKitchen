@@ -322,5 +322,41 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GenerateSalesInvoicePaymentById(SalesInvoiceRequest salesInvoiceRequest)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new SalesInvoiceReciept
+            {
+                InvoiceCode = ("INV" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN",""),
+                InquiryCode = x.Quotation.Inquiry.InquiryCode,
+                CreatedDate = Helper.Helper.GetDateTime(),
+                CustomerName = x.Quotation.Inquiry.Customer.CustomerName,
+                CustomerContact = x.Quotation.Inquiry.Customer.CustomerContact,
+                CustomerEmail = x.Quotation.Inquiry.Customer.CustomerEmail,
+                BuildiingAddress = x.Quotation.Inquiry.Building.BuildingAddress,
+                WorkscopeName = x.Quotation.Inquiry.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Select(y => y.Workscope.WorkScopeName).ToList(),
+                Amount = x.Quotation.Amount,
+                Discount = x.Quotation.Discount,
+                VAT = x.Quotation.Vat,
+                Deduction = x.Quotation.Inquiry.MeasurementFees,
+                TotalAmount = x.Quotation.TotalAmount,
+                AmounttoBePaid = x.PaymentAmount,
+            });
+            if (payment != null)
+            {
+                response.data = payment;
+            }
+            else
+            {
+                response.errorMessage = "Payment Doesnt exist";
+                response.isError = true;
+            }
+
+            return response;
+        }
     }
 }

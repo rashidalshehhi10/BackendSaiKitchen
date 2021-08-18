@@ -7,7 +7,7 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class CustomPayment
     {
-        
+
         public string PaymentName { get; set; }
         public string PaymentDetail { get; set; }
         public int? PaymentAmount { get; set; }
@@ -28,5 +28,31 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int InquiryId { get; set; }
         public int PaymentId { get; set; }
+    }
+    public class SalesInvoiceRequest
+    {
+        public int PaymentId { get; set; }
+        public int PaymentModeId { get; set; }
+    }
+
+    public class SalesInvoiceReciept
+    {
+        public String InvoiceCode { get; set; }
+        public String InquiryCode { get; set; }
+        public String CreatedDate { get; set; }
+        public String CustomerName { get; set; }
+        public String CustomerContact { get; set; }
+        public String CustomerEmail { get; set; }
+        public String BuildiingAddress { get; set; }
+        public List<String> WorkscopeName { get; set; }
+        public String Amount { get; set; }
+        public String Discount { get; set; }
+        public String VAT { get; set; }
+        public String Deduction { get; set; }
+        public String TotalAmount { get; set; }
+        public decimal? AmounttoBePaid { get; set; }
+        public String PaymentType { get; set; }
+
+
     }
 }
