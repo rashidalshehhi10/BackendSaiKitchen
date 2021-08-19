@@ -35,6 +35,13 @@ namespace BackendSaiKitchen.CustomModel
         public int PaymentModeId { get; set; }
     }
 
+    public class Invoice
+    {
+        public int PaymentId { get; set; }
+        public int PaymentModeId { get; set; }
+        public List<byte[]> Files { get; set; }
+    }
+
     public class SalesInvoiceReciept
     {
         public String InvoiceCode { get; set; }

@@ -364,5 +364,54 @@ namespace BackendSaiKitchen.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> UploadInvoice(Invoice invoice)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (payment != null)
+            {
+                if (invoice.Files != null)
+                {
+                    foreach (var file in invoice.Files)
+                    {
+                        var fileUrl = await Helper.Helper.UploadFile(file);
+                        if (fileUrl != null)
+                        {
+                            payment.Files.Add(new Models.File
+                            {
+                                FileUrl = fileUrl.Item1,
+                                FileName = fileUrl.Item1.Split('.')[0],
+                                FileContentType = fileUrl.Item2,
+                                IsImage = true,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "Please Add Files";
+                }
+                payment.PaymentModeId = invoice.PaymentModeId;
+                paymentRepository.Update(payment);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Payment Not Found";
+            }
+            return response;
+        }
     }
 }
