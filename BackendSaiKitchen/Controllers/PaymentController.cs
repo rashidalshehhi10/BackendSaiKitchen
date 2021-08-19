@@ -331,7 +331,7 @@ namespace BackendSaiKitchen.Controllers
         {
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new SalesInvoiceReciept
             {
-                InvoiceCode = ("INV" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN",""),
+                InvoiceCode = ("REF" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN",""),
                 InquiryCode = x.Quotation.Inquiry.InquiryCode,
                 CreatedDate = Helper.Helper.GetDateTime(),
                 CustomerName = x.Quotation.Inquiry.Customer.CustomerName,
