@@ -144,7 +144,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetUnPaidPaymentByCode(string code)
         {
-            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+         
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false && x.Payments.Any(y=>y.IsActive==true && y.IsDeleted==false && (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved))).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (response.data == null)
+            {
+                response.isError = true;
+                response.errorMessage = "No Pending Payments";
+            }
             return response;
         }
         //[HttpPost]
