@@ -562,6 +562,17 @@ namespace BackendSaiKitchen.Controllers
                 {
                     Sentry.SentrySdk.CaptureMessage(ex.Message);
                 }
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead("Inquiry" + inquiry.InquiryId + "Quotation Approved By Client Comment:"+updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                }
+                catch (Exception ex)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
+                }
                 response.data = inquiry;
                 context.SaveChanges();
             }
@@ -603,6 +614,17 @@ namespace BackendSaiKitchen.Controllers
                     quotation.IsActive = false;
                     quotation.Description = updateQuotation.reason;
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
+                }
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead("Inquiry" + inquiry.InquiryId + "Quotation Reject By Client \n reason: " + updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                }
+                catch (Exception ex)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
                 }
                 inquiryRepository.Update(inquiry);
                 response.data = inquiry;
