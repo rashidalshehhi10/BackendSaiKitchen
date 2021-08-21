@@ -553,7 +553,15 @@ namespace BackendSaiKitchen.Controllers
                     
                 }
                 inquiryRepository.Update(inquiry);
-                await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
+                try
+                {
+                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
+
+                }
+                catch (Exception ex)
+                {
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
+                }
                 response.data = inquiry;
                 context.SaveChanges();
             }
