@@ -410,6 +410,8 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                     payment.PaymentModeId = invoice.PaymentModeId;
+                   
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                     {
                         payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
