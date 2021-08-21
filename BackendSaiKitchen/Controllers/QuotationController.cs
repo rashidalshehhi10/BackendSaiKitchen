@@ -495,7 +495,9 @@ namespace BackendSaiKitchen.Controllers
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x=>x.Files.Where(y=>y.IsActive==true && y.IsDeleted==false))
-                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer)
+                .FirstOrDefault();
             if (inquiry != null)
             {
 
