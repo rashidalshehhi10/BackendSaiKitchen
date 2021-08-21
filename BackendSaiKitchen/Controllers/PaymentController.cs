@@ -144,8 +144,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetUnPaidPaymentByCode(string code)
         {
-         
-            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false && x.Payments.Any(y=>y.IsActive==true && y.IsDeleted==false && (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved))).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved))).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
@@ -333,11 +333,12 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GenerateSalesInvoicePaymentById(SalesInvoiceRequest salesInvoiceRequest)
+        public async Task<object> GenerateSalesInvoicePaymentByIdAsync(SalesInvoiceRequest salesInvoiceRequest)
         {
+
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new SalesInvoiceReciept
             {
-                InvoiceCode = ("REF" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN",""),
+                InvoiceCode = ("REF" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN", ""),
                 InquiryCode = x.Quotation.Inquiry.InquiryCode,
                 CreatedDate = Helper.Helper.GetDateTime(),
                 CustomerName = x.Quotation.Inquiry.Customer.CustomerName,
@@ -354,6 +355,17 @@ namespace BackendSaiKitchen.Controllers
             });
             if (payment != null)
             {
+                try
+                {
+                    if (salesInvoiceRequest.PaymentModeId == (int)paymentMode.OnlinePayment)
+                    {
+                        await mailService.SendEmailAsync(new MailRequest() { ToEmail = payment.FirstOrDefault().CustomerEmail, Subject = "Pay Online using Link", Body = "https://saikitchen.azurewebsites.net/onlinepay" });
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
                 response.data = payment;
             }
             else
