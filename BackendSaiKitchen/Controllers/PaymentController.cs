@@ -381,7 +381,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UploadInvoice(Invoice invoice)
         {
-            var payment = paymentRepository.FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false)
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiry).ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (payment != null)
@@ -408,15 +408,24 @@ namespace BackendSaiKitchen.Controllers
                             });
                         }
                     }
+
+                    payment.PaymentModeId = invoice.PaymentModeId;
+                    if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
+                    {
+                        payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                        foreach (var inquiryWorkscope in payment.Inquiry.InquiryWorkscopes)
+                        {
+                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                        }
+                    }
+                    paymentRepository.Update(payment);
+                    context.SaveChanges();
                 }
                 else
                 {
                     response.isError = true;
                     response.errorMessage = "Please Add Files";
                 }
-                payment.PaymentModeId = invoice.PaymentModeId;
-                paymentRepository.Update(payment);
-                context.SaveChanges();
             }
             else
             {
