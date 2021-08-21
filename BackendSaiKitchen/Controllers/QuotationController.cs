@@ -499,7 +499,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
 
-                int status = updateQuotation.PaymentMethod != null ? (int)inquiryStatus.checklistPending : (int)inquiryStatus.quotationAccepted;
+                int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.checklistPending : (int)inquiryStatus.quotationAccepted;
                 inquiry.InquiryStatusId = status;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
