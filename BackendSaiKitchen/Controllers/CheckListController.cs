@@ -295,6 +295,10 @@ namespace BackendSaiKitchen.Controllers
 
                         case (int)permission.ManageQuotation:
                             inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                            foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                            {
+                                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                            }
                             inquiry.InquiryComment = reason.reason;
                             break;
                     }

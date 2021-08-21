@@ -566,7 +566,7 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Inquiry" + inquiry.InquiryId + "Quotation Approved By Client Comment:"+updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Inquiry " + inquiry.InquiryId + " Quotation Approved By Client", false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {
@@ -619,7 +619,7 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Inquiry" + inquiry.InquiryId + "Quotation Reject By Client \n reason: " + updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Inquiry " + inquiry.InquiryId + " Quotation Reject By Client \n reason: " + updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {
