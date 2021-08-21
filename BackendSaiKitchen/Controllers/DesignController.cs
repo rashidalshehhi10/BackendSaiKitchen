@@ -66,7 +66,7 @@ namespace BackendSaiKitchen.Controllers
 
             try
             {
-                sendNotificationToHead(Constants.DesignAdded+" For InquiryWorkscope"+inquiryworkscope.InquiryWorkscopeId, true,
+                sendNotificationToHead(Constants.DesignAdded, true,
                     Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                     Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                    roletypeId, Constants.branchId, (int)notificationCategory.Design);
@@ -103,7 +103,7 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToHead("Design For InquiryWorkScope " + inquiryWorkscope.InquiryWorkscopeId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry" + inquiryWorkscope.InquiryId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -187,7 +187,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 try
                 {
-                    sendNotificationToOneUser("Your Design For InquiryWorkScope "+updateInquiryStatus.Id+ "is Rejected", false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -256,7 +256,7 @@ namespace BackendSaiKitchen.Controllers
                 //roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("InquiryWorkScope " + inquiryWorkscope.InquiryWorkscopeId + "Customer Accepted the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryId + "Customer Accepted the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -310,7 +310,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     sendNotificationToOneUser("Inquiry:" +inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
                         false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, (int)inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
-                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryWorkscopeId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Inquiry :" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {

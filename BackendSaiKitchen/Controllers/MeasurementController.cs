@@ -171,7 +171,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign+" InquiryWorkscope "+updateMeasurementStatus.Id,
+                    sendNotificationToOneUser(Constants.DesignAssign,
                        false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
@@ -211,7 +211,7 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToOneUser("Measurement is rejected For InquiryWorkscope "+updateMeasurementStatus.Id+" \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
+                    sendNotificationToOneUser("Measurement is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
                        (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
@@ -281,7 +281,7 @@ namespace BackendSaiKitchen.Controllers
                     roletypeId.Add((int)roleType.Manager);
                     try
                     {
-                        sendNotificationToHead(Constants.MeasurementAdded +"For InquiryWorkScope "+inquiryworkscope.InquiryWorkscopeId,
+                        sendNotificationToHead(Constants.MeasurementAdded,
                          true,
                          Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
