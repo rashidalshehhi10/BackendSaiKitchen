@@ -534,7 +534,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
 
 
-                    if (updateQuotation.Pdf.Length > 0 && updateQuotation.Pdf!=null) { 
+                    if (updateQuotation.Pdf!=null) { 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
                     quotation.Files.Add(new Models.File
                     {
