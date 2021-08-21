@@ -503,7 +503,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryStatusId = status;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
-                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
+                //inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
@@ -532,7 +532,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
-
+                    quotation.QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
                     if (updateQuotation.Pdf!=null) { 
                     var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
