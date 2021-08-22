@@ -353,7 +353,7 @@ namespace BackendSaiKitchen.Controllers
                 TotalAmount = x.Quotation.TotalAmount,
                 AmounttoBePaid = x.PaymentAmount,
             });
-            if (payment != null)
+            if (payment != null && payment.Count()>0)
             {
                 try
                 {
@@ -364,7 +364,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 catch (Exception)
                 {
-
+                   
                 }
                 response.data = payment;
             }
