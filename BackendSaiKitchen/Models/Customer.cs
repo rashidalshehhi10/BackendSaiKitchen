@@ -23,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public string CustomerNationality { get; set; }
         public string CustomerNationalId { get; set; }
         public string CustomerNotes { get; set; }
+        public string CustomerNextMeetingDate { get; set; }
         public int? ContactStatusId { get; set; }
         public int? WayofContactId { get; set; }
         public int? BranchId { get; set; }
