@@ -39,7 +39,7 @@ namespace BackendSaiKitchen.Controllers
                    }).FirstOrDefault();
 
                 var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
-                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId|| y.DesignAssignedTo == Constants.userId)))
+                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId || y.DesignAssignedTo == Constants.userId)))
                     .ThenInclude(y => y.Workscope);
 
                 dashborad.calendar = new List<Calendar>();
@@ -52,8 +52,8 @@ namespace BackendSaiKitchen.Controllers
                             dashborad.calendar.Add(new Calendar
                             {
                                 Id = inworkscope.InquiryWorkscopeId,
-                                Name = inworkscope.Workscope.WorkScopeName +" Measurement",
-                                Description ="You are assigned for " +inworkscope.Workscope.WorkScopeName + " measurement of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                                Name = inworkscope.Workscope.WorkScopeName + " Measurement",
+                                Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName + " measurement of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                                 Date = inworkscope.MeasurementScheduleDate,
                                 OnClickURL = "",
                                 EventTypeId = (int)eventType.Measurement,
@@ -82,8 +82,8 @@ namespace BackendSaiKitchen.Controllers
                     dashborad.calendar.Add(new Calendar
                     {
                         Id = customer.CustomerId,
-                        Name = "Meeting with " +customer.CustomerName,
-                        Description =  "You have meeting with "+ customer.CustomerName + " at " +customer.CustomerNextMeetingDate+" Contact: " + customer.CustomerContact,
+                        Name = "Meeting with " + customer.CustomerName,
+                        Description = "You have meeting with " + customer.CustomerName + " at " + customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact,
                         Date = customer.CustomerNextMeetingDate,
                         OnClickURL = "",
                         EventTypeId = (int)eventType.Customer,
@@ -109,8 +109,9 @@ namespace BackendSaiKitchen.Controllers
             calendarEvent.IsDeleted = false;
             calendarEvent.EventTypeId = (int)eventType.Other;
             calendarEvent.UserId = Constants.userId;
-            if (calendarEvent.CalendarEventId == 0) { 
-            calendarEventRepository.Create(calendarEvent);
+            if (calendarEvent.CalendarEventId == 0)
+            {
+                calendarEventRepository.Create(calendarEvent);
             }
             else
             {
@@ -122,11 +123,30 @@ namespace BackendSaiKitchen.Controllers
                     calendar.CalendarEventOnClickUrl = calendarEvent.CalendarEventOnClickUrl;
                     calendarEventRepository.Update(calendar);
                 }
-                
+
             }
             context.SaveChanges();
             response.data = calendarEvent;
             return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object DeleteCalendarEvent(int calendarEventId)
+        {
+         var calendar=   calendarEventRepository.FindByCondition(x => x.CalendarEventId == calendarEventId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (calendar != null) { 
+            calendarEventRepository.Delete(calendar);
+            context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Event doesnt exist";
+            }
+            return response;
+
         }
     }
 }
