@@ -111,7 +111,7 @@ namespace SaiKitchenBackend.Controllers
         {
 
             response.data = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
+            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNotes = x.CustomerNotes, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
             return response;
         }
 
