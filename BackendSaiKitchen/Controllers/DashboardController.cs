@@ -135,10 +135,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeleteCalendarEvent(int calendarEventId)
         {
-         var calendar=   calendarEventRepository.FindByCondition(x => x.CalendarEventId == calendarEventId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (calendar != null) { 
-            calendarEventRepository.Delete(calendar);
-            context.SaveChanges();
+            var calendar = calendarEventRepository.FindByCondition(x => x.CalendarEventId == calendarEventId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (calendar != null)
+            {
+                calendarEventRepository.Delete(calendar);
+                context.SaveChanges();
             }
             else
             {
