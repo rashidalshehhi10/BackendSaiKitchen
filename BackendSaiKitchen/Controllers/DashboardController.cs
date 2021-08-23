@@ -90,6 +90,15 @@ namespace BackendSaiKitchen.Controllers
                     });
 
                 }
+                calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId).ToList().ForEach(x => dashborad.calendar.Add(new Calendar
+                {
+                    Id = x.CalendarEventId,
+                    Name = x.CalendarEventName,
+                    Description = x.CalendarEventDescription,
+                    Date = x.CalendarEventDate,
+                    OnClickURL = x.CalendarEventOnClickUrl,
+                    EventTypeId = (int)x.EventTypeId
+                }));
                 response.data = dashborad;
 
             }
