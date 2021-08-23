@@ -107,7 +107,7 @@ namespace BackendSaiKitchen.Controllers
         {
             calendarEvent.IsActive = true;
             calendarEvent.IsDeleted = false;
-            calendarEvent.EventTypeId = (int)eventType.Other;
+            //calendarEvent.EventTypeId = (int)eventType.Other;
             calendarEvent.UserId = Constants.userId;
             if (calendarEvent.CalendarEventId == 0)
             {
@@ -147,7 +147,6 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = "Event doesnt exist";
             }
             return response;
-
         }
     }
 }
