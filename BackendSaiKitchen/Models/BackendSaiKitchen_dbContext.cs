@@ -178,6 +178,8 @@ namespace BackendSaiKitchen.Models
             {
                 entity.ToTable("CalendarEvent");
 
+                entity.Property(e => e.CalendarEventDate).HasMaxLength(500);
+
                 entity.Property(e => e.CalendarEventName).HasMaxLength(500);
 
                 entity.Property(e => e.CalendarEventOnClickUrl)

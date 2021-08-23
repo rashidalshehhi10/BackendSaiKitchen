@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using BackendSaiKitchen.Models;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -97,6 +98,34 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "User Not Found";
             }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object AddCalendarEvent(CalendarEvent calendarEvent)
+        {
+            calendarEvent.IsActive = true;
+            calendarEvent.IsDeleted = false;
+            calendarEvent.EventTypeId = (int)eventType.Other;
+            calendarEvent.UserId = Constants.userId;
+            if (calendarEvent.CalendarEventId == 0) { 
+            calendarEventRepository.Create(calendarEvent);
+            }
+            else
+            {
+                var calendar = calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CalendarEventId == calendarEvent.CalendarEventId).FirstOrDefault();
+                if (calendar != null)
+                {
+                    calendar.CalendarEventName = calendarEvent.CalendarEventName;
+                    calendar.CalendarEventDescription = calendarEvent.CalendarEventDescription;
+                    calendar.CalendarEventOnClickUrl = calendarEvent.CalendarEventOnClickUrl;
+                    calendarEventRepository.Update(calendar);
+                }
+                
+            }
+            context.SaveChanges();
+            response.data = calendarEvent;
             return response;
         }
     }

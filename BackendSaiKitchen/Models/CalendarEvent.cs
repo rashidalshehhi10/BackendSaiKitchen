@@ -11,6 +11,7 @@ namespace BackendSaiKitchen.Models
         public string CalendarEventName { get; set; }
         public string CalendarEventDescription { get; set; }
         public string CalendarEventOnClickUrl { get; set; }
+        public string CalendarEventDate { get; set; }
         public int? EventTypeId { get; set; }
         public int? UserId { get; set; }
         public bool? IsActive { get; set; }
