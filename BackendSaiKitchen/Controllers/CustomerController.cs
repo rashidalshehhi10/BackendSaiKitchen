@@ -93,7 +93,7 @@ namespace SaiKitchenBackend.Controllers
                 CustomerAddress = x.CustomerAddress,
                 CustomerNationalId = x.CustomerNationalId 
             }).ToList();
-            int? total = v.Count();
+            int? total = v.Count;
             int? contacted = v.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = v.Where(x => x.ContactStatusId == 2).Count();
 

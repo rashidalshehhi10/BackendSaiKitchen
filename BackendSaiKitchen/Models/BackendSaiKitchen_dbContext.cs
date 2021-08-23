@@ -23,10 +23,12 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<BranchRole> BranchRoles { get; set; }
         public virtual DbSet<BranchType> BranchTypes { get; set; }
         public virtual DbSet<Building> Buildings { get; set; }
+        public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
         public virtual DbSet<Design> Designs { get; set; }
+        public virtual DbSet<EventType> EventTypes { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
@@ -172,6 +174,31 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<CalendarEvent>(entity =>
+            {
+                entity.ToTable("CalendarEvent");
+
+                entity.Property(e => e.CalendarEventName).HasMaxLength(500);
+
+                entity.Property(e => e.CalendarEventOnClickUrl)
+                    .HasMaxLength(500)
+                    .HasColumnName("CalendarEventOnClickURL");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.EventType)
+                    .WithMany(p => p.CalendarEvents)
+                    .HasForeignKey(d => d.EventTypeId)
+                    .HasConstraintName("FK_CalendarEvent_EventType");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.CalendarEvents)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_CalendarEvent_User");
+            });
+
             modelBuilder.Entity<ContactStatus>(entity =>
             {
                 entity.ToTable("ContactStatus");
@@ -277,6 +304,21 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Designs)
                     .HasForeignKey(d => d.InquiryWorkscopeId)
                     .HasConstraintName("FK_Design_InquiryWorkscope");
+            });
+
+            modelBuilder.Entity<EventType>(entity =>
+            {
+                entity.ToTable("EventType");
+
+                entity.Property(e => e.EventTypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.EventTypeDescription).HasMaxLength(500);
+
+                entity.Property(e => e.EventTypeName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Fee>(entity =>

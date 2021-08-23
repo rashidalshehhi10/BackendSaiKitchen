@@ -22,7 +22,7 @@ namespace BackendSaiKitchen.CustomModel
 
     }
 
-    public class Calendar
+    public class OldCalendar
     {
         public int InquiryId { get; set; }
         public int InquiryWorkscopeId { get; set; }
@@ -31,5 +31,14 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignScheduledate { get; set; }
         public string WorkscopeName { get; set; }
         public int InquiryworkscopeStatusId { get; set; }
+    }
+    public class Calendar
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Date { get; set; }
+        public string OnClickURL { get; set; }
+        public int EventTypeId { get; set; }
     }
 }

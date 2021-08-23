@@ -41,6 +41,26 @@ namespace BackendSaiKitchen.Helper
     };
 
 
+    public enum contactStatus
+    {
+        Contacted = 1,
+        NeedToContact = 2
+    }
+    public enum eventType
+    {
+        Customer = 1,
+        Inquiry = 2,
+        Measurement = 3,
+        Design = 4,
+        Quotation = 5,
+        Checklist = 6,
+        JobOrder = 7,
+        Payment = 8,
+        Installation = 9,
+        Delivery = 10,
+        Promo = 11,
+        Other = 12
+    }
     public enum permission
     {
         ManageBranch = 2,
