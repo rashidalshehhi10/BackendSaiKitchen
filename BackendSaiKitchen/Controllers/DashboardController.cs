@@ -13,6 +13,7 @@ namespace BackendSaiKitchen.Controllers
 {
     public class DashboardController : BaseController
     {
+
         [HttpPost]
         [Route("[action]")]
         public object ViewDashboard()

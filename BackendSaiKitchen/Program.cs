@@ -42,10 +42,10 @@ namespace BackendSaiKitchen
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseKestrel(options =>
-                    {
-                        options.Limits.MaxRequestBodySize = long.MaxValue;
-                    });
+                    //webBuilder.UseKestrel(options =>
+                    //{
+                    //    options.Limits.MaxRequestBodySize = long.MaxValue;
+                    //});
                     webBuilder.UseSentry(o =>
                     {
                         o.Dsn = "https://bbed6cdf32de428aaedd7d0e5ff1b433@o840718.ingest.sentry.io/5813746";

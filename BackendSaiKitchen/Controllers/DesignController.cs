@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.Controllers
         static List<File> files = new List<File>();
 
         [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Create)]
+        [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddUpdateDesignfiles(DesignCustomModel designCustomModel)

@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.Controllers
         static List<Accesory> Accesories = new List<Accesory>();
 
         [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
+        [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddMeasrmuent(CustomMeasurement measurementVM)

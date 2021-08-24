@@ -105,6 +105,7 @@ namespace BackendSaiKitchen.Controllers
         static List<IFormFile> formFile = new List<IFormFile>();
 
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
+        [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
