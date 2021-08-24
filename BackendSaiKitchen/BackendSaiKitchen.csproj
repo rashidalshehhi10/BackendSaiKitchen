@@ -45,6 +45,7 @@
     <PackageReference Include="Twilio.AspNet.Common" Version="5.37.2" />
     <PackageReference Include="Twilio.AspNet.Core" Version="5.37.2" />
     <PackageReference Include="VimeoDotNet" Version="2.1.1" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>

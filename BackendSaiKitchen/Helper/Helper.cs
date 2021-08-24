@@ -158,6 +158,28 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
+        public static async Task<string> PostFile(byte[] fileByte)
+        {
+            string fileUrl = "";
+            var ext = GuessFileType(fileByte);
+            try
+            {
+                MemoryStream stream = new MemoryStream(fileByte);
+                fileUrl = Guid.NewGuid().ToString() + "." + ext;
+                IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = ext == "pdf" ? "application/" + ext : "image/" + ext
+                };
+                await blobManager.PostAsync(new Blob() { File = blob });
+            }
+            catch (Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+            return fileUrl;
+        }
+
         public static async Task<byte[]> GetFile(string filename)
         {
             byte[] image = await blobManager.Read(filename);

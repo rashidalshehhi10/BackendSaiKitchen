@@ -8,5 +8,7 @@ namespace BackendSaiKitchen.CustomModel
         Task Upload(Blob File);
 
         Task<byte[]> Read(string fileName);
+
+        Task PostAsync(Blob File);
     }
 }
