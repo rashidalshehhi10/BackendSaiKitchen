@@ -64,6 +64,7 @@ namespace SaiKitchenBackend.Controllers
             if (inquiry.Building.BuildingAddress == null || inquiry.Building.BuildingAddress == "")
             {
                 inquiry.Building.BuildingAddress = customer.CustomerAddress;
+                inquiry.Building.BuildingMakaniMap = customer.CustomerNationalId;
             }
             if (inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo != null)
             {
