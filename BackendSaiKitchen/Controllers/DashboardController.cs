@@ -84,7 +84,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Id = customer.CustomerId,
                         Name = "Meeting with " + customer.CustomerName,
-                        Description = "You have meeting with " + customer.CustomerName + " at " + customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact,
+                        Description = "You have to Follow-up with " + customer.CustomerName + " at " + customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact,
                         Date = customer.CustomerNextMeetingDate,
                         OnClickURL = "",
                         EventTypeId = (int)eventType.Customer,
