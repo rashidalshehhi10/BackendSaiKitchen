@@ -14,6 +14,7 @@ namespace BackendSaiKitchen.CustomModel
         public string InquiryEndDate { get; set; }
         public int? Status { get; set; }
         public bool? IsMeasurementProvidedByCustomer { get; set; }
+        public bool? IsDesignProvidedByCustomer { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementAssignTo { get; set; }
         public string InquiryComment { get; set; }

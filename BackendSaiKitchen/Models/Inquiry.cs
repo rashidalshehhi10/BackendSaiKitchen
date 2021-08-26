@@ -23,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public string InquiryDueDate { get; set; }
         public string InquiryEndDate { get; set; }
         public bool? IsMeasurementProvidedByCustomer { get; set; }
+        public bool? IsDesignProvidedByCustomer { get; set; }
         public string MeasurementFees { get; set; }
         public string InquiryComment { get; set; }
         public int? CustomerId { get; set; }
