@@ -212,6 +212,7 @@ namespace SaiKitchenBackend.Controllers
                 IsDesignProvidedByCustomer = x.Inquiry.IsDesignProvidedByCustomer,
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
+                BuildingMakaniMap = x.Inquiry.Building.BuildingMakaniMap,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
                 BuildingFloor = x.Inquiry.Building.BuildingFloor,
                 BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",

@@ -30,6 +30,7 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
         public string BuildingAddress { get; set; }
+        public string BuildingMakaniMap { get; set; }
         public string BuildingTypeOfUnit { get; set; }
         public string BuildingCondition { get; set; }
         public string BuildingFloor { get; set; }
