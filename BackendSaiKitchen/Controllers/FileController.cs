@@ -37,7 +37,8 @@ namespace BackendSaiKitchen.Controllers
         {
             foreach (var file in Request.Form.Files)
             {
-                var FileDataContent = Request.Form.Files["file"];
+                var FileDataContent = file;
+                //var FileDataContent = Request.Form.Files["file"];
                 if (FileDataContent != null && FileDataContent.Length > 0)
                 {
                     // take the input stream, and save it to a temp folder using  
