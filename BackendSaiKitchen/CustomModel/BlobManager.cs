@@ -32,7 +32,7 @@ namespace BackendSaiKitchen.CustomModel
             await blobcontainer.CreateIfNotExistsAsync();
             string Content = File.File.FileName.Split('.')[1];
             BlobHttpHeaders httpHeaders = new BlobHttpHeaders();
-            httpHeaders.ContentType = Content == "pdf" ? "application/" + Content : "image/" + Content;
+            httpHeaders.ContentType = Content;
 
             await blobclient.UploadAsync(File.File.OpenReadStream(), httpHeaders);
         }
