@@ -309,7 +309,7 @@ namespace BackendSaiKitchen.Controllers
                 roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser("Inquiry:" +inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
+                    sendNotificationToOneUser("Inquiry:" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
                         false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, (int)inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                     sendNotificationToHead("Inquiry :" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                 }

@@ -26,7 +26,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetBranchByType(int typeId)
         {
 
-            response.data = branchRepository.FindByCondition(x =>x.BranchTypeId== typeId && x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = branchRepository.FindByCondition(x => x.BranchTypeId == typeId && x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
         //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
@@ -54,10 +54,10 @@ namespace SaiKitchenBackend.Controllers
             //                    roleHead => roleHead.EmployeeRoleId,
             //                    (branchRole, roleHead) => new { branchRole = branchRole, roleHead = roleHead }).Where(x=>x.branchRole.BranchRoleId==x.roleHead.EmployeeRoleId).ToList();
 
-           var roleHeadsId= branchRole.RoleHeads.Select(x => x.HeadRoleId).ToList();
-           var roleHeads = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId));
-            dic.Add("branchRole",branchRole);
-            dic.Add("roleHeads",roleHeads);
+            var roleHeadsId = branchRole.RoleHeads.Select(x => x.HeadRoleId).ToList();
+            var roleHeads = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId));
+            dic.Add("branchRole", branchRole);
+            dic.Add("roleHeads", roleHeads);
             response.data = dic;
             return response;
         }
@@ -67,7 +67,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetBranchById(int branchId)
         {
             var branch = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (branch !=null)
+            if (branch != null)
             {
                 response.data = branch;
             }
@@ -131,7 +131,7 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-              var oldBranchrole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRole.BranchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                var oldBranchrole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRole.BranchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
                 oldBranchrole.BranchRoleName = branchRole.BranchRoleName;
                 oldBranchrole.BranchRoleDescription = branchRole.BranchRoleDescription;
                 oldBranchrole.RoleTypeId = branchRole.RoleTypeId;
@@ -171,7 +171,7 @@ namespace SaiKitchenBackend.Controllers
                 .ThenInclude(x => x.User).FirstOrDefault();
             if (branchRole != null)
             {
-                
+
                 foreach (var userrole in branchRole.UserRoles)
                 {
                     userRoleRepository.Delete(userrole);

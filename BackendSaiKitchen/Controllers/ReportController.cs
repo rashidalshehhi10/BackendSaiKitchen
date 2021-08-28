@@ -1,13 +1,11 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
-using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -138,23 +136,6 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> TestUpload(byte[] blob)
-        {
-            try
-            {
-                var Url = await Helper.Helper.PostFile(blob,"pdf");
-                response.data = Url;
-            }
-            catch (Exception ex)
-            {
-                response.isError = true;
-                response.errorMessage = ex.Message;
 
-            }
-            return response;
-        }
     }
 }
-    

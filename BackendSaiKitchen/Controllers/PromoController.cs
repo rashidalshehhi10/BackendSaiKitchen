@@ -2,7 +2,6 @@
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -25,7 +24,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetPromoById(int promoId)
         {
-            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId  && x.IsDeleted == false).FirstOrDefault();
+            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId && x.IsDeleted == false).FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
@@ -38,7 +37,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetPromoByCode(String promoCode)
         {
-           var promo= promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var promo = promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (promo == null)
             {
                 response.isError = true;
@@ -67,7 +66,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object AddPromo(Promo promo)
         {
-            Promo oldPromo = promoRepository.FindByCondition(x => (x.PromoId == promo.PromoId|| x.PromoCode==promo.PromoCode) && x.IsDeleted == false).FirstOrDefault();
+            Promo oldPromo = promoRepository.FindByCondition(x => (x.PromoId == promo.PromoId || x.PromoCode == promo.PromoCode) && x.IsDeleted == false).FirstOrDefault();
 
             if (oldPromo == null)
             {
@@ -76,27 +75,27 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                    oldPromo.PromoName = promo.PromoName;
-                    oldPromo.PromoStartDate = promo.PromoStartDate;
-                    oldPromo.PromoCode = promo.PromoCode;
-                    oldPromo.PromoCurrency = promo.PromoCurrency;
-                    oldPromo.PromoDescription = promo.PromoDescription;
-                    oldPromo.PromoDiscount = promo.PromoDiscount;
-                    oldPromo.PromoExpiryDate = promo.PromoExpiryDate;
-                    oldPromo.PromoTermsAndCondition = promo.PromoTermsAndCondition;
-                    oldPromo.IsPercentage = promo.IsPercentage;
-                    oldPromo.IsMeasurementPromo = promo.IsMeasurementPromo;
-                    if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
-                    {
-                        oldPromo.IsActive = true;
-                    }
-                    else
-                    {
-                        oldPromo.IsActive = false;
-                    }
-                    promoRepository.Update(oldPromo);
-                    context.SaveChanges();
-                    response.data = oldPromo;
+                oldPromo.PromoName = promo.PromoName;
+                oldPromo.PromoStartDate = promo.PromoStartDate;
+                oldPromo.PromoCode = promo.PromoCode;
+                oldPromo.PromoCurrency = promo.PromoCurrency;
+                oldPromo.PromoDescription = promo.PromoDescription;
+                oldPromo.PromoDiscount = promo.PromoDiscount;
+                oldPromo.PromoExpiryDate = promo.PromoExpiryDate;
+                oldPromo.PromoTermsAndCondition = promo.PromoTermsAndCondition;
+                oldPromo.IsPercentage = promo.IsPercentage;
+                oldPromo.IsMeasurementPromo = promo.IsMeasurementPromo;
+                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
+                {
+                    oldPromo.IsActive = true;
+                }
+                else
+                {
+                    oldPromo.IsActive = false;
+                }
+                promoRepository.Update(oldPromo);
+                context.SaveChanges();
+                response.data = oldPromo;
             }
             return response;
         }

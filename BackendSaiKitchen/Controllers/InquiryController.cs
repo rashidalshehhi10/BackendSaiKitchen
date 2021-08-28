@@ -377,7 +377,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        
+
 
         #region workscope
 
@@ -482,9 +482,10 @@ namespace SaiKitchenBackend.Controllers
         public object GetWorkscopesByinquiryId(int inquiryId)
         {
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId)
-                .Select(x => new {
-                x.Workscope.WorkScopeName,
-                x.InquiryWorkscopeId
+                .Select(x => new
+                {
+                    x.Workscope.WorkScopeName,
+                    x.InquiryWorkscopeId
                 });
             if (inquiryworkscope != null)
             {

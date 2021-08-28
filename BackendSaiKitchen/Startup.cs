@@ -5,6 +5,7 @@ using BackendSaiKitchen.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,7 @@ namespace BackendSaiKitchen
             //services.AddDbContext<DbSaiKitchenContext>(ServiceLifetime.Transient);
             // Add Cors
 
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsApi",
@@ -67,6 +69,12 @@ namespace BackendSaiKitchen
             new BlobServiceClient(Configuration.GetConnectionString("AzureStorge")));
 
             services.AddScoped<IBlobManager, BlobManager>();
+
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,12 +113,13 @@ namespace BackendSaiKitchen
                 app.Use(async (httpContext, next) =>
                 {
                     var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
-                LogContext.PushProperty("Username", userName); //Push user in LogContext;  
-                await next.Invoke();
+                    LogContext.PushProperty("Username", userName); //Push user in LogContext;  
+                    await next.Invoke();
                 }
                 );
             }
             catch (Exception) { }
+
         }
     }
 }

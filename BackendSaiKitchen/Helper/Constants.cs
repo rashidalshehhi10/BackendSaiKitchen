@@ -122,7 +122,7 @@ namespace BackendSaiKitchen.Helper
         waitingForAdvance = 32,
         waitingForBeforeDeliveryPayment = 33,
         waitingForAfterDeliveryPayment = 34,
-        inquiryCompleted =35
+        inquiryCompleted = 35
     }
 
     public enum roleType
@@ -168,8 +168,8 @@ namespace BackendSaiKitchen.Helper
         BeforeInstallation = 3,
         AfterDelivery = 4,
         Installment = 5,
-        EngineeringFees=6,
-        ExtraCharges=7
+        EngineeringFees = 6,
+        ExtraCharges = 7
     }
 
     public enum paymentMode

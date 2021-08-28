@@ -96,7 +96,7 @@ namespace BackendSaiKitchen.CustomModel
 
             var blobclient = blobcontainer.GetBlobClient(fileName);
             var imgDownload = await blobclient.DownloadAsync();
-            using (MemoryStream ms =new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 await imgDownload.Value.Content.CopyToAsync(ms);
                 return ms.ToArray();

@@ -1,8 +1,6 @@
 ﻿using BackendSaiKitchen.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.CustomModel
 {
@@ -13,7 +11,7 @@ namespace BackendSaiKitchen.CustomModel
         public string PrefferdDateByClient { get; set; }
         public string? Comment { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
-        
+
     }
     public class AddFileonChecklist
     {
@@ -24,7 +22,7 @@ namespace BackendSaiKitchen.CustomModel
     public class CustomCheckListReject
     {
         public int inquiryId { get; set; }
-       public List<Addrejection> Addrejections { get; set; }
+        public List<Addrejection> Addrejections { get; set; }
     }
 
     public class Addrejection

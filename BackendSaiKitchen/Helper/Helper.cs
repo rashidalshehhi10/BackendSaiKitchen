@@ -150,7 +150,7 @@ namespace BackendSaiKitchen.Helper
                 MemoryStream stream = new MemoryStream(fileByte);
                 fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-                await blobManager.Upload(new Blob() { File = blob }) ;
+                await blobManager.Upload(new Blob() { File = blob });
             }
             catch (Exception e)
             {
@@ -159,7 +159,36 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
-        public static async Task<string> PostFile(byte[] fileByte,string ext)
+
+        public static async Task<Tuple<string, string>> UploadFormDataFile(byte[] fileByte, string ext)
+        {
+
+            string fileUrl = "";
+            //string ext = "";
+            if (fileByte != null)
+            {
+                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("pdf"))
+                {
+
+                    fileUrl = await PostFile(fileByte, ext);
+                    //fileUrl = await UploadFileToBlob(fileByte, ext);
+                }
+                else if (ext.ToLower().Contains("mp4"))
+                {
+                    fileUrl = await UploadUpdateVideo(fileByte);
+                }
+                else
+                {
+                    throw new FileNotFoundException(Constants.wrongFileUpload);
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException(Constants.MeasurementFileMissing);
+            }
+            return new Tuple<string, string>(fileUrl, ext);
+        }
+        public static async Task<string> PostFile(byte[] fileByte, string ext)
         {
             string fileUrl = "";
             try
@@ -169,7 +198,7 @@ namespace BackendSaiKitchen.Helper
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),
-                    ContentType = ext == "pdf" ? "application/" + ext : "image/" + ext
+                    ContentType = ext 
                 };
                 await blobManager.PostAsync(new Blob() { File = blob });
             }
@@ -270,7 +299,8 @@ namespace BackendSaiKitchen.Helper
 
         public static string AddPayment(decimal? amount)
         {
-            try {
+            try
+            {
                 amount *= 100;
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
@@ -280,17 +310,17 @@ namespace BackendSaiKitchen.Helper
                 });
                 return paymentIntent.ClientSecret;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
 
             return "";
         }
-        List<XWPFParagraph> paragraphs=new List<XWPFParagraph>();
+        List<XWPFParagraph> paragraphs = new List<XWPFParagraph>();
         public static void GenerateInvoice()
         {
-          FileStream fileStream=  new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            FileStream fileStream = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             XWPFDocument wordDocument = new XWPFDocument(fileStream);
 
             //for (int i = 0; i < wordDocument.BodyElements.Count; i++)

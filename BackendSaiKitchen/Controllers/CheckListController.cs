@@ -31,9 +31,9 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
-                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment)||
-                (y.PaymentTypeId==(int)paymenttype.Installment && y.PaymentStatusId ==(int)paymentstatus.InstallmentApproved))).FirstOrDefault();
-               // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
+                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
+                (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))).FirstOrDefault();
+            // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
                 Inquirychecklist inquirychecklist = new Inquirychecklist()
@@ -58,7 +58,7 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = "Inquiry Not Found";
             }
             return response;
-                
+
         }
 
 
@@ -88,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
             && (x.InquiryStatusId == (int)inquiryStatus.checklistPending)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" +x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive ==true && y.IsDeleted== false).QuotationId,
+                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
                 InquiryDescription = x.InquiryDescription,
                 InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                 WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
@@ -129,8 +129,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object InquiryChecklist(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false 
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance|| x.InquiryStatusId == (int)inquiryStatus.checklistPending))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -139,10 +139,10 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false 
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
                 && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
-            if(inquiry != null)
+            if (inquiry != null)
             {
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
@@ -178,7 +178,7 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(z => z.Designs.Where(y => y.IsActive ==true && y.IsDeleted == false))
+                .ThenInclude(z => z.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
@@ -189,11 +189,11 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 _jobOrder.JobOrderRequestedComments = approve.Comment;
                 _jobOrder.FactoryId = approve.factoryId;
-                foreach(var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
                 }
-                
+
 
                 if (approve.addFileonChecklists.Count != 0)
                 {
@@ -251,7 +251,7 @@ namespace BackendSaiKitchen.Controllers
 
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Sentry.SentrySdk.CaptureMessage(ex.Message);
                         }

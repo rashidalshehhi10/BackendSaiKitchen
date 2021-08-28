@@ -390,7 +390,7 @@ namespace BackendSaiKitchen.Controllers
                     BuildingAddress = x.Building.BuildingAddress,
                     BranchAddress = x.Branch.BranchAddress,
                     BranchContact = x.Branch.BranchContact,
-                    ProposalReferenceNumber=x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
+                    ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                     TermsAndConditionsDetail = terms,
                     Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
@@ -495,7 +495,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x=>x.Files.Where(y=>y.IsActive==true && y.IsDeleted==false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer)
                 .FirstOrDefault();
@@ -522,8 +522,8 @@ namespace BackendSaiKitchen.Controllers
                         payment.PaymentMethod = updateQuotation.PaymentMethod;
                         payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
                         payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
-            
-                        }
+
+                    }
                     else
                     {
                         payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
@@ -537,23 +537,24 @@ namespace BackendSaiKitchen.Controllers
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
-                    if (updateQuotation.Pdf!=null) { 
-                    var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
-                    quotation.Files.Add(new Models.File
+                    if (updateQuotation.Pdf != null)
                     {
-                        FileUrl = fileUrl.Item1,
-                        FileName = fileUrl.Item1.Split('.')[0],
-                        FileContentType = fileUrl.Item2,
-                        IsImage = false,
-                        IsActive = true,
-                        IsDeleted = false,
-                    });
+                        var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
+                        quotation.Files.Add(new Models.File
+                        {
+                            FileUrl = fileUrl.Item1,
+                            FileName = fileUrl.Item1.Split('.')[0],
+                            FileContentType = fileUrl.Item2,
+                            IsImage = false,
+                            IsActive = true,
+                            IsDeleted = false,
+                        });
                     }
                     foreach (var file in quotation.Files)
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
                     }
-                    
+
                 }
                 inquiryRepository.Update(inquiry);
                 try
@@ -595,7 +596,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y =>y.PaymentTypeId!=(int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
@@ -642,7 +643,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        
+
 
         [HttpPost]
         [Route("[action]")]

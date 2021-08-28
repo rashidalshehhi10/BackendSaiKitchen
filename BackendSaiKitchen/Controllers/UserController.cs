@@ -39,9 +39,9 @@ namespace SaiKitchenBackend.Controllers
             //          userRole => userRole.BranchId,
             //          branch => branch.BranchId,
             //          (userRole, branch) => new { userRole = userRole, branch = branch }).ToList();
-            var userList =  userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
+            var userList = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Branch)
-                .Include(y=>y.UserRoles.Where(x=>x.IsActive==true && x.IsDeleted==false)).ThenInclude(x=>x.BranchRole).AsNoTracking();
+                .Include(y => y.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.BranchRole).AsNoTracking();
             await userList.ForEachAsync((x) => { x.UserPassword = null; });
 
             response.data = userList.ToList();
@@ -69,12 +69,12 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> GetUserByid(int userId)
         {
-           
-          var user = userRepository.FindByCondition(x=>x.UserId==userId && x.IsActive==true && x.IsDeleted==false)
-                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Branch)
-                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(y => y.BranchRole).FirstOrDefault();
+
+            var user = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false)
+                  .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                  .ThenInclude(x => x.Branch)
+                  .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                  .ThenInclude(y => y.BranchRole).FirstOrDefault();
 
             if (user == null)
             {
@@ -92,14 +92,15 @@ namespace SaiKitchenBackend.Controllers
         {
             if (user.UserId != 0)
             {
-                User oldUser = userRepository.FindByCondition(x =>x.UserId == user.UserId  && x.IsActive == true && x.IsDeleted == false).Include(x=>x.UserRoles.Where(y=>y.IsActive==true && y.IsDeleted==false)).AsNoTracking().FirstOrDefault();
-                if (oldUser != null) {
+                User oldUser = userRepository.FindByCondition(x => x.UserId == user.UserId && x.IsActive == true && x.IsDeleted == false).Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false)).AsNoTracking().FirstOrDefault();
+                if (oldUser != null)
+                {
                     oldUser.UserRoles.ToList().ForEach(x => x.IsDeleted = true);
                     oldUser.UserRoles.Add(user.UserRoles.FirstOrDefault());
                     oldUser.UserEmail = user.UserEmail;
                     oldUser.UserName = user.UserName;
                     oldUser.UserMobile = user.UserMobile;
-                userRepository.Update(oldUser); 
+                    userRepository.Update(oldUser);
                     context.SaveChanges();
 
                     response.isError = false;
@@ -114,13 +115,14 @@ namespace SaiKitchenBackend.Controllers
             else
             {
                 User oldUser = userRepository.FindByCondition(x => x.UserEmail == user.UserEmail && x.IsActive == true && x.IsDeleted == false).AsNoTracking().FirstOrDefault();
-                if (oldUser == null) { 
-                userRepository.Create(user);
+                if (oldUser == null)
+                {
+                    userRepository.Create(user);
                     context.SaveChanges();
                     await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
-                //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
-                response.isError = false;
-                response.errorMessage = "Success";
+                    //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
+                    response.isError = false;
+                    response.errorMessage = "Success";
                 }
                 else
                 {

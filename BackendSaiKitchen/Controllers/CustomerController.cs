@@ -72,27 +72,27 @@ namespace SaiKitchenBackend.Controllers
             var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-            { 
-                CustomerId = x.CustomerId,
-                CustomerName = x.CustomerName,
-                CustomerContact = x.CustomerContact,
-                CustomerEmail = x.CustomerEmail,
-                Code = "CS" + x.Branch.BranchId + "" + x.CustomerId,
-                BranchId = x.Branch.BranchId,
-                BranchName = x.Branch.BranchName,
-                UserId = x.User.UserId,
-                UserName = x.User.UserName,
-                CustomerCity = x.CustomerCity,
-                CustomerCountry = x.CustomerCountry,
-                CustomerNationality = x.CustomerNationality,
-                CustomerNotes=x.CustomerNotes,
-                CustomerNextMeetingDate=x.CustomerNextMeetingDate,
-                WayofContactId = x.WayofContactId,
-                ContactStatusId = x.ContactStatusId,
-                ContactStatus = x.ContactStatus.ContactStatusName,
-                CustomerAddress = x.CustomerAddress,
-                CustomerNationalId = x.CustomerNationalId 
-            }).ToList();
+                {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    CustomerContact = x.CustomerContact,
+                    CustomerEmail = x.CustomerEmail,
+                    Code = "CS" + x.Branch.BranchId + "" + x.CustomerId,
+                    BranchId = x.Branch.BranchId,
+                    BranchName = x.Branch.BranchName,
+                    UserId = x.User.UserId,
+                    UserName = x.User.UserName,
+                    CustomerCity = x.CustomerCity,
+                    CustomerCountry = x.CustomerCountry,
+                    CustomerNationality = x.CustomerNationality,
+                    CustomerNotes = x.CustomerNotes,
+                    CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                    WayofContactId = x.WayofContactId,
+                    ContactStatusId = x.ContactStatusId,
+                    ContactStatus = x.ContactStatus.ContactStatusName,
+                    CustomerAddress = x.CustomerAddress,
+                    CustomerNationalId = x.CustomerNationalId
+                }).ToList();
             int? total = v.Count;
             int? contacted = v.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = v.Where(x => x.ContactStatusId == 2).Count();
@@ -113,7 +113,7 @@ namespace SaiKitchenBackend.Controllers
         {
 
             response.data = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate=x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
+            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
             return response;
         }
 

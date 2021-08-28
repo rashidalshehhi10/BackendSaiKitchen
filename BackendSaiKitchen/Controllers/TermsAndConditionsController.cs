@@ -1,10 +1,7 @@
 ﻿using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -17,7 +14,7 @@ namespace BackendSaiKitchen.Controllers
             response.data = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             return response;
         }
-       
+
         [HttpPost]
         [Route("[action]")]
         public object GetTermsAndConditionsById(int TermsAndConditionsId)
@@ -40,7 +37,7 @@ namespace BackendSaiKitchen.Controllers
         public object DeleteTermsAndConditionsById(int TermsAndConditionsId)
         {
             var terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == TermsAndConditionsId).FirstOrDefault();
-            if (terms !=null)
+            if (terms != null)
             {
                 response.data = terms;
                 termsAndConditionsRepository.Delete(terms);

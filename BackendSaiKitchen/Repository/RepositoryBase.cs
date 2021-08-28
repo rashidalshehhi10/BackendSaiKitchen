@@ -88,7 +88,7 @@ namespace BackendSaiKitchen.Repository
         {
             return this.RepositoryContext.Set<T>().Where(expression);
         }
-       
+
 
         public IQueryable<T> GetAll()
         {
@@ -103,7 +103,7 @@ namespace BackendSaiKitchen.Repository
        Expression<Func<T, bool>> filter = null,
        int? page = 0,
        int? pageSize = 10,
-       //Expression<IGrouping<object, T>>[] groupBy,
+      //Expression<IGrouping<object, T>>[] groupBy,
       params Expression<Func<T, object>>[] includes
             )
         {

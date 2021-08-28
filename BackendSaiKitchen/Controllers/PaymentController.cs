@@ -1,5 +1,4 @@
-﻿using BackendSaiKitchen.ActionFilters;
-using BackendSaiKitchen.CustomModel;
+﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -353,7 +352,7 @@ namespace BackendSaiKitchen.Controllers
                 TotalAmount = x.Quotation.TotalAmount,
                 AmounttoBePaid = x.PaymentAmount,
             });
-            if (payment != null && payment.Count()>0)
+            if (payment != null && payment.Count() > 0)
             {
                 try
                 {
@@ -364,7 +363,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 catch (Exception)
                 {
-                   
+
                 }
                 response.data = payment;
             }
@@ -410,7 +409,7 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                     payment.PaymentModeId = invoice.PaymentModeId;
-                   
+
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                     {

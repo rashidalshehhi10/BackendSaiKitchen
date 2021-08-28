@@ -1,13 +1,11 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using BackendSaiKitchen.Models;
 
 namespace BackendSaiKitchen.Controllers
 {
