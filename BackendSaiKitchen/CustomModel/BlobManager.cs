@@ -44,7 +44,9 @@ namespace BackendSaiKitchen.CustomModel
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
             CloudBlobContainer Container = blobClient.GetContainerReference("files");
             await Container.CreateIfNotExistsAsync();
+            string Content = File.File.FileName.Split('.')[1];
             CloudBlockBlob blob = Container.GetBlockBlobReference(File.File.FileName);
+            blob.Properties.ContentType = Content == "pdf" ? "application/" + Content : "image/" + Content;
 
             HashSet<string> blocklist = new HashSet<string>();
             var file = File.File;

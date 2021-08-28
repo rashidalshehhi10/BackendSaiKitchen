@@ -17,98 +17,125 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
+
         [HttpPost]
         [Route("[action]")]
-        public object Reporting(ReqReport report)
+        public object GetReportForCustomer(int CustomerId)
         {
-            
-            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
-                .FirstOrDefault();
-
-            Report _report;
-            if (user != null)
+            var customer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
+                .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .ThenInclude(y => y.Workscope).FirstOrDefault();
+            if (customer != null)
             {
-                _report = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
-                    .Select(x => new Report
-                    {
-                        Payments = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false /*&& (DateTime.Parse(x.CreatedDate) >= DateTime.Parse(report.StartDate) && DateTime.Parse(x.CreatedDate) <= DateTime.Parse(report.StartDate))*/).Count(),
-                        QuotationAccepted= x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),
-                        QuotationRejected = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationRejected).Count(),
-                        TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
-                        Totalquotations = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).Select(y => y.Quotations).Count(),
-                        TotalJoborder = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated).Count()
-                    }).FirstOrDefault();
-
-                var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false/* && (DateTime.Parse(x.CreatedDate) >= DateTime.Parse(report.StartDate) && DateTime.Parse(x.CreatedDate) <= DateTime.Parse(report.EndDate))*/)
-                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId || y.DesignAssignedTo == Constants.userId)))
-                    .ThenInclude(y => y.Workscope);
-
-                _report.calendar = new List<Calendar>();
-
-                foreach (var inquiry in inquiries)
+                Report report = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
+                .Select(x => new Report
                 {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                    Totalquotations = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Quotations.Where(y => y.IsActive == true && y.IsDeleted == false).Count(),
+                    TotalJoborder = x.Inquiries.First(x => x.IsActive == true && x.IsDeleted == false).JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false).Count(),
+                    QuotationAccepted = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Quotations.Where(y => y.IsActive == true && y.IsDeleted == false && y.QuotationStatusId == (int)inquiryStatus.quotationAccepted).Count(),
+                    QuotationRejected = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Quotations.Where(y => y.IsActive == true && y.IsDeleted == false && y.QuotationStatusId == (int)inquiryStatus.quotationRejected).Count(),
+                    QuotationPending = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Quotations.Where(y => y.IsActive == true && y.IsDeleted == false && y.QuotationStatusId == (int)inquiryStatus.quotationRejected).Count(),
+                    Payments = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId != (int)paymentstatus.InstallmentCreated || y.PaymentStatusId != (int)paymentstatus.PaymentCreated)).Count(),
+                    TotalAmount = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId != (int)paymentstatus.InstallmentCreated || y.PaymentStatusId != (int)paymentstatus.PaymentCreated) && y.PaymentModeId != null).Sum(y => y.PaymentAmount),
+                    TotalUnpaid = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval)).Sum(y => y.PaymentAmount),
+                    TotalPaid = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(y => y.PaymentAmount),
+                    CashPaid = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Count(),
+                    TotalCash = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(y => y.PaymentAmount),
+                    ChequePaid = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Count(),
+                    TotalCheque = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(y => y.PaymentAmount),
+                    OnlinePaid = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Count(),
+                    TotalOnline = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(y => y.PaymentAmount),
+                    BankPaid = x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OfflinePaybyCard && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Count(),
+                    TotalBank = (decimal)x.Inquiries.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false).Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OfflinePaybyCard && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(y => y.PaymentAmount),
+                }).FirstOrDefault();
+
+                report.reviews = new List<Review>();
+                foreach (var inquiry in customer.Inquiries)
+                {
+                    List<CustomerReview> CustomerReview = new List<CustomerReview>();
                     foreach (var inworkscope in inquiry.InquiryWorkscopes)
                     {
-                        if (inworkscope.MeasurementAssignedTo == Constants.userId)
+                        CustomerReview.Add(new CustomerReview
                         {
-                            _report.calendar.Add(new Calendar
-                            {
-                                Id = inworkscope.InquiryWorkscopeId,
-                                Name = inworkscope.Workscope.WorkScopeName + " Measurement",
-                                Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName + " measurement of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                                Date = inworkscope.MeasurementScheduleDate,
-                                OnClickURL = "",
-                                EventTypeId = (int)eventType.Measurement,
-                            });
-                        }
-                        if (inworkscope.DesignAssignedTo == Constants.userId)
-                        {
-
-                            _report.calendar.Add(new Calendar
-                            {
-                                Id = inworkscope.InquiryWorkscopeId,
-                                Name = inworkscope.Workscope.WorkScopeName + " Design",
-                                Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName + " Design of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                                Date = inworkscope.DesignScheduleDate,
-                                OnClickURL = "",
-                                EventTypeId = (int)eventType.Design,
-                            });
-                        }
-
+                            id = inworkscope.InquiryWorkscopeId,
+                            feedBack = (int)inworkscope.FeedbackReaction,
+                            statusId = (int)inworkscope.InquiryStatusId,
+                            Name = inworkscope.Workscope.WorkScopeName,
+                        });
                     }
-                }
-                var customers = customerRepository.FindByCondition(x => x.UserId == user.UserId && x.ContactStatusId == (int)contactStatus.NeedToContact && x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null && x.CustomerNextMeetingDate != "").Select(x => new { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate });
-                foreach (var customer in customers)
-                {
-
-                    _report.calendar.Add(new Calendar
+                    report.reviews.Add(new Review
                     {
-                        Id = customer.CustomerId,
-                        Name = "Meeting with " + customer.CustomerName,
-                        Description = "You have to Follow-up with " + customer.CustomerName + " at " + customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact,
-                        Date = customer.CustomerNextMeetingDate,
-                        OnClickURL = "",
-                        EventTypeId = (int)eventType.Customer,
+                        Code = inquiry.InquiryCode,
+                        Date = inquiry.CreatedDate,
+                        inquiryStatusId = (int)inquiry.InquiryStatusId,
+                        customerReviews = CustomerReview,
+                        CustomerName = inquiry.Customer.CustomerName
                     });
-
                 }
-                calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId).ToList().ForEach(x => _report.calendar.Add(new Calendar
-                {
-                    Id = x.CalendarEventId,
-                    Name = x.CalendarEventName,
-                    Description = x.CalendarEventDescription,
-                    Date = x.CalendarEventDate,
-                    OnClickURL = x.CalendarEventOnClickUrl,
-                    EventTypeId = (int)x.EventTypeId
-                }));
-                response.data = _report;
+
+                response.data = report;
+
             }
             else
             {
-                response.errorMessage = "User Not Found";
                 response.isError = true;
+                response.errorMessage = "Customer Not Found";
             }
-            return Response;
+
+            return response;
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public object GetReportForUser(ReqReport req)
+        {
+            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Workscope).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(y => y.Customer)
+                .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (user != null)
+            {
+                UserReport userReport = new UserReport();
+                userReport.reviews = new List<Review>();
+                userReport.CustomerCount = user.Customers.Where(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate)).Count();
+                foreach (var inquiry in user.Inquiries)
+                {
+                    if (DateTime.Parse(inquiry.InquiryStartDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(inquiry.InquiryStartDate) <= DateTime.Parse(req.EndDate))
+                    {
+                        List<CustomerReview> CustomerReview = new List<CustomerReview>();
+                        foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                        {
+                            CustomerReview.Add(new CustomerReview
+                            {
+                                id = inworkscope.InquiryWorkscopeId,
+                                feedBack = (int)inworkscope.FeedbackReaction,
+                                statusId = (int)inworkscope.InquiryStatusId,
+                                Name = inworkscope.Workscope.WorkScopeName,
+                            });
+                        }
+                        userReport.reviews.Add(new Review
+                        {
+                            Code = inquiry.InquiryCode,
+                            CustomerName = inquiry.Customer.CustomerName,
+                            Date = inquiry.InquiryStartDate,
+                            inquiryStatusId = (int)inquiry.InquiryStatusId,
+                            customerReviews = CustomerReview
+                        });
+                    }
+                }
+                response.data = userReport;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "User Not Found";
+            }
+            //response.data = report;
+            return response;
         }
 
         [HttpPost]
@@ -117,16 +144,17 @@ namespace BackendSaiKitchen.Controllers
         {
             try
             {
-               var Url = await Helper.Helper.PostFile(blob,"pdf");
+                var Url = await Helper.Helper.PostFile(blob,"pdf");
                 response.data = Url;
             }
             catch (Exception ex)
             {
                 response.isError = true;
                 response.errorMessage = ex.Message;
-                
+
             }
             return response;
         }
     }
 }
+    

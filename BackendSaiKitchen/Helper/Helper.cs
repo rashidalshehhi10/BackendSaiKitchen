@@ -165,6 +165,7 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 MemoryStream stream = new MemoryStream(fileByte);
+                fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),
