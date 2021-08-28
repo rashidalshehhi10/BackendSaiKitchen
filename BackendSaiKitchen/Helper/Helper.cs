@@ -109,7 +109,8 @@ namespace BackendSaiKitchen.Helper
                 if (ext == "png" || ext == "jpg" || ext == "pdf")
                 {
 
-                    fileUrl = await UploadFileToBlob(fileByte, ext);
+                    fileUrl = await PostFile(fileByte, ext);
+                    //fileUrl = await UploadFileToBlob(fileByte, ext);
                 }
                 else if (ext == "mp4")
                 {
@@ -158,14 +159,12 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
-        public static async Task<string> PostFile(byte[] fileByte)
+        public static async Task<string> PostFile(byte[] fileByte,string ext)
         {
             string fileUrl = "";
-            var ext = GuessFileType(fileByte);
             try
             {
                 MemoryStream stream = new MemoryStream(fileByte);
-                fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),

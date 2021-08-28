@@ -117,7 +117,7 @@ namespace BackendSaiKitchen.Controllers
         {
             try
             {
-               var Url = await Helper.Helper.PostFile(blob);
+               var Url = await Helper.Helper.PostFile(blob,"pdf");
                 response.data = Url;
             }
             catch (Exception ex)
