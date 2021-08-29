@@ -356,7 +356,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => y.UserName);
-                    sendNotificationToHead(user + "Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user + " Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -390,7 +390,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => y.UserName);
-                    sendNotificationToHead(user + "Rejected Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user + " Rejected Measerument Assignee Reason: "+updateInquiryWorkscope.MeasurementComment, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
