@@ -122,7 +122,13 @@ namespace BackendSaiKitchen.Helper
         waitingForAdvance = 32,
         waitingForBeforeDeliveryPayment = 33,
         waitingForAfterDeliveryPayment = 34,
-        inquiryCompleted = 35
+        inquiryCompleted = 35,
+        measurementAssigneePending = 36,
+        measurementAssigneeAccepted = 37,
+        measurementAssigneeRejected = 38,
+        designAssigneePending = 39,
+        designAssigneeAccepted = 40,
+        designAssigneeRejected = 41
     }
 
     public enum roleType
