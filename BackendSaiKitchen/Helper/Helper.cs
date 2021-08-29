@@ -198,7 +198,7 @@ namespace BackendSaiKitchen.Helper
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),
-                    ContentType = ext 
+                    ContentType = ext
                 };
                 await blobManager.PostAsync(new Blob() { File = blob });
             }

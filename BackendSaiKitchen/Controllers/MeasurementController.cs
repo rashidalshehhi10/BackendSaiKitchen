@@ -343,7 +343,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryWorkscopeId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeAccepted;
@@ -355,8 +355,8 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y =>  new 
-                    { 
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
                         Name = y.UserName
                     }).FirstOrDefault();
                     sendNotificationToHead(user.Name + " Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
@@ -396,7 +396,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Rejected Measerument Assignee Reason: "+updateInquiryWorkscope.MeasurementComment, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Rejected Measerument Assignee Reason: " + updateInquiryWorkscope.MeasurementComment, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {

@@ -135,7 +135,7 @@ namespace SaiKitchenBackend.Controllers
         {
             var branchRoleIds = branchRoleRepository.FindByCondition(x => roleTypeId.Contains(x.RoleTypeId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.BranchRoleId).ToList();
             List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault())
-            && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
+            && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.User != null).Select(x => new NotificationModel
             {
                 userRoleId = x.UserRoleId,
                 user = x.User,

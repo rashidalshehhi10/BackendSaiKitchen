@@ -93,7 +93,7 @@ namespace BackendSaiKitchen.Controllers
 
                     response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), FileDataContent.ContentType);
 
-                    
+
                 }
             }
             return response;
