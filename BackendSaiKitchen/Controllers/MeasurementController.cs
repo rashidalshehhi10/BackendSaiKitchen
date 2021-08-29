@@ -343,33 +343,38 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryWorkscopes.Any(y => y.InquiryWorkscopeId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive==true && y.IsDeleted==false) && x.IsActive==true && x.IsDeleted==false).Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false)).FirstOrDefault();
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
+            if (inquiry != null) { 
+           foreach(var inquiryWorkscope in inquiry.InquiryWorkscopes)
             {
-                inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeAccepted;
+                inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementPending;
                 //inquiryWorkscope.MeasurementAssignedTo = updateInquiryWorkscope.MeasurementAssignedTo;
                 //inquiryWorkscope.MeasurementScheduleDate = updateInquiryWorkscope.MeasurementScheduleDate;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
-                List<int?> roletypeId = new List<int?>();
+              
+            }
+           
+            inquiryRepository.Update(inquiry);
+            List<int?> roletypeId = new List<int?>();
 
-                roletypeId.Add((int)roleType.Manager);
-                try
+            roletypeId.Add((int)roleType.Manager);
+            try
+            {
+                var user = userRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
                 {
-                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
-                    {
-                        Name = y.UserName
-                    }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
-                }
-                catch (Exception e)
-                {
-                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                }
-                context.SaveChanges();
+                    Name = y.UserName
+                }).FirstOrDefault();
+                sendNotificationToHead(user.Name + " Accepted Measurement of "+inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+            }
+            catch (Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+            context.SaveChanges();
             }
             else
             {
-                response.errorMessage = "Inquiry Does Not Exist";
+                response.errorMessage = "Inquiry doesnot exist";
                 response.isError = true;
             }
             return response;
