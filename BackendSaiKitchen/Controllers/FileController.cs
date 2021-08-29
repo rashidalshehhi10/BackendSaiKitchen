@@ -74,5 +74,29 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [DisableRequestSizeLimit]
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> TestUploadFile()
+        {
+            foreach (var file in Request.Form.Files)
+            {
+                var FileDataContent = file;
+                if (FileDataContent != null && FileDataContent.Length > 0)
+                {
+                    var stream = FileDataContent.OpenReadStream();
+                    var fileName = Path.GetFileName(FileDataContent.FileName);
+
+                    MemoryStream ms = new MemoryStream();
+                    stream.CopyTo(ms);
+
+                    response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), FileDataContent.ContentType);
+
+                    
+                }
+            }
+            return response;
+        }
     }
 }
