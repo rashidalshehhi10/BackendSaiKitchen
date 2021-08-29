@@ -95,6 +95,10 @@ namespace SaiKitchenBackend.Controllers
                 payment.UpdatedDate = Helper.GetDateTime();
             }
             //}
+            foreach (var inworkscope in inquiry.InquiryWorkscopes)
+            {
+                inworkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
+            }
             inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
             inquiryRepository.Create(inquiry);
             context.SaveChanges();
