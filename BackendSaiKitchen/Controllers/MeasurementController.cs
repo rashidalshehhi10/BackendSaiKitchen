@@ -355,8 +355,11 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => y.UserName);
-                    sendNotificationToHead(user + " Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y =>  new 
+                    { 
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                    sendNotificationToHead(user.Name + " Accepted Measerument Assignee", false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -389,8 +392,11 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => y.UserName);
-                    sendNotificationToHead(user + " Rejected Measerument Assignee Reason: "+updateInquiryWorkscope.MeasurementComment, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiryWorkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                    sendNotificationToHead(user.Name + " Rejected Measerument Assignee Reason: "+updateInquiryWorkscope.MeasurementComment, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
