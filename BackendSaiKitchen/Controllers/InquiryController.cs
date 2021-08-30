@@ -382,7 +382,82 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        //[AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
+        [HttpPost]
+        [Route("[action]")]
+        public Object UpdateAssignMeasurement(UpdateInquirySchedule updateInquiry)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
+            if (inquiry != null)
+            {
+                foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                {
+                    inworkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
+                    inworkscope.MeasurementAssignedTo = updateInquiry.MeasurementAssignedTo;
+                    inworkscope.MeasurementScheduleDate = updateInquiry.MeasurementScheduleDate;
+                }
+                inquiryRepository.Update(inquiry);
+                
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null,(int) inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo,(int)inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                }
+                catch (Exception ex)
+                {
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
+                context.SaveChanges();
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "No Inquiry Exist";
+            }
+            return response;
+        }
 
+        [HttpPost]
+        [Route("[action]")]
+        public Object UpdateAssignDesign(UpdateInquirySchedule updateInquiry)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
+            if (inquiry != null)
+            {
+                foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                {
+                    inworkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                    inworkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
+                    inworkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
+                }
+                inquiryRepository.Update(inquiry);
+
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                }
+                catch (Exception ex)
+                {
+                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                }
+                context.SaveChanges();
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "No Inquiry Exist";
+            }
+            return response;
+        }
 
         #region workscope
 

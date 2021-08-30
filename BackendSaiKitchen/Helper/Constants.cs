@@ -12,6 +12,7 @@ namespace BackendSaiKitchen.Helper
         public static string loginErrormessage = "Incorrect Email or Password";
         public static string inquiryOnAnotherBranchMessage = " generated inquiry on another branch";
         public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
+        public static string designRescheduleBranchMessage = " Design reschedule to ";
         public static string measurementAssign = " You are assigned for the new measurement at ";
         public static string wrongFileUpload = "Kindly upload jpg,png or PDF";
         public static string MeasurementFileMissing = "Measurement File missing";
@@ -24,7 +25,7 @@ namespace BackendSaiKitchen.Helper
         public static string MeasurementDelayed = " Delayed the Measurement";
         public static string MeasurementAdded = "New Measurement added";
         public static string PaymentAdded = "New Payment added";
-        public static string DesignAssign = "You assign for new Design";
+        public static string DesignAssign = "You assign for new Design at ";
         public static string DesignDelayed = "Delayed the Design";
         public static string DesignAdded = "New Design added";
         public static string UnAuthorizedUser = "You are not authorized to perform this action, Kindly contact the admin";
