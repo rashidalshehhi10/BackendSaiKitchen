@@ -166,7 +166,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designPending;
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
@@ -356,8 +356,8 @@ namespace BackendSaiKitchen.Controllers
            inquiry.InquiryStatusId = (int?)inquiryStatus.measurementPending;
 
                 inquiryRepository.Update(inquiry);
-            List<int?> roletypeId = new List<int?>();
 
+            List<int?> roletypeId = new List<int?>();
             roletypeId.Add((int)roleType.Manager);
             try
             {
@@ -380,6 +380,7 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
 
         [HttpPost]
         [Route("[action]")]

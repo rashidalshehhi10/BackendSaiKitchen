@@ -329,5 +329,75 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object ApproveDesignAssignee(UpdateInquiryWorkscopeStatusModel updateInquiry)
+        {
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                .Include(x => x.Workscope).FirstOrDefault();
+            if (inquiryworkscope != null)
+            {
+                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designPending;
+
+                inquiryWorkscopeRepository.Update(inquiryworkscope);
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiryworkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                    sendNotificationToHead(user.Name + " Accepted Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName , false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RejectDesignAssignee(UpdateInquiryWorkscopeStatusModel updateInquiry)
+        {
+            var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                .Include(x => x.Workscope).FirstOrDefault();
+            if (inquiryworkscope != null)
+            {
+                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+
+                inquiryWorkscopeRepository.Update(inquiryworkscope);
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiryworkscope.MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                    sendNotificationToHead(user.Name + " Reject Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+        }
     }
 }

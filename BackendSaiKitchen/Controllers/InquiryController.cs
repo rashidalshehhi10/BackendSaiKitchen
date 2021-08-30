@@ -437,7 +437,7 @@ namespace SaiKitchenBackend.Controllers
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
-                inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+               // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
                 List<int?> roletypeId = new List<int?>();
@@ -866,6 +866,49 @@ namespace SaiKitchenBackend.Controllers
             return tableResponse;
         }
 
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
+        [HttpPost]
+        [Route("[action]")]
+        public Object GetDesignAssigneeApproval(int branchId)
+        {
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending ) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
+            {
+                InquiryWorkscopeId = x.InquiryWorkscopeId,
+                InquiryId = x.InquiryId,
+                InquiryDescription = x.Inquiry.InquiryDescription,
+                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
+                WorkScopeId = x.WorkscopeId,
+                WorkScopeName = x.Workscope.WorkScopeName,
+                QuestionaireType = x.Workscope.QuestionaireType,
+                DesignScheduleDate = x.DesignScheduleDate,
+                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+                Status = x.InquiryStatusId,
+                InquiryComment = x.Comments,
+                MeasurementScheduleDate = x.MeasurementScheduleDate,
+                BuildingAddress = x.Inquiry.Building.BuildingAddress,
+                BuildingCondition = x.Inquiry.Building.BuildingCondition,
+                BuildingFloor = x.Inquiry.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
+                CustomerId = x.Inquiry.CustomerId,
+                CustomerCode = "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
+                CustomerName = x.Inquiry.Customer.CustomerName,
+                CustomerContact = x.Inquiry.Customer.CustomerContact,
+                CustomerEmail = x.Inquiry.Customer.CustomerEmail,
+                BranchId = x.Inquiry.BranchId,
+                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+            }).OrderByDescending(x => x.InquiryId);
+            tableResponse.data = inquiries;
+            tableResponse.recordsTotal = inquiries.Count();
+            tableResponse.recordsFiltered = inquiries.Count();
+            return tableResponse;
+        }
 
         [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Update)]
         [HttpPost]
