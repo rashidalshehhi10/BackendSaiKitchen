@@ -387,7 +387,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateAssignMeasurement(UpdateInquirySchedule updateInquiry)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.designAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneePending || x.InquiryStatusId != (int)inquiryStatus.designAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.designDelayed || x.InquiryStatusId != (int)inquiryStatus.designPending || x.InquiryStatusId != (int)inquiryStatus.designRejected || x.InquiryStatusId != (int)inquiryStatus.designRejectedByCustomer || x.InquiryStatusId != (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId != (int)inquiryStatus.designWaitingForCustomerApproval) )
                 .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
@@ -397,6 +397,7 @@ namespace SaiKitchenBackend.Controllers
                     inworkscope.MeasurementAssignedTo = updateInquiry.MeasurementAssignedTo;
                     inworkscope.MeasurementScheduleDate = updateInquiry.MeasurementScheduleDate;
                 }
+                inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
                 inquiryRepository.Update(inquiry);
                 
                 List<int?> roletypeId = new List<int?>();
@@ -427,14 +428,16 @@ namespace SaiKitchenBackend.Controllers
         {
             //var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
             //    .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementAccepted || x.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted || x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || x.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementRejected || x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval))
+                .Include(x => x.Inquiry)
+                .ThenInclude(y => y.Customer).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
 
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
-                
+                inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
                 List<int?> roletypeId = new List<int?>();
@@ -442,7 +445,7 @@ namespace SaiKitchenBackend.Controllers
                 try
                 {
                     sendNotificationToOneUser(Constants.DesignAssign + inquiryWorkscope.MeasurementScheduleDate, false, null, null, (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(Constants.designRescheduleBranchMessage + inquiryWorkscope.MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiryWorkscope.Inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiryWorkscope.MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
