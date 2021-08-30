@@ -425,31 +425,31 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateAssignDesign(UpdateInquirySchedule updateInquiry)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
-            if (inquiry != null)
+            //var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+            //    .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiryWorkscope != null)
             {
-                foreach (var inworkscope in inquiry.InquiryWorkscopes)
-                {
-                    inworkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
-                    inworkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
-                    inworkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
-                }
-                inquiryRepository.Update(inquiry);
+
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
+                inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
+                
+                inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.DesignAssign + inquiryWorkscope.MeasurementScheduleDate, false, null, null, (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(Constants.designRescheduleBranchMessage + inquiryWorkscope.MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
                 context.SaveChanges();
-                response.data = inquiry;
+                response.data = inquiryWorkscope;
             }
             else
             {

@@ -47,6 +47,7 @@ namespace BackendSaiKitchen.CustomModel
     public class UpdateInquirySchedule
     {
         public int InquiryId { get; set; }
+        public int InquiryWorkscopeId { get; set; }
         public int? MeasurementAssignedTo { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public int? InquiryStatusId { get; set; }
