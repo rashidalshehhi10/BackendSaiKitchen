@@ -144,17 +144,17 @@ namespace BackendSaiKitchen.Controllers
                 {
                     files.Clear();
                     formFile.Clear();
-                    foreach (var file in customQuotation.QuotationFiles)
+                    foreach (var fileUrl in customQuotation.QuotationFiles)
                     {
-                        var fileUrl = await Helper.Helper.UploadFile(file);
+                        //var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             files.Add(new Models.File
                             {
-                                FileUrl = fileUrl.Item1,
-                                FileName = fileUrl.Item1.Split('.')[0],
-                                FileContentType = fileUrl.Item2,
-                                IsImage = true,
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,

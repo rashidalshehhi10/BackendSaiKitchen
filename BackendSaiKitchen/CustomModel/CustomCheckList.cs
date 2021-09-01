@@ -17,7 +17,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryworkscopeId { get; set; }
         public int documentType { get; set; }
-        public List<byte[]>? files { get; set; }
+        public List<string>? files { get; set; }
     }
     public class CustomCheckListReject
     {

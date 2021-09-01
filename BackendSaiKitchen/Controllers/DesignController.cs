@@ -32,18 +32,18 @@ namespace BackendSaiKitchen.Controllers
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == designCustomModel.inquiryWorkScopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected)).FirstOrDefault();
             Design design = new Design();
 
-            foreach (var file in designCustomModel.base64f3d)
+            foreach (var fileUrl in designCustomModel.base64f3d)
             {
-                var fileUrl = await Helper.Helper.UploadFile(file);
+                //var fileUrl = await Helper.Helper.UploadFile(file);
 
                 if (fileUrl != null)
                 {
                     design.Files.Add(new File()
                     {
-                        FileUrl = fileUrl.Item1,
-                        FileName = fileUrl.Item1.Split('.')[0],
-                        FileContentType = fileUrl.Item2,
-                        IsImage = true,
+                        FileUrl = fileUrl,
+                        FileName = fileUrl.Split('.')[0],
+                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                        IsImage = fileUrl.Split('.').Length > 1,
                         IsActive = true,
                         IsDeleted = false,
                         UpdatedBy = Constants.userId,

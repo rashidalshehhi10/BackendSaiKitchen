@@ -202,11 +202,11 @@ namespace BackendSaiKitchen.Controllers
                         var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == approve.addFileonChecklists[i].inquiryworkscopeId && x.IsActive == true && x.IsDeleted == false);
                         try
                         {
-                            foreach (var file in approve.addFileonChecklists[i].files)
+                            foreach (var fileUrl in approve.addFileonChecklists[i].files)
                             {
-                                if (file != null)
+                                if (fileUrl != null)
                                 {
-                                    var fileUrl = await Helper.Helper.UploadFile(file);
+                                    //var fileUrl = await Helper.Helper.UploadFile(file);
 
                                     switch (approve.addFileonChecklists[i].documentType)
                                     {
@@ -214,9 +214,9 @@ namespace BackendSaiKitchen.Controllers
                                             var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
                                             measurement.Files.Add(new Models.File
                                             {
-                                                FileUrl = fileUrl.Item1,
-                                                FileName = fileUrl.Item1.Split('.')[0],
-                                                FileContentType = fileUrl.Item2,
+                                                FileUrl = fileUrl,
+                                                FileName = fileUrl.Split('.')[0],
+                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
                                                 IsImage = false,
                                                 IsActive = true,
                                                 IsDeleted = false,
@@ -226,9 +226,9 @@ namespace BackendSaiKitchen.Controllers
                                             var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
                                             design.Files.Add(new Models.File
                                             {
-                                                FileUrl = fileUrl.Item1,
-                                                FileName = fileUrl.Item1.Split('.')[0],
-                                                FileContentType = fileUrl.Item2,
+                                                FileUrl = fileUrl,
+                                                FileName = fileUrl.Split('.')[0],
+                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
                                                 IsImage = false,
                                                 IsActive = true,
                                                 IsDeleted = false,
@@ -238,9 +238,9 @@ namespace BackendSaiKitchen.Controllers
                                             var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
                                             quotation.Files.Add(new Models.File
                                             {
-                                                FileUrl = fileUrl.Item1,
-                                                FileName = fileUrl.Item1.Split('.')[0],
-                                                FileContentType = fileUrl.Item2,
+                                                FileUrl = fileUrl,
+                                                FileName = fileUrl.Split('.')[0],
+                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
                                                 IsImage = false,
                                                 IsActive = true,
                                                 IsDeleted = false,

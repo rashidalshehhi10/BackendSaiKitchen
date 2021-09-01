@@ -32,7 +32,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? UpdatedBy { get; set; }
 
 
-        public List<byte[]> QuotationFiles { get; set; }
+        public List<string> QuotationFiles { get; set; }
     }
 
     public class UploadPdf
