@@ -167,7 +167,7 @@ namespace BackendSaiKitchen.Helper
             //string ext = "";
             if (fileByte != null)
             {
-                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("pdf"))
+                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") || ext.ToLower().Contains("pdf"))
                 {
 
                     fileUrl = await PostFile(fileByte, ext);
