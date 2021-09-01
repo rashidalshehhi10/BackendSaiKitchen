@@ -160,6 +160,8 @@ namespace BackendSaiKitchen.Helper
         }
 
 
+
+
         public static async Task<Tuple<string, string>> UploadFormDataFile(byte[] fileByte, string ext)
         {
 
@@ -215,6 +217,21 @@ namespace BackendSaiKitchen.Helper
             return image;
         }
 
+        public static async Task<string> DeleteFileFromBlob(string filename)
+        {
+            var status = "";
+            if (filename != null)
+            {
+                await blobManager.Delete(filename);
+                status = "Deleted";
+            }
+            else
+            {
+                status = "File Not Found";
+            }
+            return status;
+        }
+
         public static async Task<string> UploadUpdateVideo(byte[] file)
         {
             string fileUrl = "";
@@ -257,6 +274,32 @@ namespace BackendSaiKitchen.Helper
                 Sentry.SentrySdk.CaptureMessage(e.Message);
             }
             return fileUrl;
+        }
+
+        public static async Task<string> DeleteVideo(long VideoId=0)
+        {
+            var status = "";
+            try
+            {
+                if (VideoId > 0 )
+                {
+
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                    VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
+                    await vimeoClient.DeleteVideoAsync(VideoId);
+
+                    status = "Deleted";
+                }
+            }
+            catch (Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+                status = e.Message;
+            }
+
+            return status;
         }
 
         public static string GuessFileType(byte[] file)

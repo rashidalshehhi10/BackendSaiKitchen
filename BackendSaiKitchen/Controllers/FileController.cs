@@ -75,6 +75,38 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> DeleteVideo(long VideoId)
+        {
+            if (VideoId > 0)
+            {
+                response.data = await Helper.Helper.DeleteVideo(VideoId);
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Video Not Deleted";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> DeleteFileFromBlob(string fileName)
+        {
+            if (fileName != null)
+            {
+                response.data = await Helper.Helper.DeleteFileFromBlob(fileName);
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Video Not Deleted";
+            }
+            return response;
+        }
+
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]

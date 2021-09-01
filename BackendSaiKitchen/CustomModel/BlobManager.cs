@@ -103,5 +103,12 @@ namespace BackendSaiKitchen.CustomModel
 
             }
         }
+
+        public async Task Delete(string FileName)
+        {
+            var blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
+            var blobclient = blobcontainer.GetBlobClient(FileName);
+            await blobclient.DeleteAsync();
+        }
     }
 }

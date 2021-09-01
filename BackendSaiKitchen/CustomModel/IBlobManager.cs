@@ -10,5 +10,7 @@ namespace BackendSaiKitchen.CustomModel
         Task<byte[]> Read(string fileName);
 
         Task PostAsync(Blob File);
+
+        Task Delete(string FileName);
     }
 }
