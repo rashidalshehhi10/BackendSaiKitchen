@@ -242,17 +242,16 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-                    foreach (var file in customMeasFiles.base64img)
+                    foreach (var fileUrl in customMeasFiles.base64img)
                     {
-                        var fileUrl = await Helper.Helper.UploadFile(file);
+                        //var fileUrl = file;
                         if (fileUrl != null)
                         {
                             files.Add(new File()
                             {
-                                FileUrl = fileUrl.Item1,
-                                FileName = fileUrl.Item1.Split('.')[0],
-                                FileContentType = fileUrl.Item2,
-                                IsImage = true,
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.')[1],
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,
