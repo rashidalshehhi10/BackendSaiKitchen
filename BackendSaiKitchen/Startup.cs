@@ -40,7 +40,10 @@ namespace BackendSaiKitchen
 
             //services.AddDbContext<DbSaiKitchenContext>(ServiceLifetime.Transient);
             // Add Cors
-
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 6000000000; //6GB
+            });
 
             services.AddCors(options =>
             {
@@ -88,9 +91,12 @@ namespace BackendSaiKitchen
             }
 
             app.UseSwagger();
+            //app.Run(async context =>
+            //{
+            //    context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = 1073741824;
+            //});
 
-
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sai Kitchen v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sai Kitchen v1"));
             app.UseHttpsRedirection();
 
             app.UseRouting();
