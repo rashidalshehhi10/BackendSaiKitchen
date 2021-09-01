@@ -42,6 +42,11 @@ namespace BackendSaiKitchen
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //webBuilder.UseStartup<Startup>().UseKestrel(options =>
+                    //{
+                    //    options.Limits.MaxRequestBodySize = 1073741824; //1024MB
+                    //});
+
                     //webBuilder.UseKestrel(options =>
                     //{
                     //    options.Limits.MaxRequestBodySize = long.MaxValue;
