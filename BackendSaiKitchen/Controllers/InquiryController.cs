@@ -387,7 +387,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateAssignMeasurement(UpdateInquirySchedule updateInquiry)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.designAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneePending || x.InquiryStatusId != (int)inquiryStatus.designAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.designDelayed || x.InquiryStatusId != (int)inquiryStatus.designPending || x.InquiryStatusId != (int)inquiryStatus.designRejected || x.InquiryStatusId != (int)inquiryStatus.designRejectedByCustomer || x.InquiryStatusId != (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId != (int)inquiryStatus.designWaitingForCustomerApproval) )
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.designAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.designAssigneePending || x.InquiryStatusId != (int)inquiryStatus.designAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.designDelayed || x.InquiryStatusId != (int)inquiryStatus.designPending || x.InquiryStatusId != (int)inquiryStatus.designRejected || x.InquiryStatusId != (int)inquiryStatus.designRejectedByCustomer || x.InquiryStatusId != (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId != (int)inquiryStatus.designWaitingForCustomerApproval))
                 .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
@@ -399,12 +399,12 @@ namespace SaiKitchenBackend.Controllers
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
                 inquiryRepository.Update(inquiry);
-                
+
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null,(int) inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo,(int)inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
                     sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
@@ -437,7 +437,7 @@ namespace SaiKitchenBackend.Controllers
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
-               // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
                 List<int?> roletypeId = new List<int?>();
@@ -651,8 +651,8 @@ namespace SaiKitchenBackend.Controllers
                 DesignScheduleDate = x.DesignScheduleDate,
                 DesignAssignTo = x.DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
-                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer==true?"Yes":"No",
-                IsDesignProvidedByCustomer = x.Inquiry.IsDesignProvidedByCustomer==true?"Yes":"No",
+                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                IsDesignProvidedByCustomer = x.Inquiry.IsDesignProvidedByCustomer == true ? "Yes" : "No",
                 MeasurementScheduleDate = x.MeasurementScheduleDate,
                 BuildingAddress = x.Inquiry.Building.BuildingAddress,
                 BuildingCondition = x.Inquiry.Building.BuildingCondition,
@@ -871,7 +871,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetDesignAssigneeApproval(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending ) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
             && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
             {
                 InquiryWorkscopeId = x.InquiryWorkscopeId,

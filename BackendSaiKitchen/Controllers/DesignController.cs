@@ -348,7 +348,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName , false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Accepted Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
