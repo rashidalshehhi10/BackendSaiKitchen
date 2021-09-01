@@ -374,6 +374,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiryworkscope != null)
             {
                 inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+                inquiryworkscope.Comments = updateInquiry.DesignComment;
 
                 inquiryWorkscopeRepository.Update(inquiryworkscope);
                 List<int?> roletypeId = new List<int?>();
