@@ -30,7 +30,7 @@ namespace BackendSaiKitchen.CustomModel
 
         public string MeasurementComment { get; set; }
 
-        public List<byte[]> base64img { get; set; }
+        public List<string> base64img { get; set; }
         public List<CustomAccossries> Accesories { get; set; }
 
 
