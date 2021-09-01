@@ -251,7 +251,8 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 FileUrl = fileUrl,
                                 FileName = fileUrl.Split('.')[0],
-                                FileContentType = fileUrl.Split('.')[1],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
                                 IsActive = true,
                                 IsDeleted = false,
                                 UpdatedBy = Constants.userId,
@@ -259,7 +260,7 @@ namespace BackendSaiKitchen.Controllers
                                 CreatedBy = Constants.userId,
                                 CreatedDate = Helper.Helper.GetDateTime(),
 
-                            });
+                            }); ;
                         }
                         else
                         {
