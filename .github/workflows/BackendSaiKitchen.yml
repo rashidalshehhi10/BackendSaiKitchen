@@ -2,13 +2,13 @@ name: Build and deploy .NET Core application to Web App BackendSaiKitchen with A
 on:
   push:
     branches:
-    - main
+    - Development
 env:
   AZURE_WEBAPP_NAME: BackendSaiKitchen
   AZURE_WEBAPP_PACKAGE_PATH: BackendSaiKitchen\published
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.BACKENDSAIKITCHEN_FFFF }}
   AZURE_APIM_SERVICE_PRINCIPAL: ${{ secrets.BackendSaiKitchenapi_SERVICE_PRINCIPAL }}
-  AZURE_APIM_RESOURCE_PATH: /BackendSaiKitchenapi/v1
+  AZURE_APIM_RESOURCE_PATH: /
   AZURE_APIM_RESOURCEGROUP: DefaultResourceGroup-WCUS
   AZURE_APIM_SERVICENAME: BackendSaiKitchenapim
   AZURE_APIM_API_ID: BackendSaiKitchen
