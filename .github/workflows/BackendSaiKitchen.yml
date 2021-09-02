@@ -10,7 +10,7 @@ env:
   AZURE_APIM_SERVICE_PRINCIPAL: ${{ secrets.BackendSaiKitchenapi_SERVICE_PRINCIPAL }}
   AZURE_APIM_RESOURCE_PATH: /BackendSaiKitchenapi/v1
   AZURE_APIM_RESOURCEGROUP: DefaultResourceGroup-WCUS
-  AZURE_APIM_SERVICENAME: BackendSaiKitchenapi
+  AZURE_APIM_SERVICENAME: BackendSaiKitchenapim
   AZURE_APIM_API_ID: BackendSaiKitchen
   AZURE_APIM_APPSERVICEURL: https://backendsaikitchen.azurewebsites.net
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
