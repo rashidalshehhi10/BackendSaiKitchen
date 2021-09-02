@@ -87,10 +87,10 @@ namespace BackendSaiKitchen
         {
             StripeConfiguration.ApiKey = "sk_test_51JA8pgAtqGclDTLoAv6UT77NclL3nUSuGYSuK1tIM0SfQKOfx7I3hj6offRjpkw9sSztIbQE6OnGOQNBFVYkvlSQ00H2xue74N";
 
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment())
+            //{
                 app.UseDeveloperExceptionPage();
-            }
+            //}
 
             app.UseSwagger();
             //app.Run(async context =>
