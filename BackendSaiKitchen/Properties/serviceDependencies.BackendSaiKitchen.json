@@ -1,8 +1,9 @@
 {
   "dependencies": {
     "apis1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/BackendSaiKitchenapi/apis/BackendSaiKitchen",
-      "type": "apis.azure"
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/BackendSaiKitchenapim/apis/BackendSaiKitchen",
+      "type": "apis.azure",
+      "apiEndpoint": "https://backendsaikitchenapim.azure-api.net/"
     }
   }
 }
