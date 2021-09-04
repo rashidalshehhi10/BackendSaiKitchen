@@ -696,8 +696,11 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
-                inquiry.Quotations.FirstOrDefault().QuotationValidityDate = scheduleUpdate.date;
+                inquiry.QuotationScheduleDate = scheduleUpdate.date;
+                inquiry.QuotationAssignTo = scheduleUpdate.userId;
 
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
