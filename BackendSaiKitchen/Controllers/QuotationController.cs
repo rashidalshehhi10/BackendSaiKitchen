@@ -685,5 +685,26 @@ namespace BackendSaiKitchen.Controllers
         }
 
 
+        [HttpPost]
+        [Route("[action]")]
+        public object QuotationSchedule(quotationScheduleUpdate scheduleUpdate)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == scheduleUpdate.inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiry.Quotations.FirstOrDefault().QuotationValidityDate = scheduleUpdate.date;
+
+            }
+            else
+            {
+                response.errorMessage = "Inquiry Not Found";
+                response.isError = true;
+            }
+            return response;
+        }
     }
 }

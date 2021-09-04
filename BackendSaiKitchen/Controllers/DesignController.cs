@@ -233,7 +233,7 @@ namespace BackendSaiKitchen.Controllers
             var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationSchedulePending;
                 inquiryWorkscope.IsDesignApproved = true;
                 inquiryWorkscope.FeedbackReaction = updateInquiryStatus.FeedBackReaction;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);

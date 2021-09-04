@@ -28,10 +28,96 @@ namespace BackendSaiKitchen.CustomModel
 
     }
 
+    public class BranchReport
+    {
+        public decimal AmountRecived { get; set; }
+        public decimal AmountPending { get; set; }
+        public int InquiriesCompleted { get; set; }
+        public int InquiriesInComplete { get; set; }
+        public int QuotationAccepted { get; set; }
+        public int QuotationPending { get; set; }
+        public int QuotationRejected { get; set; }
+        public int JobOrderCreated { get; set; }
+        public int JobOrederRejected { get; set; }
+        public int CashPaid { get; set; }
+        public decimal TotalCash { get; set; }
+        public int ChequePaid { get; set; }
+        public decimal TotalCheque { get; set; }
+        public int OnlinePaid { get; set; }
+        public decimal TotalOnline { get; set; }
+        public int BankPaid { get; set; }
+        public decimal TotalBank { get; set; }
+        public List<TopFiveCustomer> topFiveCustomers { get; set; }
+        public List<TopFiveNewCustomers> TopFiveNewCustomers { get; set; }
+        public List<InquiryReceivedDetails> InquiryReceivedDetails { get; set; }
+        public List<InquiryPendingDetails> inquiryPendingDetails { get; set; }
+        public List<Employee> employees { get; set; }
+    }
+
+    public class TopFiveCustomer
+    {
+        public string Name { get; set; }
+        public decimal AmountRecieved { get; set; }
+
+    }
+
+    public class TopFiveNewCustomers
+    {
+        public string Name { get; set; }
+        public string CreatedDate { get; set; }
+    }
+
     public class UserReport
     {
         public int CustomerCount { get; set; }
         public List<Review> reviews { get; set; }
+    }
+    public class InquiryReceivedDetails
+    {
+        public string InquiryCode { get; set; }
+        public List<string> WorkscopeName { get; set; }
+        public string Address { get; set; }
+        public string CustomerName { get; set; }
+        public string MobileNomber { get; set; }
+        public string Email { get; set; }
+        //public string PaymentMethodId { get; set; }
+        //public string PaymentType { get; set; }
+        //public string PaymentMode { get; set; }
+        public decimal AmountRecieved { get; set; }
+        //public string Date { get; set; }
+        public List<reportPayment> reportPayments { get; set; }
+    }
+
+    public class reportPayment
+    {
+
+        public string PaymentMethod { get; set; }
+        public string PaymentType { get; set; }
+        public int PaymentModeId { get; set; }
+        public decimal Amount { get; set; }
+        public string Date { get; set; }
+    }
+
+    public class InquiryPendingDetails
+    {
+        public string InquiryCode { get; set; }
+        public List<string> WorkscopeName { get; set; }
+        public string Address { get; set; }
+        public string CustomerName { get; set; }
+        public string MobileNomber { get; set; }
+        public string Email { get; set; }
+        public decimal AmountPending { get; set; }
+        //public string DueDate { get; set; }
+        public List<reportPayment> reportPayments { get; set; }
+
+    }
+
+    public class Employee
+    {
+        public string Name { get; set; }
+        public string Contact { get; set; }
+        public string Email { get; set; }
+        public string Position { get; set; }
     }
 
     public class Review

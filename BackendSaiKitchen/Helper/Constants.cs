@@ -129,7 +129,8 @@ namespace BackendSaiKitchen.Helper
         measurementAssigneeRejected = 38,
         designAssigneePending = 39,
         designAssigneeAccepted = 40,
-        designAssigneeRejected = 41
+        designAssigneeRejected = 41,
+        quotationSchedulePending = 42
     }
 
     public enum roleType
