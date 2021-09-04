@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
@@ -25,6 +26,8 @@ namespace BackendSaiKitchen.Models
         public bool? IsDesignProvidedByCustomer { get; set; }
         public string MeasurementFees { get; set; }
         public string InquiryComment { get; set; }
+        public int? QuotationAssignTo { get; set; }
+        public string QuotationScheduleDate { get; set; }
         public int? CustomerId { get; set; }
         public int? BranchId { get; set; }
         public int? BuildingId { get; set; }
@@ -47,6 +50,7 @@ namespace BackendSaiKitchen.Models
         public virtual Customer Customer { get; set; }
         public virtual InquiryStatus InquiryStatus { get; set; }
         public virtual Promo Promo { get; set; }
+        public virtual User QuotationAssignToNavigation { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
         public virtual ICollection<JobOrder> JobOrders { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }

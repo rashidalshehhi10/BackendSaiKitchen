@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -395,10 +397,12 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.PromoDiscount).HasMaxLength(50);
 
+                entity.Property(e => e.QuotationScheduleDate).HasMaxLength(50);
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.AddedByNavigation)
-                    .WithMany(p => p.Inquiries)
+                    .WithMany(p => p.InquiryAddedByNavigations)
                     .HasForeignKey(d => d.AddedBy)
                     .HasConstraintName("FK_Inquiry_User");
 
@@ -426,6 +430,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.PromoId)
                     .HasConstraintName("FK_Inquiry_Promo");
+
+                entity.HasOne(d => d.QuotationAssignToNavigation)
+                    .WithMany(p => p.InquiryQuotationAssignToNavigations)
+                    .HasForeignKey(d => d.QuotationAssignTo)
+                    .HasConstraintName("FK_Inquiry_User1");
             });
 
             modelBuilder.Entity<InquiryStatus>(entity =>

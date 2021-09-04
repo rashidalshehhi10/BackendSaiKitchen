@@ -90,9 +90,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForUser(ReqReport req)
         {
-            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
+            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.InquiryAddedByNavigations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Workscope).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Workscope).Include(x => x.InquiryAddedByNavigations.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(y => y.Customer)
                 .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (user != null)
@@ -100,7 +100,7 @@ namespace BackendSaiKitchen.Controllers
                 UserReport userReport = new UserReport();
                 userReport.reviews = new List<Review>();
                 userReport.CustomerCount = user.Customers.Where(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate)).Count();
-                foreach (var inquiry in user.Inquiries)
+                foreach (var inquiry in user.InquiryAddedByNavigations)
                 {
                     if (DateTime.Parse(inquiry.InquiryStartDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(inquiry.InquiryStartDate) <= DateTime.Parse(req.EndDate))
                     {

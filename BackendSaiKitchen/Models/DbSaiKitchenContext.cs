@@ -329,10 +329,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.AddedByNavigation)
-                    .WithMany(p => p.Inquiries)
-                    .HasForeignKey(d => d.AddedBy)
-                    .HasConstraintName("FK_Inquiry_User");
+                ////entity.HasOne(d => d.AddedByNavigation)
+                ////    .WithMany(p => p.Inquiries)
+                ////    .HasForeignKey(d => d.AddedBy)
+                ////    .HasConstraintName("FK_Inquiry_User");
 
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.Inquiries)
