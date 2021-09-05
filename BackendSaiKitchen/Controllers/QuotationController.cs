@@ -734,12 +734,17 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == scheduleUpdate.inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                  && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiry.QuotationScheduleDate = scheduleUpdate.date;
-               // inquiry.QuotationAssignTo = scheduleUpdate.userId;
+                // inquiry.QuotationAssignTo = scheduleUpdate.userId;
+                foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                {
+                    inworkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
+                }
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
