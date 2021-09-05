@@ -179,6 +179,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.CreatedBy = Constants.userId;
                 quotation.UpdatedBy = Constants.userId;
                 quotation.UpdatedDate = Helper.Helper.GetDateTime();
+                
 
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
@@ -211,6 +212,7 @@ namespace BackendSaiKitchen.Controllers
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     }
                     inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                    inquiry.QuotationAssignTo = Constants.userId;
                     decimal percent = 0;
                     var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount) - ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
                     quotation.Payments.Add(new Payment()
@@ -737,7 +739,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiry.QuotationScheduleDate = scheduleUpdate.date;
-                inquiry.QuotationAssignTo = scheduleUpdate.userId;
+               // inquiry.QuotationAssignTo = scheduleUpdate.userId;
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
