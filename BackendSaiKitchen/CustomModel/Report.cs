@@ -34,11 +34,11 @@ namespace BackendSaiKitchen.CustomModel
         public decimal AmountPending { get; set; }
         public int InquiriesCompleted { get; set; }
         public int InquiriesInComplete { get; set; }
-        public int QuotationAccepted { get; set; }
-        public int QuotationPending { get; set; }
-        public int QuotationRejected { get; set; }
-        public int JobOrderCreated { get; set; }
-        public int JobOrederRejected { get; set; }
+        public int? QuotationAccepted { get; set; }
+        public int? QuotationPending { get; set; }
+        public int? QuotationRejected { get; set; }
+        public int? JobOrderCreated { get; set; }
+        public int? JobOrederRejected { get; set; }
         public int CashPaid { get; set; }
         public decimal TotalCash { get; set; }
         public int ChequePaid { get; set; }
@@ -47,14 +47,14 @@ namespace BackendSaiKitchen.CustomModel
         public decimal TotalOnline { get; set; }
         public int BankPaid { get; set; }
         public decimal TotalBank { get; set; }
-        public List<TopFiveCustomer> topFiveCustomers { get; set; }
+        public List<TopFivePaidCustomer> topFivePaidCustomers { get; set; }
         public List<TopFiveNewCustomers> TopFiveNewCustomers { get; set; }
         public List<InquiryReceivedDetails> InquiryReceivedDetails { get; set; }
         public List<InquiryPendingDetails> inquiryPendingDetails { get; set; }
         public List<Employee> employees { get; set; }
     }
 
-    public class TopFiveCustomer
+    public class TopFivePaidCustomer
     {
         public string Name { get; set; }
         public decimal AmountRecieved { get; set; }
