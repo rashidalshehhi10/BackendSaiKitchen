@@ -230,7 +230,6 @@ namespace BackendSaiKitchen.Controllers
                     });
                 }
 
-                int x = 0;
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
                 {
                     report.TopFiveNewCustomers.Add(new TopFiveNewCustomers
@@ -252,9 +251,7 @@ namespace BackendSaiKitchen.Controllers
                         Name = Customer.CustomerName,
                         AmountRecieved = amount
                     });
-                    if (x == 4)
-                        break;
-                    x++;
+                    
                 }
 
                 report.topFivePaidCustomers.OrderBy(x => x.AmountRecieved);
