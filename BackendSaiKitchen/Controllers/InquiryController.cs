@@ -398,6 +398,7 @@ namespace SaiKitchenBackend.Controllers
                     inworkscope.MeasurementScheduleDate = updateInquiry.MeasurementScheduleDate;
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
+                inquiry.IsMeasurementProvidedByCustomer = updateInquiry.IsProvidedByCustomer;
                 inquiryRepository.Update(inquiry);
 
                 List<int?> roletypeId = new List<int?>();
@@ -438,6 +439,7 @@ namespace SaiKitchenBackend.Controllers
                 inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
                 inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
                 // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                inquiryWorkscope.Inquiry.IsDesignProvidedByCustomer = updateInquiry.IsProvidedByCustomer;
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
 
                 List<int?> roletypeId = new List<int?>();

@@ -53,6 +53,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? InquiryStatusId { get; set; }
         public int? DesignAssignedTo { get; set; }
         public string DesignScheduleDate { get; set; }
+        public bool IsProvidedByCustomer { get; set; }
     }
     public class UpdateInquiryWorkscopeStatusModel
     {

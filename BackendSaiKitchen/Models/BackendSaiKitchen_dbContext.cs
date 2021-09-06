@@ -234,6 +234,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CustomerNextMeetingDate).HasMaxLength(50);
 
+                entity.Property(e => e.CustomerWhatsapp).HasMaxLength(50);
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.Branch)

@@ -35,6 +35,7 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public string CustomerWhatsapp { get; set; }
 
         public virtual Branch Branch { get; set; }
         public virtual ContactStatus ContactStatus { get; set; }
