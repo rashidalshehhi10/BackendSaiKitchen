@@ -7,6 +7,7 @@
         public string CustomerName { get; set; }
         public string CustomerContact { get; set; }
         public string CustomerEmail { get; set; }
+        public string CustomerWhatsapp { get; set; }
         public string CustomerAddress { get; set; }
         public string CustomerNotes { get; set; }
         public string CustomerCity { get; set; }
