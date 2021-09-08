@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
+        public string CustomerWhatsapp { get; set; }
         public string BuildingAddress { get; set; }
         public string BranchAddress { get; set; }
         public string BranchContact { get; set; }
@@ -33,6 +34,7 @@ namespace BackendSaiKitchen.CustomModel
         public List<InvoiceDetail> invoiceDetails { get; set; }
         public ICollection<File> Files { get; set; }
         public string TotalAmount { get; set; }
+        public string QuotationScheduleDate { get; set; }
     }
     public class InvoiceDetail
     {

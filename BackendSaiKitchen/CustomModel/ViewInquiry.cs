@@ -29,6 +29,7 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerContact { get; set; }
+        public string CustomerWhatsapp { get; set; }
         public string BuildingAddress { get; set; }
         public string BuildingMakaniMap { get; set; }
         public string BuildingTypeOfUnit { get; set; }
@@ -43,6 +44,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? InquiryAddedById { get; set; }
         public Object Actions { get; set; }
         public int? NoOfRevision { get; set; }
+        public string QuotationScheduleDate { get; set; }
     }
     public class UpdateInquirySchedule
     {

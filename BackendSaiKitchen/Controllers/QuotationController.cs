@@ -70,7 +70,7 @@ namespace BackendSaiKitchen.Controllers
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ) && y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.Quotations.Where(y => y.IsDeleted == false)).Include(x => x.Building).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope).Select(x => new ViewInquiryDetail()
                 {
                     InquiryId = x.InquiryId,
-
+                    
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                     WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
@@ -89,6 +89,7 @@ namespace BackendSaiKitchen.Controllers
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
+                    CustomerWhatsapp = x.Customer.CustomerWhatsapp,
                     BranchId = x.BranchId,
                     InquiryAddedBy = x.AddedByNavigation.UserName,
                     InquiryAddedById = x.AddedBy,
@@ -110,7 +111,7 @@ namespace BackendSaiKitchen.Controllers
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.Quotations.Where(y => y.IsDeleted == false)).Include(x => x.Building).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope).Select(x => new ViewInquiryDetail()
                 {
                     InquiryId = x.InquiryId,
-
+                    
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                     WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
@@ -129,11 +130,13 @@ namespace BackendSaiKitchen.Controllers
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
+                    CustomerWhatsapp = x.Customer.CustomerWhatsapp,
                     BranchId = x.BranchId,
                     InquiryAddedBy = x.AddedByNavigation.UserName,
                     InquiryAddedById = x.AddedBy,
                     NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                    QuotationScheduleDate = x.QuotationScheduleDate
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
@@ -429,6 +432,8 @@ namespace BackendSaiKitchen.Controllers
                     CustomerName = x.Customer.CustomerName,
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
+                    CustomerWhatsapp = x.Customer.CustomerWhatsapp,
+                    QuotationScheduleDate = x.QuotationScheduleDate,
                     BuildingAddress = x.Building.BuildingAddress,
                     BranchAddress = x.Branch.BranchAddress,
                     BranchContact = x.Branch.BranchContact,
