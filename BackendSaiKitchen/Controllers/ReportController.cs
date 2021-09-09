@@ -260,7 +260,10 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var wayofcontact in wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
                 {
-                    var value = (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100 != null ? (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100 : 0;
+                    decimal value = 0;
+                    if (branch.Customers.Count() != 0)
+                        value = (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100;
+
                     report.customerContactSources.Add(new CustomerContactSource
                     {
                         ContactMode = wayofcontact.WayOfContactName,
@@ -271,7 +274,10 @@ namespace BackendSaiKitchen.Controllers
                 for (int i = 1; i < 5; i++)
                 {
                     string mode = "";
-                    var value = (paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100 != null ? (paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100 : 0;
+                    decimal value = 0;
+                    if (report.AmountReceived != 0)
+                        value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
+                    
                     switch (i)
                     {
                         case 1:
