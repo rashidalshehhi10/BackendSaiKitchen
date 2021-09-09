@@ -159,7 +159,9 @@ namespace BackendSaiKitchen.Controllers
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
-                    .ThenInclude(x => x.User).FirstOrDefault();
+                    .ThenInclude(x => x.User)
+                    .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
+                    .ThenInclude(x => x.BranchRole).FirstOrDefault();
 
                 BranchReport report = new BranchReport();
                 
@@ -299,6 +301,24 @@ namespace BackendSaiKitchen.Controllers
                         Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
                     }) ;
                 }
+
+               
+
+                foreach (var userrole in branch.UserRoles)
+                {
+                    if (userrole.User != null && userrole.User.IsActive == true && userrole.IsDeleted == false)
+                    {
+                        report.employees.Add(new Employee
+                        {
+                            Contact = userrole.User.UserMobile,
+                            Email = userrole.User.UserEmail,
+                            Name = userrole.User.UserName,
+                            Position = userrole.BranchRole.BranchRoleName
+                        });
+                    }
+                    
+                }
+
                 report.topFivePaidCustomers.OrderBy(x => x.AmountRecieved);
                 response.data = report;
             }
