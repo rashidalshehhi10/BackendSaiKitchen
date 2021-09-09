@@ -260,17 +260,18 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var wayofcontact in wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
                 {
-
+                    var value = (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100 != null ? (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100 : 0;
                     report.customerContactSources.Add(new CustomerContactSource
                     {
                         ContactMode = wayofcontact.WayOfContactName,
-                        Percentage = branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count() * 100
+                        Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
                     });
                 }
 
                 for (int i = 1; i < 5; i++)
                 {
                     string mode = "";
+                    var value = (paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100 != null ? (paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100 : 0;
                     switch (i)
                     {
                         case 1:
@@ -289,8 +290,8 @@ namespace BackendSaiKitchen.Controllers
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
                     {
                         PaymentMode = mode,
-                        Percentage =(decimal) paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived * 100
-                    });
+                        Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
+                    }) ;
                 }
                 report.topFivePaidCustomers.OrderBy(x => x.AmountRecieved);
                 response.data = report;
