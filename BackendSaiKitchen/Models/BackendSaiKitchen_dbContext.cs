@@ -220,17 +220,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
-                entity.Property(e => e.CustomerCity).HasMaxLength(50);
-
                 entity.Property(e => e.CustomerContact).HasMaxLength(50);
-
-                entity.Property(e => e.CustomerCountry).HasMaxLength(50);
 
                 entity.Property(e => e.CustomerEmail).HasMaxLength(50);
 
                 entity.Property(e => e.CustomerName).HasMaxLength(50);
-
-                entity.Property(e => e.CustomerNationality).HasMaxLength(50);
 
                 entity.Property(e => e.CustomerNextMeetingDate).HasMaxLength(50);
 
