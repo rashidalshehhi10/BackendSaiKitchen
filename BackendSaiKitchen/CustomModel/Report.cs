@@ -54,6 +54,14 @@ namespace BackendSaiKitchen.CustomModel
         public List<Employee> employees { get; set; }
         public List<ReceivedPaymentMode> receivedPaymentModes { get; set; }
         public List<CustomerContactSource> customerContactSources { get; set; }
+        public List<MonthlyReview> CustomerSatisfaction { get; set; }
+        public List<MonthlyReview> MonthlyAmountReceived { get; set; }
+    }
+
+    public class MonthlyReview
+    {
+        public string Month { get; set; }
+        public decimal? Avarege { get; set; }
     }
 
     public class ReceivedPaymentMode

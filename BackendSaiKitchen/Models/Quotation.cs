@@ -36,6 +36,9 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string CreatedDate { get; set; }
         public string UpdatedDate { get; set; }
+        public string QuotationAddedDate { get; set; }
+        public int? QuotationAddedBy { get; set; }
+        public string QuotationCustomerReviewDate { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
         public virtual InquiryStatus QuotationStatus { get; set; }

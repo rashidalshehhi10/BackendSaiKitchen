@@ -182,6 +182,8 @@ namespace BackendSaiKitchen.Controllers
                 quotation.CreatedBy = Constants.userId;
                 quotation.UpdatedBy = Constants.userId;
                 quotation.UpdatedDate = Helper.Helper.GetDateTime();
+                quotation.QuotationAddedBy = Constants.userId;
+                quotation.QuotationAddedDate = Helper.Helper.GetDateTime();
                 
 
                 if (customQuotation.QuotationFiles.Count > 0)

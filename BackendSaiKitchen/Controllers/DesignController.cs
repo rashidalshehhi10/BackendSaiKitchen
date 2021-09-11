@@ -80,6 +80,8 @@ namespace BackendSaiKitchen.Controllers
             design.IsActive = true;
             design.IsDeleted = false;
             design.DesignComment = designCustomModel.comment;
+            design.DesignAddedBy = Constants.userId;
+            design.DesignAddedDate = Helper.Helper.GetDateTime();
             inquiryworkscope.Comments = designCustomModel.comment;
             inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
             inquiryworkscope.Designs.Add(design);
@@ -230,12 +232,17 @@ namespace BackendSaiKitchen.Controllers
         public object ClientAcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
 
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false)
+                .Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Workscope)
+                .Include(x => x.Inquiry)
+                .ThenInclude(y => y.Customer).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationSchedulePending;
                 inquiryWorkscope.IsDesignApproved = true;
                 inquiryWorkscope.FeedbackReaction = updateInquiryStatus.FeedBackReaction;
+                inquiryWorkscope.Designs.FirstOrDefault().DesignCustomerReviewDate = Helper.Helper.GetDateTime();
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);

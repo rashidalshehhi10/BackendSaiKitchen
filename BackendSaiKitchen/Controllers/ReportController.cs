@@ -195,6 +195,8 @@ namespace BackendSaiKitchen.Controllers
                 report.employees = new List<Employee>();
                 report.customerContactSources = new List<CustomerContactSource>();
                 report.receivedPaymentModes = new List<ReceivedPaymentMode>();
+                report.CustomerSatisfaction = new List<MonthlyReview>();
+                report.MonthlyAmountReceived = new List<MonthlyReview>();
                 foreach (var inquiry in branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))
                 {
                     report.inquiryPendingDetails.Add(new InquiryPendingDetails
@@ -233,6 +235,56 @@ namespace BackendSaiKitchen.Controllers
                         }).ToList()
                     });
                 }
+
+                var inquiries = branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate).Month >= Helper.Helper.ConvertToDateTime(req.StartDate).Month && Helper.Helper.ConvertToDateTime(y.CreatedDate).Month <= Helper.Helper.ConvertToDateTime(req.EndDate).Month);
+                var dd = Helper.Helper.ConvertToDateTime(req.StartDate).Month;
+                for (int i = Helper.Helper.ConvertToDateTime(req.StartDate).Month; i <= Helper.Helper.ConvertToDateTime(req.EndDate).Month; i++)
+                {
+                    var inworscopes = inquiries.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Month == i).Select(x => x.InquiryWorkscopes).ToList();
+                    var payments = inquiries.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Month == i).Select(x => x.Payments).ToList();
+                    double? avg = 0;
+                    decimal? avgp = 0;
+                    foreach (var inworkscope in inworscopes)
+                    {
+                        avg = inworkscope.Sum(x => x.FeedbackReaction)/inworscopes.Count();
+                    }
+
+                    foreach (var payment in payments)
+                    {
+                        avgp = payment.Sum(x => x.PaymentAmount) / payments.Count();
+                    }
+                   // inworscopes.ForEach(x => avg = x.Select(y => y.FeedbackReaction).Sum());
+                    
+                    report.CustomerSatisfaction.Add(new MonthlyReview
+                    {
+                        Avarege =(decimal?)avg,
+                        Month = i.ToString()
+                    });
+
+                    report.MonthlyAmountReceived.Add(new MonthlyReview
+                    {
+                        Avarege = avgp,
+                        Month = i.ToString()
+                    });
+            }
+                
+                    //switch (Helper.Helper.ConvertToDateTime (inquiry.CreatedDate).Month)
+                    //{
+                    //    case 1:
+                    //        report.CustomerSatisfaction.Add(new MonthlyReview
+                    //        {
+                    //            Avarege = (decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Sum(x => x.FeedbackReaction) / inquiry.InquiryWorkscopes.Count(),
+                    //            Month = "Jan"
+                    //        });
+                    //        break;
+
+                    //}
+
+                    //foreach (var payment in inquiry.Payments)
+                    //{
+
+                    //}
+                
 
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
                 {
@@ -277,9 +329,9 @@ namespace BackendSaiKitchen.Controllers
                 {
                     string mode = "";
                     decimal value = 0;
-                    if (report.AmountReceived != 0)
+                    if (report.AmountReceived != 0 && report.AmountReceived != null)
                         value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
-                    
+
                     switch (i)
                     {
                         case 1:
@@ -299,10 +351,10 @@ namespace BackendSaiKitchen.Controllers
                     {
                         PaymentMode = mode,
                         Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
-                    }) ;
+                    });
                 }
 
-               
+
 
                 foreach (var userrole in branch.UserRoles)
                 {

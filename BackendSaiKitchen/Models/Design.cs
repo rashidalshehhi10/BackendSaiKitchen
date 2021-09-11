@@ -28,6 +28,9 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public string DesignAddedDate { get; set; }
+        public int? DesignAddedBy { get; set; }
+        public string DesignCustomerReviewDate { get; set; }
 
         public virtual User DesignApprovedByNavigation { get; set; }
         public virtual User DesignTakenByNavigation { get; set; }

@@ -31,6 +31,8 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public string AddedDate { get; set; }
+        public int? AddedBy { get; set; }
 
         public virtual InquiryWorkscope InquiryWorkscope { get; set; }
         public virtual KitchenDesignInfo KitchenDesignInfo { get; set; }
