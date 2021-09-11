@@ -131,6 +131,10 @@ namespace SaiKitchenBackend.Controllers
                     customer.CustomerId = 0;
                     response.data = customer;
                 }
+                else
+                {
+                    response.isError = true;
+                }
             }
             return response;
         }
