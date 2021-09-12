@@ -47,7 +47,7 @@ namespace BackendSaiKitchen.CustomModel
         public decimal? TotalOnline { get; set; }
         public int? BankPaid { get; set; }
         public decimal? TotalBank { get; set; }
-        public decimal? CustomerSatisfy { get; set; }
+        public double? CustomerSatisfy { get; set; }
         public List<TopFivePaidCustomer> topFivePaidCustomers { get; set; }
         public List<TopFiveNewCustomers> TopFiveNewCustomers { get; set; }
         public List<InquiryReceivedDetails> InquiryReceivedDetails { get; set; }

@@ -314,6 +314,8 @@ namespace BackendSaiKitchen.Controllers
                         });
                     }
 
+                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+
                     inquiry.Quotations.Add(quotation);
                     inquiryRepository.Update(inquiry);
                     response.data = null;
@@ -322,7 +324,7 @@ namespace BackendSaiKitchen.Controllers
                     roletypeId.Add((int)roleType.Manager);
 
                     sendNotificationToHead(
-                       " Added a New Quotation", false, null, null,
+                       "New Quotation Added For Inquiry Code: "+inquiry.InquiryCode, false, null, null,
                      //true,
                      //Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
                      //Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
@@ -331,7 +333,7 @@ namespace BackendSaiKitchen.Controllers
                      (int)notificationCategory.Quotation);
 
 
-                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                    
                     await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, Constants.CRMBaseUrl + "/invoice.html?inquiryId=" + inquiry.InquiryId, quotation.AdvancePayment, quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount, quotation.QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
 
 
@@ -619,7 +621,7 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Inquiry " + inquiry.InquiryId + " Quotation Approved By Client", false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Quotation For inquiry Code: " + inquiry.InquiryCode+ " Approved By Client", false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {
@@ -672,7 +674,7 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Inquiry " + inquiry.InquiryId + " Quotation Reject By Client \n reason: " + updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Quotation For inquiry Code: " + inquiry.InquiryCode + " Rejected By Client Reason: " + updateQuotation.reason, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace BackendSaiKitchen.Controllers
@@ -164,11 +165,11 @@ namespace BackendSaiKitchen.Controllers
                     .ThenInclude(x => x.BranchRole).FirstOrDefault();
 
                 BranchReport report = new BranchReport();
-                
+
 
                 report = new BranchReport()
                 {
-                    AmountPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount) ,
+                    AmountPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount),
                     AmountReceived = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => (decimal?)y.PaymentAmount),
                     BankPaid = branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
                     CashPaid = branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
@@ -177,7 +178,7 @@ namespace BackendSaiKitchen.Controllers
                     InquiriesCompleted = branch?.Inquiries?.Where(x => x.InquiryStatusId == (int)inquiryStatus.inquiryCompleted && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Count(),
                     InquiriesInComplete = branch?.Inquiries?.Where(x => x.InquiryStatusId != (int)inquiryStatus.inquiryCompleted && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Count(),
                     JobOrderCreated = branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
-                    JobOrederRejected= branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderRejected)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
+                    JobOrederRejected = branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderRejected)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
                     QuotationAccepted = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.Count(),
                     QuotationPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationPending)?.Count(),
                     QuotationRejected = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationRejected)?.Count(),
@@ -185,9 +186,9 @@ namespace BackendSaiKitchen.Controllers
                     TotalCash = (decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount),
                     TotalCheque = (decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount),
                     TotalOnline = (decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount),
-                    CustomerSatisfy = branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes?.Sum(x => x.FeedbackReaction)/ branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes?.Count()*100
+                    CustomerSatisfy =(double?)Math.Round((decimal)branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average()*100/7) // branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes ?.Select(x => x.FeedbackReaction).Count()*100
                 };
-
+               
                 report.inquiryPendingDetails = new List<InquiryPendingDetails>();
                 report.InquiryReceivedDetails = new List<InquiryReceivedDetails>();
                 report.topFivePaidCustomers = new List<TopFivePaidCustomer>();
@@ -237,34 +238,38 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 var inquiries = branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate).Month >= Helper.Helper.ConvertToDateTime(req.StartDate).Month && Helper.Helper.ConvertToDateTime(y.CreatedDate).Month <= Helper.Helper.ConvertToDateTime(req.EndDate).Month);
-                var dd = Helper.Helper.ConvertToDateTime(req.StartDate).Month;
+               
                 for (int i = Helper.Helper.ConvertToDateTime(req.StartDate).Month; i <= Helper.Helper.ConvertToDateTime(req.EndDate).Month; i++)
                 {
                     var inworscopes = inquiries.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Month == i).Select(x => x.InquiryWorkscopes).ToList();
                     var payments = inquiries.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Month == i).Select(x => x.Payments).ToList();
-                    double? avg = 0;
-                    decimal? avgp = 0;
-                    foreach (var inworkscope in inworscopes)
-                    {
-                        avg = inworkscope.Sum(x => x.FeedbackReaction)/inworscopes.Count();
-                    }
+                    double? FeedBackAverage = 0;
+                    decimal? PaymentAverage = 0;
 
-                    foreach (var payment in payments)
-                    {
-                        avgp = payment.Sum(x => x.PaymentAmount) / payments.Count();
-                    }
-                   // inworscopes.ForEach(x => avg = x.Select(y => y.FeedbackReaction).Sum());
-                    
+                    string month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i).Substring(0,3);
+
+
+                    //foreach (var inworkscope in inworscopes)
+                    //{
+                    //    avg = inworkscope.Sum(x => x.FeedbackReaction)/inworscopes.Count();
+                    //}
+
+                    //foreach (var payment in payments)
+                    //{
+                    //    avgp = payment.Sum(x => x.PaymentAmount) / payments.Count();
+                    //}
+                    inworscopes.ForEach(x => FeedBackAverage = x.Select(y => (y.FeedbackReaction == null ? 1 : (y.FeedbackReaction == 0 ? 1 : y.FeedbackReaction))).Average());
+                    payments.ForEach(x => PaymentAverage = x.Select(y => y.PaymentAmount == null ? 0 : y.PaymentAmount).Average());
                     report.CustomerSatisfaction.Add(new MonthlyReview
                     {
-                        Avarege =(decimal?)avg,
-                        Month = i.ToString()
+                        Avarege =(decimal?)FeedBackAverage,
+                        Month = month
                     });
 
                     report.MonthlyAmountReceived.Add(new MonthlyReview
                     {
-                        Avarege = avgp,
-                        Month = i.ToString()
+                        Avarege = PaymentAverage,
+                        Month = month
                     });
             }
                 

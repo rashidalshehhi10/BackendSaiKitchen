@@ -95,7 +95,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Workscope).Include(x => x.Inquiry).ThenInclude(y => y.Customer).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false)
+                .Include(x => x.Workscope)
+                .Include(x => x.Inquiry)
+                .ThenInclude(y => y.Customer)
+                .FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval;
@@ -106,7 +110,8 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToHead("Inquiry" + inquiryWorkscope.InquiryId + "  Waiting for customer approval", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Design For " + inquiryWorkscope.Workscope.WorkScopeName + "Of inquiry Code:IN"+ inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" + inquiryWorkscope.Inquiry.InquiryId +" Is Waiting for customer Approval" 
+                       , false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -174,7 +179,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Inquiry)
+                .Include(x => x.Workscope)
+                .FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
@@ -190,7 +198,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 try
                 {
-                    sendNotificationToOneUser("Your Design is Rejected Please Upload another one", false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToOneUser("Your Design For "+inquiryWorkscope.Workscope.WorkScopeName +" Inquiry Code: IN"+inquiryWorkscope.Inquiry.BranchId+""+inquiryWorkscope.Inquiry.CustomerId+""+inquiryWorkscope.InquiryId+" is Rejected Comment: "+inquiryWorkscope.Comments, false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -264,7 +272,8 @@ namespace BackendSaiKitchen.Controllers
                 //roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Inquiry " + inquiryWorkscope.InquiryId + "Customer Accepted the Design", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Customer Rejected the Design " + inquiryWorkscope.Workscope.WorkScopeName + " For inquiry Code:IN" + inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" + inquiryWorkscope.Inquiry.InquiryId + " Comment : " + inquiryWorkscope.Comments
+                        , false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -316,7 +325,7 @@ namespace BackendSaiKitchen.Controllers
                 roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser("Inquiry:" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments,
+                    sendNotificationToOneUser( "Customer Rejected the Design "+ inquiryWorkscope.Workscope.WorkScopeName+" For inquiry Code:IN"+ inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" +inquiryWorkscope.Inquiry.InquiryId + " Comment : "+ inquiryWorkscope.Comments,
                         false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, (int)inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                     sendNotificationToHead("Inquiry :" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                 }
@@ -341,6 +350,7 @@ namespace BackendSaiKitchen.Controllers
         public object ApproveDesignAssignee(UpdateInquiryWorkscopeStatusModel updateInquiry)
         {
             var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                .Include(x => x.Inquiry)
                 .Include(x => x.Workscope).FirstOrDefault();
             if (inquiryworkscope != null)
             {
@@ -355,7 +365,8 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Accepted Design of " + inquiryworkscope.Workscope.WorkScopeName +" For Inquiry Code: IN" + inquiryworkscope.Inquiry.BranchId + "" + inquiryworkscope.Inquiry.CustomerId + "" + inquiryworkscope.Inquiry.InquiryId
+                        , false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -392,7 +403,8 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Reject Design of inquiry " + inquiryworkscope.Workscope.WorkScopeName, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Rejected Design of " + inquiryworkscope.Workscope.WorkScopeName + " For Inquiry Code: IN" + inquiryworkscope.Inquiry.BranchId + "" + inquiryworkscope.Inquiry.CustomerId + "" + inquiryworkscope.Inquiry.InquiryId +" Comment: " +inquiryworkscope.Comments
+                        , false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
