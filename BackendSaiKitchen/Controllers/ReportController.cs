@@ -272,25 +272,25 @@ namespace BackendSaiKitchen.Controllers
                         Month = month
                     });
             }
-                
-                    //switch (Helper.Helper.ConvertToDateTime (inquiry.CreatedDate).Month)
-                    //{
-                    //    case 1:
-                    //        report.CustomerSatisfaction.Add(new MonthlyReview
-                    //        {
-                    //            Avarege = (decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Sum(x => x.FeedbackReaction) / inquiry.InquiryWorkscopes.Count(),
-                    //            Month = "Jan"
-                    //        });
-                    //        break;
 
-                    //}
+                //switch (Helper.Helper.ConvertToDateTime (inquiry.CreatedDate).Month)
+                //{
+                //    case 1:
+                //        report.CustomerSatisfaction.Add(new MonthlyReview
+                //        {
+                //            Avarege = (decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Sum(x => x.FeedbackReaction) / inquiry.InquiryWorkscopes.Count(),
+                //            Month = "Jan"
+                //        });
+                //        break;
 
-                    //foreach (var payment in inquiry.Payments)
-                    //{
+                //}
 
-                    //}
-                
+                //foreach (var payment in inquiry.Payments)
+                //{
 
+                //}
+
+                int i = 0;
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
                 {
                     report.TopFiveNewCustomers.Add(new TopFiveNewCustomers
@@ -314,19 +314,22 @@ namespace BackendSaiKitchen.Controllers
                         AmountRecieved = amount,
                         CustomerContact = Customer.CustomerContact,
                     });
-                    
+                    if (i >= 4)
+                        break;
                 }
 
                 foreach (var wayofcontact in wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
                 {
-                    decimal value = 0;
+                    double value = 0;
                     if (branch.Customers.Count() != 0)
-                        value = (branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / branch.Customers.Count()) * 100;
+                        value = ((double)branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() /(double) branch.Customers.Count()) * 100;
+                    
+
 
                     report.customerContactSources.Add(new CustomerContactSource
                     {
                         ContactMode = wayofcontact.WayOfContactName,
-                        Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
+                        Percentage = Convert.ToInt32(Math.Round((decimal)value))
                     });
                 }
 
@@ -363,7 +366,7 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var userrole in branch.UserRoles)
                 {
-                    if (userrole.User != null && userrole.User.IsActive == true && userrole.IsDeleted == false)
+                    if (userrole.User != null && userrole.User.IsActive == true && userrole.User.IsDeleted == false)
                     {
                         report.employees.Add(new Employee
                         {
