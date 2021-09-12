@@ -46,7 +46,7 @@ namespace BackendSaiKitchen.Controllers
                     var stream = FileDataContent.OpenReadStream();
                     var fileName = Path.GetFileName(FileDataContent.FileName);
 
-                    var ContentType = FileDataContent.ContentType.Contains('.') ? FileDataContent.ContentType.Split('.')[1] : FileDataContent.ContentType;
+                    var ContentType = FileDataContent.ContentType.Contains('.') ? FileDataContent.ContentType.Split('.')[1] : (FileDataContent.ContentType.Contains("application") ? fileName.Split('.')[1] : FileDataContent.ContentType);
 
                     MemoryStream ms = new MemoryStream();
                     stream.CopyTo(ms);
