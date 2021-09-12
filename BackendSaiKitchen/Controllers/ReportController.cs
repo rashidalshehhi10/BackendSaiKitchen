@@ -180,7 +180,7 @@ namespace BackendSaiKitchen.Controllers
                     JobOrderCreated = branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
                     JobOrederRejected = branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderRejected)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
                     QuotationAccepted = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.Count(),
-                    QuotationPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationPending)?.Count(),
+                    QuotationPending = branch?.Inquiries?.Where(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)&& (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending)))?.Count(),
                     QuotationRejected = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationRejected)?.Count(),
                     TotalBank = (decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OfflinePaybyCard && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount),
                     TotalCash = (decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount),
@@ -290,7 +290,7 @@ namespace BackendSaiKitchen.Controllers
 
                 //}
 
-                int i = 0;
+                int x = 0;
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
                 {
                     report.TopFiveNewCustomers.Add(new TopFiveNewCustomers
@@ -314,8 +314,9 @@ namespace BackendSaiKitchen.Controllers
                         AmountRecieved = amount,
                         CustomerContact = Customer.CustomerContact,
                     });
-                    if (i >= 4)
+                    if (x >= 4)
                         break;
+                    x++;
                 }
 
                 foreach (var wayofcontact in wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
