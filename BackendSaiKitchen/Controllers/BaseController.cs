@@ -195,7 +195,7 @@ namespace SaiKitchenBackend.Controllers
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
             }
-            context.SaveChanges();
+            //context.SaveChanges();
 
         }
 

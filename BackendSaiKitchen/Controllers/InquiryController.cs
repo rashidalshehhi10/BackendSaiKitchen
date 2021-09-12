@@ -259,18 +259,29 @@ namespace SaiKitchenBackend.Controllers
                 var inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
                 foreach (var inquiryWorkscope in inquiryWorkscopes)
                 {
-                    if (inquiryWorkscope.InquiryStatusId < 3)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementPending)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 2 : 1;
-
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
                     }
-                    else if (inquiryWorkscope.InquiryStatusId < 5)
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? 4 : 3;
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
                     }
-                    inquiryWorkscopeRepository.Update(inquiryWorkscope);
-
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
+                    {
+                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
+                    }
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                    {
+                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+                    }
+                    //inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
+                  if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationPending)
+                {
+                    inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiry.QuotationScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ?(int) inquiryStatus.quotationDelayed : (int)inquiryStatus.quotationPending;
+                }
+                inquiryRepository.Update(inquiry);
             }
             context.SaveChanges();
         }
@@ -281,17 +292,18 @@ namespace SaiKitchenBackend.Controllers
         {
 
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+
+            List<int?> roletypeId = new List<int?>();
+            roletypeId.Add((int)roleType.Manager);
             foreach (var inquiry in inquiries)
             {
                 var inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
+              
                 foreach (var inquiryWorkscope in inquiryWorkscopes)
                 {
                     var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == inquiryWorkscope.InquiryWorkscopeId && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
 
-                    List<int?> roletypeId = new List<int?>();
-                    roletypeId.Add((int)roleType.Manager);
-
-                    if (inquiryWorkscope.InquiryStatusId < (int)inquiryStatus.designPending)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementPending)
                     {
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
 
@@ -307,30 +319,77 @@ namespace SaiKitchenBackend.Controllers
                                 Constants.userId, Constants.branchId,
                                 (int)notificationCategory.Measurement);
                         }
-
-
-
                     }
-                    else if (inquiryWorkscope.InquiryStatusId < (int)inquiryStatus.quotationPending)
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
                     {
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                         {
 
-                            sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, true,
+                            sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + Constants.DesignDelayed, true,
                               null,
                               null,
                               roletypeId, (int)inquiry.BranchId,
                               (int)notificationCategory.Design);
 
-                            sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.DesignDelayed, false, null, null,
+                            sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignDelayed, false, null, null,
                                 (int)inquiry.AddedBy, (int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
                         }
                     }
-                    inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
+                    {
+                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
+                       
+                            sendNotificationToHead(inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementAssigneeDelayed, false,
+                              null,
+                              null,
+                              roletypeId, Constants.branchId,
+                              (int)notificationCategory.Measurement);
 
+                            sendNotificationToOneUser(inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementAssigneeDelayed, false, null, null,
+                                Constants.userId, Constants.branchId,
+                                (int)notificationCategory.Measurement);
+                        
+                    }
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                    {
+                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+
+                        sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + Constants.DesignAssigneeDelayed, true,
+                          null,
+                          null,
+                          roletypeId, (int)inquiry.BranchId,
+                          (int)notificationCategory.Design);
+
+                        sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignAssigneeDelayed, false, null, null,
+                            (int)inquiry.AddedBy, (int)inquiry.BranchId,
+                            (int)notificationCategory.Design);
+
+                    }
+                    //inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
+                if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationPending)
+                {
+                    inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiry.QuotationScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.quotationDelayed : (int)inquiryStatus.quotationPending;
+
+                    if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationDelayed)
+                    {
+
+                        sendNotificationToHead(inquiry.AddedBy + Constants.QuotationDelayed, true,
+                          null,
+                          null,
+                          roletypeId, (int)inquiry.BranchId,
+                          (int)notificationCategory.Quotation);
+
+                        sendNotificationToOneUser(inquiry.AddedBy + Constants.QuotationDelayed, false, null, null,
+                            (int)inquiry.AddedBy, (int)inquiry.BranchId,
+                            (int)notificationCategory.Quotation);
+                    }
+                }
+                inquiryRepository.Update(inquiry);
+
+
             }
             context.SaveChanges();
         }
