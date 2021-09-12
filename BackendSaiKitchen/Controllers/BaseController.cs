@@ -131,8 +131,9 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public void sendNotificationToHead(string content, bool isActionable, String acceptAction, String declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
+        public async void sendNotificationToHead(string content, bool isActionable, String acceptAction, String declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
         {
+            
             var branchRoleIds = branchRoleRepository.FindByCondition(x => roleTypeId.Contains(x.RoleTypeId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.BranchRoleId).ToList();
             List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault())
             && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.User != null).Select(x => new NotificationModel
@@ -178,7 +179,13 @@ namespace SaiKitchenBackend.Controllers
                     {
                         PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
-
+                        string subject = Enum.GetName(typeof(NotificationCategory), categoryId);
+                        await mailService.SendEmailAsync(new MailRequest
+                        {
+                            Body = content,
+                            Subject = subject,
+                            ToEmail = notificationModel.user.UserEmail
+                        });
                     }
                 }
 
@@ -195,7 +202,7 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public void sendNotificationToOneUser(string content, bool isActionable, String acceptAction, String declineAction, int userId, int branchId, int categoryId)
+        public async void sendNotificationToOneUser(string content, bool isActionable, String acceptAction, String declineAction, int userId, int branchId, int categoryId)
         {
             var user = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             List<NotificationModel> notificationsModel = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
@@ -226,6 +233,14 @@ namespace SaiKitchenBackend.Controllers
                     {
                         PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
+                        
+                        string subject = Enum.GetName(typeof(NotificationCategory),categoryId);
+                        await mailService.SendEmailAsync(new MailRequest
+                        {
+                            Body = content,
+                            Subject = subject,
+                            ToEmail = notificationModel.user.UserEmail
+                        });
                     }
                 }
 
