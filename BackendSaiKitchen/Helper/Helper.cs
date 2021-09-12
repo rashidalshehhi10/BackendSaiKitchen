@@ -181,7 +181,7 @@ namespace BackendSaiKitchen.Helper
                 }
                 else
                 {
-                    throw new FileNotFoundException(Constants.wrongFileUpload);
+                    throw new FileNotFoundException(Constants.wrongFileUpload+""+ext);
                 }
             }
             else
