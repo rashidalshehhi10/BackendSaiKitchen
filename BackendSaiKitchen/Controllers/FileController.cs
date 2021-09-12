@@ -46,10 +46,12 @@ namespace BackendSaiKitchen.Controllers
                     var stream = FileDataContent.OpenReadStream();
                     var fileName = Path.GetFileName(FileDataContent.FileName);
 
+                    var ContentType = FileDataContent.ContentType.Contains('.') ? FileDataContent.ContentType.Split('.')[1] : FileDataContent.ContentType;
+
                     MemoryStream ms = new MemoryStream();
                     stream.CopyTo(ms);
 
-                    response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), FileDataContent.ContentType);
+                    response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), ContentType);
 
                     //var UploadPath = Server.MapPath("~/App_Data/uploads");
                     //Directory.CreateDirectory(UploadPath);

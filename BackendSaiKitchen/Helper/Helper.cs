@@ -196,7 +196,12 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 MemoryStream stream = new MemoryStream(fileByte);
-                fileUrl = Guid.NewGuid().ToString() + "." + ext.Split('/')[1];
+                if (ext.Contains('/'))
+                {
+                    ext = ext.Split('/')[1];
+                    ext = ext.Contains('.') ? ext.Split('.')[1] : ext;
+                }
+                fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),
