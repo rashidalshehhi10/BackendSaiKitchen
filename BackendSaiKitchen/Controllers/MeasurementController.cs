@@ -243,7 +243,8 @@ namespace BackendSaiKitchen.Controllers
             {
                 try
                 {
-                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false)
+                        .Include(x => x.Inquiry).FirstOrDefault();
                     foreach (var fileUrl in customMeasFiles.base64img)
                     {
                         //var fileUrl = file;
@@ -287,7 +288,7 @@ namespace BackendSaiKitchen.Controllers
                     roletypeId.Add((int)roleType.Manager);
                     try
                     {
-                        sendNotificationToHead(Constants.MeasurementAdded,
+                        sendNotificationToHead(Constants.MeasurementAdded+"For Inquiry Code: IN"+inquiryworkscope.Inquiry.BranchId+""+inquiryworkscope.Inquiry.CustomerId+""+inquiryworkscope.Inquiry.InquiryId,
                          true,
                          Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
@@ -370,7 +371,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code:IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code: IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -415,7 +416,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code:IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {

@@ -106,7 +106,7 @@ namespace BackendSaiKitchen.Helper
             if (fileByte != null)
             {
                 ext = GuessFileType(fileByte);
-                if (ext == "png" || ext == "jpg" || ext == "pdf")
+                if (ext == "png" || ext == "jpg" || ext == "pdf" || ext == "dwg")
                 {
 
                     fileUrl = await PostFile(fileByte, ext);
@@ -136,7 +136,7 @@ namespace BackendSaiKitchen.Helper
             IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
             {
                 Headers = new HeaderDictionary(),
-                ContentType = ext == "pdf" ? "application/" + ext : "image/" + ext
+                ContentType = ext == "pdf" ? "application/" + ext : (ext == "dwg" ? "application/octet-stream" : "image/" + ext)
             };
 
             return blob;
@@ -169,7 +169,7 @@ namespace BackendSaiKitchen.Helper
             //string ext = "";
             if (fileByte != null)
             {
-                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") || ext.ToLower().Contains("pdf"))
+                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") || ext.ToLower().Contains("pdf") || ext.ToLower().Contains("dwg"))
                 {
 
                     fileUrl = await PostFile(fileByte, ext);
@@ -329,6 +329,8 @@ namespace BackendSaiKitchen.Helper
                 case "MQOWM":
                 case "77U/M":
                     return "srt";
+                case "QUMXM":
+                    return "dwg";
                 default:
                     return "";
             }

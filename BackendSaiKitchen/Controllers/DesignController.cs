@@ -272,7 +272,7 @@ namespace BackendSaiKitchen.Controllers
                 //roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Customer Rejected the Design " + inquiryWorkscope.Workscope.WorkScopeName + " For inquiry Code:IN" + inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" + inquiryWorkscope.Inquiry.InquiryId + " Comment : " + inquiryWorkscope.Comments
+                    sendNotificationToHead("Customer Approved the Design " + inquiryWorkscope.Workscope.WorkScopeName + " For inquiry Code:IN" + inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" + inquiryWorkscope.Inquiry.InquiryId + " Comment : " + inquiryWorkscope.Comments
                         , false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
@@ -325,7 +325,7 @@ namespace BackendSaiKitchen.Controllers
                 roleTypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser( "Customer Rejected the Design "+ inquiryWorkscope.Workscope.WorkScopeName+" For inquiry Code:IN"+ inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" +inquiryWorkscope.Inquiry.InquiryId + " Comment : "+ inquiryWorkscope.Comments,
+                    sendNotificationToOneUser( "Customer Rejected the Design "+ inquiryWorkscope.Workscope.WorkScopeName+" For inquiry Code: IN"+ inquiryWorkscope.Inquiry.BranchId + "" + inquiryWorkscope.Inquiry.CustomerId + "" +inquiryWorkscope.Inquiry.InquiryId + " Comment : "+ inquiryWorkscope.Comments,
                         false, null, null, (int)inquiryWorkscope.Inquiry.AddedBy, (int)inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                     sendNotificationToHead("Inquiry :" + inquiryWorkscope.InquiryId + "Customer Rejected the Design Comment:" + inquiryWorkscope.Comments, false, null, null, roleTypeId, inquiryWorkscope.Inquiry.BranchId, (int)notificationCategory.Design);
                 }
