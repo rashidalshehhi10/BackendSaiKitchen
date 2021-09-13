@@ -73,8 +73,8 @@ namespace BackendSaiKitchen.Controllers
                     
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
-                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                    //WorkScopeCount = x.InquiryWorkscopes.Count,
                     Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
                     BuildingAddress = x.Building.BuildingAddress,
                     BuildingCondition = x.Building.BuildingCondition,
@@ -114,8 +114,8 @@ namespace BackendSaiKitchen.Controllers
                     
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
-                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                    //WorkScopeCount = x.InquiryWorkscopes.Count,
                     Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
                     BuildingAddress = x.Building.BuildingAddress,
                     BuildingCondition = x.Building.BuildingCondition,
