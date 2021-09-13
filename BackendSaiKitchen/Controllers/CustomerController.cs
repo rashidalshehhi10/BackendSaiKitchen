@@ -23,7 +23,7 @@ namespace SaiKitchenBackend.Controllers
             // Find your Account Sid and Token at twilio.com/console
             // and set the environment variables. See http://twil.io/secure
             string accountSid = "ACb1325ec580f878d09d7a1a0d6ef65f95";
-            string authToken = "17af5471eeb895ca1c7ce30bed19dc82";
+            string authToken = "68215878731f6303a8ce550fcb89df78";
 
             TwilioClient.Init(accountSid, authToken);
 
@@ -43,8 +43,8 @@ namespace SaiKitchenBackend.Controllers
 
             var messageOptions = new CreateMessageOptions(
                 new PhoneNumber("whatsapp:+971545552471"));
-            messageOptions.From = new PhoneNumber("whatsapp:+18544000012");
-            messageOptions.Body = "Your Yummy Cupcakes Company order of 1 dozen frosted cupcakes has shipped and should be delivered on July 10, 2019. Details: http://www.yummycupcakes.com/";
+            messageOptions.From = new PhoneNumber("whatsapp:SAI GROUP");
+            messageOptions.Body = "Test Message";
             //messageOptions.MediaUrl = new System.Collections.Generic.List<Uri> {new Uri("https://saikitchenstorage.blob.core.windows.net/files/eb2b1f50-342c-4bb6-b175-75100a319e74.pdf") };
             var message = MessageResource.Create(messageOptions);
             Console.WriteLine(message.Body);
@@ -113,7 +113,7 @@ namespace SaiKitchenBackend.Controllers
         {
 
             response.data = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes,CustomerWhatsapp=x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
+            { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerWhatsapp = x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
             return response;
         }
 
