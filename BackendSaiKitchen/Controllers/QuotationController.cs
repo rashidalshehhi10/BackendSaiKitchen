@@ -67,7 +67,10 @@ namespace BackendSaiKitchen.Controllers
         {
 
             var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ) && y.IsActive == true && y.IsDeleted == false).Count())).Include(x => x.Quotations.Where(y => y.IsDeleted == false)).Include(x => x.Building).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
+                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ) && y.IsActive == true && y.IsDeleted == false).Count()))
+                .Include(x => x.Quotations.Where(y => y.IsDeleted == false))
+                .Include(x => x.Building).Include(x => x.Customer)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                 .Select(x => new ViewInquiryDetail()
                 {
                     InquiryId = x.InquiryId,
@@ -138,7 +141,8 @@ namespace BackendSaiKitchen.Controllers
                     InquiryAddedById = x.AddedBy,
                     NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    QuotationScheduleDate = x.QuotationScheduleDate
+                    QuotationScheduleDate = x.QuotationScheduleDate,
+                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
