@@ -32,17 +32,16 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             Design design;
-
-            foreach (var fileUrl in designCustomModel.base64f3d)
+            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
             {
-                //var fileUrl = await Helper.Helper.UploadFile(file);
-
-                if (fileUrl != null)
+                design = new Design();
+                foreach (var fileUrl in designCustomModel.base64f3d)
                 {
-                    foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
-                    {
-                        design = new Design();
+                    
+                    //var fileUrl = await Helper.Helper.UploadFile(file);
 
+                    if (fileUrl != null)
+                    {
                         design.Files.Add(new File()
                         {
                             FileUrl = fileUrl,
@@ -57,25 +56,24 @@ namespace BackendSaiKitchen.Controllers
                             CreatedDate = Helper.Helper.GetDateTime(),
 
                         });
-
-                        design.IsActive = true;
-                        design.IsDeleted = false;
-                        design.DesignComment = designCustomModel.comment;
-                        design.DesignAddedBy = Constants.userId;
-                        design.DesignAddedDate = Helper.Helper.GetDateTime();
-                        inquiryworkscope.Comments = designCustomModel.comment;
-                        inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
-                        inquiryworkscope.Designs.Add(design);
+                        
                     }
-                   
+                    else
+                    {
+                        response.isError = true;
+                        response.errorMessage = Constants.wrongFileUpload;
+                    }
                 }
-                else
-                {
-                    response.isError = true;
-                    response.errorMessage = Constants.wrongFileUpload;
-                }
-            }
+                design.IsActive = true;
+                design.IsDeleted = false;
+                design.DesignComment = designCustomModel.comment;
+                design.DesignAddedBy = Constants.userId;
+                design.DesignAddedDate = Helper.Helper.GetDateTime();
+                inquiryworkscope.Comments = designCustomModel.comment;
+                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
+                inquiryworkscope.Designs.Add(design);
 
+            }
             List<int?> roletypeId = new List<int?>();
 
             roletypeId.Add((int)roleType.Manager);
