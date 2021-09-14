@@ -234,13 +234,13 @@ namespace SaiKitchenBackend.Controllers
                         PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
                         
-                        string subject = Enum.GetName(typeof(NotificationCategory),categoryId);
-                        await mailService.SendEmailAsync(new MailRequest
-                        {
-                            Body = content,
-                            Subject = subject,
-                            ToEmail = notificationModel.user.UserEmail
-                        });
+                        string subject = Enum.GetName(typeof(notificationCategory),categoryId);
+                        //await mailService.SendEmailAsync(new MailRequest
+                        //{
+                        //    Body = content,
+                        //    Subject = subject,
+                        //    ToEmail = notificationModel.user.UserEmail
+                        //});
                     }
                 }
 

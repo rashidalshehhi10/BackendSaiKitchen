@@ -160,11 +160,17 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteWorkscopefromInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false);
-            if (inquiryWorkscope != null)
+            //var inquiryWorkscope = context.InquiryWorkscopes.FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false);
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiryworkscope = inquiry.InquiryWorkscopes.Where(x => x.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId).FirstOrDefault();
+            if (inquiryworkscope != null)
             {
-                inquiryWorkscope.IsDeleted = true;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                inquiryworkscope.IsDeleted = true;
+                if (inquiry.InquiryWorkscopes.Count == 0)
+                    inquiry.IsDeleted = true;
+                
+                inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -481,7 +487,7 @@ namespace SaiKitchenBackend.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "No Inquiry Exist";
+                response.errorMessage = "Inquiry Not Exist";
             }
             return response;
         }
@@ -490,39 +496,43 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateAssignDesign(UpdateInquirySchedule updateInquiry)
         {
-            //var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
-            //    .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.measurementAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneePending || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.measurementdelayed || x.InquiryStatusId != (int)inquiryStatus.measurementPending || x.InquiryStatusId != (int)inquiryStatus.measurementRejected || x.InquiryStatusId != (int)inquiryStatus.measurementWaitingForApproval))
-                .Include(x => x.Inquiry)
-                .ThenInclude(y => y.Customer).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.measurementAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneePending || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.measurementdelayed || x.InquiryStatusId != (int)inquiryStatus.measurementPending || x.InquiryStatusId != (int)inquiryStatus.measurementRejected || x.InquiryStatusId != (int)inquiryStatus.measurementWaitingForApproval))
+            //    .Include(x => x.Inquiry)
+            //    .ThenInclude(y => y.Customer).FirstOrDefault();
+            if (inquiry != null)
             {
-
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
-                inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
-                inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
-                // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
-                inquiryWorkscope.Inquiry.IsDesignProvidedByCustomer = updateInquiry.IsProvidedByCustomer;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                    inquiryWorkscope.DesignAssignedTo = updateInquiry.DesignAssignedTo;
+                    inquiryWorkscope.DesignScheduleDate = updateInquiry.DesignScheduleDate;
+                    // inquiryWorkscope.Inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                    inquiryWorkscope.Inquiry.IsDesignProvidedByCustomer = updateInquiry.IsProvidedByCustomer;
+                }
+                
+                inquiryRepository.Update(inquiry);
 
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign + inquiryWorkscope.MeasurementScheduleDate, false, null, null, (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(inquiryWorkscope.Inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiryWorkscope.MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.DesignAssign +inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
                     Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
                 }
                 context.SaveChanges();
-                response.data = inquiryWorkscope;
+                response.data = inquiry;
             }
             else
             {
                 response.isError = true;
-                response.errorMessage = "No Inquiry Exist";
+                response.errorMessage = "Inquiry Not Exist";
             }
             return response;
         }

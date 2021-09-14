@@ -4,7 +4,7 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class CustomMeasFiles
     {
-        public int Ininquiryworkscopeid { get; set; }
+        public int inquiryid { get; set; }
         public string measurementComment { get; set; }
 
 

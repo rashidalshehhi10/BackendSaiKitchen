@@ -163,19 +163,27 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AcceptMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false)
-                .Include(x => x.Inquiry)
-                .Include(x => x.Workscope).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false)
+            //    .Include(x => x.Inquiry)
+            //    .Include(x => x.Workscope).FirstOrDefault();
+            //please Provide inquiryId
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Workscope).FirstOrDefault();
+            if (inquiry != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
-                inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
-                inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                    inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
+                    inquiryWorkscope.DesignScheduleDate = updateMeasurementStatus.DesignScheduleDate;
+                }
+                inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
+                inquiryRepository.Update(inquiry);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign+" "+inquiryWorkscope.DesignScheduleDate+" For "+inquiryWorkscope.Workscope.WorkScopeName+" Inquiry Code"+inquiryWorkscope.Inquiry.InquiryCode ,
-                       false, null, null, (int)inquiryWorkscope.DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                    sendNotificationToOneUser(Constants.DesignAssign+" "+inquiry.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate+" For Inquiry Code"+ inquiry.InquiryCode ,
+                       false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -197,38 +205,48 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineMeasurement(UpdateInquiryWorkscopeStatusModel updateMeasurementStatus)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            if (inquiryWorkscope != null)
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
             {
-                inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
-                inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
-                inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
-                inquiryWorkscope.Comments = updateMeasurementStatus.MeasurementComment;
-                Helper.Helper.Each(inquiryWorkscope.Measurements, i =>
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    i.IsActive = false;
-                    i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
-                });
-                inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
+                    inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
+                    inquiryWorkscope.MeasurementScheduleDate = updateMeasurementStatus.MeasurementScheduleDate;
+                    inquiryWorkscope.Comments = updateMeasurementStatus.MeasurementComment;
+                    Helper.Helper.Each(inquiryWorkscope.Measurements, i =>
+                    {
+                        i.IsActive = false;
+                        i.MeasurementComment = updateMeasurementStatus.MeasurementComment;
+                    });
+                    inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                }
+                inquiry.InquiryStatusId = (int)inquiryStatus.measurementRejected;
+                inquiryRepository.Update(inquiry);
 
 
                 try
                 {
-                    sendNotificationToOneUser("Measurement is rejected \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
-                       (int)inquiryWorkscope.MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
+                       (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
                     Sentry.SentrySdk.CaptureMessage(e.Message);
                 }
 
-                context.SaveChanges();
+                //context.SaveChanges();
             }
             else
             {
                 response.errorMessage = "Inquiry does not exsit";
                 response.isError = true;
             }
+            context.SaveChanges();
             return response;
         }
 
@@ -243,27 +261,45 @@ namespace BackendSaiKitchen.Controllers
             {
                 try
                 {
-                    var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false)
-                        .Include(x => x.Inquiry).FirstOrDefault();
+                    var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == customMeasFiles.inquiryid && x.IsActive == true && x.IsDeleted == false)
+                        .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                    //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false)
+                    //    .Include(x => x.Inquiry).FirstOrDefault();
                     foreach (var fileUrl in customMeasFiles.base64img)
                     {
+                       
                         //var fileUrl = file;
                         if (fileUrl != null)
                         {
-                            files.Add(new File()
+                            foreach (var inworkscope in inquiry.InquiryWorkscopes)
                             {
-                                FileUrl = fileUrl,
-                                FileName = fileUrl.Split('.')[0],
-                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                IsImage = fileUrl.Split('.').Length > 1,
-                                IsActive = true,
-                                IsDeleted = false,
-                                UpdatedBy = Constants.userId,
-                                UpdatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                                CreatedDate = Helper.Helper.GetDateTime(),
+                                files.Add(new File()
+                                {
+                                    FileUrl = fileUrl,
+                                    FileName = fileUrl.Split('.')[0],
+                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                    IsImage = fileUrl.Split('.').Length > 1,
+                                    IsActive = true,
+                                    IsDeleted = false,
+                                    UpdatedBy = Constants.userId,
+                                    UpdatedDate = Helper.Helper.GetDateTime(),
+                                    CreatedBy = Constants.userId,
+                                    CreatedDate = Helper.Helper.GetDateTime(),
 
-                            }); ;
+                                });
+                                Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
+                                measurement.IsActive = true;
+                                measurement.MeasurementComment = customMeasFiles.measurementComment;
+                                measurement.IsDeleted = false;
+                                measurement.AddedBy = Constants.userId;
+                                measurement.AddedDate = Helper.Helper.GetDateTime();
+                                inquiry.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                                inworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                                inworkscope.IsMeasurementDrawing = true;
+                                inworkscope.Comments = customMeasFiles.measurementComment;
+                                inworkscope.Measurements.Add(measurement);
+                                inquiryWorkscopeRepository.Update(inworkscope);
+                            }
                         }
                         else
                         {
@@ -272,26 +308,18 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-                    measurement.IsActive = true;
-                    measurement.MeasurementComment = customMeasFiles.measurementComment;
-                    measurement.IsDeleted = false;
-                    measurement.AddedBy = Constants.userId;
-                    measurement.AddedDate = Helper.Helper.GetDateTime();
-                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
-                    inquiryworkscope.IsMeasurementDrawing = true;
-                    inquiryworkscope.Comments = customMeasFiles.measurementComment;
-                    inquiryworkscope.Measurements.Add(measurement);
-                    inquiryWorkscopeRepository.Update(inquiryworkscope);
+                    
+                    
+                    inquiryRepository.Update(inquiry);
                     List<int?> roletypeId = new List<int?>();
 
                     roletypeId.Add((int)roleType.Manager);
                     try
                     {
-                        sendNotificationToHead(Constants.MeasurementAdded+"For Inquiry Code: IN"+inquiryworkscope.Inquiry.BranchId+""+inquiryworkscope.Inquiry.CustomerId+""+inquiryworkscope.Inquiry.InquiryId,
-                         true,
-                         Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
-                         Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                        sendNotificationToHead(Constants.MeasurementAdded+"For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId,
+                         true,null,null,
+                         //Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                         //Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          roletypeId,
                          Constants.branchId,
                          (int)notificationCategory.Measurement);
@@ -348,7 +376,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryWorkscopes.Any(y => y.InquiryWorkscopeId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
+               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
             if (inquiry != null)
             {
@@ -392,8 +421,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryWorkscopes.Any(y => y.InquiryWorkscopeId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
+               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -426,7 +455,7 @@ namespace BackendSaiKitchen.Controllers
             }
             else
             {
-                response.errorMessage = "Inquiry doesnot exist";
+                response.errorMessage = "Inquiry does not exist";
                 response.isError = true;
             }
             return response;
