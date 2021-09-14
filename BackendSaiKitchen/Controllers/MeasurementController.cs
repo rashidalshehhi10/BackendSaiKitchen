@@ -225,13 +225,14 @@ namespace BackendSaiKitchen.Controllers
                     });
                     inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
+                inquiry.InquiryComment = updateMeasurementStatus.MeasurementComment;
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                 inquiryRepository.Update(inquiry);
 
 
                 try
                 {
-                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" \n Reason: " + updateMeasurementStatus.MeasurementComment, false, null, null,
+                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" Reason: " + inquiry.InquiryComment, false, null, null,
                        (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
@@ -256,7 +257,6 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddUpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            files.Clear();
             if (customMeasFiles.base64img != null || customMeasFiles.base64img.Count > 0)
             {
                 try
@@ -265,15 +265,17 @@ namespace BackendSaiKitchen.Controllers
                         .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
                     //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false)
                     //    .Include(x => x.Inquiry).FirstOrDefault();
-                    foreach (var fileUrl in customMeasFiles.base64img)
+                    foreach (var inworkscope in inquiry.InquiryWorkscopes)
                     {
-                       
-                        //var fileUrl = file;
-                        if (fileUrl != null)
+                        List<File> Files = new List<File>();
+
+                        foreach (var fileUrl in customMeasFiles.base64img)
                         {
-                            foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                            Files.Clear();
+                            
+                            if (fileUrl != null)
                             {
-                                files.Add(new File()
+                                Files.Add(new File()
                                 {
                                     FileUrl = fileUrl,
                                     FileName = fileUrl.Split('.')[0],
@@ -287,31 +289,31 @@ namespace BackendSaiKitchen.Controllers
                                     CreatedDate = Helper.Helper.GetDateTime(),
 
                                 });
-                                Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId, Files = files };
-                                measurement.IsActive = true;
-                                measurement.MeasurementComment = customMeasFiles.measurementComment;
-                                measurement.IsDeleted = false;
-                                measurement.AddedBy = Constants.userId;
-                                measurement.AddedDate = Helper.Helper.GetDateTime();
-                                inquiry.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
-                                inworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
-                                inworkscope.IsMeasurementDrawing = true;
-                                inworkscope.Comments = customMeasFiles.measurementComment;
-                                inworkscope.Measurements.Add(measurement);
-                                //inquiryWorkscopeRepository.Update(inworkscope);
+                            }
+                            else
+                            {
+                                response.isError = true;
+                                response.errorMessage = Constants.wrongFileUpload;
                             }
 
                         }
-                        else
-                        {
-                            response.isError = true;
-                            response.errorMessage = Constants.wrongFileUpload;
-                        }
+
+                        Measurement measurement = new Measurement() { MeasurementTakenBy = Constants.userId };
+                        measurement.Files = Files;
+                        measurement.IsActive = true;
+                        measurement.MeasurementComment = customMeasFiles.measurementComment;
+                        measurement.IsDeleted = false;
+                        measurement.AddedBy = Constants.userId;
+                        measurement.AddedDate = Helper.Helper.GetDateTime();
+                        inquiry.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                        inworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                        inworkscope.IsMeasurementDrawing = true;
+                        inworkscope.Comments = customMeasFiles.measurementComment;
+                        inworkscope.Measurements.Add(measurement);
+                        //inquiryWorkscopeRepository.Update(inworkscope);
 
                     }
 
-                    
-                    
                     inquiryRepository.Update(inquiry);
                     List<int?> roletypeId = new List<int?>();
 
