@@ -271,7 +271,7 @@ namespace BackendSaiKitchen.Controllers
 
                         foreach (var fileUrl in customMeasFiles.base64img)
                         {
-                            Files.Clear();
+                            
                             
                             if (fileUrl != null)
                             {
