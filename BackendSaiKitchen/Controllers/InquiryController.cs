@@ -666,43 +666,44 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetMeasurementOfBranch(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
-            {
-                //InquiryWorkscopeId = x.InquiryWorkscopeId,
-                InquiryId = x.InquiryId,
-                InquiryDescription = x.Inquiry.InquiryDescription,
-                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
-                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
-                InquiryComment = x.Comments,
-                //WorkScopeId = x.WorkscopeId,
-                //WorkScopeName = x.Workscope.WorkScopeName,
-                QuestionaireType = x.Workscope.QuestionaireType,
-                DesignScheduleDate = x.DesignScheduleDate,
-                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
-                Status = x.InquiryStatusId,
-                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
-                IsDesignProvidedByCustomer = x.Inquiry.IsDesignProvidedByCustomer == true ? "Yes" : "No",
-                MeasurementScheduleDate = x.MeasurementScheduleDate,
-                BuildingAddress = x.Inquiry.Building.BuildingAddress,
-                BuildingCondition = x.Inquiry.Building.BuildingCondition,
-                BuildingFloor = x.Inquiry.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
-                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
-                CustomerId = x.Inquiry.CustomerId,
-                CustomerCode = "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
-                CustomerName = x.Inquiry.Customer.CustomerName,
-                CustomerContact = x.Inquiry.Customer.CustomerContact,
-                CustomerWhatsapp = x.Inquiry.Customer.CustomerWhatsapp,
-                CustomerEmail = x.Inquiry.Customer.CustomerEmail,
-                BranchId = x.Inquiry.BranchId,
-                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                WorkscopeNames = x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
-            }).OrderByDescending(x => x.InquiryId);
+            //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.IsActive == true
+                        && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
+                        {
+                            //InquiryWorkscopeId = x.InquiryWorkscopeId,
+                            InquiryId = x.InquiryId,
+                            InquiryDescription = x.InquiryDescription,
+                            InquiryStartDate = Helper.GetDateFromString(x.InquiryStartDate),
+                            MeasurementAssignTo = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName,
+                            InquiryComment = x.InquiryComment,
+                            //WorkScopeId = x.WorkscopeId,
+                            //WorkScopeName = x.Workscope.WorkScopeName,
+                            QuestionaireType = x.InquiryWorkscopes.FirstOrDefault().Workscope.QuestionaireType,
+                            DesignScheduleDate = x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate,
+                            DesignAssignTo = x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation.UserName,
+                            Status = x.InquiryStatusId,
+                            IsMeasurementProvidedByCustomer = x.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                            IsDesignProvidedByCustomer = x.IsDesignProvidedByCustomer == true ? "Yes" : "No",
+                            MeasurementScheduleDate = x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate,
+                            BuildingAddress = x.Building.BuildingAddress,
+                            BuildingCondition = x.Building.BuildingCondition,
+                            BuildingFloor = x.Building.BuildingFloor,
+                            BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                            IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                            InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
+                            BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                            IsEscalationRequested = x.IsEscalationRequested,
+                            CustomerId = x.CustomerId,
+                            CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                            CustomerName = x.Customer.CustomerName,
+                            CustomerContact = x.Customer.CustomerContact,
+                            CustomerWhatsapp = x.Customer.CustomerWhatsapp,
+                            CustomerEmail = x.Customer.CustomerEmail,
+                            BranchId = x.BranchId,
+                            InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                            WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                            NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count()
+                        }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
             tableResponse.recordsFiltered = inquiries.Count();
@@ -713,42 +714,42 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetMeasurementAssigneeApproval(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending) && x.IsActive == true && x.IsActive == true
+            && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
             {
                 //InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
-                InquiryDescription = x.Inquiry.InquiryDescription,
-                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
-                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
-                InquiryComment = x.Comments,
+                InquiryDescription = x.InquiryDescription,
+                InquiryStartDate = Helper.GetDateFromString(x.InquiryStartDate),
+                MeasurementAssignTo = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName,
+                InquiryComment = x.InquiryComment,
                 //WorkScopeId = x.WorkscopeId,
                 //WorkScopeName = x.Workscope.WorkScopeName,
-                QuestionaireType = x.Workscope.QuestionaireType,
-                DesignScheduleDate = x.DesignScheduleDate,
-                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+                QuestionaireType = x.InquiryWorkscopes.FirstOrDefault().Workscope.QuestionaireType,
+                DesignScheduleDate = x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate,
+                DesignAssignTo = x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
-                IsMeasurementProvidedByCustomer = x.Inquiry.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
-                IsDesignProvidedByCustomer = x.Inquiry.IsDesignProvidedByCustomer == true ? "Yes" : "No",
-                MeasurementScheduleDate = x.MeasurementScheduleDate,
-                BuildingAddress = x.Inquiry.Building.BuildingAddress,
-                BuildingCondition = x.Inquiry.Building.BuildingCondition,
-                BuildingFloor = x.Inquiry.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
-                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
-                CustomerId = x.Inquiry.CustomerId,
-                CustomerCode = "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
-                CustomerName = x.Inquiry.Customer.CustomerName,
-                CustomerContact = x.Inquiry.Customer.CustomerContact,
-                CustomerWhatsapp = x.Inquiry.Customer.CustomerWhatsapp,
-                CustomerEmail = x.Inquiry.Customer.CustomerEmail,
-                BranchId = x.Inquiry.BranchId,
-                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                WorkscopeNames = x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+                IsMeasurementProvidedByCustomer = x.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                IsDesignProvidedByCustomer = x.IsDesignProvidedByCustomer == true ? "Yes" : "No",
+                MeasurementScheduleDate = x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate,
+                BuildingAddress = x.Building.BuildingAddress,
+                BuildingCondition = x.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested,
+                CustomerId = x.CustomerId,
+                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                CustomerName = x.Customer.CustomerName,
+                CustomerContact = x.Customer.CustomerContact,
+                CustomerWhatsapp = x.Customer.CustomerWhatsapp,
+                CustomerEmail = x.Customer.CustomerEmail,
+                BranchId = x.BranchId,
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count()
             }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
@@ -954,40 +955,43 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetDesignAssigneeApproval(int branchId)
         {
-            var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            && x.IsDeleted == false).Select(x => new ViewInquiryDetail()
+            //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending) && x.IsActive == true && x.IsActive == true
+            && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
             {
                 //InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
-                InquiryDescription = x.Inquiry.InquiryDescription,
-                InquiryStartDate = Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
-                MeasurementAssignTo = x.MeasurementAssignedToNavigation.UserName,
+                InquiryDescription = x.InquiryDescription,
+                InquiryStartDate = Helper.GetDateFromString(x.InquiryStartDate),
+                MeasurementAssignTo = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName,
+                InquiryComment = x.InquiryComment,
                 //WorkScopeId = x.WorkscopeId,
                 //WorkScopeName = x.Workscope.WorkScopeName,
-                QuestionaireType = x.Workscope.QuestionaireType,
-                DesignScheduleDate = x.DesignScheduleDate,
-                DesignAssignTo = x.DesignAssignedToNavigation.UserName,
+                QuestionaireType = x.InquiryWorkscopes.FirstOrDefault().Workscope.QuestionaireType,
+                DesignScheduleDate = x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate,
+                DesignAssignTo = x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation.UserName,
                 Status = x.InquiryStatusId,
-                InquiryComment = x.Comments,
-                MeasurementScheduleDate = x.MeasurementScheduleDate,
-                BuildingAddress = x.Inquiry.Building.BuildingAddress,
-                BuildingCondition = x.Inquiry.Building.BuildingCondition,
-                BuildingFloor = x.Inquiry.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
-                BuildingTypeOfUnit = x.Inquiry.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.Inquiry.IsEscalationRequested,
-                CustomerId = x.Inquiry.CustomerId,
-                CustomerCode = "CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
-                CustomerName = x.Inquiry.Customer.CustomerName,
-                CustomerContact = x.Inquiry.Customer.CustomerContact,
-                CustomerWhatsapp = x.Inquiry.Customer.CustomerWhatsapp,
-                CustomerEmail = x.Inquiry.Customer.CustomerEmail,
-                BranchId = x.Inquiry.BranchId,
-                InquiryCode = "IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                WorkscopeNames = x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                NoOfRevision = x.Measurements.Where(y => y.IsDeleted == false).Count()
+                IsMeasurementProvidedByCustomer = x.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                IsDesignProvidedByCustomer = x.IsDesignProvidedByCustomer == true ? "Yes" : "No",
+                MeasurementScheduleDate = x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate,
+                BuildingAddress = x.Building.BuildingAddress,
+                BuildingCondition = x.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested,
+                CustomerId = x.CustomerId,
+                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                CustomerName = x.Customer.CustomerName,
+                CustomerContact = x.Customer.CustomerContact,
+                CustomerWhatsapp = x.Customer.CustomerWhatsapp,
+                CustomerEmail = x.Customer.CustomerEmail,
+                BranchId = x.BranchId,
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count()
             }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
