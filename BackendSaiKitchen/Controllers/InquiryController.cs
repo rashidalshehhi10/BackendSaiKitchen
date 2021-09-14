@@ -125,7 +125,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = context.InquiryWorkscopes.AsNoTracking().FirstOrDefault(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && i.IsDeleted == false && i.Measurements.Count < 1);
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && (i.InquiryStatusId == (int)inquiryStatus.measurementPending || i.InquiryStatusId == (int)inquiryStatus.measurementRejected || i.InquiryStatusId == (int)inquiryStatus.measurementdelayed || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted)).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.CreatedDate = null;
@@ -167,7 +167,8 @@ namespace SaiKitchenBackend.Controllers
             if (inquiryworkscope != null)
             {
                 inquiryworkscope.IsDeleted = true;
-                if (inquiry.InquiryWorkscopes.Count == 0)
+                var _inquiryworkscope = inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false);
+                if (_inquiryworkscope.Count() == 0)
                     inquiry.IsDeleted = true;
                 
                 inquiryRepository.Update(inquiry);

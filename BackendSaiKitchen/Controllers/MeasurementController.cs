@@ -298,14 +298,16 @@ namespace BackendSaiKitchen.Controllers
                                 inworkscope.IsMeasurementDrawing = true;
                                 inworkscope.Comments = customMeasFiles.measurementComment;
                                 inworkscope.Measurements.Add(measurement);
-                                inquiryWorkscopeRepository.Update(inworkscope);
+                                //inquiryWorkscopeRepository.Update(inworkscope);
                             }
+
                         }
                         else
                         {
                             response.isError = true;
                             response.errorMessage = Constants.wrongFileUpload;
                         }
+
                     }
 
                     
@@ -328,7 +330,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Sentry.SentrySdk.CaptureMessage(e.Message);
                     }
-
+                    
                     context.SaveChanges();
                 }
                 catch (Exception e)
