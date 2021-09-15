@@ -406,7 +406,7 @@ namespace BackendSaiKitchen.Controllers
 
                 }
                 inquiry.InquiryStatusId = (int?)inquiryStatus.measurementPending;
-
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                 inquiryRepository.Update(inquiry);
 
                 List<int?> roletypeId = new List<int?>();
@@ -451,6 +451,7 @@ namespace BackendSaiKitchen.Controllers
 
                 }
                 inquiry.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeRejected;
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
                 inquiryRepository.Update(inquiry);
                 List<int?> roletypeId = new List<int?>();

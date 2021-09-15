@@ -1044,7 +1044,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetApprovalDesignOfBranch(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval && x.AddedBy == Constants.userId)
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer) && x.AddedBy == Constants.userId)
             .Select(x => new ViewInquiryDetail()
             {
                 // InquiryWorkscopeId = x.InquiryWorkscopeId,
