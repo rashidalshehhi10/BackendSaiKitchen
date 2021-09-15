@@ -668,7 +668,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetMeasurementOfBranch(int branchId)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.IsActive == true
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.IsDeleted == false
                         && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
                         {
                             //InquiryWorkscopeId = x.InquiryWorkscopeId,
@@ -914,8 +914,13 @@ namespace SaiKitchenBackend.Controllers
         public Object GetDesignOfBranch(int branchId)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.DesignAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected) && x.AddedBy == Constants.userId)
-            .Select(x => new ViewInquiryDetail()
+            //var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected) && x. == Constants.userId)
+            //.Select(x => new ViewInquiryDetail()
+
+
+               var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected) && x.IsActive == true && x.IsDeleted == false
+            && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
+
             {
                 // InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
