@@ -179,7 +179,7 @@ namespace SaiKitchenBackend.Controllers
                     {
                         PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
-                        string subject = Enum.GetName(typeof(NotificationCategory), categoryId) + " of " + acceptAction;
+                        string subject = Enum.GetName(typeof(NotificationCategory), categoryId) + acceptAction;
                         await mailService.SendEmailAsync(new MailRequest
                         {
                             Body = content,
@@ -234,7 +234,7 @@ namespace SaiKitchenBackend.Controllers
                         PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
                         //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
 
-                        string subject = Enum.GetName(typeof(notificationCategory), categoryId) + " of " + acceptAction;
+                        string subject = Enum.GetName(typeof(notificationCategory), categoryId) + acceptAction;
                         await mailService.SendEmailAsync(new MailRequest
                         {
                             Body = content,

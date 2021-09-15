@@ -168,7 +168,8 @@ namespace BackendSaiKitchen.Controllers
             //please Provide inquiryId
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .ThenInclude(x => x.Workscope).FirstOrDefault();
+                .ThenInclude(x => x.Workscope)
+                .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -182,7 +183,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToOneUser(Constants.DesignAssign+" "+inquiry.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate+" For Inquiry Code"+ inquiry.InquiryCode ,
-                       false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                       false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -208,7 +209,8 @@ namespace BackendSaiKitchen.Controllers
 
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -231,7 +233,7 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" Reason: " + inquiry.InquiryComment, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
+                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" Reason: " + inquiry.InquiryComment, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
                        (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
@@ -320,7 +322,7 @@ namespace BackendSaiKitchen.Controllers
                     try
                     {
                         sendNotificationToHead(Constants.MeasurementAdded+"For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId,
-                         true, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
+                         true, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
                          //Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          //Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          roletypeId,
@@ -393,7 +395,8 @@ namespace BackendSaiKitchen.Controllers
         public object ApproveMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
             var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
-               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+               .Include(x => x.Customer).FirstOrDefault();
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
             if (inquiry != null)
             {
@@ -416,7 +419,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code: IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code: IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -438,7 +441,8 @@ namespace BackendSaiKitchen.Controllers
         public object RejectMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
             var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
-               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+               .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+               .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -462,7 +466,8 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {

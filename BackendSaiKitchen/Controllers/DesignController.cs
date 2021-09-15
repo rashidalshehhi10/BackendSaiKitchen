@@ -30,7 +30,8 @@ namespace BackendSaiKitchen.Controllers
 
             files.Clear();
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected))
-                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Customer).FirstOrDefault();
             Design design;
             foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
             {
@@ -80,7 +81,7 @@ namespace BackendSaiKitchen.Controllers
 
             try
             {
-                sendNotificationToHead(Constants.DesignAdded+inquiry.Branch+""+inquiry.CustomerId+""+inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
+                sendNotificationToHead(Constants.DesignAdded+inquiry.Branch+""+inquiry.CustomerId+""+inquiry.InquiryId, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For "+inquiry.Customer.CustomerName , null,
                     //Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                     //Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                    roletypeId, Constants.branchId, (int)notificationCategory.Design);
@@ -125,7 +126,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead("Design Of inquiry Code:IN"+ inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +" Is Waiting for customer Approval" 
-                       , false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                       , false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -224,7 +225,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToOneUser("Your Design For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" is Rejected Comment: "+inquiry.InquiryComment, false
-                        , "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                        , " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -324,7 +325,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead("Customer Approved the Design For inquiry Code:IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment
-                        , false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
+                        , false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -387,8 +388,9 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToOneUser( "Customer Rejected the Design For inquiry Code: IN"+ inquiry.BranchId + "" + inquiry.CustomerId + "" +inquiry.InquiryId + " Comment : "+ inquiry.InquiryComment,
-                        false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, (int)inquiry.AddedBy, (int)inquiry.BranchId, (int)notificationCategory.Design);
-                    sendNotificationToHead("Customer Rejected the Design For inquiry Code: IN" + +inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Design);
+                        false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.AddedBy, (int)inquiry.BranchId, (int)notificationCategory.Design);
+                    sendNotificationToHead("Customer Rejected the Design For inquiry Code: IN" + +inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment, false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -435,7 +437,7 @@ namespace BackendSaiKitchen.Controllers
                         Name = y.UserName
                     }).FirstOrDefault();
                     sendNotificationToHead(user.Name + " Accepted Design For Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId
-                        , false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                        , false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -479,7 +481,7 @@ namespace BackendSaiKitchen.Controllers
                         Name = y.UserName
                     }).FirstOrDefault();
                     sendNotificationToHead(user.Name + " Rejected Design For Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +" Comment: " +inquiry.InquiryComment
-                        , false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                        , false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {

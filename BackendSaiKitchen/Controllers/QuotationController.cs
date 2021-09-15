@@ -330,7 +330,8 @@ namespace BackendSaiKitchen.Controllers
                     roletypeId.Add((int)roleType.Manager);
 
                     sendNotificationToHead(
-                       "New Quotation Added For Inquiry Code: "+ "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
+                       "New Quotation Added For Inquiry Code: "+ "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
+                       " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
                      //true,
                      //Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
                      //Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
@@ -627,7 +628,8 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Approved By Client", false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Approved By Client", false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {
@@ -680,7 +682,8 @@ namespace BackendSaiKitchen.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {
