@@ -297,9 +297,10 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
                     Helper.Helper.Each(inquiryWorkscope.Designs, i =>
                     {
-                        i.IsActive = false;
+                        //i.IsActive = false;
                         i.DesignComment = updateInquiryStatus.DesignComment;
                     });
+
                 }
                 inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
@@ -362,7 +363,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
                     Helper.Helper.Each(inquiryWorkscope.Designs, i =>
                     {
-                        i.IsActive = false;
+                        //i.IsActive = false;
                         i.DesignComment = updateInquiryStatus.DesignComment;
                     });
                 }
