@@ -84,47 +84,45 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted || x.InquiryStatusId == (int)inquiryStatus.checklistPending) && x.IsActive == true && x.IsDeleted == false
-                        && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
-                        {
-                            //InquiryWorkscopeId = x.InquiryWorkscopeId,
-                            InquiryId = x.InquiryId,
-                            InquiryDescription = x.InquiryDescription,
-                            InquiryStartDate =Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                            MeasurementAssignTo = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation.UserName,
-                            InquiryComment = x.InquiryComment,
-                            //WorkScopeId = x.WorkscopeId,
-                            //WorkScopeName = x.Workscope.WorkScopeName,
-                            QuestionaireType = x.InquiryWorkscopes.FirstOrDefault().Workscope.QuestionaireType,
-                            DesignScheduleDate = x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate,
-                            DesignAssignTo = x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation.UserName,
-                            Status = x.InquiryStatusId,
-                            IsMeasurementProvidedByCustomer = x.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
-                            IsDesignProvidedByCustomer = x.IsDesignProvidedByCustomer == true ? "Yes" : "No",
-                            MeasurementScheduleDate = x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate,
-                            BuildingAddress = x.Building.BuildingAddress,
-                            BuildingCondition = x.Building.BuildingCondition,
-                            BuildingFloor = x.Building.BuildingFloor,
-                            BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                            IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                            InquiryEndDate =Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                            BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                            IsEscalationRequested = x.IsEscalationRequested,
-                            CustomerId = x.CustomerId,
-                            CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                            CustomerName = x.Customer.CustomerName,
-                            CustomerContact = x.Customer.CustomerContact,
-                            CustomerWhatsapp = x.Customer.CustomerWhatsapp,
-                            CustomerEmail = x.Customer.CustomerEmail,
-                            BranchId = x.BranchId,
-                            InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                            WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                            NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count()
-                        }).OrderByDescending(x => x.InquiryId);
-            tableResponse.data = inquiries;
-            tableResponse.recordsTotal = inquiries.Count();
-            tableResponse.recordsFiltered = inquiries.Count();
-            return tableResponse;
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+            && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.quotationAccepted)).Select(x => new CheckListByBranch
+            {
+                InquiryId = x.InquiryId,
+                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
+                InquiryDescription = x.InquiryDescription,
+                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                WorkScopeCount = x.InquiryWorkscopes.Count,
+                Status = x.InquiryStatusId,
+                BuildingAddress = x.Building.BuildingAddress,
+                BuildingCondition = x.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor,
+                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested,
+                CustomerId = x.CustomerId,
+                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                CustomerName = x.Customer.CustomerName,
+                CustomerEmail = x.Customer.CustomerEmail,
+                CustomerContact = x.Customer.CustomerContact,
+                BranchId = x.BranchId,
+                InquiryAddedBy = x.AddedByNavigation.UserName,
+                InquiryAddedById = x.AddedBy,
+                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+            }).ToList();
+            if (inquiries != null)
+            {
+                response.data = inquiries;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "there is no inquiries to Check";
+            }
+            return response;
         }
 
         [HttpPost]
