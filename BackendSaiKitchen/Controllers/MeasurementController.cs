@@ -134,7 +134,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     sendNotificationToHead(Constants.MeasurementAdded,
                      true,
-                     Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
+                     "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                      Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                      roletypeId,
                      Constants.branchId,
@@ -183,7 +183,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToOneUser(Constants.DesignAssign+" "+inquiry.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate+" For Inquiry Code"+ inquiry.InquiryCode ,
-                       false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
+                       false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
                 {
@@ -232,7 +232,7 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" Reason: " + inquiry.InquiryComment, false, null, null,
+                    sendNotificationToOneUser("Measurement is rejected For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId+" Reason: " + inquiry.InquiryComment, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
                        (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
@@ -321,7 +321,7 @@ namespace BackendSaiKitchen.Controllers
                     try
                     {
                         sendNotificationToHead(Constants.MeasurementAdded+"For Inquiry Code: IN"+inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId,
-                         true,null,null,
+                         true, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null,
                          //Url.ActionLink("AcceptMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          //Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                          roletypeId,
@@ -417,7 +417,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code: IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Accepted Measurement of inquiry Code: IN" + inquiry.BranchId+""+inquiry.CustomerId+""+inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
@@ -463,7 +463,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(user.Name + " Reject Measurement of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception e)
                 {
