@@ -85,7 +85,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquiryChecklistByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.quotationAccepted)).Select(x => new CheckListByBranch
+            && (x.InquiryStatusId == (int)inquiryStatus.checklistPending)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
                 QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
