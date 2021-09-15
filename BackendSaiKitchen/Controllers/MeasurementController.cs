@@ -133,8 +133,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(Constants.MeasurementAdded,
-                     true,
-                     "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                     true,null,
                      Url.ActionLink("DeclineMeasurement", "MeasuementController", new { id = measurement.InquiryWorkscopeId }),
                      roletypeId,
                      Constants.branchId,
