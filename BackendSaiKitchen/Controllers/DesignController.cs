@@ -460,11 +460,11 @@ namespace BackendSaiKitchen.Controllers
 
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.designPending;
+                inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
                 inquiry.InquiryComment = updateInquiry.DesignComment;
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designPending;
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
                     inquiryWorkscope.Comments = updateInquiry.DesignComment;
                 }
                 inquiryRepository.Update(inquiry);
