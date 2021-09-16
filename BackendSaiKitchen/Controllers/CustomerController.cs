@@ -69,7 +69,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetCustomerOfBranch(int branchId)
         {
 
-            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.Branch.BranchId == branchId || x.Branch==null) && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 {
@@ -139,7 +139,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddCustomer(Customer customer)
