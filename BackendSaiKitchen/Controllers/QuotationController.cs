@@ -683,7 +683,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false,
-                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName , null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {

@@ -189,6 +189,12 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 _jobOrder.JobOrderRequestedComments = approve.Comment;
                 _jobOrder.FactoryId = approve.factoryId;
+                _jobOrder.DataSheetApplianceFileUrl = approve.DataSheetApplianceFileUrl;
+                _jobOrder.IsAppliancesProvidedByClient = approve.IsAppliancesProvidedByClient;
+                _jobOrder.JobOrderChecklistFileUrl = approve.JobOrderChecklistFileUrl;
+                _jobOrder.MaterialSheetFileUrl = approve.MaterialSheetFileUrl;
+                _jobOrder.MepdrawingFileUrl = approve.MEPDrawingFileUrl;
+
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistAccepted;
@@ -199,7 +205,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {
-                        var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == approve.addFileonChecklists[i].inquiryworkscopeId && x.IsActive == true && x.IsDeleted == false);
+                        
                         try
                         {
                             foreach (var fileUrl in approve.addFileonChecklists[i].files)
@@ -211,28 +217,34 @@ namespace BackendSaiKitchen.Controllers
                                     switch (approve.addFileonChecklists[i].documentType)
                                     {
                                         case (int)permission.ManageMeasurement:
-                                            var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                            measurement.Files.Add(new Models.File
+                                            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
                                             {
-                                                FileUrl = fileUrl,
-                                                FileName = fileUrl.Split('.')[0],
-                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                                IsImage = false,
-                                                IsActive = true,
-                                                IsDeleted = false,
-                                            });
+                                                var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                                measurement.Files.Add(new Models.File
+                                                {
+                                                    FileUrl = fileUrl,
+                                                    FileName = fileUrl.Split('.')[0],
+                                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                    IsImage = false,
+                                                    IsActive = true,
+                                                    IsDeleted = false,
+                                                });
+                                            }
                                             break;
                                         case (int)permission.ManageDesign:
-                                            var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                            design.Files.Add(new Models.File
+                                            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
                                             {
-                                                FileUrl = fileUrl,
-                                                FileName = fileUrl.Split('.')[0],
-                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                                IsImage = false,
-                                                IsActive = true,
-                                                IsDeleted = false,
-                                            });
+                                                var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
+                                                design.Files.Add(new Models.File
+                                                {
+                                                    FileUrl = fileUrl,
+                                                    FileName = fileUrl.Split('.')[0],
+                                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                    IsImage = false,
+                                                    IsActive = true,
+                                                    IsDeleted = false,
+                                                });
+                                            }
                                             break;
                                         case (int)permission.ManageQuotation:
                                             var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
