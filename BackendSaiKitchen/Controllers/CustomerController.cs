@@ -5,6 +5,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Twilio;
@@ -64,13 +65,12 @@ namespace SaiKitchenBackend.Controllers
             { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId });
         }
 
-        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetCustomerOfBranch(int branchId)
         {
-
-            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.Branch.BranchId == branchId || x.Branch == null) && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+            List<CustomerResponse> customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 {
@@ -94,17 +94,35 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId
                 }).ToList();
-            int? total = v.Count;
-            int? contacted = v.Where(x => x.ContactStatusId == 1).Count();
-            int? needToContact = v.Where(x => x.ContactStatusId == 2).Count();
+            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch==null)
+             .Select(x => new CustomerResponse
+                {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    CustomerContact = x.CustomerContact,
+                    CustomerEmail = x.CustomerEmail,
+                    CustomerCity = x.CustomerCity,
+                    CustomerCountry = x.CustomerCountry,
+                    CustomerNationality = x.CustomerNationality,
+                    CustomerNotes = x.CustomerNotes,
+                    CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                    WayofContactId = x.WayofContactId,
+                    ContactStatusId = x.ContactStatusId,
+                    ContactStatus = x.ContactStatus.ContactStatusName,
+                    CustomerAddress = x.CustomerAddress,
+                    CustomerNationalId = x.CustomerNationalId
+                }).ToList());
+            int? total = customers.Count;
+            int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
+            int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
 
-            v.ForEach(x =>
+            customers.ForEach(x =>
             {
                 x.TotalCustomers = total;
                 x.ContactedCustomers = contacted;
                 x.NeedToContactCustomers = needToContact;
             });
-            return v;
+            return customers;
         }
 
         [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
