@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Conversations.V1;
@@ -69,7 +70,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetCustomerOfBranch(int branchId)
         {
 
-            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.Branch.BranchId == branchId || x.Branch==null) && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+            var v = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.Branch.BranchId == branchId || x.Branch == null) && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 {
@@ -139,14 +140,80 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
+
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> AddWebsiteCustomerAsync(CustomCustomer customer)
+        {
+            Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (oldCustomer == null)
+            {
+                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail });
+
+                if (customer.CustomerEmail != null)
+                {
+                    //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                    var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                    foreach (var email in emails)
+                    {
+                        try
+                        {
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Body = customer.CustomerNotes + "          \nName:" + customer.CustomerName + "\nContact:" + customer.CustomerContact + "\nEmail:" + customer.CustomerEmail,
+                                Subject = "Request for Inquiry from New Customer " + customer.CustomerName,
+                                ToEmail = email
+                            });
+                        }
+
+                        catch (Exception) { }
+                    }
+                }
+            }
+            else
+            {
+                oldCustomer.CustomerNotes = customer.CustomerNotes;
+
+                if (customer.CustomerEmail != null)
+                {
+                    oldCustomer.CustomerEmail = customer.CustomerEmail;
+                }
+                  if (oldCustomer.CustomerEmail != null)
+                    {
+                        //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                        var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                        foreach (var email in emails)
+                        {
+                        try
+                        {
+
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Body = customer.CustomerNotes + "          \nName:" + customer.CustomerName + "\nContact:" + customer.CustomerContact + "\nEmail:" + oldCustomer.CustomerEmail,
+                                Subject = "Request for Inquiry from Customer " + customer.CustomerName,
+                                ToEmail = email
+                            });
+                        }
+                        catch (Exception) { }
+                    }
+                    }
+                customerRepository.Update(oldCustomer);
+            }
+            context.SaveChanges();
+            return response;
+        }
+
+
+        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public Object AddCustomer(Customer customer)
         {
             if (customer.CustomerId == 0)
             {
-
+                customer.BranchId = Constants.branchId;
                 Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.BranchId == customer.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (oldCustomer == null)
                 {

@@ -1,5 +1,15 @@
 ﻿namespace BackendSaiKitchen.CustomModel
 {
+    public class CustomCustomer
+    {
+        public string CustomerName { get; set; }
+        public string CustomerContact { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerNotes { get; set; }
+        public int ContactStatusId { get; set; }
+        public int WayofContactId { get; set; }
+    }
+
     public class CustomerResponse
     {
         public int CustomerId { get; set; }
