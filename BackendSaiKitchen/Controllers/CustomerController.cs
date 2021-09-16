@@ -162,7 +162,7 @@ namespace SaiKitchenBackend.Controllers
                         {
                             await mailService.SendEmailAsync(new MailRequest
                             {
-                                Body = customer.CustomerNotes + "          \nName:" + customer.CustomerName + "\nContact:" + customer.CustomerContact + "\nEmail:" + customer.CustomerEmail,
+                                Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + customer.CustomerEmail,
                                 Subject = "Request for Inquiry from New Customer " + customer.CustomerName,
                                 ToEmail = email
                             });
@@ -191,7 +191,7 @@ namespace SaiKitchenBackend.Controllers
 
                             await mailService.SendEmailAsync(new MailRequest
                             {
-                                Body = customer.CustomerNotes + "          \nName:" + customer.CustomerName + "\nContact:" + customer.CustomerContact + "\nEmail:" + oldCustomer.CustomerEmail,
+                                Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + oldCustomer.CustomerEmail,
                                 Subject = "Request for Inquiry from Customer " + customer.CustomerName,
                                 ToEmail = email
                             });
