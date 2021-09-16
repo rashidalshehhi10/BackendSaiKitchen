@@ -174,7 +174,7 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> AddWebsiteCustomerAsync(CustomCustomer customer)
+        public async Task<object> AddWebsiteCustomerAsync([FromForm]CustomCustomer customer)
         {
             Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (oldCustomer == null)
