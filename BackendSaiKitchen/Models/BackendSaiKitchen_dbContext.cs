@@ -1019,6 +1019,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.LastSeen).HasMaxLength(500);
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UserEmail).HasMaxLength(50);

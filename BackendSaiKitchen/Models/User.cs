@@ -31,6 +31,7 @@ namespace BackendSaiKitchen.Models
         public string UserToken { get; set; }
         public string UserProfileImageUrl { get; set; }
         public string UserFcmtoken { get; set; }
+        public string LastSeen { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public bool? IsOnline { get; set; }
