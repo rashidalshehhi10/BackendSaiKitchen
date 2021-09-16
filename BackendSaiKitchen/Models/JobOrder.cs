@@ -16,6 +16,11 @@ namespace BackendSaiKitchen.Models
         public string JobOrderDelayReason { get; set; }
         public string JobOrderDeliveryDate { get; set; }
         public int? InquiryId { get; set; }
+        public string MaterialSheetFileUrl { get; set; }
+        public string MepdrawingFileUrl { get; set; }
+        public string JobOrderChecklistFileUrl { get; set; }
+        public string DataSheetApplianceFileUrl { get; set; }
+        public bool? IsAppliancesProvidedByClient { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }

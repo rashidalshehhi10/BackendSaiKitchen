@@ -496,6 +496,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.DataSheetApplianceFileUrl).HasColumnName("DataSheetApplianceFileURL");
+
+                entity.Property(e => e.JobOrderChecklistFileUrl).HasColumnName("JobOrderChecklistFileURL");
+
                 entity.Property(e => e.JobOrderDelayReason).HasMaxLength(500);
 
                 entity.Property(e => e.JobOrderDeliveryDate).HasMaxLength(50);
@@ -509,6 +513,10 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.JobOrderRequestedComments).HasMaxLength(500);
 
                 entity.Property(e => e.JobOrderRequestedDeadline).HasMaxLength(500);
+
+                entity.Property(e => e.MaterialSheetFileUrl).HasColumnName("MaterialSheetFileURL");
+
+                entity.Property(e => e.MepdrawingFileUrl).HasColumnName("MEPDrawingFileURL");
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
