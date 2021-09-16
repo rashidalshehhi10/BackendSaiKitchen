@@ -179,7 +179,7 @@ namespace SaiKitchenBackend.Controllers
             Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (oldCustomer == null)
             {
-                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail });
+                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail,WayofContactId=customer.WayofContactId,ContactStatusId=customer.ContactStatusId });
 
                 //if (customer.CustomerEmail != null)
                 //{
