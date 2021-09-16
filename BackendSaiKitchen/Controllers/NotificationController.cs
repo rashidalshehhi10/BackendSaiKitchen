@@ -1,4 +1,5 @@
 ﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,10 @@ namespace SaiKitchenBackend.Controllers
                 isActionable = x.IsActionable,
                 createdDate = x.CreatedDate
             }).OrderByDescending(x => x.notificationId).ToList().Take(30);
+            user.LastSeen = Helper.GetDateTime();
+            userRepository.Update(user);
+
+            context.SaveChanges();
             return response;
         }
 
