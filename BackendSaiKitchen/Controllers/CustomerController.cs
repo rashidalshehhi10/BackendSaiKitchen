@@ -65,7 +65,7 @@ namespace SaiKitchenBackend.Controllers
             { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId });
         }
 
-        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public Object GetCustomerOfBranch(int branchId)
@@ -181,25 +181,25 @@ namespace SaiKitchenBackend.Controllers
             {
                 customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail });
 
-                if (customer.CustomerEmail != null)
-                {
-                    //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
-                    var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
-                    foreach (var email in emails)
-                    {
-                        try
-                        {
-                            await mailService.SendEmailAsync(new MailRequest
-                            {
-                                Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + customer.CustomerEmail,
-                                Subject = "Request for Inquiry from New Customer " + customer.CustomerName,
-                                ToEmail = email
-                            });
-                        }
+                //if (customer.CustomerEmail != null)
+                //{
+                //    //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                //    var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                //    foreach (var email in emails)
+                //    {
+                //        try
+                //        {
+                //            await mailService.SendEmailAsync(new MailRequest
+                //            {
+                //                Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + customer.CustomerEmail,
+                //                Subject = "Request for Inquiry from New Customer " + customer.CustomerName,
+                //                ToEmail = email
+                //            });
+                //        }
 
-                        catch (Exception) { }
-                    }
-                }
+                //        catch (Exception) { }
+                //    }
+                //}
             }
             else
             {
@@ -209,25 +209,25 @@ namespace SaiKitchenBackend.Controllers
                 {
                     oldCustomer.CustomerEmail = customer.CustomerEmail;
                 }
-                  if (oldCustomer.CustomerEmail != null)
-                    {
-                        //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
-                        var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
-                        foreach (var email in emails)
-                        {
-                        try
-                        {
+                  //if (oldCustomer.CustomerEmail != null)
+                  //  {
+                  //      //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                  //      var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                  //      foreach (var email in emails)s
+                  //      {
+                  //      try
+                  //      {
 
-                            await mailService.SendEmailAsync(new MailRequest
-                            {
-                                Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + oldCustomer.CustomerEmail,
-                                Subject = "Request for Inquiry from Customer " + customer.CustomerName,
-                                ToEmail = email
-                            });
-                        }
-                        catch (Exception) { }
-                    }
-                    }
+                  //          await mailService.SendEmailAsync(new MailRequest
+                  //          {
+                  //              Body = customer.CustomerNotes + "          \nName: " + customer.CustomerName + "\nContact: " + customer.CustomerContact + "\nEmail: " + oldCustomer.CustomerEmail,
+                  //              Subject = "Request for Inquiry from Customer " + customer.CustomerName,
+                  //              ToEmail = email
+                  //          });
+                  //      }
+                  //      catch (Exception) { }
+                  //  }
+                  //  }
                 customerRepository.Update(oldCustomer);
             }
             context.SaveChanges();
