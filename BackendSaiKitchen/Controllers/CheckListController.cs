@@ -284,6 +284,10 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.JobOrderChecklistFileUrl = approve.JobOrderChecklistFileUrl;
                 _jobOrder.MaterialSheetFileUrl = approve.MaterialSheetFileUrl;
                 _jobOrder.MepdrawingFileUrl = approve.MEPDrawingFileUrl;
+                _jobOrder.IsActive = true;
+                _jobOrder.IsDeleted = false;
+                _jobOrder.CreatedBy = Constants.userId;
+                _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {

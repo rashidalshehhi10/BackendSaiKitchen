@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
+    public class CustomCommercialCheckListApproval
+    {
+
+    }
     public class CustomCheckListapprove
     {
         public int inquiryId { get; set; }
