@@ -133,7 +133,15 @@ namespace BackendSaiKitchen.Helper
         designAssigneePending = 39,
         designAssigneeAccepted = 40,
         designAssigneeRejected = 41,
-        quotationSchedulePending = 42
+        quotationSchedulePending = 42,
+        commercialChecklistPending = 43,
+        commercialChecklistAccepted = 44,
+        commercialChecklistRejected = 45,
+        jobOrderFactoryApprovalPending = 46,
+        jobOrderFactoryAccepted = 47,
+        jobOrderFactoryRejected = 48,
+
+
     }
 
     public enum roleType
