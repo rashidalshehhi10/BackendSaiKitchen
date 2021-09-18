@@ -385,10 +385,12 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                inquiry.InquiryComment = approve.Reason;
                 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                    inquiryWorkscope.Comments = approve.Reason;
                 }
 
 
@@ -413,12 +415,12 @@ namespace BackendSaiKitchen.Controllers
 
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
                 inquiry.InquiryComment = Reject.Reason;
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
                     inquiryWorkscope.Comments = Reject.Reason;
                 }
 
