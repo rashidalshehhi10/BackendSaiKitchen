@@ -307,21 +307,6 @@ namespace BackendSaiKitchen.Controllers
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
 
-
-
-                //var inquiry = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == id && i.IsActive == true && i.IsDeleted == false).Include(x=>x.Customer).Include(x=>x.InquiryWorkscopes.Where(y=>y.IsActive==true && y.IsDeleted==false)).ThenInclude(x => x.Workscope).FirstOrDefault();
-
-                //if (inquiry != null)
-                //{
-                //    foreach(var inquiryWorkscope in inquiry.InquiryWorkscopes) { 
-                //    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
-                //    inquiryWorkscope.IsDesignApproved = true;
-
-                //    }
-                //inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
-                //inquiryRepository.Update(inquiry);
-                //List<int?> roleTypeId = new List<int?>();
-                //roleTypeId.Add((int)roleType.Manager);
                 try
                 {
                     sendNotificationToHead("Customer Approved the Design For inquiry Code:IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment
@@ -360,29 +345,16 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
                     inquiryWorkscope.IsDesignApproved = true;
                     inquiryWorkscope.FeedbackReaction = updateInquiryStatus.FeedBackReaction;
-                    inquiryWorkscope.Designs.FirstOrDefault().DesignCustomerReviewDate = Helper.Helper.GetDateTime();
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
                     Helper.Helper.Each(inquiryWorkscope.Designs, i =>
                     {
                         //i.IsActive = false;
                         i.DesignComment = updateInquiryStatus.DesignComment;
+                        i.DesignCustomerReviewDate = Helper.Helper.GetDateTime();
                     });
                 }
                 inquiryRepository.Update(inquiry);
 
-
-                //var inquiry = inquiryRepository.FindByCondition(i => i.InquiryId == updateInquiry.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope).FirstOrDefault();
-
-                //if (inquiry != null)
-                //{
-                //    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
-                //    {
-                //        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
-                //        inquiryWorkscope.IsDesignApproved = false;
-                //        inquiryWorkscope.FeedbackReaction = updateInquiry.FeedBackReaction;
-                //    }
-
-                //    inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
                 try
