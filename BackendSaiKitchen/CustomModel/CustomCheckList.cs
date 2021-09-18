@@ -6,7 +6,8 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class CustomCommercialCheckListApproval
     {
-
+        public int inquiryId { get; set; }
+        public string Reason { get; set; }
     }
     public class CustomCheckListapprove
     {

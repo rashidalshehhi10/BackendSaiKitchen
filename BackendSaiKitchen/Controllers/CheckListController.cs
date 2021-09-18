@@ -261,9 +261,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> ApproveinquiryChecklist(CustomCheckListapprove approve)
+        public object ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
@@ -377,9 +377,70 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object ApproveinquiryCommericalChecklist(CustomCommercialCheckListApproval approve)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                }
+
+
+                response.data = "Commerical Checklist Approved";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Does not exist";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RejectinquiryCommericalChecklist(CustomCommercialCheckListApproval Reject)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                inquiry.InquiryComment = Reject.Reason;
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                    inquiryWorkscope.Comments = Reject.Reason;
+                }
+
+
+                response.data = "Commerical Checklist Rejected";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Does not exist";
+            }
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
         public object RejectinquiryChecklist(CustomCheckListReject reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
