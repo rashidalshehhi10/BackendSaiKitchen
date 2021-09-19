@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.Controllers
                  .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryAccepted;
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     JobOrderDetail jobOrderDetail = new JobOrderDetail();
