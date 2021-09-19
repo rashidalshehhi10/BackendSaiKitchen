@@ -71,6 +71,43 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetinquiryJobOrderFactoryDetailsById(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            && ( x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Building).Include(x => x.Customer)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Workscope)
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
+                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
+                (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))).FirstOrDefault();
+            // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
+            if (inquiry != null)
+            {
+                
+                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                    response.data = inquiry;
+                
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetInquiryJobOrderFactoryByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
