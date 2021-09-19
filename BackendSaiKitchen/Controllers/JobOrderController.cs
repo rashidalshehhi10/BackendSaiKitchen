@@ -21,7 +21,17 @@ namespace BackendSaiKitchen.Controllers
                  .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                JobOrderDetail jobOrderDetail = new JobOrderDetail();
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    JobOrderDetail jobOrderDetail = new JobOrderDetail();
+                    jobOrderDetail.MaterialAvailabilityDate = order.materialAvailablityDate;
+                    jobOrderDetail.MaterialDeliveryFinalDate = order.materialDeliveryFinalDate;
+                    jobOrderDetail.ProductionCompletionDate = order.productionCompletionDate;
+                    jobOrderDetail.ShopDrawingCompletionDate = order.shopDrawingCompletionDate;
+                    jobOrderDetail.WoodenWorkCompletionDate = order.woodenWorkCompletionDate;
+                    jobOrderDetail.JobOrderDetailDescription = order.Notes;
+                    
+                }
                 //jobOrderDetail.jo
                 
             }
