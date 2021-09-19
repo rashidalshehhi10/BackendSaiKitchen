@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.Models
         public string JobOrderChecklistFileUrl { get; set; }
         public string DataSheetApplianceFileUrl { get; set; }
         public bool? IsAppliancesProvidedByClient { get; set; }
+        public int? JobOrderDetailId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -31,5 +32,6 @@ namespace BackendSaiKitchen.Models
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
+        public virtual JobOrderDetail JobOrderDetail { get; set; }
     }
 }

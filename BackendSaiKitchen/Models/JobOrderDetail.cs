@@ -7,6 +7,11 @@ namespace BackendSaiKitchen.Models
 {
     public partial class JobOrderDetail
     {
+        public JobOrderDetail()
+        {
+            JobOrders = new HashSet<JobOrder>();
+        }
+
         public int JobOrderDetailId { get; set; }
         public string JobOrderDetailName { get; set; }
         public string JobOrderDetailDescription { get; set; }
@@ -24,5 +29,7 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+
+        public virtual ICollection<JobOrder> JobOrders { get; set; }
     }
 }

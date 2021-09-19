@@ -529,6 +529,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_JobOrder_Inquiry");
+
+                entity.HasOne(d => d.JobOrderDetail)
+                    .WithMany(p => p.JobOrders)
+                    .HasForeignKey(d => d.JobOrderDetailId)
+                    .HasConstraintName("FK_JobOrder_JobOrderDetail");
             });
 
             modelBuilder.Entity<JobOrderDetail>(entity =>
