@@ -239,7 +239,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 var inquiries = branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate).Month >= Helper.Helper.ConvertToDateTime(req.StartDate).Month && Helper.Helper.ConvertToDateTime(y.CreatedDate).Month <= Helper.Helper.ConvertToDateTime(req.EndDate).Month);
-               
+
                 for (int i = Helper.Helper.ConvertToDateTime(req.StartDate).Month; i <= Helper.Helper.ConvertToDateTime(req.EndDate).Month; i++)
                 {
                     var inworscopes = inquiries.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Month == i).Select(x => x.InquiryWorkscopes).ToList();
@@ -247,23 +247,14 @@ namespace BackendSaiKitchen.Controllers
                     double? FeedBackAverage = 0;
                     decimal? PaymentAverage = 0;
 
-                    string month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i).Substring(0,3);
+                    string month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i).Substring(0, 3);
 
 
-                    //foreach (var inworkscope in inworscopes)
-                    //{
-                    //    avg = inworkscope.Sum(x => x.FeedbackReaction)/inworscopes.Count();
-                    //}
-
-                    //foreach (var payment in payments)
-                    //{
-                    //    avgp = payment.Sum(x => x.PaymentAmount) / payments.Count();
-                    //}
                     inworscopes.ForEach(x => FeedBackAverage = x.Select(y => (y.FeedbackReaction == null ? 1 : (y.FeedbackReaction == 0 ? 1 : y.FeedbackReaction))).Average());
                     payments.ForEach(x => PaymentAverage = x.Select(y => y.PaymentAmount == null ? 0 : y.PaymentAmount).Average());
                     report.CustomerSatisfaction.Add(new MonthlyReview
                     {
-                        Avarege =(decimal?)FeedBackAverage,
+                        Avarege = (decimal?)FeedBackAverage,
                         Month = month
                     });
 
@@ -272,24 +263,9 @@ namespace BackendSaiKitchen.Controllers
                         Avarege = PaymentAverage,
                         Month = month
                     });
-            }
+                }
 
-                //switch (Helper.Helper.ConvertToDateTime (inquiry.CreatedDate).Month)
-                //{
-                //    case 1:
-                //        report.CustomerSatisfaction.Add(new MonthlyReview
-                //        {
-                //            Avarege = (decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Sum(x => x.FeedbackReaction) / inquiry.InquiryWorkscopes.Count(),
-                //            Month = "Jan"
-                //        });
-                //        break;
-
-                //}
-
-                //foreach (var payment in inquiry.Payments)
-                //{
-
-                //}
+               
 
                 int x = 0;
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
@@ -342,21 +318,7 @@ namespace BackendSaiKitchen.Controllers
                     if (report.AmountReceived != 0 && report.AmountReceived != null)
                         value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
                     
-                    //switch (i)
-                    //{
-                    //    case 1:
-                    //        mode = paymentMode.Cash.ToString();
-                    //        break;
-                    //    case 2:
-                    //        mode = paymentMode.Cheque.ToString();
-                    //        break;
-                    //    case 3:
-                    //        mode = paymentMode.OfflinePaybyCard.ToString();
-                    //        break;
-                    //    case 4:
-                    //        mode = paymentMode.OnlinePayment.ToString();
-                    //        break;
-                    //}
+                     
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
                     {
                         PaymentMode = mode,
