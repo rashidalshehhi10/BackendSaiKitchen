@@ -529,11 +529,6 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_JobOrder_Inquiry");
-
-                entity.HasOne(d => d.JobOrderDetail)
-                    .WithMany(p => p.JobOrders)
-                    .HasForeignKey(d => d.JobOrderDetailId)
-                    .HasConstraintName("FK_JobOrder_JobOrderDetail");
             });
 
             modelBuilder.Entity<JobOrderDetail>(entity =>
@@ -563,6 +558,11 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.WoodenWorkCompletionDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.JobOrder)
+                    .WithMany(p => p.JobOrderDetails)
+                    .HasForeignKey(d => d.JobOrderId)
+                    .HasConstraintName("FK_JobOrderDetail_JobOrder");
             });
 
             modelBuilder.Entity<KitchenDesignInfo>(entity =>
