@@ -16,4 +16,10 @@ namespace BackendSaiKitchen.CustomModel
         public string counterTopFixingDate { get; set; }
         public string Notes { get; set; }
     }
+
+    public class JobOrderFactoryReject
+    {
+        public int inquiryId { get; set; }
+        public string Reason { get; set; }
+    }
 }

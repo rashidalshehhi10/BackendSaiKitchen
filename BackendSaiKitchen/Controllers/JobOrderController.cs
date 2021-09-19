@@ -47,13 +47,14 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object JobOrderFactoryReject(int inquiryId)
+        public object JobOrderFactoryReject(JobOrderFactoryReject job)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected;
+                inquiry.InquiryComment = job.Reason;
                 //Helper.Helper.Each(inquiry.JobOrders, x =>
                 //{
                 //    x.IsActive = false;
