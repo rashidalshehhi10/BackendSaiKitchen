@@ -539,6 +539,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.InstallationDate).HasMaxLength(50);
+
                 entity.Property(e => e.JobOrderDetailDescription).HasMaxLength(500);
 
                 entity.Property(e => e.JobOrderDetailName).HasMaxLength(50);

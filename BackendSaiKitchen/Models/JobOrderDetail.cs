@@ -18,6 +18,9 @@ namespace BackendSaiKitchen.Models
         public string WoodenWorkCompletionDate { get; set; }
         public string MaterialDeliveryFinalDate { get; set; }
         public string CountertopFixingDate { get; set; }
+        public string InstallationDate { get; set; }
+        public bool? IsNewlyRequested { get; set; }
+        public bool? IsFromFactory { get; set; }
         public string Remarks { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
