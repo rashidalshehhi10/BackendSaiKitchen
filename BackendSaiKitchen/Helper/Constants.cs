@@ -140,7 +140,11 @@ namespace BackendSaiKitchen.Helper
         jobOrderFactoryApprovalPending = 46,
         jobOrderFactoryAccepted = 47,
         jobOrderFactoryRejected = 48,
-
+        jobOrderRescheduleRequested = 49,
+        jobOrderRescheduleApproved = 50,
+        jobOrderRescheduleRejected = 51,
+        jobOrderDelayRequested = 52,
+        jobOrderReadyForInstallation = 53
 
     }
 

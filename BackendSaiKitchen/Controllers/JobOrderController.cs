@@ -22,6 +22,10 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryAccepted;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                {
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryAccepted;
+                });
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     JobOrderDetail jobOrderDetail = new JobOrderDetail();
@@ -56,6 +60,10 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                {
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected;
+                });
                 inquiry.InquiryComment = job.Reason;
                 //Helper.Helper.Each(inquiry.JobOrders, x =>
                 //{
@@ -165,15 +173,7 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
-        [HttpPost]
-        [Route("[action]")]
-        public object RequestForRescheduling(int inquiryId)
-        {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails);
-            return response;
-        }
+        
 
     }
 }
