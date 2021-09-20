@@ -37,6 +37,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 //jobOrderDetail.jo
                 inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
@@ -61,6 +62,8 @@ namespace BackendSaiKitchen.Controllers
                 //    x.IsActive = false;
                 //});
                 response.data = "JobOrder Factory Rejected";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
