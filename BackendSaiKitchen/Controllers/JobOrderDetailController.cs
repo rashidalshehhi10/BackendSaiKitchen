@@ -156,6 +156,12 @@ namespace BackendSaiKitchen.Controllers
                     jobOrderDetail.JobOrderDetailDescription = order.Notes;
                     jobOrderDetail.CreatedBy = Constants.userId;
                     jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
+                    jobOrderDetail.InstallationStartDate = order.installationStartDate;
+                    jobOrderDetail.InstallationEndDate = order.installationEndDate;
+                    jobOrderDetail.IsActive = true;
+                    jobOrderDetail.IsDeleted = false;
+                    jobOrderDetail.IsNewlyRequested = false;
+                    jobOrderDetail.IsFromFactory = branchRepository?.FindByCondition(x => x.BranchId == inquiry.JobOrders.FirstOrDefault().FactoryId && x.IsActive == true && x.IsDeleted == false)?.FirstOrDefault()?.BranchTypeId == 3 ? true : false;
                     joborder.JobOrderDetails.Add(jobOrderDetail);
                 }
                 //jobOrderDetail.jo
@@ -176,7 +182,8 @@ namespace BackendSaiKitchen.Controllers
         public object JobOrderFactoryReject(JobOrderFactoryReject job)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending)
-                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRejected;
@@ -184,6 +191,13 @@ namespace BackendSaiKitchen.Controllers
                 {
                     x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRejected;
                 });
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    Helper.Helper.Each(joborder.JobOrderDetails, x =>
+                    {
+                        x.IsDeleted = false;
+                    });
+                }
                 inquiry.InquiryComment = job.Reason;
                
                 response.data = "JobOrder Detail Reschedule Rejected";
@@ -225,10 +239,60 @@ namespace BackendSaiKitchen.Controllers
                     jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
                     jobOrderDetail.InstallationStartDate = order.installationStartDate;
                     jobOrderDetail.InstallationEndDate = order.installationEndDate;
+                    jobOrderDetail.IsActive = true;
+                    jobOrderDetail.IsDeleted = false;
                     joborder.JobOrderDetails.Add(jobOrderDetail);
                 }
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ReadyToInstall(Install ready)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiry != null)
+            {
+                if (ready.YesNo)
+                {
+                    inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
+                    inquiryRepository.Update(inquiry);
+                }
+                else
+                {
+                    response.data = "JobOrder Not Ready For Install";
+                }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object JobOrderCompleted(Install install)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == install.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    Helper.Helper.Each(joborder.JobOrderDetails, x =>
+                    {
+                        x.InstallationEndDate = Helper.Helper.GetDateTime();
+                        x.Remarks = install.Remark;
+                        x.JobOrderDetailDescription = install.JobOrderDetailsDescription;
+                    });
+                }
             }
             return response;
         }

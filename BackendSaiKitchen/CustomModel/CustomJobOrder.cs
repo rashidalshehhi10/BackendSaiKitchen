@@ -24,4 +24,12 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public string Reason { get; set; }
     }
+
+    public class Install
+    {
+        public int inquiryId { get; set; }
+        public bool YesNo { get; set; }
+        public string Remark { get; set; }
+        public string JobOrderDetailsDescription { get; set; }
+    }
 }
