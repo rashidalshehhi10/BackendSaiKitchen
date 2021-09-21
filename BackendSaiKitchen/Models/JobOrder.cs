@@ -27,6 +27,8 @@ namespace BackendSaiKitchen.Models
         public string JobOrderChecklistFileUrl { get; set; }
         public string DataSheetApplianceFileUrl { get; set; }
         public bool? IsAppliancesProvidedByClient { get; set; }
+        public int? FeedbackReaction { get; set; }
+        public string Comments { get; set; }
         public int? FactoryId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
