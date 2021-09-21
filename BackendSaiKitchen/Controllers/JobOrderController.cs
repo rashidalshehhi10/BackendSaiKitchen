@@ -37,7 +37,8 @@ namespace BackendSaiKitchen.Controllers
                     jobOrderDetail.JobOrderDetailDescription = order.Notes;
                     jobOrderDetail.CreatedBy = Constants.userId;
                     jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
-                    jobOrderDetail.InstallationStartDate = order.installationDate;
+                    jobOrderDetail.InstallationStartDate = order.installationStartDate;
+                    jobOrderDetail.InstallationEndDate = order.installationEndDate;
                     joborder.JobOrderDetails.Add(jobOrderDetail);
                 }
                 //jobOrderDetail.jo

@@ -207,10 +207,28 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (inquiry != null)
             {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayRequested;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                {
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayRequested;
+                });
                 foreach (var joborder in inquiry.JobOrders)
                 {
-
+                    JobOrderDetail jobOrderDetail = new JobOrderDetail();
+                    jobOrderDetail.MaterialAvailabilityDate = order.materialAvailablityDate;
+                    jobOrderDetail.MaterialDeliveryFinalDate = order.materialDeliveryFinalDate;
+                    jobOrderDetail.ProductionCompletionDate = order.productionCompletionDate;
+                    jobOrderDetail.ShopDrawingCompletionDate = order.shopDrawingCompletionDate;
+                    jobOrderDetail.WoodenWorkCompletionDate = order.woodenWorkCompletionDate;
+                    jobOrderDetail.JobOrderDetailDescription = order.Notes;
+                    jobOrderDetail.CreatedBy = Constants.userId;
+                    jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
+                    jobOrderDetail.InstallationStartDate = order.installationStartDate;
+                    jobOrderDetail.InstallationEndDate = order.installationEndDate;
+                    joborder.JobOrderDetails.Add(jobOrderDetail);
                 }
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             return response;
         }
