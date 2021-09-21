@@ -112,7 +112,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RequestForRescheduling(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -227,20 +227,12 @@ namespace BackendSaiKitchen.Controllers
                 });
                 foreach (var joborder in inquiry.JobOrders)
                 {
-                    JobOrderDetail jobOrderDetail = new JobOrderDetail();
-                    jobOrderDetail.MaterialAvailabilityDate = order.materialAvailablityDate;
-                    jobOrderDetail.MaterialDeliveryFinalDate = order.materialDeliveryFinalDate;
-                    jobOrderDetail.ProductionCompletionDate = order.productionCompletionDate;
-                    jobOrderDetail.ShopDrawingCompletionDate = order.shopDrawingCompletionDate;
-                    jobOrderDetail.WoodenWorkCompletionDate = order.woodenWorkCompletionDate;
-                    jobOrderDetail.JobOrderDetailDescription = order.Notes;
-                    jobOrderDetail.CreatedBy = Constants.userId;
-                    jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
-                    jobOrderDetail.InstallationStartDate = order.installationStartDate;
-                    jobOrderDetail.InstallationEndDate = order.installationEndDate;
-                    jobOrderDetail.IsActive = true;
-                    jobOrderDetail.IsDeleted = false;
-                    joborder.JobOrderDetails.Add(jobOrderDetail);
+                    Helper.Helper.Each(joborder.JobOrderDetails, x =>
+                    {
+                        x.InstallationStartDate = order.installationStartDate;
+                        x.JobOrderDetailDescription = order.Notes;
+                    });
+                    
                 }
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
