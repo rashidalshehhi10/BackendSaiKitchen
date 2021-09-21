@@ -198,20 +198,21 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        //[HttpPost]
-        //[Route("[action]")]
-        //public object JobOrderDelayRequested(CustomJobOrder order)
-        //{
-        //    var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)
-        //        .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-        //        .ThenInclude(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-        //    if (inquiry != null)
-        //    {
-        //        foreach (var joborder in collection)
-        //        {
+        [HttpPost]
+        [Route("[action]")]
+        public object JobOrderDelayRequested(CustomJobOrder order)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiry != null)
+            {
+                foreach (var joborder in inquiry.JobOrders)
+                {
 
-        //        }
-        //    }
-        //}
+                }
+            }
+            return response;
+        }
     }
 }
