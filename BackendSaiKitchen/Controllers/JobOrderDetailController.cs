@@ -176,11 +176,13 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object JobOrderFactoryReject(JobOrderFactoryReject job)
+        public object JobOrderDetailRescheduleReject(JobOrderFactoryReject job)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                //.Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                //.ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRejected;
@@ -192,7 +194,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     Helper.Helper.Each(joborder.JobOrderDetails, x =>
                     {
-                        x.IsDeleted = false;
+                        x.IsActive = false;
                     });
                 }
                 inquiry.InquiryComment = job.Reason;
