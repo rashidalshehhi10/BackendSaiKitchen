@@ -114,7 +114,7 @@ namespace BackendSaiKitchen.Controllers
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRequested;
@@ -139,7 +139,8 @@ namespace BackendSaiKitchen.Controllers
         public object JobOrderDetailRescheduleApprove(CustomJobOrder order)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
-                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                 .ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
