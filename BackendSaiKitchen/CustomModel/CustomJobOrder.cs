@@ -31,5 +31,6 @@ namespace BackendSaiKitchen.CustomModel
         public bool YesNo { get; set; }
         public string Remark { get; set; }
         public string JobOrderDetailsDescription { get; set; }
+        public string installationStartDate { get; set; }
     }
 }

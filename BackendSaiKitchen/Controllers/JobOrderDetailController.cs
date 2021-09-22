@@ -250,12 +250,26 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ReadyToInstall(Install ready)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 if (ready.YesNo)
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
+                    Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                    {
+                        x.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
+                    });
+
+                    foreach (var joborder in inquiry.JobOrders)
+                    {
+                        Helper.Helper.Each(joborder.JobOrderDetails, x =>
+                        {
+                            x.InstallationStartDate = ready.installationStartDate;
+                        });
+                    }
                     inquiryRepository.Update(inquiry);
                     response.data = "JobOrder Ready To Install";
                 }
@@ -282,6 +296,12 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
+
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                {
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
+                });
+
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     Helper.Helper.Each(joborder.JobOrderDetails, x =>
