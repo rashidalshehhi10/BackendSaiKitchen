@@ -158,6 +158,7 @@ namespace BackendSaiKitchen.Controllers
                         jobOrderDetail.CreatedBy = Constants.userId;
                         jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
                         jobOrderDetail.InstallationStartDate = order.installationStartDate;
+                        //jobOrderDetail.InstallationEndDate = order.installationEndDate;
                         jobOrderDetail.IsNewlyRequested = false;
                         jobOrderDetail.IsFromFactory = branchRepository?.FindByCondition(x => x.BranchId == inquiry.JobOrders.FirstOrDefault().FactoryId && x.IsActive == true && x.IsDeleted == false)?.FirstOrDefault()?.BranchTypeId == 3 ? true : false;
                     }
