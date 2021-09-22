@@ -34,6 +34,7 @@ namespace BackendSaiKitchen.Controllers
                     jobOrderDetail.ProductionCompletionDate = order.productionCompletionDate;
                     jobOrderDetail.ShopDrawingCompletionDate = order.shopDrawingCompletionDate;
                     jobOrderDetail.WoodenWorkCompletionDate = order.woodenWorkCompletionDate;
+                    jobOrderDetail.CountertopFixingDate = order.counterTopFixingDate;
                     jobOrderDetail.JobOrderDetailDescription = order.Notes;
                     jobOrderDetail.CreatedBy = Constants.userId;
                     jobOrderDetail.CreatedDate = Helper.Helper.GetDateTime();
