@@ -497,7 +497,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateAssignDesign(UpdateInquirySchedule updateInquiry)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.InquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designAssigneePending || x.InquiryStatusId == (int)inquiryStatus.designAssigneeRejected || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designRejected || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer))
                 .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.measurementAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneePending || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.measurementdelayed || x.InquiryStatusId != (int)inquiryStatus.measurementPending || x.InquiryStatusId != (int)inquiryStatus.measurementRejected || x.InquiryStatusId != (int)inquiryStatus.measurementWaitingForApproval))
             //    .Include(x => x.Inquiry)
