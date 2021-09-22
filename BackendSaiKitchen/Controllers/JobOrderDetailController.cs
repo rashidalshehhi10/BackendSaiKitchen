@@ -255,28 +255,23 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                if (ready.YesNo)
-                {
-                    inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
-                    Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
-                    {
-                        x.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
-                    });
 
-                    foreach (var joborder in inquiry.JobOrders)
-                    {
-                        Helper.Helper.Each(joborder.JobOrderDetails, x =>
-                        {
-                            x.InstallationStartDate = ready.installationStartDate;
-                        });
-                    }
-                    inquiryRepository.Update(inquiry);
-                    response.data = "JobOrder Ready To Install";
-                }
-                else
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    response.data = "JobOrder Not Ready To Install";
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
+                });
+
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    Helper.Helper.Each(joborder.JobOrderDetails, x =>
+                    {
+                        x.InstallationStartDate = ready.installationStartDate;
+                    });
                 }
+                inquiryRepository.Update(inquiry);
+                response.data = "JobOrder Ready To Install";
+                context.SaveChanges();
             }
             else
             {
@@ -311,6 +306,14 @@ namespace BackendSaiKitchen.Controllers
                         x.JobOrderDetailDescription = install.JobOrderDetailsDescription;
                     });
                 }
+                response.data = "JobOrder Completed";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
             }
             return response;
         }
