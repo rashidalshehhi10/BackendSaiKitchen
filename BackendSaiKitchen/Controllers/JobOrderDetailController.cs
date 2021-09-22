@@ -216,7 +216,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderDelayRequested(CustomJobOrder order)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -233,10 +233,15 @@ namespace BackendSaiKitchen.Controllers
                         x.InstallationStartDate = order.installationStartDate;
                         x.JobOrderDetailDescription = order.Notes;
                     });
-                    
+
                 }
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
             }
             return response;
         }
@@ -245,17 +250,18 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ReadyToInstall(Install ready)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested)).FirstOrDefault();
             if (inquiry != null)
             {
                 if (ready.YesNo)
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderReadyForInstallation;
                     inquiryRepository.Update(inquiry);
+                    response.data = "JobOrder Ready To Install";
                 }
                 else
                 {
-                    response.data = "JobOrder Not Ready For Install";
+                    response.data = "JobOrder Not Ready To Install";
                 }
             }
             else
