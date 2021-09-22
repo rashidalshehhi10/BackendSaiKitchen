@@ -18,7 +18,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquiryJobOrderDetailsByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted)).Select(x => new CheckListByBranch
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
                 QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
