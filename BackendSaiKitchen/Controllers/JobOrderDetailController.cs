@@ -110,9 +110,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object RequestForRescheduling(int inquiryId)
+        public object RequestForRescheduling(CustomJobOrder order)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -122,33 +122,6 @@ namespace BackendSaiKitchen.Controllers
                 {
                     x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRequested;
                 });
-                response.data = "JobOrder Detail Reschedule Requested";
-                inquiryRepository.Update(inquiry);
-                context.SaveChanges();
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = "Inquiry Not Found";
-            }
-            return response;
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public object JobOrderDetailRescheduleApprove(CustomJobOrder order)
-        {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
-                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                 .ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
-            if (inquiry != null)
-            {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
-                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
-                {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
-                });
-               // JobOrderDetail jobOrderDetail = new JobOrderDetail();
 
                 foreach (var joborder in inquiry.JobOrders)
                 {
@@ -163,7 +136,34 @@ namespace BackendSaiKitchen.Controllers
                         jobOrderDetail.IsFromFactory = branchRepository?.FindByCondition(x => x.BranchId == inquiry.JobOrders.FirstOrDefault().FactoryId && x.IsActive == true && x.IsDeleted == false)?.FirstOrDefault()?.BranchTypeId == 3 ? true : false;
                     }
                 }
-                //response.data = jobOrderDetail;
+
+                response.data = "JobOrder Detail Reschedule Requested";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object JobOrderDetailRescheduleApprove(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
+                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                 .ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                {
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
+                });
+               
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
