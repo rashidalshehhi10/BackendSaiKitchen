@@ -125,7 +125,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && (i.InquiryStatusId == (int)inquiryStatus.measurementPending || i.InquiryStatusId == (int)inquiryStatus.measurementRejected || i.InquiryStatusId == (int)inquiryStatus.measurementdelayed || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted)).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && (i.InquiryStatusId == (int)inquiryStatus.measurementPending || i.InquiryStatusId == (int)inquiryStatus.measurementRejected || i.InquiryStatusId == (int)inquiryStatus.measurementdelayed || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted)).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.CreatedDate = null;
