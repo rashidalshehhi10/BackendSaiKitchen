@@ -63,7 +63,7 @@ namespace BackendSaiKitchen.CustomModel
         public string InquiryComment { get; set; }
         public int? WorkScopeId { get; set; }
         public int? WorkScopeCount { get; set; }
-        public string WorkScopeName { get; set; }
+        public List<string> WorkScopeName { get; set; }
         public int? QuestionaireType { get; set; }
         public string DesignScheduleDate { get; set; }
         public string DesignAssignTo { get; set; }

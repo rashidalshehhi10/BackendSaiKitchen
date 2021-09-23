@@ -24,7 +24,7 @@ namespace BackendSaiKitchen.Controllers
                 QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
                 InquiryDescription = x.InquiryDescription,
                 InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
                 WorkScopeCount = x.InquiryWorkscopes.Count,
                 Status = x.InquiryStatusId,
                 BuildingAddress = x.Building.BuildingAddress,
