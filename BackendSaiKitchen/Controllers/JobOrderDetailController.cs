@@ -151,11 +151,11 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object JobOrderDetailRescheduleApprove(int inquiryId)
+        public object JobOrderDetailRescheduleApprove(JobOrderFactory job)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
-                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                 .ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                 .FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
@@ -177,7 +177,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object JobOrderDetailRescheduleReject(JobOrderFactoryReject job)
+        public object JobOrderDetailRescheduleReject(JobOrderFactory job)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))

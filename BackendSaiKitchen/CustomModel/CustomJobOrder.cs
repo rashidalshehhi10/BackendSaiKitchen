@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.CustomModel
         public string Notes { get; set; }
     }
 
-    public class JobOrderFactoryReject
+    public class JobOrderFactory
     {
         public int inquiryId { get; set; }
         public string Reason { get; set; }
