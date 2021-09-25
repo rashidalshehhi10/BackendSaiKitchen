@@ -322,7 +322,7 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-
+                    inquiry.QuotationAddedOn = Helper.Helper.GetDateTime();
                     inquiry.Quotations.Add(quotation);
                     inquiryRepository.Update(inquiry);
                     response.data = null;

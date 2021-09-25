@@ -71,6 +71,7 @@ namespace BackendSaiKitchen.Controllers
                 design.DesignAddedBy = Constants.userId;
                 design.DesignAddedDate = Helper.Helper.GetDateTime();
                 inquiryworkscope.Comments = designCustomModel.comment;
+                inquiryworkscope.DesignAddedOn = Helper.Helper.GetDateTime();
                 inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
                 inquiryworkscope.Designs.Add(design);
 

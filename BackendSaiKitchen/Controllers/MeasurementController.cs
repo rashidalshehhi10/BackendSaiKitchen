@@ -307,6 +307,7 @@ namespace BackendSaiKitchen.Controllers
                         measurement.AddedBy = Constants.userId;
                         measurement.AddedDate = Helper.Helper.GetDateTime();
                         inquiry.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
+                        inworkscope.MeasurementAddedOn = Helper.Helper.GetDateTime();
                         inworkscope.InquiryStatusId = (int)inquiryStatus.measurementWaitingForApproval;
                         inworkscope.IsMeasurementDrawing = true;
                         inworkscope.Comments = customMeasFiles.measurementComment;

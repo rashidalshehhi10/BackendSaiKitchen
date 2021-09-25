@@ -76,4 +76,10 @@ namespace BackendSaiKitchen.CustomModel
         public int? inquiryWorkscopeId { get; set; }
         public List<int?> WorkScopeId { get; set; }
     }
+
+    public class AddComment
+    {
+        public int inquiryId { get; set; }
+        public string comment { get; set; }
+    }
 }

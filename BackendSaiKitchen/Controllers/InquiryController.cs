@@ -119,6 +119,26 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+        [HttpPost]
+        [Route("[action]")]
+        public object AddComment(AddComment comment)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == comment.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.InquiryComment = comment.comment;
+                inquiry.InquiryCommentsAddedOn = Helper.GetDateTime();
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+                response.data = "Comment Added Successfully";
+            }
+            else
+            {
+                response.isError = false;
+                response.errorMessage = "Inquiry Not Found ";
+            }
+            return response;
+        }
 
         [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
