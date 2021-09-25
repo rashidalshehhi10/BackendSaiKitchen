@@ -47,6 +47,10 @@ namespace BackendSaiKitchen.CustomModel
         public int? NoOfRevision { get; set; }
         public string QuotationScheduleDate { get; set; }
         public List<string> WorkscopeNames { get; set; }
+        public string CommentAddedOn { get; set; }
+        public string MeasurementAddedOn { get; set; }
+        public string DesignAddedOn { get; set; }
+        public string QuotationAddedOn { get; set; }
         //public List<InquiryWorkscope> InquiryWorkscopes { get; set; }
     }
     public class UpdateInquirySchedule

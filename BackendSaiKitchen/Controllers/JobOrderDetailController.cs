@@ -18,34 +18,39 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquiryJobOrderDetailsByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted)).Select(x => new CheckListByBranch
-            {
-                InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
-                InquiryDescription = x.InquiryDescription,
-                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
-                WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryStatusId,
-                BuildingAddress = x.Building.BuildingAddress,
-                BuildingCondition = x.Building.BuildingCondition,
-                BuildingFloor = x.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested,
-                CustomerId = x.CustomerId,
-                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                CustomerName = x.Customer.CustomerName,
-                CustomerEmail = x.Customer.CustomerEmail,
-                CustomerContact = x.Customer.CustomerContact,
-                BranchId = x.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,
-                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
-            }).ToList();
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted))
+                .Select(x => new CheckListByBranch
+                {
+                    InquiryId = x.InquiryId,
+                    QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
+                    InquiryDescription = x.InquiryDescription,
+                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    Status = x.InquiryStatusId,
+                    BuildingAddress = x.Building.BuildingAddress,
+                    BuildingCondition = x.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor,
+                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    CustomerId = x.CustomerId,
+                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BranchId = x.BranchId,
+                    InquiryAddedBy = x.AddedByNavigation.UserName,
+                    InquiryAddedById = x.AddedBy,
+                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn
+                }).ToList();
             if (inquiries != null)
             {
                 response.data = inquiries;

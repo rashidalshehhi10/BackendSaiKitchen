@@ -100,6 +100,10 @@ namespace BackendSaiKitchen.Controllers
                     NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
@@ -144,6 +148,10 @@ namespace BackendSaiKitchen.Controllers
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     QuotationScheduleDate = x.QuotationScheduleDate,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();

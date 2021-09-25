@@ -85,5 +85,9 @@ namespace BackendSaiKitchen.CustomModel
         public int? InquiryAddedById { get; set; }
         public Object Actions { get; set; }
         public int? NoOfRevision { get; set; }
+        public string CommentAddedOn { get; set; }
+        public string MeasurementAddedOn { get; set; }
+        public string DesignAddedOn { get; set; }
+        public string QuotationAddedOn { get; set; }
     }
 }

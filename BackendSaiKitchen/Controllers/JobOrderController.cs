@@ -166,7 +166,11 @@ namespace BackendSaiKitchen.Controllers
                 InquiryAddedBy = x.AddedByNavigation.UserName,
                 InquiryAddedById = x.AddedBy,
                 NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                CommentAddedOn = x.InquiryCommentsAddedOn,
+                DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                QuotationAddedOn = x.QuotationAddedOn
             }).ToList();
             if (inquiries != null)
             {
