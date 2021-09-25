@@ -383,6 +383,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.InquiryComment).HasMaxLength(500);
 
+                entity.Property(e => e.InquiryCommentsAddedOn).HasMaxLength(50);
+
                 entity.Property(e => e.InquiryDescription).HasMaxLength(500);
 
                 entity.Property(e => e.InquiryDueDate).HasMaxLength(50);
@@ -396,6 +398,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.MeasurementFees).HasMaxLength(50);
 
                 entity.Property(e => e.PromoDiscount).HasMaxLength(50);
+
+                entity.Property(e => e.QuotationAddedOn).HasMaxLength(50);
 
                 entity.Property(e => e.QuotationScheduleDate).HasMaxLength(50);
 
@@ -458,7 +462,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.DesignAddedOn).HasMaxLength(50);
+
                 entity.Property(e => e.DesignScheduleDate).HasMaxLength(50);
+
+                entity.Property(e => e.MeasurementAddedOn).HasMaxLength(50);
 
                 entity.Property(e => e.MeasurementScheduleDate).HasMaxLength(50);
 

@@ -21,8 +21,10 @@ namespace BackendSaiKitchen.Models
         public int? DesignAssignedTo { get; set; }
         public int? InquiryStatusId { get; set; }
         public string MeasurementScheduleDate { get; set; }
+        public string MeasurementAddedOn { get; set; }
         public string DesignScheduleDate { get; set; }
         public bool? IsDesignApproved { get; set; }
+        public string DesignAddedOn { get; set; }
         public string Comments { get; set; }
         public int? FeedbackReaction { get; set; }
         public bool? IsActive { get; set; }
