@@ -81,6 +81,30 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public async Task<object> Delete(string FileUrl)
+        {
+            if (FileUrl != null)
+            {
+                response.data = await Helper.Helper.DeleteFile(FileUrl);
+                var file = await fileRepository.FindByCondition(x => x.FileUrl == FileUrl && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                if (file != null)
+                {
+                    file.IsDeleted = true;
+                    file.IsActive = false;
+                    fileRepository.Update(file);
+                }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "File Not Found";
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<object> DeleteVideo(long VideoId)
         {
             if (VideoId > 0)

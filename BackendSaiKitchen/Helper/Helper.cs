@@ -99,16 +99,32 @@ namespace BackendSaiKitchen.Helper
         }
 
 
-        public static async Task DeleteFile(string fileUrl)
+        public static async Task<object> DeleteFile(string fileUrl)
         {
-            if (fileUrl.Contains('.'))
+            long videoId;
+            string result = "";
+            if (fileUrl != null)
             {
-                DeleteFileFromBlob(fileUrl);
+
+
+                if (fileUrl.Contains('.'))
+                {
+                    result = "File " + await DeleteFileFromBlob(fileUrl) + " Has Been Deleted";
+                }
+                else if (long.TryParse(fileUrl, out videoId))
+                {
+                    result = "Video " + await DeleteVideo(videoId) + " Has Been Deleted";
+                }
+                else
+                {
+                    throw new FileNotFoundException(Constants.wrongFileUpload);
+                }
             }
             else
             {
-
+                throw new FileNotFoundException(Constants.MeasurementFileMissing);
             }
+            return result;
         }
 
 
