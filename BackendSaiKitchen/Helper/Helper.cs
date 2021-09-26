@@ -98,6 +98,20 @@ namespace BackendSaiKitchen.Helper
             return encrypted;
         }
 
+
+        public static async Task DeleteFile(string fileUrl)
+        {
+            if (fileUrl.Contains('.'))
+            {
+                DeleteFileFromBlob(fileUrl);
+            }
+            else
+            {
+
+            }
+        }
+
+
         public static async Task<Tuple<string, string>> UploadFile(byte[] fileByte)
         {
 

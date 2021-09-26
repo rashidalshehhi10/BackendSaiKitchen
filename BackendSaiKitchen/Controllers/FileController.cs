@@ -87,9 +87,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 response.data = await Helper.Helper.DeleteVideo(VideoId);
                 var video = await fileRepository.FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
-                video.IsActive = false;
-                video.IsDeleted = true;
-                fileRepository.Update(video);
+                if (video != null)
+                {
+                    video.IsActive = false;
+                    video.IsDeleted = true;
+                    fileRepository.Update(video);
+                }
             }
             else
             {
@@ -106,10 +109,14 @@ namespace BackendSaiKitchen.Controllers
             if (fileName != null)
             {
                 response.data = await Helper.Helper.DeleteFileFromBlob(fileName);
-                Models.File file = await fileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
-                file.IsDeleted = true;
-                file.IsActive = false;
-                fileRepository.Update(file);
+                var file = await fileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                if (file != null)
+                {
+                    file.IsDeleted = true;
+                    file.IsActive = false;
+                    fileRepository.Update(file);
+                }
+                
             }
             else
             {
