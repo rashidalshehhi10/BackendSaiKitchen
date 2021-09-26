@@ -181,7 +181,7 @@ namespace BackendSaiKitchen.Helper
                 }
                 else
                 {
-                    throw new FileNotFoundException(Constants.wrongFileUpload+""+ext);
+                    throw new FileNotFoundException(Constants.wrongFileUpload + "" + ext);
                 }
             }
             else
@@ -281,12 +281,12 @@ namespace BackendSaiKitchen.Helper
             return fileUrl;
         }
 
-        public static async Task<string> DeleteVideo(long VideoId=0)
+        public static async Task<string> DeleteVideo(long VideoId = 0)
         {
             var status = "";
             try
             {
-                if (VideoId > 0 )
+                if (VideoId > 0)
                 {
 
                     ServicePointManager.Expect100Continue = true;

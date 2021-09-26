@@ -265,7 +265,7 @@ namespace BackendSaiKitchen.Controllers
                     });
                 }
 
-               
+
 
                 int x = 0;
                 foreach (var Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
@@ -300,8 +300,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     double value = 0;
                     if (branch.Customers.Count() != 0)
-                        value = ((double)branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() /(double) branch.Customers.Count()) * 100;
-                    
+                        value = ((double)branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / (double)branch.Customers.Count()) * 100;
+
 
 
                     report.customerContactSources.Add(new CustomerContactSource
@@ -313,12 +313,12 @@ namespace BackendSaiKitchen.Controllers
 
                 for (int i = 1; i < 5; i++)
                 {
-                    string mode = Enum.GetName(typeof(paymentMode),i);
+                    string mode = Enum.GetName(typeof(paymentMode), i);
                     decimal value = 0;
                     if (report.AmountReceived != 0 && report.AmountReceived != null)
                         value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
-                    
-                     
+
+
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
                     {
                         PaymentMode = mode,
@@ -340,7 +340,7 @@ namespace BackendSaiKitchen.Controllers
                             Position = userrole.BranchRole.BranchRoleName
                         });
                     }
-                    
+
                 }
 
                 report.topFivePaidCustomers.OrderBy(x => x.AmountRecieved);

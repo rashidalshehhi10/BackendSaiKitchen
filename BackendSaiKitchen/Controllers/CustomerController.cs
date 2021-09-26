@@ -94,24 +94,24 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId
                 }).ToList();
-            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch==null)
+            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
              .Select(x => new CustomerResponse
-                {
-                    CustomerId = x.CustomerId,
-                    CustomerName = x.CustomerName,
-                    CustomerContact = x.CustomerContact,
-                    CustomerEmail = x.CustomerEmail,
-                    CustomerCity = x.CustomerCity,
-                    CustomerCountry = x.CustomerCountry,
-                    CustomerNationality = x.CustomerNationality,
-                    CustomerNotes = x.CustomerNotes,
-                    CustomerNextMeetingDate = x.CustomerNextMeetingDate,
-                    WayofContactId = x.WayofContactId,
-                    ContactStatusId = x.ContactStatusId,
-                    ContactStatus = x.ContactStatus.ContactStatusName,
-                    CustomerAddress = x.CustomerAddress,
-                    CustomerNationalId = x.CustomerNationalId
-                }).ToList());
+             {
+                 CustomerId = x.CustomerId,
+                 CustomerName = x.CustomerName,
+                 CustomerContact = x.CustomerContact,
+                 CustomerEmail = x.CustomerEmail,
+                 CustomerCity = x.CustomerCity,
+                 CustomerCountry = x.CustomerCountry,
+                 CustomerNationality = x.CustomerNationality,
+                 CustomerNotes = x.CustomerNotes,
+                 CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                 WayofContactId = x.WayofContactId,
+                 ContactStatusId = x.ContactStatusId,
+                 ContactStatus = x.ContactStatus.ContactStatusName,
+                 CustomerAddress = x.CustomerAddress,
+                 CustomerNationalId = x.CustomerNationalId
+             }).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
@@ -130,7 +130,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetCustomerbyId(int customerId)
         {
-            CustomerResponse customer=null;
+            CustomerResponse customer = null;
             try
             {
                 customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
@@ -140,10 +140,10 @@ namespace SaiKitchenBackend.Controllers
             if (customer == null)
             {
                 customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
-                { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerWhatsapp = x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail,  CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
+                { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerWhatsapp = x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
 
             }
-            response.data=customer;
+            response.data = customer;
             return response;
         }
 
@@ -174,12 +174,12 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> AddWebsiteCustomerAsync([FromForm]CustomCustomer customer)
+        public async Task<object> AddWebsiteCustomerAsync([FromForm] CustomCustomer customer)
         {
             Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (oldCustomer == null)
             {
-                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail,WayofContactId=customer.WayofContactId,ContactStatusId=customer.ContactStatusId });
+                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail, WayofContactId = customer.WayofContactId, ContactStatusId = customer.ContactStatusId });
 
                 if (customer.CustomerEmail != null)
                 {
@@ -213,8 +213,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
                     var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
-                    foreach (var email in emails) 
-                        {
+                    foreach (var email in emails)
+                    {
                         try
                         {
 

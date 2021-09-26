@@ -67,14 +67,14 @@ namespace BackendSaiKitchen.Controllers
         {
 
             var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ) && y.IsActive == true && y.IsDeleted == false).Count()))
+                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Quotations.Where(y => y.IsDeleted == false))
                 .Include(x => x.Building).Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                 .Select(x => new ViewInquiryDetail()
                 {
                     InquiryId = x.InquiryId,
-                    
+
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                     //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
@@ -110,7 +110,7 @@ namespace BackendSaiKitchen.Controllers
             tableResponse.recordsFiltered = inquiries.Count();
             return tableResponse;
         }
-       // [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
+        // [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
@@ -199,7 +199,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.UpdatedDate = Helper.Helper.GetDateTime();
                 quotation.QuotationAddedBy = Constants.userId;
                 quotation.QuotationAddedDate = Helper.Helper.GetDateTime();
-                
+
 
                 if (customQuotation.QuotationFiles.Count > 0)
                 {
@@ -339,7 +339,7 @@ namespace BackendSaiKitchen.Controllers
                     roletypeId.Add((int)roleType.Manager);
 
                     sendNotificationToHead(
-                       "New Quotation Added For Inquiry Code: "+ "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
+                       "New Quotation Added For Inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
                      //true,
                      //Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
@@ -349,7 +349,7 @@ namespace BackendSaiKitchen.Controllers
                      (int)notificationCategory.Quotation);
 
 
-                    
+
                     await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, Constants.CRMBaseUrl + "/invoice.html?inquiryId=" + inquiry.InquiryId, quotation.AdvancePayment, quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount, quotation.QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
 
 
@@ -692,7 +692,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead("Quotation For inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false,
-                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName , null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
                 }
                 catch (Exception ex)
                 {

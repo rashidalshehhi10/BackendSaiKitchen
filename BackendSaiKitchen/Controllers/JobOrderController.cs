@@ -4,10 +4,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -53,7 +50,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            return response ;
+            return response;
         }
 
         [HttpPost]
@@ -91,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryJobOrderFactoryDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && ( x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -183,7 +180,7 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
-        
+
 
     }
 }

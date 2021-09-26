@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BackendSaiKitchen.CustomModel
+﻿namespace BackendSaiKitchen.CustomModel
 {
     public class CustomJobOrder
     {
@@ -15,7 +10,7 @@ namespace BackendSaiKitchen.CustomModel
         public string materialDeliveryFinalDate { get; set; }
         public string counterTopFixingDate { get; set; }
         public string installationStartDate { get; set; }
-       // public string installationEndDate { get; set; }
+        // public string installationEndDate { get; set; }
         public string Notes { get; set; }
     }
 

@@ -1,13 +1,9 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
-using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -84,8 +80,8 @@ namespace BackendSaiKitchen.Controllers
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false )).FirstOrDefault();
-            
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
             if (inquiry != null)
             {
                 Inquirychecklist inquirychecklist = new Inquirychecklist()
@@ -168,7 +164,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
                 });
-               
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -187,8 +183,8 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-                //.Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                //.ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            //.Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+            //.ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRejected;
@@ -204,7 +200,7 @@ namespace BackendSaiKitchen.Controllers
                     });
                 }
                 inquiry.InquiryComment = job.Reason;
-               
+
                 response.data = "JobOrder Detail Reschedule Rejected";
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();

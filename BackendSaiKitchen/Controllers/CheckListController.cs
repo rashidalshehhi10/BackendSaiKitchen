@@ -7,7 +7,6 @@ using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -66,7 +65,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryCommercialChecklistDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId ==(int)inquiryStatus.jobOrderFactoryRejected))
+            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -301,7 +300,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {
-                        
+
                         try
                         {
                             foreach (var fileUrl in approve.addFileonChecklists[i].files)
@@ -388,7 +387,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
                 inquiry.InquiryComment = approve.Reason;
-                
+
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
