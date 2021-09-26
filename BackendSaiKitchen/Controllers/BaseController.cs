@@ -52,6 +52,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<TermsAndCondition> termsAndConditionsRepository;
         public Repository<Payment> paymentRepository;
         public Repository<CalendarEvent> calendarEventRepository;
+        public Repository<Setting> settingRepository;
         public Dictionary<object, object> dicResponse = new Dictionary<object, object>();
 
 
@@ -82,7 +83,7 @@ namespace SaiKitchenBackend.Controllers
             termsAndConditionsRepository = new Repository<TermsAndCondition>(context);
             paymentRepository = new Repository<Payment>(context);
             calendarEventRepository = new Repository<CalendarEvent>(context);
-
+            settingRepository = new Repository<Setting>(context);
         }
         override
         public void OnActionExecuting(ActionExecutingContext context)

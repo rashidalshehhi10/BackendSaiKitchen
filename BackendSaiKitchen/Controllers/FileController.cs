@@ -1,8 +1,10 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System.IO;
 using System.Threading.Tasks;
+using BackendSaiKitchen.Models;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -84,6 +86,10 @@ namespace BackendSaiKitchen.Controllers
             if (VideoId > 0)
             {
                 response.data = await Helper.Helper.DeleteVideo(VideoId);
+                var video = await fileRepository.FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                video.IsActive = false;
+                video.IsDeleted = true;
+                fileRepository.Update(video);
             }
             else
             {
@@ -100,6 +106,10 @@ namespace BackendSaiKitchen.Controllers
             if (fileName != null)
             {
                 response.data = await Helper.Helper.DeleteFileFromBlob(fileName);
+                Models.File file = await fileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                file.IsDeleted = true;
+                file.IsActive = false;
+                fileRepository.Update(file);
             }
             else
             {
