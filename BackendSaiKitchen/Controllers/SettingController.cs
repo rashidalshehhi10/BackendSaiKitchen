@@ -52,6 +52,7 @@ namespace BackendSaiKitchen.Controllers
 
                 settingRepository.Update(Setting);
                 response.data = "Setting Upadte Successfully";
+                context.SaveChanges();
             }
             else
             {
