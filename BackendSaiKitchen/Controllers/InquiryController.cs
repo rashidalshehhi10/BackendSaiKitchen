@@ -461,7 +461,7 @@ namespace SaiKitchenBackend.Controllers
                     var userRoles = userRoleRepository.FindByCondition(x => inquiry.AddedByNavigation.UserRoles.Where(y => y.UserRoleId == x.UserRoleId).Any() && x.IsActive == true && x.IsDeleted == false).Include(x => x.BranchRole).Include(x => x.BranchRole.RoleHeads).ToList();
                     var roleHeadsId = userRoles.FirstOrDefault().BranchRole.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.HeadRoleId).ToList();
                     var roleTypeId = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.RoleTypeId).ToList();
-                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
@@ -493,14 +493,15 @@ namespace SaiKitchenBackend.Controllers
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneePending;
                 inquiry.IsMeasurementProvidedByCustomer = updateInquiry.IsProvidedByCustomer;
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                 inquiryRepository.Update(inquiry);
 
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate + " Of Inquiry Code:" + inquiry.InquiryCode, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
@@ -544,8 +545,8 @@ namespace SaiKitchenBackend.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
