@@ -27,7 +27,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count()))
+                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || y.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Promo)
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
@@ -569,7 +569,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
 
-                int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.checklistPending : (int)inquiryStatus.quotationAccepted;
+                int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.jobOrderFilesPending : (int)inquiryStatus.quotationAccepted;
                 inquiry.InquiryStatusId = status;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
@@ -604,7 +604,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
-                    if (updateQuotation.Pdf != null)
+                    if (updateQuotation.Pdf != null && updateQuotation.Pdf.Count() >= 0)
                     {
                         var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
                         quotation.Files.Add(new Models.File

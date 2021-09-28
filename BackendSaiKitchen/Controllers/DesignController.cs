@@ -205,11 +205,11 @@ namespace BackendSaiKitchen.Controllers
 
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.designRejected;
+                inquiry.InquiryStatusId = (int)inquiryStatus.designRevisionRequested;
                 inquiry.InquiryComment = updateInquiryStatus.DesignComment;
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRevisionRequested;
                     inquiryWorkscope.DesignAssignedTo = updateInquiryStatus.DesignAssignedTo;
                     inquiryWorkscope.DesignScheduleDate = updateInquiryStatus.DesignScheduleDate;
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;

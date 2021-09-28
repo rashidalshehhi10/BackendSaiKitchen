@@ -273,22 +273,22 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
-            JobOrder _jobOrder = new JobOrder();
+            //JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
-                _jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
-                _jobOrder.JobOrderRequestedComments = approve.Comment;
-                _jobOrder.FactoryId = approve.factoryId;
-                _jobOrder.DataSheetApplianceFileUrl = approve.DataSheetApplianceFileUrl;
-                _jobOrder.IsAppliancesProvidedByClient = approve.IsAppliancesProvidedByClient;
-                _jobOrder.JobOrderChecklistFileUrl = approve.JobOrderChecklistFileUrl;
-                _jobOrder.MaterialSheetFileUrl = approve.MaterialSheetFileUrl;
-                _jobOrder.MepdrawingFileUrl = approve.MEPDrawingFileUrl;
-                _jobOrder.IsActive = true;
-                _jobOrder.IsDeleted = false;
-                _jobOrder.CreatedBy = Constants.userId;
-                _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
+                //inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
+                //_jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
+                //_jobOrder.JobOrderRequestedComments = approve.Comment;
+                //_jobOrder.FactoryId = approve.factoryId;
+                //_jobOrder.DataSheetApplianceFileUrl = approve.DataSheetApplianceFileUrl;
+                //_jobOrder.IsAppliancesProvidedByClient = approve.IsAppliancesProvidedByClient;
+                //_jobOrder.JobOrderChecklistFileUrl = approve.JobOrderChecklistFileUrl;
+                //_jobOrder.MaterialSheetFileUrl = approve.MaterialSheetFileUrl;
+                //_jobOrder.MepdrawingFileUrl = approve.MEPDrawingFileUrl;
+                //_jobOrder.IsActive = true;
+                //_jobOrder.IsDeleted = false;
+                //_jobOrder.CreatedBy = Constants.userId;
+                //_jobOrder.CreatedDate = Helper.Helper.GetDateTime();
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
@@ -364,7 +364,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
                 }
-                inquiry.JobOrders.Add(_jobOrder);
+                //inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
