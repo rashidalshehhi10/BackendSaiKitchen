@@ -31,7 +31,8 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
-                (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))).FirstOrDefault();
+                (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
@@ -276,7 +277,8 @@ namespace BackendSaiKitchen.Controllers
             //JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                //inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
+                inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
+                inquiry.InquiryComment = approve.Comment;
                 //_jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 //_jobOrder.JobOrderRequestedComments = approve.Comment;
                 //_jobOrder.FactoryId = approve.factoryId;
@@ -296,7 +298,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
 
-                if (approve.addFileonChecklists.Count != 0)
+                if (approve.addFileonChecklists.Count != 0 && approve.addFileonChecklists != null)
                 {
                     for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {

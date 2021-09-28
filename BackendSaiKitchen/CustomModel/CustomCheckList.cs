@@ -13,13 +13,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         public int factoryId { get; set; }
-        public string PrefferdDateByClient { get; set; }
-        public string? Comment { get; set; }
-        public string MaterialSheetFileUrl { get; set; }
-        public string MEPDrawingFileUrl { get; set; }
-        public string JobOrderChecklistFileUrl { get; set; }
-        public string DataSheetApplianceFileUrl { get; set; }
-        public bool IsAppliancesProvidedByClient { get; set; }
+        public string Comment { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
     }
     public class AddFileonChecklist
