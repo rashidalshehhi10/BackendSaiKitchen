@@ -14,6 +14,8 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public int factoryId { get; set; }
         public string Comment { get; set; }
+        public string jobOrderExpectedDeadline { get; set; }
+        public string jobOrderChecklistFileUrl { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
     }
     public class AddFileonChecklist

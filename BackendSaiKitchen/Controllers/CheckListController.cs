@@ -279,6 +279,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
                 inquiry.InquiryComment = approve.Comment;
+                Helper.Helper.Each(inquiry.JobOrders, x =>
+                {
+                    x.Comments = approve.Comment;
+                    x.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
+                    x.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
+                });
                 //_jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 //_jobOrder.JobOrderRequestedComments = approve.Comment;
                 //_jobOrder.FactoryId = approve.factoryId;

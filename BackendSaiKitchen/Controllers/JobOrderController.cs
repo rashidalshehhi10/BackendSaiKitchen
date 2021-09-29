@@ -292,12 +292,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
                 _jobOrder.JobOrderRequestedDeadline = jobOrder.JobOrderRequestedDeadline;
-                _jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
+                //_jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
                 _jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
                 _jobOrder.FactoryId = jobOrder.FactoryId;
                 _jobOrder.DataSheetApplianceFileUrl = jobOrder.DataSheetApplianceFileUrl;
                 _jobOrder.IsAppliancesProvidedByClient = jobOrder.IsAppliancesProvidedByClient;
-                _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;
+               // _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;
                 _jobOrder.MaterialSheetFileUrl = jobOrder.MaterialSheetFileUrl;
                 _jobOrder.MepdrawingFileUrl = jobOrder.MepdrawingFileUrl;
                 _jobOrder.Comments = jobOrder.Comments;
