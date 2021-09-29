@@ -294,7 +294,7 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.JobOrderRequestedDeadline = jobOrder.JobOrderRequestedDeadline;
                 //_jobOrder.JobOrderExpectedDeadline = jobOrder.JobOrderExpectedDeadline;
                 _jobOrder.JobOrderRequestedComments = jobOrder.JobOrderRequestedComments;
-                _jobOrder.FactoryId = jobOrder.FactoryId;
+                //_jobOrder.FactoryId = jobOrder.FactoryId;
                 _jobOrder.DataSheetApplianceFileUrl = jobOrder.DataSheetApplianceFileUrl;
                 _jobOrder.IsAppliancesProvidedByClient = jobOrder.IsAppliancesProvidedByClient;
                // _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;

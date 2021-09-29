@@ -284,6 +284,7 @@ namespace BackendSaiKitchen.Controllers
                     x.Comments = approve.Comment;
                     x.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
                     x.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
+                    x.FactoryId = approve.factoryId;
                 });
                 //_jobOrder.JobOrderRequestedDeadline = approve.PrefferdDateByClient;
                 //_jobOrder.JobOrderRequestedComments = approve.Comment;
