@@ -413,10 +413,10 @@ namespace BackendSaiKitchen.Controllers
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                     {
-                        payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                        payment.Inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFilesPending;
                         foreach (var inquiryWorkscope in payment.Inquiry.InquiryWorkscopes)
                         {
-                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFilesPending;
                         }
                     }
                     paymentRepository.Update(payment);

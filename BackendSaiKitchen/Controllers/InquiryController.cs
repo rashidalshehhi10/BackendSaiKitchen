@@ -93,6 +93,10 @@ namespace SaiKitchenBackend.Controllers
                 payment.CreatedBy = Constants.userId;
                 payment.UpdatedBy = Constants.userId;
                 payment.UpdatedDate = Helper.GetDateTime();
+                if (payment.PaymentAmount <= 0)
+                {
+                    payment.IsActive = true;
+                }
             }
             //}
             foreach (var inworkscope in inquiry.InquiryWorkscopes)

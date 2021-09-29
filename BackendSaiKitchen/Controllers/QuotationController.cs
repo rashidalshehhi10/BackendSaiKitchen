@@ -595,6 +595,10 @@ namespace BackendSaiKitchen.Controllers
                     {
                         payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
                     }
+                    if (payment.PaymentAmount == 0)
+                    {
+                        payment.IsActive = false;
+                    }
                 }
 
                 foreach (var quotation in inquiry.Quotations)
