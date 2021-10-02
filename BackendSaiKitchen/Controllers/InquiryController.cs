@@ -324,11 +324,11 @@ namespace SaiKitchenBackend.Controllers
         public object GetinquiryStatusByBranch()
         {
            
-            var inquiryStatus = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var inquiryStatus = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
-                inquiryId = x.InquiryId,
-                inquiryStatusId = x.InquiryStatusId,
-                inquiryStatusName = x.InquiryStatus.InquiryStatusName
+                inquiryCount = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == x.Inquiries.FirstOrDefault().InquiryStatusId).Count(),
+                inquiryStatusId = x.Inquiries.FirstOrDefault().InquiryStatus.InquiryStatusName,
+                inquiryStatusName = x.Inquiries.FirstOrDefault().InquiryStatusId
             });
             response.data = inquiryStatus;
             return response;

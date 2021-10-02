@@ -32,69 +32,78 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
-            Design design;
-            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+            if (designCustomModel.base64f3d != null && designCustomModel.base64f3d.Count > 0)
             {
-                design = new Design();
-                foreach (var fileUrl in designCustomModel.base64f3d)
+                Design design;
+                foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
                 {
-
-                    //var fileUrl = await Helper.Helper.UploadFile(file);
-
-                    if (fileUrl != null)
+                    design = new Design();
+                    foreach (var fileUrl in designCustomModel.base64f3d)
                     {
-                        design.Files.Add(new File()
+
+                        //var fileUrl = await Helper.Helper.UploadFile(file);
+
+                        if (fileUrl != null)
                         {
-                            FileUrl = fileUrl,
-                            FileName = fileUrl.Split('.')[0],
-                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                            IsImage = fileUrl.Split('.').Length > 1,
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            CreatedDate = Helper.Helper.GetDateTime(),
+                            design.Files.Add(new File()
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
 
-                        });
+                            });
 
+                        }
+                        else
+                        {
+                            response.isError = true;
+                            response.errorMessage = Constants.wrongFileUpload;
+                        }
                     }
-                    else
-                    {
-                        response.isError = true;
-                        response.errorMessage = Constants.wrongFileUpload;
-                    }
+                    design.IsActive = true;
+                    design.IsDeleted = false;
+                    design.DesignComment = designCustomModel.comment;
+                    design.DesignAddedBy = Constants.userId;
+                    design.DesignAddedDate = Helper.Helper.GetDateTime();
+                    inquiryworkscope.Comments = designCustomModel.comment;
+                    inquiryworkscope.DesignAddedOn = Helper.Helper.GetDateTime();
+                    inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
+                    inquiryworkscope.Designs.Add(design);
+
                 }
-                design.IsActive = true;
-                design.IsDeleted = false;
-                design.DesignComment = designCustomModel.comment;
-                design.DesignAddedBy = Constants.userId;
-                design.DesignAddedDate = Helper.Helper.GetDateTime();
-                inquiryworkscope.Comments = designCustomModel.comment;
-                inquiryworkscope.DesignAddedOn = Helper.Helper.GetDateTime();
-                inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
-                inquiryworkscope.Designs.Add(design);
+                List<int?> roletypeId = new List<int?>();
 
+                roletypeId.Add((int)roleType.Manager);
+
+                try
+                {
+                    sendNotificationToHead(Constants.DesignAdded + inquiry.Branch + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
+                       //Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                       //Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                       roletypeId, Constants.branchId, (int)notificationCategory.Design);
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+
+                inquiry.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
-            List<int?> roletypeId = new List<int?>();
-
-            roletypeId.Add((int)roleType.Manager);
-
-            try
+            else
             {
-                sendNotificationToHead(Constants.DesignAdded + inquiry.Branch + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
-                   //Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
-                   //Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
-                   roletypeId, Constants.branchId, (int)notificationCategory.Design);
+                response.isError = true;
+                response.errorMessage = "Please Add Files";
             }
-            catch (Exception e)
-            {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
-            }
-
-            inquiry.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
-            inquiryRepository.Update(inquiry);
-            context.SaveChanges();
+            
             return response;
         }
 
