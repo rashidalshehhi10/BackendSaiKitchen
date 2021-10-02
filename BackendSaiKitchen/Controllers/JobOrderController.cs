@@ -139,37 +139,37 @@ namespace BackendSaiKitchen.Controllers
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryApprovalPending) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
                 .Select(x => new CheckListByBranch
-            {
-                InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
-                InquiryDescription = x.InquiryDescription,
-                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
-                WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryStatusId,
-                BuildingAddress = x.Building.BuildingAddress,
-                BuildingCondition = x.Building.BuildingCondition,
-                BuildingFloor = x.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested,
-                CustomerId = x.CustomerId,
-                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                CustomerName = x.Customer.CustomerName,
-                CustomerEmail = x.Customer.CustomerEmail,
-                CustomerContact = x.Customer.CustomerContact,
-                BranchId = x.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,
-                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                CommentAddedOn = x.InquiryCommentsAddedOn,
-                DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
-                MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
-                QuotationAddedOn = x.QuotationAddedOn
-            }).ToList();
+                {
+                    InquiryId = x.InquiryId,
+                    QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
+                    InquiryDescription = x.InquiryDescription,
+                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    Status = x.InquiryStatusId,
+                    BuildingAddress = x.Building.BuildingAddress,
+                    BuildingCondition = x.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor,
+                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    CustomerId = x.CustomerId,
+                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BranchId = x.BranchId,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
+                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn
+                }).ToList();
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -210,8 +210,8 @@ namespace BackendSaiKitchen.Controllers
                 CustomerEmail = x.Customer.CustomerEmail,
                 CustomerContact = x.Customer.CustomerContact,
                 BranchId = x.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,
                 NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                 CommentAddedOn = x.InquiryCommentsAddedOn,
@@ -284,7 +284,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddJobOrder(JobOrder jobOrder)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == jobOrder.InquiryId && x.IsActive == true && x.IsDeleted == false &&( x.InquiryStatusId ==(int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed)  )
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == jobOrder.InquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             JobOrder _jobOrder = new JobOrder();
@@ -297,7 +297,7 @@ namespace BackendSaiKitchen.Controllers
                 //_jobOrder.FactoryId = jobOrder.FactoryId;
                 _jobOrder.DataSheetApplianceFileUrl = jobOrder.DataSheetApplianceFileUrl;
                 _jobOrder.IsAppliancesProvidedByClient = jobOrder.IsAppliancesProvidedByClient;
-               // _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;
+                // _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;
                 _jobOrder.MaterialSheetFileUrl = jobOrder.MaterialSheetFileUrl;
                 _jobOrder.MepdrawingFileUrl = jobOrder.MepdrawingFileUrl;
                 _jobOrder.Comments = jobOrder.Comments;

@@ -13,7 +13,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryJobOrderDetailsByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.BranchId == branchId ||x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId ) )
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.BranchId == branchId || x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
             && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryAccepted || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted))
                 .Select(x => new CheckListByBranch
                 {
@@ -38,8 +38,8 @@ namespace BackendSaiKitchen.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     CustomerContact = x.Customer.CustomerContact,
                     BranchId = x.BranchId,
-                    InquiryAddedBy = x.AddedByNavigation.UserName,
-                    InquiryAddedById = x.AddedBy,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
                     NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     CommentAddedOn = x.InquiryCommentsAddedOn,

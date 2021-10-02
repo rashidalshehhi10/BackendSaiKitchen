@@ -37,7 +37,7 @@ namespace BackendSaiKitchen.Models
         public bool? IsMeasurementPromo { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public int? InquiryStatusId { get; set; }
-        public int? AddedBy { get; set; }
+        public int? ManagedBy { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -45,11 +45,11 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
-        public virtual User AddedByNavigation { get; set; }
         public virtual Branch Branch { get; set; }
         public virtual Building Building { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual InquiryStatus InquiryStatus { get; set; }
+        public virtual User ManagedByNavigation { get; set; }
         public virtual Promo Promo { get; set; }
         public virtual User QuotationAssignToNavigation { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }

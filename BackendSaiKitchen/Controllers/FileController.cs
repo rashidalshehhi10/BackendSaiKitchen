@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System.IO;
 using System.Threading.Tasks;
-using BackendSaiKitchen.Models;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -140,7 +139,7 @@ namespace BackendSaiKitchen.Controllers
                     file.IsActive = false;
                     fileRepository.Update(file);
                 }
-                
+
             }
             else
             {

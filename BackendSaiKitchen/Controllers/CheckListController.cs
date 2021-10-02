@@ -156,8 +156,8 @@ namespace BackendSaiKitchen.Controllers
                 CustomerEmail = x.Customer.CustomerEmail,
                 CustomerContact = x.Customer.CustomerContact,
                 BranchId = x.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,
                 NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
             }).ToList();
@@ -201,8 +201,8 @@ namespace BackendSaiKitchen.Controllers
                 CustomerEmail = x.Customer.CustomerEmail,
                 CustomerContact = x.Customer.CustomerContact,
                 BranchId = x.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,
                 NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
             }).ToList();

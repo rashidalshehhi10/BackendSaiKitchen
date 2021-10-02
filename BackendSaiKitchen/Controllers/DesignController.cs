@@ -361,7 +361,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToOneUser("Customer Rejected the Design Of inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment,
-                        false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.AddedBy, (int)inquiry.BranchId, (int)notificationCategory.Design);
+                        false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.ManagedBy, (int)inquiry.BranchId, (int)notificationCategory.Design);
                     sendNotificationToHead("Customer Rejected the Design Of inquiry Code: IN" + +inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment, false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Design);
                 }

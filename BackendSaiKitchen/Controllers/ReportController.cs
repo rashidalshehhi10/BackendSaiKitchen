@@ -91,9 +91,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForUser(ReqReport req)
         {
-            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.InquiryAddedByNavigations.Where(y => y.IsActive == true && y.IsDeleted == false))
+            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.InquiryManagedByNavigations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Workscope).Include(x => x.InquiryAddedByNavigations.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Workscope).Include(x => x.InquiryManagedByNavigations.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(y => y.Customer)
                 .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (user != null)
@@ -101,7 +101,7 @@ namespace BackendSaiKitchen.Controllers
                 UserReport userReport = new UserReport();
                 userReport.reviews = new List<Review>();
                 userReport.CustomerCount = user.Customers.Where(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate)).Count();
-                foreach (var inquiry in user.InquiryAddedByNavigations)
+                foreach (var inquiry in user.InquiryManagedByNavigations)
                 {
                     if (DateTime.Parse(inquiry.InquiryStartDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(inquiry.InquiryStartDate) <= DateTime.Parse(req.EndDate))
                     {
@@ -170,8 +170,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     report = new BranchReport()
                     {
-                        AmountPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount/100),
-                        AmountReceived = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => (decimal?)y.PaymentAmount/100),
+                        AmountPending = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount / 100),
+                        AmountReceived = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => (decimal?)y.PaymentAmount / 100),
                         BankPaid = branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
                         CashPaid = branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
                         ChequePaid = branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
@@ -213,7 +213,7 @@ namespace BackendSaiKitchen.Controllers
 
                         reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Select(x => new reportPayment
                         {
-                            Amount = (decimal)x.PaymentAmount/100,
+                            Amount = (decimal)x.PaymentAmount / 100,
                             Date = x.PaymentExpectedDate
                         }).ToList()
                     });
@@ -229,7 +229,7 @@ namespace BackendSaiKitchen.Controllers
                         AmountRecieved = (decimal)inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x => x.PaymentAmount),
                         reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Select(x => new reportPayment
                         {
-                            Amount = (decimal)x.PaymentAmount/100,
+                            Amount = (decimal)x.PaymentAmount / 100,
                             PaymentMethod = x.PaymentMethod,
                             PaymentModeId = (int)x.PaymentModeId,
                             PaymentType = x.PaymentType.PaymentTypeName,
@@ -260,7 +260,7 @@ namespace BackendSaiKitchen.Controllers
 
                     report.MonthlyAmountReceived.Add(new MonthlyReview
                     {
-                        Avarege = PaymentAverage/100,
+                        Avarege = PaymentAverage / 100,
                         Month = month
                     });
                 }
@@ -282,7 +282,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (var payment in inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved))
                         {
-                            amount += (decimal)payment.PaymentAmount/100;
+                            amount += (decimal)payment.PaymentAmount / 100;
                         }
                     }
                     report.topFivePaidCustomers.Add(new TopFivePaidCustomer

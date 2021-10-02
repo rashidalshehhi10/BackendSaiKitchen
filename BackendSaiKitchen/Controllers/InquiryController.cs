@@ -264,8 +264,8 @@ namespace SaiKitchenBackend.Controllers
                 CustomerContact = x.Customer.CustomerContact,//x.Inquiry.Customer.CustomerContact,
                 CustomerWhatsapp = x.Customer.CustomerWhatsapp,//x.Inquiry.Customer.CustomerWhatsapp,
                 BranchId = x.BranchId,//x.Inquiry.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,// x.Inquiry.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,// x.Inquiry.AddedBy,
                 NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count(),//x.Measurements.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,//"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
                 WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),// x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
@@ -420,7 +420,7 @@ namespace SaiKitchenBackend.Controllers
                               (int)notificationCategory.Design);
 
                             sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignDelayed, false, null, null,
-                                (int)inquiry.AddedBy, (int)inquiry.BranchId,
+                                (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
                         }
                     }
@@ -450,7 +450,7 @@ namespace SaiKitchenBackend.Controllers
                           (int)notificationCategory.Design);
 
                         sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignAssigneeDelayed, false, null, null,
-                            (int)inquiry.AddedBy, (int)inquiry.BranchId,
+                            (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
 
                     }
@@ -463,14 +463,14 @@ namespace SaiKitchenBackend.Controllers
                     if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationDelayed)
                     {
 
-                        sendNotificationToHead(inquiry.AddedBy + Constants.QuotationDelayed, true,
+                        sendNotificationToHead(inquiry.ManagedBy + Constants.QuotationDelayed, true,
                           null,
                           null,
                           roletypeId, (int)inquiry.BranchId,
                           (int)notificationCategory.Quotation);
 
-                        sendNotificationToOneUser(inquiry.AddedBy + Constants.QuotationDelayed, false, null, null,
-                            (int)inquiry.AddedBy, (int)inquiry.BranchId,
+                        sendNotificationToOneUser(inquiry.ManagedBy + Constants.QuotationDelayed, false, null, null,
+                            (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
                     }
                 }
@@ -486,7 +486,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateInquiryScheduleDate(UpdateInquirySchedule updateInquirySchedule)
         {
-            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquirySchedule.InquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes).Include(x => x.AddedByNavigation.UserRoles).Include(x => x.AddedByNavigation.UserRoles).FirstOrDefault();
+            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquirySchedule.InquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.InquiryWorkscopes).Include(x => x.ManagedByNavigation.UserRoles).Include(x => x.ManagedByNavigation.UserRoles).FirstOrDefault();
             if (inquiry != null)
             {
                 //inquiry.InquiryWorkscopes.AsQueryable<InquiryWorkscope>().Where(x => x.IsActive == true && x.IsDeleted == false).ForEachAsync((x) => { x.DesignAssignedTo = updateMeasurementSchedule.MeasurementAssignedTo; x.MeasurementScheduleDate = updateMeasurementSchedule.MeasurementScheduleDate; x.InquiryStatusId = updateMeasurementSchedule.InquiryStatusId; });
@@ -511,7 +511,7 @@ namespace SaiKitchenBackend.Controllers
                 response.data = inquiry;
                 try
                 {
-                    var userRoles = userRoleRepository.FindByCondition(x => inquiry.AddedByNavigation.UserRoles.Where(y => y.UserRoleId == x.UserRoleId).Any() && x.IsActive == true && x.IsDeleted == false).Include(x => x.BranchRole).Include(x => x.BranchRole.RoleHeads).ToList();
+                    var userRoles = userRoleRepository.FindByCondition(x => inquiry.ManagedByNavigation.UserRoles.Where(y => y.UserRoleId == x.UserRoleId).Any() && x.IsActive == true && x.IsDeleted == false).Include(x => x.BranchRole).Include(x => x.BranchRole.RoleHeads).ToList();
                     var roleHeadsId = userRoles.FirstOrDefault().BranchRole.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.HeadRoleId).ToList();
                     var roleTypeId = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.RoleTypeId).ToList();
                     sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roleTypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
@@ -553,7 +553,7 @@ namespace SaiKitchenBackend.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.measurementAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate + " Of Inquiry Code:" + inquiry.InquiryCode, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, (int)inquiry.BranchId, (int)notificationCategory.Measurement);
                     sendNotificationToHead(inquiry.Customer.CustomerName + Constants.measurementRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate + " Of Inquiry Code:" + inquiry.InquiryCode, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
@@ -598,8 +598,8 @@ namespace SaiKitchenBackend.Controllers
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
-                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate+" Of Inquiry Code:"+inquiry.InquiryCode, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToOneUser(Constants.DesignAssign + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate + " Of Inquiry Code:" + inquiry.InquiryCode, false, null, null, (int)inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo, Constants.branchId, (int)notificationCategory.Measurement);
+                    sendNotificationToHead(inquiry.Customer.CustomerName + Constants.designRescheduleBranchMessage + inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate + " Of Inquiry Code:" + inquiry.InquiryCode, false, null, null, roletypeId, Constants.branchId, (int)notificationCategory.Measurement);
                 }
                 catch (Exception ex)
                 {
@@ -943,7 +943,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetApprovalMeasurementOfBranch(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval && x.AddedBy == Constants.userId)
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval && x.ManagedBy == Constants.userId)
             .Select(x => new ViewInquiryDetail()
             {
                 // InquiryWorkscopeId = x.InquiryWorkscopeId,
@@ -976,8 +976,8 @@ namespace SaiKitchenBackend.Controllers
                 CustomerContact = x.Customer.CustomerContact,//x.Inquiry.Customer.CustomerContact,
                 CustomerWhatsapp = x.Customer.CustomerWhatsapp,//x.Inquiry.Customer.CustomerWhatsapp,
                 BranchId = x.BranchId,//x.Inquiry.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,// x.Inquiry.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,// x.Inquiry.AddedBy,
                 NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count(),//x.Measurements.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,//"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
                 WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),// x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
@@ -1042,8 +1042,8 @@ namespace SaiKitchenBackend.Controllers
              CustomerContact = x.Customer.CustomerContact,//x.Inquiry.Customer.CustomerContact,
              CustomerWhatsapp = x.Customer.CustomerWhatsapp,//x.Inquiry.Customer.CustomerWhatsapp,
              BranchId = x.BranchId,//x.Inquiry.BranchId,
-             InquiryAddedBy = x.AddedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
-             InquiryAddedById = x.AddedBy,// x.Inquiry.AddedBy,
+             InquiryAddedBy = x.ManagedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
+             InquiryAddedById = x.ManagedBy,// x.Inquiry.AddedBy,
              NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count(),//x.Measurements.Where(y => y.IsDeleted == false).Count(),
              InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,//"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
              WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),// x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
@@ -1142,7 +1142,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetApprovalDesignOfBranch(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer) && x.AddedBy == Constants.userId)
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer) && x.ManagedBy == Constants.userId)
             .Select(x => new ViewInquiryDetail()
             {
                 // InquiryWorkscopeId = x.InquiryWorkscopeId,
@@ -1175,8 +1175,8 @@ namespace SaiKitchenBackend.Controllers
                 CustomerContact = x.Customer.CustomerContact,//x.Inquiry.Customer.CustomerContact,
                 CustomerWhatsapp = x.Customer.CustomerWhatsapp,//x.Inquiry.Customer.CustomerWhatsapp,
                 BranchId = x.BranchId,//x.Inquiry.BranchId,
-                InquiryAddedBy = x.AddedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
-                InquiryAddedById = x.AddedBy,// x.Inquiry.AddedBy,
+                InquiryAddedBy = x.ManagedByNavigation.UserName,//x.Inquiry.AddedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy,// x.Inquiry.AddedBy,
                 NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false).Count(),//x.Measurements.Where(y => y.IsDeleted == false).Count(),
                 InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,//"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
                 WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),// x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()

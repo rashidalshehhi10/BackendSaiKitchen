@@ -404,11 +404,6 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
-                entity.HasOne(d => d.AddedByNavigation)
-                    .WithMany(p => p.InquiryAddedByNavigations)
-                    .HasForeignKey(d => d.AddedBy)
-                    .HasConstraintName("FK_Inquiry_User");
-
                 entity.HasOne(d => d.Branch)
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.BranchId)
@@ -428,6 +423,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.InquiryStatusId)
                     .HasConstraintName("FK_Inquiry_InquiryStatus");
+
+                entity.HasOne(d => d.ManagedByNavigation)
+                    .WithMany(p => p.InquiryManagedByNavigations)
+                    .HasForeignKey(d => d.ManagedBy)
+                    .HasConstraintName("FK_Inquiry_User");
 
                 entity.HasOne(d => d.Promo)
                     .WithMany(p => p.Inquiries)
