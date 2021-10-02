@@ -323,14 +323,20 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetinquiryStatusByBranch()
         {
-           
-            var inquiryStatus = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var inquiryStatus = inquiryStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            List<object> inquiries = new List<object>();
+            foreach (var status in inquiryStatus)
             {
-                inquiryCount = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == x.Inquiries.FirstOrDefault().InquiryStatusId).Count(),
-                inquiryStatusId = x.Inquiries.FirstOrDefault().InquiryStatus.InquiryStatusName,
-                inquiryStatusName = x.Inquiries.FirstOrDefault().InquiryStatusId
-            });
-            response.data = inquiryStatus;
+                var inquiry = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+                {
+                    inquiryCount = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == status.InquiryStatusId).Count(),
+                    inquiryStatusId = status.InquiryStatusId,
+                    inquiryStatusName = status.InquiryStatusName
+
+                });
+                inquiries.Add(inquiry);
+            }
+            response.data = inquiries;
             return response;
         }
 
