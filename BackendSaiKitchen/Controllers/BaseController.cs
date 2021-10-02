@@ -53,6 +53,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<Payment> paymentRepository;
         public Repository<CalendarEvent> calendarEventRepository;
         public Repository<Setting> settingRepository;
+        public Repository<InquiryStatus> inquiryStatusRepository;
         public Dictionary<object, object> dicResponse = new Dictionary<object, object>();
 
 
@@ -84,6 +85,7 @@ namespace SaiKitchenBackend.Controllers
             paymentRepository = new Repository<Payment>(context);
             calendarEventRepository = new Repository<CalendarEvent>(context);
             settingRepository = new Repository<Setting>(context);
+            inquiryStatusRepository = new Repository<InquiryStatus>(context);
         }
         override
         public void OnActionExecuting(ActionExecutingContext context)

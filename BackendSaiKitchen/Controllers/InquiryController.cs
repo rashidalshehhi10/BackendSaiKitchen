@@ -288,6 +288,55 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetInquiryStatus()
+        {
+            var inquiryStatus = inquiryStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                inquiryStatusName = x.InquiryStatusName,
+                inquiryStatusId = x.InquiryStatusId
+            });
+            response.data = inquiryStatus;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ChangeInquiryManagedBy(ChangeManaged change)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == change.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.ManagedBy = change.Id;
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
+            
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetinquiryStatusByBranch()
+        {
+           
+            var inquiryStatus = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                inquiryId = x.InquiryId,
+                inquiryStatusId = x.InquiryStatusId,
+                inquiryStatusName = x.InquiryStatus.InquiryStatusName
+            });
+            response.data = inquiryStatus;
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetinquiryDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
