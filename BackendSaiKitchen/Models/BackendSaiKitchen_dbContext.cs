@@ -529,6 +529,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.MepdrawingFileUrl).HasColumnName("MEPDrawingFileURL");
 
+                entity.Property(e => e.MepdrawingNotes).HasColumnName("MEPDrawingNotes");
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.Factory)
