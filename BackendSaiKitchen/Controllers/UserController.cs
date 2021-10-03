@@ -327,5 +327,29 @@ namespace SaiKitchenBackend.Controllers
 
             return response;
         }
+
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> GetInquiryCreateUserAsync()
+        {
+            //var userList = userRepository.FindByCondition(x => x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.Branch.IsActive == true && y.Branch.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(obj => obj.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false));
+            //var brnchRole = userRoleRepository.GetAll().Where(x => x.IsActive == true && x.IsDeleted == false).Join(branchRoleRepository.GetAll(),
+            //           userRole => userRole.BranchRoleId,
+            //           branchRole => branchRole.BranchRoleId,
+            //           (userRole, branchRole) => new { userRole = userRole, branchRole = branchRole }).ToList();
+            //var brnch = userRoleRepository.GetAll().Where(x => x.IsActive == true && x.IsDeleted == false).Join(branchRepository.GetAll(),
+            //          userRole => userRole.BranchId,
+            //          branch => branch.BranchId,
+            //          (userRole, branch) => new { userRole = userRole, branch = branch }).ToList();
+            var userList = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false  && x.UserRoles.Any(y => y.BranchRole.PermissionRoles.Any(z => z.PermissionId == (int)permission.ManageInquiry && z.PermissionLevelId == (int)permissionLevel.Create && z.IsActive==true && z.IsDeleted==false)&&y.IsActive==true && y.IsDeleted==false && y.BranchId==Constants.branchId))
+                .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Branch)
+                .Include(y => y.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.BranchRole).AsNoTracking();
+            await userList.ForEachAsync((x) => { x.UserPassword = null; });
+
+            response.data = userList.ToList();
+            return response;
+        }
+
     }
 }
