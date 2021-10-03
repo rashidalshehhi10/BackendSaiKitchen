@@ -285,6 +285,13 @@ namespace BackendSaiKitchen.Controllers
                     joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
                     joborder.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
                     joborder.FactoryId = approve.factoryId;
+                    joborder.SiteMeasurementMatchingWithDesign = approve.SiteMeasurementMatchingWithDesign;
+                    joborder.MaterialConfirmation = approve.MatrialConfirmation;
+                    joborder.Mepdrawing = approve.MEPDrawing;
+                    joborder.QuotationAndCalculationSheetMatchingProposal = approve.QuotationAndCalculationSheetMatchingProposal;
+                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignature = approve.ApprovedDrawingsAndAvailabilityOfClientSignture;
+                    joborder.AppliancesDataSheet = approve.AppliancesDataSheet;
+
                 }
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
