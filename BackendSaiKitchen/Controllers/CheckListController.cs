@@ -265,7 +265,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)// && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
@@ -273,7 +273,8 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(z => z.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             //JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
