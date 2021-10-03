@@ -286,11 +286,17 @@ namespace BackendSaiKitchen.Controllers
                     joborder.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
                     joborder.FactoryId = approve.factoryId;
                     joborder.SiteMeasurementMatchingWithDesign = approve.SiteMeasurementMatchingWithDesign;
+                    joborder.SiteMeasurementMatchingWithDesignNotes = approve.SiteMeasurementMatchingWithDesignNotes;
                     joborder.MaterialConfirmation = approve.MatrialConfirmation;
+                    joborder.MaterialConfirmationNotes = approve.MatrialConfirmationNotes;
                     joborder.Mepdrawing = approve.MEPDrawing;
+                    joborder.MepdrawingNotes = approve.MEPDrawingNotes;
                     joborder.QuotationAndCalculationSheetMatchingProposal = approve.QuotationAndCalculationSheetMatchingProposal;
+                    joborder.QuotationAndCalculationSheetMatchingProposalNotes = approve.QuotationAndCalculationSheetMatchingProposalNotes;
                     joborder.ApprovedDrawingsAndAvailabilityOfClientSignature = approve.ApprovedDrawingsAndAvailabilityOfClientSignture;
+                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignatureNotes = approve.ApprovedDrawingsAndAvailabilityOfClientSigntureNotes;
                     joborder.AppliancesDataSheet = approve.AppliancesDataSheet;
+                    joborder.AppliancesDataSheetNotes = approve.AppliancesDataSheetNotes;
 
                 }
 

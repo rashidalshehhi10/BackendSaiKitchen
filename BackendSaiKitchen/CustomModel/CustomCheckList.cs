@@ -17,11 +17,17 @@ namespace BackendSaiKitchen.CustomModel
         public string jobOrderExpectedDeadline { get; set; }
         public string jobOrderChecklistFileUrl { get; set; }
         public bool SiteMeasurementMatchingWithDesign { get; set; }
+        public string SiteMeasurementMatchingWithDesignNotes { get; set; }
         public bool MatrialConfirmation { get; set; }
+        public string MatrialConfirmationNotes { get; set; }
         public bool MEPDrawing { get; set; }
+        public string MEPDrawingNotes { get; set; }
         public bool QuotationAndCalculationSheetMatchingProposal { get; set; }
+        public string QuotationAndCalculationSheetMatchingProposalNotes { get; set; }
         public bool ApprovedDrawingsAndAvailabilityOfClientSignture { get; set; }
+        public string ApprovedDrawingsAndAvailabilityOfClientSigntureNotes { get; set; }
         public bool AppliancesDataSheet { get; set; }
+        public string AppliancesDataSheetNotes { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
     }
     public class AddFileonChecklist
