@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
@@ -35,6 +36,12 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public bool? SiteMeasurementMatchingWithDesign { get; set; }
+        public bool? MaterialConfirmation { get; set; }
+        public bool? Mepdrawing { get; set; }
+        public bool? QuotationAndCalculationSheetMatchingProposal { get; set; }
+        public bool? ApprovedDrawingsAndAvailabilityOfClientSignature { get; set; }
+        public bool? AppliancesDataSheet { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }

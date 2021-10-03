@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -522,6 +524,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.JobOrderRequestedDeadline).HasMaxLength(500);
 
                 entity.Property(e => e.MaterialSheetFileUrl).HasColumnName("MaterialSheetFileURL");
+
+                entity.Property(e => e.Mepdrawing).HasColumnName("MEPDrawing");
 
                 entity.Property(e => e.MepdrawingFileUrl).HasColumnName("MEPDrawingFileURL");
 
