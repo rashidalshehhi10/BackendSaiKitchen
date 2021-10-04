@@ -18,10 +18,10 @@ namespace BackendSaiKitchen.Controllers
                  .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryAccepted;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryAccepted;
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 });
                 foreach (var joborder in inquiry.JobOrders)
                 {

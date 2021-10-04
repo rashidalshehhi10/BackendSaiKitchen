@@ -15,7 +15,7 @@ namespace BackendSaiKitchen.CustomModel
         public int factoryId { get; set; }
         public string Comment { get; set; }
         public string jobOrderExpectedDeadline { get; set; }
-        public string jobOrderChecklistFileUrl { get; set; }
+        //public string jobOrderChecklistFileUrl { get; set; }
         public bool SiteMeasurementMatchingWithDesign { get; set; }
         public string SiteMeasurementMatchingWithDesignNotes { get; set; }
         public bool MatrialConfirmation { get; set; }

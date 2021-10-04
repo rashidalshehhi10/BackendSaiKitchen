@@ -138,7 +138,7 @@ namespace BackendSaiKitchen.Helper
         commercialChecklistAccepted = 44,
         commercialChecklistRejected = 45,
         jobOrderFactoryApprovalPending = 46,
-        jobOrderFactoryAccepted = 47,
+        jobOrderInProgress = 47,
         jobOrderFactoryRejected = 48,
         jobOrderRescheduleRequested = 49,
         jobOrderRescheduleApproved = 50,

@@ -283,7 +283,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     joborder.Comments = approve.Comment;
-                    joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
+                   // joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
                     joborder.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
                     joborder.FactoryId = approve.factoryId;
                     joborder.SiteMeasurementMatchingWithDesign = approve.SiteMeasurementMatchingWithDesign;
