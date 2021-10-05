@@ -34,7 +34,8 @@ namespace BackendSaiKitchen.CustomModel
         public int? ContactedCustomers { get; set; }
         public int? NeedToContactCustomers { get; set; }
         public int? CustomerWithoutInquiry { get; set; }
-        
+        public int? TotalNoOfInquiries { get; set; }
+
 
         public int UserId { get; set; }
         public string UserName { get; set; }

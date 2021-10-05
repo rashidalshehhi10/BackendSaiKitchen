@@ -113,12 +113,12 @@ namespace SaiKitchenBackend.Controllers
                  ContactStatus = x.ContactStatus.ContactStatusName,
                  CustomerAddress = x.CustomerAddress,
                  CustomerNationalId = x.CustomerNationalId,
-                CustomerWithoutInquiry = x.Inquiries.Count
+                 TotalNoOfInquiries = x.Inquiries.Count
              }).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
-        int?  customerWithoutInquiry= customers.Where(x=>x.CustomerWithoutInquiry==0).Count();
+        int?  customerWithoutInquiry= customers.Where(x=>x.TotalNoOfInquiries == 0).Count();
 
             customers.ForEach(x =>
             {
