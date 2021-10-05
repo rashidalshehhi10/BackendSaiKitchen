@@ -11,7 +11,6 @@ namespace BackendSaiKitchen.Models
         {
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
             JobOrders = new HashSet<JobOrder>();
-            Payments = new HashSet<Payment>();
             Quotations = new HashSet<Quotation>();
         }
 
@@ -55,7 +54,6 @@ namespace BackendSaiKitchen.Models
         public virtual User QuotationAssignToNavigation { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
         public virtual ICollection<JobOrder> JobOrders { get; set; }
-        public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<Quotation> Quotations { get; set; }
     }
 }
