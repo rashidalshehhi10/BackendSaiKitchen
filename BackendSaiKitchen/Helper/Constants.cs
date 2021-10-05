@@ -10,7 +10,7 @@ namespace BackendSaiKitchen.Helper
         public static string VimeoUrl = "https://vimeo.com/";
         public static string VimeoAccessToken = "00378b95cc11173f483f7f6b602f6790";
         public static string loginErrormessage = "Incorrect Email or Password";
-        public static string inquiryOnAnotherBranchMessage = " generated inquiry on another branch";
+        public static string inquiryOnAnotherBranchMessage = ", generated inquiry on another branch";
         public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
         public static string designRescheduleBranchMessage = " Design reschedule to ";
         public static string measurementAssign = " You are assigned for the new measurement at ";
@@ -137,7 +137,7 @@ namespace BackendSaiKitchen.Helper
         commercialChecklistPending = 43,
         commercialChecklistAccepted = 44,
         commercialChecklistRejected = 45,
-        jobOrderFactoryApprovalPending = 46,
+        jobOrderConfirmationPending = 46,
         jobOrderInProgress = 47,
         jobOrderFactoryRejected = 48,
         jobOrderRescheduleRequested = 49,

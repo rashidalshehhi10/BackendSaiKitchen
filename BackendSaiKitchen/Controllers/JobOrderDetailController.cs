@@ -79,6 +79,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
@@ -118,10 +119,10 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRequested;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRequested;
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 });
 
                 foreach (var joborder in inquiry.JobOrders)
@@ -159,10 +160,10 @@ namespace BackendSaiKitchen.Controllers
                  .FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleApproved;
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 });
 
                 inquiryRepository.Update(inquiry);
@@ -222,10 +223,10 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayRequested;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayRequested;
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
                 });
                 foreach (var joborder in inquiry.JobOrders)
                 {

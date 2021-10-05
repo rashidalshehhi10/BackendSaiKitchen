@@ -17,7 +17,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryChecklistDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -32,7 +32,9 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
-                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive ==true && y.IsDeleted == false)).FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
@@ -66,7 +68,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryCommercialChecklistDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -81,7 +83,9 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
-                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive ==true && y.IsDeleted ==false)).FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
@@ -395,12 +399,12 @@ namespace BackendSaiKitchen.Controllers
 
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
                 inquiry.InquiryComment = approve.Reason;
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryApprovalPending;
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
                     inquiryWorkscope.Comments = approve.Reason;
                 }
 

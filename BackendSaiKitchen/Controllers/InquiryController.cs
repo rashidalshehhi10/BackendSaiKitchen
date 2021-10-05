@@ -47,7 +47,7 @@ namespace SaiKitchenBackend.Controllers
                         customer = anotherBranchCustomer;
                         List<int?> roletypeId = new List<int?>();
                         roletypeId.Add((int)roleType.Manager);
-                        sendNotificationToHead(anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
+                        sendNotificationToHead("Our Customer "+anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
                     }
                     else
                     {
@@ -360,6 +360,7 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
                 && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
