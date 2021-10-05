@@ -94,9 +94,9 @@ namespace SaiKitchenBackend.Controllers
                     ContactStatus = x.ContactStatus.ContactStatusName,
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId,
-                    CustomerWithoutInquiry=x.Inquiries.Count
+                    TotalNoOfInquiries = x.Inquiries.Count
                 }).ToList();
-            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
+            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null).Include(x => x.Inquiries)
              .Select(x => new CustomerResponse
              {
                  CustomerId = x.CustomerId,
