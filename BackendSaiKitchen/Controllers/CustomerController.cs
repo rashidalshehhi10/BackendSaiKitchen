@@ -71,6 +71,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetCustomerOfBranch(int branchId)
         {
             List<CustomerResponse> customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+               .Include(x=>x.Inquiries)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 {
@@ -92,7 +93,8 @@ namespace SaiKitchenBackend.Controllers
                     ContactStatusId = x.ContactStatusId,
                     ContactStatus = x.ContactStatus.ContactStatusName,
                     CustomerAddress = x.CustomerAddress,
-                    CustomerNationalId = x.CustomerNationalId
+                    CustomerNationalId = x.CustomerNationalId,
+                    CustomerWithoutInquiry=x.Inquiries.Count
                 }).ToList();
             customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
              .Select(x => new CustomerResponse
@@ -110,17 +112,20 @@ namespace SaiKitchenBackend.Controllers
                  ContactStatusId = x.ContactStatusId,
                  ContactStatus = x.ContactStatus.ContactStatusName,
                  CustomerAddress = x.CustomerAddress,
-                 CustomerNationalId = x.CustomerNationalId
+                 CustomerNationalId = x.CustomerNationalId,
+                CustomerWithoutInquiry = x.Inquiries.Count
              }).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
+        int?  customerWithoutInquiry= customers.Where(x=>x.CustomerWithoutInquiry==0).Count();
 
             customers.ForEach(x =>
             {
                 x.TotalCustomers = total;
                 x.ContactedCustomers = contacted;
                 x.NeedToContactCustomers = needToContact;
+                x.CustomerWithoutInquiry = customerWithoutInquiry;
             });
             return customers;
         }

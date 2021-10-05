@@ -1,4 +1,6 @@
-﻿namespace BackendSaiKitchen.CustomModel
+﻿using BackendSaiKitchen.Models;
+
+namespace BackendSaiKitchen.CustomModel
 {
     public class CustomCustomer
     {
@@ -31,6 +33,8 @@
         public int? TotalCustomers { get; set; }
         public int? ContactedCustomers { get; set; }
         public int? NeedToContactCustomers { get; set; }
+        public int? CustomerWithoutInquiry { get; set; }
+        
 
         public int UserId { get; set; }
         public string UserName { get; set; }
