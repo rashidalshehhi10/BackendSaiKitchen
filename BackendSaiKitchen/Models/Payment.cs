@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.Models
         public decimal? PaymentAmountinPercentage { get; set; }
         public string PaymentExpectedDate { get; set; }
         public int? FeesId { get; set; }
+        public int? InquiryId { get; set; }
         public int? QuotationId { get; set; }
         public string PaymentIntentToken { get; set; }
         public string ClientSecret { get; set; }
@@ -37,6 +38,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
 
         public virtual Fee Fees { get; set; }
+        public virtual Inquiry Inquiry { get; set; }
         public virtual PaymentStatus PaymentStatus { get; set; }
         public virtual PaymentType PaymentType { get; set; }
         public virtual Quotation Quotation { get; set; }
