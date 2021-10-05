@@ -95,7 +95,7 @@ namespace SaiKitchenBackend.Controllers
                 payment.UpdatedDate = Helper.GetDateTime();
                 if (payment.PaymentAmount <= 0)
                 {
-                    payment.IsActive = true;
+                    payment.IsActive = false;
                 }
             }
             //}
@@ -358,7 +358,7 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
-                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
+                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.PaymentTypeId == (int)paymenttype.AdvancePayment) ||
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))

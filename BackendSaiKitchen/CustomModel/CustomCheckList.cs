@@ -49,7 +49,7 @@ namespace BackendSaiKitchen.CustomModel
     }
     public class Inquirychecklist
     {
-        public Inquiry inquiry { get; set; }
+        public object inquiry { get; set; }
         public List<Fee> fees { get; set; }
     }
 
