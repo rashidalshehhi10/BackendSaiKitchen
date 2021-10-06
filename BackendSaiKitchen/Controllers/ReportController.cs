@@ -191,7 +191,7 @@ namespace BackendSaiKitchen.Controllers
                         cashsum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount / 100) / 100;
                         chequesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount / 100) / 100;
                         onlinesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount / 100) / 100;
-                        satisfy += (double?)Math.Round((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7) / branch.Inquiries.Count();
+                        satisfy += (double?)Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7) / branch.Inquiries.Count());
                     }
                     
                     report = new BranchReport()
