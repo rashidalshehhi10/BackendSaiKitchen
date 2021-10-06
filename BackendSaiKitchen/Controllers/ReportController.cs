@@ -179,6 +179,7 @@ namespace BackendSaiKitchen.Controllers
                     decimal chequesum = 0;
                     decimal onlinesum = 0;
                     double? satisfy = 0;
+                    int inWCount = 0;
                     foreach (var inquiry in branch.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))))
                     {
                         received += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
@@ -191,7 +192,8 @@ namespace BackendSaiKitchen.Controllers
                         cashsum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         chequesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         onlinesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
-                        satisfy = +(double?)Math.Round(Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7))/branch.Inquiries.Count())  ;
+                        satisfy += (double?)Math.Round(Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7)) / branch.Inquiries.Count());
+                        inWCount += (int)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Count();
                     }
                     
                     report = new BranchReport()
@@ -351,9 +353,11 @@ namespace BackendSaiKitchen.Controllers
                     if (report.AmountReceived != 0 && report.AmountReceived != null)
                         foreach (var inquiry in branch.Inquiries)
                         {
-                            value += (decimal)(inquiry.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
-                        }
+                            value += (decimal)(inquiry.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount));
 
+                        }
+                    value =(decimal)(value / report.AmountReceived * 100);
+                    //value = (decimal)(branch.Inquiries.Where(x => x.IsActive ==true).Select(x => x.Payments.Where(x => x.)) paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
 
 
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
