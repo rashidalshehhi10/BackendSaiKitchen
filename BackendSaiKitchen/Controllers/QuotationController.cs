@@ -116,11 +116,11 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count()))
-                .Select(x => new ViewInquiryDetail()
-                {
-                    InquiryId = x.InquiryId,
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+                  && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
+                  .Select(x => new ViewInquiryDetail()
+                  {
+                      InquiryId = x.InquiryId,
 
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
