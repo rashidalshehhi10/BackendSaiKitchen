@@ -349,7 +349,7 @@ namespace BackendSaiKitchen.Controllers
                     string mode = Enum.GetName(typeof(paymentMode), i);
                     decimal value = 0;
                     if (report.AmountReceived != 0 && report.AmountReceived != null)
-                        value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
+                        value = (decimal)(paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
 
 
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
