@@ -193,6 +193,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.IsInstallment = customQuotation.IsInstallment;
                 quotation.NoOfInstallment = customQuotation.NoOfInstallment;
                 quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                quotation.CalculationSheetFile = customQuotation.CalculationSheetFile;
                 quotation.CreatedDate = Helper.Helper.GetDateTime();
                 quotation.CreatedBy = Constants.userId;
                 quotation.UpdatedBy = Constants.userId;
