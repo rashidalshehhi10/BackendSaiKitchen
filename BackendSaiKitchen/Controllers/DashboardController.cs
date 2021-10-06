@@ -28,7 +28,7 @@ namespace BackendSaiKitchen.Controllers
                        CustomerContacted = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false && y.ContactStatusId == 1).Count(),
                        CustomerNeedtoContact = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false && y.ContactStatusId == 2).Count(),
                        CustomerRegistered = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false).Count(),
-                       InquiryCompleted = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.inquiryCompleted).Count(),
+                       InquiryCompleted = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted).Count(),
                        InquiryIncomplete = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Count(),
                        Totalquotations = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).Select(y => y.Quotations).Count(),
                        QuotationAccepted = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),
