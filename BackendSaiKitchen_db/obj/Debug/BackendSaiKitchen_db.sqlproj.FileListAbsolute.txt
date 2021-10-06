@@ -10,5 +10,9 @@ D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\BackendSaiKitche
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\bin\Debug\BackendSaiKitchen_db.dacpac
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\bin\Debug\BackendSaiKitchen_db.dll
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\bin\Debug\BackendSaiKitchen_db.pdb
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\Model.xml
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\refactor.xml
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\postdeploy.sql
+C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\predeploy.sql
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\BackendSaiKitchen_db.dll
 C:\Users\G.force_sy\source\repos\Sameer71095\BackendSaiKitchen\BackendSaiKitchen_db\obj\Debug\BackendSaiKitchen_db.pdb

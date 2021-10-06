@@ -178,8 +178,8 @@ namespace BackendSaiKitchen.Controllers
                     decimal cashsum = 0;
                     decimal chequesum = 0;
                     decimal onlinesum = 0;
-                    double? satisfy = 0;
-                    int inWCount = 0;
+                    //double? satisfy = 0;
+                    //int inWCount = 0;
                     foreach (var inquiry in branch.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))))
                     {
                         received += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
@@ -192,10 +192,10 @@ namespace BackendSaiKitchen.Controllers
                         cashsum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         chequesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         onlinesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
-                        satisfy += (double?)Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7));
-                        inWCount += (int)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Count();
+                        //satisfy += (double?)Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7));
+                        //inWCount += (int)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Count();
                     }
-                    satisfy = satisfy / inWCount;
+                    //satisfy = satisfy / inWCount;
                     report = new BranchReport()
                     {
                         AmountPending = pending,//branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount / 100),
@@ -215,7 +215,7 @@ namespace BackendSaiKitchen.Controllers
                         TotalCash = cashsum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount /100),
                         TotalCheque = chequesum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount/100),
                         TotalOnline = onlinesum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount/100),
-                        CustomerSatisfy = satisfy,//(double?)Math.Round((decimal)branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7) // branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes ?.Select(x => x.FeedbackReaction).Count()*100
+                        CustomerSatisfy =(double?)Math.Round((decimal)branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7) // branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes ?.Select(x => x.FeedbackReaction).Count()*100
                     };
                 }
                 report.inquiryPendingDetails = new List<InquiryPendingDetails>();
