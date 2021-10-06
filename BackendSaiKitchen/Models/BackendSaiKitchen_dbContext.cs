@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -969,6 +971,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.AdvancePayment).HasMaxLength(500);
 
                 entity.Property(e => e.Amount).HasMaxLength(50);
+
+                entity.Property(e => e.CalculationSheetFile).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
