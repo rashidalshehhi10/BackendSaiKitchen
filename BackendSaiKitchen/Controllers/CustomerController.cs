@@ -117,7 +117,7 @@ namespace SaiKitchenBackend.Controllers
              }).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
-            int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
+            int? needToContact = customers.Where(x => x.ContactStatusId == 2 && (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <= Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
             int? customerWithoutInquiry = customers.Where(x => x.TotalNoOfInquiries == "No Inquiries").Count();
 
             customers.ForEach(x =>
