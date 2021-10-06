@@ -1,6 +1,4 @@
-﻿using BackendSaiKitchen.Models;
-
-namespace BackendSaiKitchen.CustomModel
+﻿namespace BackendSaiKitchen.CustomModel
 {
     public class CustomCustomer
     {

@@ -71,7 +71,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetCustomerOfBranch(int branchId)
         {
             List<CustomerResponse> customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
-               .Include(x=>x.Inquiries)
+               .Include(x => x.Inquiries)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 {
@@ -113,12 +113,12 @@ namespace SaiKitchenBackend.Controllers
                  ContactStatus = x.ContactStatus.ContactStatusName,
                  CustomerAddress = x.CustomerAddress,
                  CustomerNationalId = x.CustomerNationalId,
-                 TotalNoOfInquiries = x.Inquiries.Count==0?"No Inquiries": x.Inquiries.Count.ToString()
+                 TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
              }).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = customers.Where(x => x.ContactStatusId == 2).Count();
-        int?  customerWithoutInquiry= customers.Where(x=>x.TotalNoOfInquiries == "No Inquiries").Count();
+            int? customerWithoutInquiry = customers.Where(x => x.TotalNoOfInquiries == "No Inquiries").Count();
 
             customers.ForEach(x =>
             {

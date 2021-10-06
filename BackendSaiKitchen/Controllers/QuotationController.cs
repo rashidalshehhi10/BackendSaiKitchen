@@ -119,40 +119,40 @@ namespace BackendSaiKitchen.Controllers
             var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                   && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
                   .Select(x => new ViewInquiryDetail()
-                   {
+                  {
                       InquiryId = x.InquiryId,
 
-                    InquiryDescription = x.InquiryDescription,
-                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                    //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
-                    //WorkScopeCount = x.InquiryWorkscopes.Count,
-                    Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
-                    BuildingAddress = x.Building.BuildingAddress,
-                    BuildingCondition = x.Building.BuildingCondition,
-                    BuildingFloor = x.Building.BuildingFloor,
-                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                    IsEscalationRequested = x.IsEscalationRequested,
-                    CustomerId = x.CustomerId,
-                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                    CustomerName = x.Customer.CustomerName,
-                    CustomerEmail = x.Customer.CustomerEmail,
-                    CustomerContact = x.Customer.CustomerContact,
-                    CustomerWhatsapp = x.Customer.CustomerWhatsapp,
-                    BranchId = x.BranchId,
-                    InquiryAddedBy = x.ManagedByNavigation.UserName,
-                    InquiryAddedById = x.ManagedBy,
-                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    QuotationScheduleDate = x.QuotationScheduleDate,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                    CommentAddedOn = x.InquiryCommentsAddedOn,
-                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
-                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
-                    QuotationAddedOn = x.QuotationAddedOn
-                }).OrderByDescending(x => x.InquiryId);
+                      InquiryDescription = x.InquiryDescription,
+                      InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                      //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
+                      //WorkScopeCount = x.InquiryWorkscopes.Count,
+                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      BuildingAddress = x.Building.BuildingAddress,
+                      BuildingCondition = x.Building.BuildingCondition,
+                      BuildingFloor = x.Building.BuildingFloor,
+                      BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                      IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                      InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                      BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                      IsEscalationRequested = x.IsEscalationRequested,
+                      CustomerId = x.CustomerId,
+                      CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                      CustomerName = x.Customer.CustomerName,
+                      CustomerEmail = x.Customer.CustomerEmail,
+                      CustomerContact = x.Customer.CustomerContact,
+                      CustomerWhatsapp = x.Customer.CustomerWhatsapp,
+                      BranchId = x.BranchId,
+                      InquiryAddedBy = x.ManagedByNavigation.UserName,
+                      InquiryAddedById = x.ManagedBy,
+                      NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                      InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                      QuotationScheduleDate = x.QuotationScheduleDate,
+                      WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                      CommentAddedOn = x.InquiryCommentsAddedOn,
+                      DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                      MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                      QuotationAddedOn = x.QuotationAddedOn
+                  }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
             tableResponse.recordsFiltered = inquiries.Count();

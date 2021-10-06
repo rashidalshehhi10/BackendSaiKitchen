@@ -47,7 +47,7 @@ namespace SaiKitchenBackend.Controllers
                         customer = anotherBranchCustomer;
                         List<int?> roletypeId = new List<int?>();
                         roletypeId.Add((int)roleType.Manager);
-                        sendNotificationToHead("Our Customer "+anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
+                        sendNotificationToHead("Our Customer " + anotherBranchCustomer.CustomerName + Constants.inquiryOnAnotherBranchMessage, false, null, null, roletypeId, anotherBranchCustomer.BranchId, (int)notificationCategory.Other);
                     }
                     else
                     {
@@ -315,7 +315,7 @@ namespace SaiKitchenBackend.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            
+
             return response;
         }
 

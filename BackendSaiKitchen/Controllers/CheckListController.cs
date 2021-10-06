@@ -87,7 +87,7 @@ namespace BackendSaiKitchen.Controllers
                 (y.PaymentTypeId == (int)paymenttype.Installment && y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive ==true && y.IsDeleted ==false)).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
@@ -289,7 +289,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     joborder.Comments = approve.Comment;
-                   // joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
+                    // joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
                     joborder.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
                     joborder.FactoryId = approve.factoryId;
                     joborder.SiteMeasurementMatchingWithDesign = approve.SiteMeasurementMatchingWithDesign;
