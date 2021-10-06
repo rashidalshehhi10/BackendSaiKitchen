@@ -408,24 +408,35 @@ namespace SaiKitchenBackend.Controllers
                     if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementPending)
                     {
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
+                        inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
                     {
                         inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
+                        inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.designDelayed : (int)inquiryStatus.designPending;
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
+                        inquiry.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+                        inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
+                    }
+
+                    if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationPending)
+                    {
+                        if (Helper.ConvertToDateTime(inquiry.QuotationScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()))
+                        {
+
+                            inquiry.InquiryStatusId = (int)inquiryStatus.quotationDelayed;
+                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationDelayed;
+
+                        }
                     }
                     //inquiryWorkscopeRepository.Update(inquiryWorkscope);
-                }
-                if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationPending)
-                {
-                    inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiry.QuotationScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.quotationDelayed : (int)inquiryStatus.quotationPending;
                 }
                 inquiryRepository.Update(inquiry);
             }
