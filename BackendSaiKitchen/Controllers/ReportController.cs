@@ -201,41 +201,48 @@ namespace BackendSaiKitchen.Controllers
                 report.MonthlyAmountReceived = new List<MonthlyReview>();
                 foreach (var inquiry in branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))
                 {
-                    report.inquiryPendingDetails.Add(new InquiryPendingDetails
+                    if (inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Sum(x => x.PaymentAmount) / 100 > 0)
                     {
-                        Address = inquiry.Building.BuildingAddress,
-                        CustomerName = inquiry.Customer.CustomerName,
-                        Email = inquiry.Customer.CustomerEmail,
-                        MobileNomber = inquiry.Customer.CustomerContact,
-                        WorkscopeName = inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                        InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                        AmountPending = (decimal)inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Sum(x => x.PaymentAmount),
-
-                        reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Select(x => new reportPayment
+                        report.inquiryPendingDetails.Add(new InquiryPendingDetails
                         {
-                            Amount = (decimal)x.PaymentAmount / 100,
-                            Date = x.PaymentExpectedDate
-                        }).ToList()
-                    });
+                            Address = inquiry.Building.BuildingAddress,
+                            CustomerName = inquiry.Customer.CustomerName,
+                            Email = inquiry.Customer.CustomerEmail,
+                            MobileNomber = inquiry.Customer.CustomerContact,
+                            WorkscopeName = inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                            InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                            AmountPending = (decimal)inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Sum(x => x.PaymentAmount) / 100,
 
-                    report.InquiryReceivedDetails.Add(new InquiryReceivedDetails
+                            reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentPending || x.PaymentStatusId == (int)paymentstatus.PaymentPending).Select(x => new reportPayment
+                            {
+                                Amount = (decimal)x.PaymentAmount / 100,
+                                Date = x.PaymentExpectedDate
+                            }).ToList()
+                        });
+                    }
+
+                    if (inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x => x.PaymentAmount) / 100 > 0)
                     {
-                        Address = inquiry.Building.BuildingAddress,
-                        CustomerName = inquiry.Customer.CustomerName,
-                        Email = inquiry.Customer.CustomerEmail,
-                        MobileNomber = inquiry.Customer.CustomerContact,
-                        WorkscopeName = inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
-                        InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                        AmountRecieved = (decimal)inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x => x.PaymentAmount),
-                        reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Select(x => new reportPayment
+                        report.InquiryReceivedDetails.Add(new InquiryReceivedDetails
                         {
-                            Amount = (decimal)x.PaymentAmount / 100,
-                            PaymentMethod = x.PaymentMethod,
-                            PaymentModeId = (int)x.PaymentModeId,
-                            PaymentType = x.PaymentType.PaymentTypeName,
-                            Date = x.PaymentExpectedDate
-                        }).ToList()
-                    });
+                            Address = inquiry.Building.BuildingAddress,
+                            CustomerName = inquiry.Customer.CustomerName,
+                            Email = inquiry.Customer.CustomerEmail,
+                            MobileNomber = inquiry.Customer.CustomerContact,
+                            WorkscopeName = inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList(),
+                            InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                            AmountRecieved = (decimal)inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x => x.PaymentAmount) / 100,
+                            reportPayments = inquiry.Payments.Where(x => x.PaymentStatusId == (int)paymentstatus.InstallmentApproved || x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Select(x => new reportPayment
+                            {
+                                Amount = (decimal)x.PaymentAmount / 100,
+                                PaymentMethod = x.PaymentMethod,
+                                PaymentModeId = (int)x.PaymentModeId,
+                                PaymentType = x.PaymentType.PaymentTypeName,
+                                Date = x.PaymentExpectedDate
+                            }).ToList()
+                        });
+                    }
+                    
                 }
 
                 var inquiries = branch.Inquiries.Where(y => Helper.Helper.ConvertToDateTime(y.CreatedDate).Month >= Helper.Helper.ConvertToDateTime(req.StartDate).Month && Helper.Helper.ConvertToDateTime(y.CreatedDate).Month <= Helper.Helper.ConvertToDateTime(req.EndDate).Month);
