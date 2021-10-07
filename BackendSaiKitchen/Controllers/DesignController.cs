@@ -21,7 +21,7 @@ namespace BackendSaiKitchen.Controllers
 
         static List<File> files = new List<File>();
 
-        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Create)]
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
@@ -29,7 +29,7 @@ namespace BackendSaiKitchen.Controllers
         {
 
             files.Clear();
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested || x.InquiryStatusId == (int)inquiryStatus.designRejected))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
             if (designCustomModel.base64f3d != null && designCustomModel.base64f3d.Count > 0)
