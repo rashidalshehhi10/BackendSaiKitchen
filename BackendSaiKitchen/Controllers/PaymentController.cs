@@ -314,7 +314,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryForPaymentById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId & x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
