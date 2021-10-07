@@ -303,6 +303,7 @@ namespace BackendSaiKitchen.Controllers
                     joborder.ApprovedDrawingsAndAvailabilityOfClientSignatureNotes = approve.ApprovedDrawingsAndAvailabilityOfClientSigntureNotes;
                     joborder.AppliancesDataSheet = approve.AppliancesDataSheet;
                     joborder.AppliancesDataSheetNotes = approve.AppliancesDataSheetNotes;
+                    joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
 
                 }
 
