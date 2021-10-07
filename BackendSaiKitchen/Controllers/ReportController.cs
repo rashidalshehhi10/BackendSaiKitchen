@@ -323,7 +323,7 @@ namespace BackendSaiKitchen.Controllers
                     report.topFivePaidCustomers.Add(new TopFivePaidCustomer
                     {
                         Name = Customer.CustomerName,
-                        AmountRecieved = amount/100,
+                        AmountRecieved = amount,
                         CustomerContact = Customer.CustomerContact,
                     });
                     if (x >= 4)
