@@ -329,6 +329,13 @@ namespace BackendSaiKitchen.Controllers
 
                         });
                     }
+                    foreach (var payment in quotation.Payments)
+                    {
+                        if (payment.PaymentAmount == 0)
+                        {
+                            payment.IsActive = false;
+                        }
+                    }
 
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     inquiry.QuotationAddedOn = Helper.Helper.GetDateTime();

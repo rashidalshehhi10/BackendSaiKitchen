@@ -48,6 +48,7 @@ namespace BackendSaiKitchen.Models
         public string QuotationAndCalculationSheetMatchingProposalNotes { get; set; }
         public string ApprovedDrawingsAndAvailabilityOfClientSignatureNotes { get; set; }
         public string AppliancesDataSheetNotes { get; set; }
+        public string DetailedDesignFile { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }

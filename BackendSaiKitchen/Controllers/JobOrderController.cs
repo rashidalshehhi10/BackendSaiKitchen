@@ -300,6 +300,7 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.DataSheetApplianceFileUrl = jobOrder.DataSheetApplianceFileUrl;
                 _jobOrder.IsAppliancesProvidedByClient = jobOrder.IsAppliancesProvidedByClient;
                 // _jobOrder.JobOrderChecklistFileUrl = jobOrder.JobOrderChecklistFileUrl;
+                _jobOrder.DetailedDesignFile = jobOrder.DetailedDesignFile;
                 _jobOrder.MaterialSheetFileUrl = jobOrder.MaterialSheetFileUrl;
                 _jobOrder.MepdrawingFileUrl = jobOrder.MepdrawingFileUrl;
                 _jobOrder.Comments = jobOrder.Comments;

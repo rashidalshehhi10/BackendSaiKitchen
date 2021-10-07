@@ -472,11 +472,13 @@ namespace BackendSaiKitchen.Controllers
                     switch (reason.rejectionType)
                     {
                         case (int)permission.ManageMeasurement:
+                            inquiry.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                             inquiryworkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                             inquiryworkscope.Comments = reason.reason;
                             break;
 
                         case (int)permission.ManageDesign:
+                            inquiry.InquiryStatusId = (int)inquiryStatus.designRejected;
                             inquiryworkscope.InquiryStatusId = (int)inquiryStatus.designRejected;
                             inquiryworkscope.Comments = reason.reason;
                             break;
