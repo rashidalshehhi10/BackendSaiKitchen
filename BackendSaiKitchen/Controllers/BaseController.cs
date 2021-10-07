@@ -42,9 +42,15 @@ namespace SaiKitchenBackend.Controllers
         public Repository<RoleType> roleTypeRepository;
         public Repository<Inquiry> inquiryRepository;
         public Repository<WorkScope> workScopeRepository;
-        public Repository<Fee> feesRepository;
+        private Repository<Fee> feesRepository;
+        public Repository<Fee> FeesRepository
+        {
+            get { return feesRepository; }
+            set { feesRepository = value; }
+        }
         public Repository<Promo> promoRepository;
         public Repository<Notification> noificationRepository;
+
         public Repository<InquiryWorkscope> inquiryWorkscopeRepository;
         public Repository<Measurement> measurementRepository;
         public Repository<File> fileRepository;

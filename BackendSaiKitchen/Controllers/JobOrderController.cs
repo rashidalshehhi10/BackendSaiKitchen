@@ -111,7 +111,7 @@ namespace BackendSaiKitchen.Controllers
                 Inquirychecklist inquirychecklist = new Inquirychecklist()
                 {
                     inquiry = inquiry,
-                    fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {
@@ -260,7 +260,7 @@ namespace BackendSaiKitchen.Controllers
                 Inquirychecklist inquirychecklist = new Inquirychecklist()
                 {
                     inquiry = inquiry,
-                    fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {

@@ -72,7 +72,7 @@ namespace SaiKitchenBackend.Controllers
             }
             if (!(bool)inquiry.IsMeasurementProvidedByCustomer)
             {
-                inquiry.MeasurementFees = feesRepository.FindByCondition(x => x.FeesId == 1 && x.IsActive == true && x.IsDeleted == false).FirstOrDefault().FeesAmount;
+                inquiry.MeasurementFees = FeesRepository.FindByCondition(x => x.FeesId == 1 && x.IsActive == true && x.IsDeleted == false).FirstOrDefault().FeesAmount;
             }
             else
             {
@@ -368,7 +368,7 @@ namespace SaiKitchenBackend.Controllers
                 Inquirychecklist inquirychecklist = new Inquirychecklist()
                 {
                     inquiry = inquiry,
-                    fees = feesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {
