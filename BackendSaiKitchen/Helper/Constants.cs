@@ -147,7 +147,12 @@ namespace BackendSaiKitchen.Helper
         jobOrderReadyForInstallation = 53,
         jobOrderFilesPending = 54,
         jobOrderFilesDelayed = 55,
-        designRevisionRequested = 56
+        designRevisionRequested = 56,
+        quotationWaitingForApproval = 57,
+        contractPending = 58,
+        contractWaitingForCustomerApproval=59,
+        contractApproved = 60,
+        quotationRevisionRequested = 61,
     }
 
     public enum roleType

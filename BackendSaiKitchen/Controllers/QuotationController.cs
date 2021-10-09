@@ -27,7 +27,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || y.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
+                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || y.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Promo)
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
@@ -116,7 +116,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                   && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
                   .Select(x => new ViewInquiryDetail()
                   {
@@ -230,9 +230,9 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Files = files;
                     foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
-                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForApproval;
                     }
-                    inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                    inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForApproval;
                     inquiry.QuotationAssignTo = Constants.userId;
                     decimal percent = 0;
                     var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount) - ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
@@ -406,6 +406,9 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        
+
+
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpGet]
         [Route("[action]")]
@@ -419,6 +422,88 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
+            return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public object ViewQuotationDetailsById(int quotationId)
+        {
+            var quotation = quotationRepository.FindByCondition(x => x.QuotationId == quotationId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (quotation != null)
+            {
+                response.data = quotation;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Quotation Not Found;";
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public object HeadAcceptQuotation(Quotation _quotation)
+        {
+            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.QuotationId == _quotation.QuotationId)
+                .Include(x => x.Inquiry)
+                .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (quotation != null)
+            {
+
+                foreach (var inquiryWorkscope in quotation.Inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                }
+
+
+                quotation.Inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                quotation.AdvancePayment = _quotation.AdvancePayment;
+                quotation.AfterDelivery = _quotation.AfterDelivery;
+                quotation.Amount = _quotation.Amount;
+                quotation.BeforeInstallation = _quotation.BeforeInstallation;
+                quotation.CalculationSheetFile = _quotation.CalculationSheetFile;
+                quotation.Description = _quotation.Description;
+                quotation.IsInstallment = _quotation.IsInstallment;
+                quotation.NoOfInstallment = _quotation.NoOfInstallment;
+                quotation.TotalAmount = _quotation.TotalAmount;
+
+
+                quotationRepository.Update(quotation);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
+            }
+            return response;
+        }
+
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
+        [HttpGet]
+        [Route("[action]")]
+        public object HeadDeclineQuotation(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
+                }
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
 
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
