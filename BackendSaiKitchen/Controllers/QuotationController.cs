@@ -500,12 +500,28 @@ namespace BackendSaiKitchen.Controllers
                     }
                 }
                 int j = -1;
+                List<TermsAndCondition> deletedTermsAndConditions = new List<TermsAndCondition>();
                 viewQuotation.TermsAndConditionsDetail.ForEach((x) =>
                 {
                     if (x.IsInstallmentTerms == viewQuotation.IsInstallment)
                     {
                         if (viewQuotation.IsInstallment == false)
                         {
+                            if (x.TermsAndConditionsDetail.Contains("[AdvancePayment]") && (viewQuotation.AdvancePayment == null || viewQuotation.AdvancePayment == "0"))
+                            {
+                                //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                                deletedTermsAndConditions.Add(x);
+                            }
+                            else if (x.TermsAndConditionsDetail.Contains("[BeforeInstallation]") && (viewQuotation.BeforeInstallation == null || viewQuotation.BeforeInstallation == "0"))
+                            {
+                                //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                                deletedTermsAndConditions.Add(x);
+                            }
+                            else if (x.TermsAndConditionsDetail.Contains("[AfterDelivery]") && (viewQuotation.AfterDelivery == null || viewQuotation.AfterDelivery == "0"))
+                            {
+                                //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                                deletedTermsAndConditions.Add(x);
+                            }
                             x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]", viewQuotation.AdvancePayment + "%").Replace("[BeforeInstallation]", viewQuotation.BeforeInstallation + "%").Replace("[AfterDelivery]", viewQuotation.AfterDelivery + "%");
                         }
                         else
@@ -527,6 +543,9 @@ namespace BackendSaiKitchen.Controllers
                         //viewQuotation.TermsAndConditionsDetail.Remove(x);
                     }
                 });
+                deletedTermsAndConditions.ForEach((x) => viewQuotation.TermsAndConditionsDetail.Remove(x));
+
+
 
                 //var i=   (from xx in context.InquiryWorkscopes
                 //    group xx.InquiryWorkscopeId by xx into g
