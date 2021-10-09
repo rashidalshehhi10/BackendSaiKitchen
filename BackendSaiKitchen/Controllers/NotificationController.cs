@@ -15,26 +15,25 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> GetPagedNotification(int userId, int pageId)
         {
-
-            //response.data = noificationRepository.GetPagedAsync(h => h.OrderBy(l => l.NotificationId), g => g.GroupId == _categoryId, skip, take);
-
-            response.data = await noificationRepository.GetPagedAsync(x => x.OrderBy(y => y.NotificationId), x => x.IsActive == true && x.IsDeleted == false && x.UserId == userId, pageId, 10, null);
+            response.data = await NotificationRepository.GetPagedAsync(x => x.OrderBy(y => y.NotificationId), x => x.IsActive == true && x.IsDeleted == false && x.UserId == userId, pageId, 10, null);
             return response;
         }
+
         [HttpPost]
         [Route("[action]")]
         public Object GeAllNotification()
         {
-            response.data = noificationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            response.data = NotificationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             return response;
         }
+
         [HttpPost]
         [Route("[action]")]
         public Object GeAllNotificationofUser(int userId)
         {
-            User user = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Include(x => x.UserRoles).FirstOrDefault();
+            User user = UserRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Include(x => x.UserRoles).FirstOrDefault();
             Console.WriteLine(user);
-            response.data = noificationRepository.FindByCondition(x => (x.UserId == user.UserId || user.UserRoles.Contains(x.UserRole)) && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationResponse()
+            response.data = NotificationRepository.FindByCondition(x => (x.UserId == user.UserId || user.UserRoles.Contains(x.UserRole)) && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationResponse()
             {
                 notificationId = x.NotificationId,
                 notificationContent = x.NotificationContent,
@@ -46,7 +45,7 @@ namespace SaiKitchenBackend.Controllers
                 createdDate = x.CreatedDate
             }).OrderByDescending(x => x.notificationId).ToList().Take(30);
             user.LastSeen = Helper.GetDateTime();
-            userRepository.Update(user);
+            UserRepository.Update(user);
 
             context.SaveChanges();
             return response;

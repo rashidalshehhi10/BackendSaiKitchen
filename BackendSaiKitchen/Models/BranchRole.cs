@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class BranchRole
+    public class BranchRole
     {
         public BranchRole()
         {

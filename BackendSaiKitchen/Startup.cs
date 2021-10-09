@@ -36,14 +36,6 @@ namespace BackendSaiKitchen
             });
             services.AddDbContextPool<BackendSaiKitchen_dbContext>(options => options.UseSqlServer("Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;"));
 
-            //services.AddDbContext<DbSaiKitchenContext>(ServiceLifetime.Transient);
-            // Add Cors
-            //services.Configure<FormOptions>(options =>
-            //{
-            //    options.MultipartBodyLengthLimit = int.MaxValue; //6GB
-            //    options.ValueLengthLimit = int.MaxValue;
-            //    options.MemoryBufferThreshold = int.MaxValue;
-            //});
 
             services.AddCors(options =>
             {
@@ -53,8 +45,6 @@ namespace BackendSaiKitchen
                 .AllowAnyMethod());
             });
 
-            // Initialize the Firebase Admin SDK
-            //FirebaseApp.Create();
 
             services.AddControllers();
 
@@ -62,7 +52,6 @@ namespace BackendSaiKitchen
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
-                //options.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.All;
             });
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
@@ -73,11 +62,6 @@ namespace BackendSaiKitchen
 
             services.AddScoped<IBlobManager, BlobManager>();
 
-            //services.Configure<FormOptions>(x =>
-            //{
-            //    x.ValueLengthLimit = int.MaxValue;
-            //    x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,23 +69,17 @@ namespace BackendSaiKitchen
         {
             StripeConfiguration.ApiKey = "sk_test_51JA8pgAtqGclDTLoAv6UT77NclL3nUSuGYSuK1tIM0SfQKOfx7I3hj6offRjpkw9sSztIbQE6OnGOQNBFVYkvlSQ00H2xue74N";
 
-            //if (env.IsDevelopment())
-            //{
             app.UseDeveloperExceptionPage();
-            //}
+            
 
             app.UseSwagger();
-            //app.Run(async context =>
-            //{
-            //    context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = 1073741824;
-            //});
+           
 
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sai Kitchen v1"));
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            // Enable Cors
             app.UseCors("CorsApi");
 
 
@@ -111,21 +89,23 @@ namespace BackendSaiKitchen
             {
                 endpoints.MapControllers();
             });
-            // Enable automatic tracing integration.
-            // Make sure to put this middleware right after `UseRouting()`.
+
             app.UseSentryTracing();
             try
             {
                 // below code is needed to get User name for Log             
                 app.Use(async (httpContext, next) =>
                 {
-                    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; //Gets user Name from user Identity  
-                    LogContext.PushProperty("Username", userName); //Push user in LogContext;  
+                    var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest"; 
+                    LogContext.PushProperty("Username", userName); 
                     await next.Invoke();
                 }
                 );
             }
-            catch (Exception) { }
+            catch (Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
 
         }
     }

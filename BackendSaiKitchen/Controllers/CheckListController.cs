@@ -16,12 +16,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquiryChecklistDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
-                //                .Select(x => new {
-                //quotation = x.Quotations.FirstOrDefault(y => y.IsActive == true && y.IsDeleted ==false).Files.Where(y => y.IsActive == true && y.IsDeleted == false),
-                //payment = x.Payments.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files.Where(y => y.IsActive == true && y.IsDeleted ==false)
-                //                }).FirstOrDefault();
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -40,7 +36,7 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                Inquirychecklist inquirychecklist = new Inquirychecklist
                 {
                     inquiry = inquiry,
                     fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
@@ -52,7 +48,6 @@ namespace BackendSaiKitchen.Controllers
                 }
                 else
                 {
-                    //inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     response.data = inquirychecklist;
                 }
             }
@@ -69,7 +64,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquiryCommercialChecklistDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -87,10 +82,10 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
+           
             if (inquiry != null)
             {
-                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                Inquirychecklist inquirychecklist = new Inquirychecklist
                 {
                     inquiry = inquiry,
                     fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
@@ -119,7 +114,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllInquiryChecklist()
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
+            var inquiries = InquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending));
             if (inquiries != null)
             {
@@ -137,7 +132,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+            var inquiries = InquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
             && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
@@ -182,7 +177,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryCommercialChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+            var inquiries = InquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
             && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
@@ -226,7 +221,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object InquiryChecklist(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -254,7 +249,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -270,7 +265,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)// && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
@@ -280,7 +275,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            //JobOrder _jobOrder = new JobOrder();
+           
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
@@ -288,7 +283,6 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     joborder.Comments = approve.Comment;
-                    // joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
                     joborder.JobOrderExpectedDeadline = approve.jobOrderExpectedDeadline;
                     joborder.FactoryId = approve.factoryId;
                     joborder.SiteMeasurementMatchingWithDesign = approve.SiteMeasurementMatchingWithDesign;
@@ -324,7 +318,7 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 if (fileUrl != null)
                                 {
-                                    //var fileUrl = await Helper.Helper.UploadFile(file);
+                                   
 
                                     switch (approve.addFileonChecklists[i].documentType)
                                     {
@@ -370,6 +364,8 @@ namespace BackendSaiKitchen.Controllers
                                                 IsDeleted = false,
                                             });
                                             break;
+                                        default:
+                                            throw new InvalidOperationException("Unexpected Value");
                                     }
                                 }
 
@@ -381,7 +377,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
                 }
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -396,7 +392,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveinquiryCommericalChecklist(CustomCommercialCheckListApproval approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
@@ -412,7 +408,7 @@ namespace BackendSaiKitchen.Controllers
 
 
                 response.data = "Commerical Checklist Approved";
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -427,7 +423,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectinquiryCommericalChecklist(CustomCommercialCheckListApproval Reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
@@ -447,7 +443,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 response.data = "Commerical Checklist Rejected";
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -463,7 +459,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectinquiryChecklist(CustomCheckListReject reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
@@ -493,10 +489,12 @@ namespace BackendSaiKitchen.Controllers
                             }
                             inquiry.InquiryComment = reason.reason;
                             break;
+                        default:
+                            throw new InvalidOperationException("Unexpected value:" + reason.rejectionType);
                     }
                 }
 
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;
             }

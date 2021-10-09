@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class CustomerBranch
+    public class CustomerBranch
     {
         public int CustomerBranchId { get; set; }
         public int? CustomerId { get; set; }

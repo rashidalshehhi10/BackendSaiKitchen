@@ -5,8 +5,6 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class ViewInquiryDetail
     {
-
-        //public int InquiryWorkscopeId { get; set; }
         public int? InquiryId { get; set; }
         public string InquiryCode { get; set; }
         public string InquiryDescription { get; set; }
@@ -18,9 +16,6 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementAssignTo { get; set; }
         public string InquiryComment { get; set; }
-        //public int? WorkScopeId { get; set; }
-        //public int? WorkScopeCount { get; set; }
-        //public string WorkScopeName { get; set; }
         public int? QuestionaireType { get; set; }
         public string DesignScheduleDate { get; set; }
         public string DesignAssignTo { get; set; }
@@ -50,12 +45,10 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementAddedOn { get; set; }
         public string DesignAddedOn { get; set; }
         public string QuotationAddedOn { get; set; }
-        //public List<InquiryWorkscope> InquiryWorkscopes { get; set; }
     }
     public class UpdateInquirySchedule
     {
         public int InquiryId { get; set; }
-        //public int InquiryWorkscopeId { get; set; }
         public int? MeasurementAssignedTo { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public int? InquiryStatusId { get; set; }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class Setting
+    public class Setting
     {
         public int SettingId { get; set; }
         public string SettingName { get; set; }

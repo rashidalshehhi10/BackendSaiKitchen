@@ -16,13 +16,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ViewDashboard()
         {
-            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
+            var user = UserRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
                 .FirstOrDefault();
 
             Dashborad dashborad;
             if (user != null)
             {
-                dashborad = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                dashborad = BranchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
                    .Select(x => new Dashborad
                    {
                        CustomerContacted = x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false && y.ContactStatusId == 1).Count(),
@@ -37,7 +37,7 @@ namespace BackendSaiKitchen.Controllers
                        TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
                    }).FirstOrDefault();
 
-                var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                var inquiries = InquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
                     .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId || y.DesignAssignedTo == Constants.userId)))
                     .ThenInclude(y => y.Workscope);
 
@@ -74,7 +74,7 @@ namespace BackendSaiKitchen.Controllers
 
                     }
                 }
-                var customers = customerRepository.FindByCondition(x => x.UserId == user.UserId && x.ContactStatusId == (int)contactStatus.NeedToContact && x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null && x.CustomerNextMeetingDate != "").Select(x => new { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate });
+                var customers = CustomerRepository.FindByCondition(x => x.UserId == user.UserId && x.ContactStatusId == (int)contactStatus.NeedToContact && x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null && x.CustomerNextMeetingDate != "").Select(x => new { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate });
                 foreach (var customer in customers)
                 {
 
@@ -89,7 +89,7 @@ namespace BackendSaiKitchen.Controllers
                     });
 
                 }
-                calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId).ToList().ForEach(x => dashborad.calendar.Add(new Calendar
+                CalendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId).ToList().ForEach(x => dashborad.calendar.Add(new Calendar
                 {
                     Id = x.CalendarEventId,
                     Name = x.CalendarEventName,
@@ -119,17 +119,17 @@ namespace BackendSaiKitchen.Controllers
             calendarEvent.UserId = Constants.userId;
             if (calendarEvent.CalendarEventId == 0)
             {
-                calendarEventRepository.Create(calendarEvent);
+                CalendarEventRepository.Create(calendarEvent);
             }
             else
             {
-                var calendar = calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CalendarEventId == calendarEvent.CalendarEventId).FirstOrDefault();
+                var calendar = CalendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CalendarEventId == calendarEvent.CalendarEventId).FirstOrDefault();
                 if (calendar != null)
                 {
                     calendar.CalendarEventName = calendarEvent.CalendarEventName;
                     calendar.CalendarEventDescription = calendarEvent.CalendarEventDescription;
                     calendar.CalendarEventOnClickUrl = calendarEvent.CalendarEventOnClickUrl;
-                    calendarEventRepository.Update(calendar);
+                    CalendarEventRepository.Update(calendar);
                 }
 
             }
@@ -143,10 +143,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeleteCalendarEvent(int calendarEventId)
         {
-            var calendar = calendarEventRepository.FindByCondition(x => x.CalendarEventId == calendarEventId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var calendar = CalendarEventRepository.FindByCondition(x => x.CalendarEventId == calendarEventId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (calendar != null)
             {
-                calendarEventRepository.Delete(calendar);
+                CalendarEventRepository.Delete(calendar);
                 context.SaveChanges();
             }
             else

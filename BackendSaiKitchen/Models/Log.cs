@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class Log
+    public class Log
     {
         public int Id { get; set; }
         public string Message { get; set; }

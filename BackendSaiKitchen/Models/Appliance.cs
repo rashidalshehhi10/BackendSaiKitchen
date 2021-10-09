@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class Appliance
+    public class Appliance
     {
         public int AppliancesId { get; set; }
         public int? KitchenDesignInfoId { get; set; }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class InquiryWorkscope
+    public class InquiryWorkscope
     {
         public InquiryWorkscope()
         {

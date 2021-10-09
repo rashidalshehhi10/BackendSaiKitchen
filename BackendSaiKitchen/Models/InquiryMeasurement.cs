@@ -2,7 +2,7 @@
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class InquiryMeasurement
+    public class InquiryMeasurement
     {
         public int InquiryMeasurementId { get; set; }
         public int? InquiryId { get; set; }

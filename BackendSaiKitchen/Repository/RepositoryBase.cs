@@ -17,9 +17,7 @@ namespace BackendSaiKitchen.Repository
         protected DbSet<T> DbSet { get; set; }
         public Repository(BackendSaiKitchen_dbContext repositoryContext)
         {
-            if (repositoryContext == null)
-                throw new ArgumentNullException("repositoryContext");
-            this.RepositoryContext = repositoryContext;
+            this.RepositoryContext = repositoryContext ?? throw new ArgumentNullException("repositoryContext");
             DbSet = repositoryContext.Set<T>();
         }
         public IQueryable<T> FindAll()
@@ -124,9 +122,9 @@ namespace BackendSaiKitchen.Repository
             }
 
             if (orderBy != null)
-                query = orderBy(query);
+            { query = orderBy(query); }
             else
-                throw new ArgumentNullException("The order by is necessary in Pagining");
+            { throw new ArgumentNullException("The order by is necessary in Pagining"); }
 
 
 
@@ -134,7 +132,7 @@ namespace BackendSaiKitchen.Repository
             if (page != null && page > 0)
             {
                 //(0-1)
-                if (pageSize == null) throw new ArgumentException("The take paremeter supplied is null, It should be included when skip is used");
+                if (pageSize == null) { throw new ArgumentException("The take paremeter supplied is null, It should be included when skip is used"); }
                 query = query.Skip(((int)page - 1) * (int)pageSize);
             }
 

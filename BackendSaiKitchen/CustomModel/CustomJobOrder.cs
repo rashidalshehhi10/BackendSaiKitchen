@@ -10,7 +10,6 @@
         public string materialDeliveryFinalDate { get; set; }
         public string counterTopFixingDate { get; set; }
         public string installationStartDate { get; set; }
-        // public string installationEndDate { get; set; }
         public string Notes { get; set; }
     }
 

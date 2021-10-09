@@ -21,13 +21,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForCustomer(int CustomerId)
         {
-            var customer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
+            var customer = CustomerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
                 .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Workscope).FirstOrDefault();
             if (customer != null)
             {
-                Report report = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
+                Report report = CustomerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == CustomerId)
                 .Select(x => new Report
                 {
                     CustomerId = x.CustomerId,
@@ -91,7 +91,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForUser(ReqReport req)
         {
-            var user = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.InquiryManagedByNavigations.Where(y => y.IsActive == true && y.IsDeleted == false))
+            var user = UserRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == req.Id).Include(x => x.InquiryManagedByNavigations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Workscope).Include(x => x.InquiryManagedByNavigations.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(y => y.Customer)
@@ -100,7 +100,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 UserReport userReport = new UserReport();
                 userReport.reviews = new List<Review>();
-                userReport.CustomerCount = user.Customers.Where(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate)).Count();
+                userReport.CustomerCount = user.Customers.Where(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(x.CreatedDate) <= DateTime.Parse(req.EndDate)).Count();
                 foreach (var inquiry in user.InquiryManagedByNavigations)
                 {
                     if (DateTime.Parse(inquiry.InquiryStartDate) >= DateTime.Parse(req.StartDate) && DateTime.Parse(inquiry.InquiryStartDate) <= DateTime.Parse(req.EndDate))
@@ -133,7 +133,6 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "User Not Found";
             }
-            //response.data = report;
             return response;
         }
 
@@ -141,12 +140,12 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForBranch(ReqReport req)
         {
-            var _branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
+            var _branch = BranchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
                 .FirstOrDefault();
 
             if (_branch != null)
             {
-                var branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
+                var branch = BranchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.Workscope)
@@ -178,8 +177,7 @@ namespace BackendSaiKitchen.Controllers
                     decimal cashsum = 0;
                     decimal chequesum = 0;
                     decimal onlinesum = 0;
-                    //double? satisfy = 0;
-                    //int inWCount = 0;
+
                     foreach (var inquiry in branch.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))))
                     {
                         received += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
@@ -192,18 +190,16 @@ namespace BackendSaiKitchen.Controllers
                         cashsum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         chequesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
                         onlinesum += (decimal)inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount) / 100;
-                        //satisfy += (double?)Math.Round(((decimal)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7));
-                        //inWCount += (int)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Count();
                     }
-                    //satisfy = satisfy / inWCount;
+                    
                     report = new BranchReport()
                     {
-                        AmountPending = pending,//branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount / 100),
-                        AmountReceived = received,//branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => (decimal?)y.PaymentAmount / 100),
-                        BankPaid = bankcount,//branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
-                        CashPaid = cashcount,//branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
-                        ChequePaid = chequecount,//branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
-                        OnlinePaid = onlinecount,//branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Count(),
+                        AmountPending = pending,
+                        AmountReceived = received,
+                        BankPaid = bankcount,
+                        CashPaid = cashcount,
+                        ChequePaid = chequecount,
+                        OnlinePaid = onlinecount,
                         InquiriesCompleted = branch?.Inquiries?.Where(x => x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Count(),
                         InquiriesInComplete = branch?.Inquiries?.Where(x => x.InquiryStatusId != (int)inquiryStatus.jobOrderCompleted && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Count(),
                         JobOrderCreated = branch?.Inquiries?.Where(x => x.IsActive == true && x.IsDeleted == false && (Helper.Helper.ConvertToDateTime(x.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(x.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)) && x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated)?.Count(),//.JobOrders.Where(z => z.IsActive == true && z.IsDeleted == false)?.Count(),
@@ -211,10 +207,10 @@ namespace BackendSaiKitchen.Controllers
                         QuotationAccepted = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.Count(),
                         QuotationPending = branch?.Inquiries?.Where(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate) && (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending)))?.Count(),
                         QuotationRejected = branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Quotations?.Where(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationRejected)?.Count(),
-                        TotalBank = banksum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OfflinePaybyCard && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount /100),
-                        TotalCash = cashsum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cash && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount /100),
-                        TotalCheque = chequesum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.Cheque && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount/100),
-                        TotalOnline = onlinesum,//(decimal)branch?.Inquiries?.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false)?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && y.PaymentModeId == (int)paymentMode.OnlinePayment && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => y.PaymentAmount/100),
+                        TotalBank = banksum,
+                        TotalCash = cashsum,
+                        TotalCheque = chequesum,
+                        TotalOnline = onlinesum,
                         CustomerSatisfy =(double?)Math.Round((decimal)branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Select(x => (x.FeedbackReaction == null ? 1 : (x.FeedbackReaction == 0 ? 1 : x.FeedbackReaction))).Average() * 100 / 7) // branch?.Inquiries?.FirstOrDefault(y => Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate))?.InquiryWorkscopes ?.Select(x => x.FeedbackReaction).Count()*100
                     };
                 }
@@ -327,15 +323,15 @@ namespace BackendSaiKitchen.Controllers
                         CustomerContact = Customer.CustomerContact,
                     });
                     if (x >= 4)
-                        break;
+                    { break; }
                     x++;
                 }
 
-                foreach (var wayofcontact in wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
+                foreach (var wayofcontact in WayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false))
                 {
                     double value = 0;
                     if (branch.Customers.Count() != 0)
-                        value = ((double)branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / (double)branch.Customers.Count()) * 100;
+                    { value = ((double)branch.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.WayofContactId == wayofcontact.WayOfContactId).Count() / (double)branch.Customers.Count()) * 100; }
 
 
 
@@ -351,19 +347,19 @@ namespace BackendSaiKitchen.Controllers
                     string mode = Enum.GetName(typeof(paymentMode), i);
                     decimal value = 0;
                     if (report.AmountReceived != 0 && report.AmountReceived != null)
+                    {
                         foreach (var inquiry in branch.Inquiries)
                         {
                             value += (decimal)(inquiry.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount));
 
                         }
+                    }
                     value =(decimal)(value / report.AmountReceived * 100);
-                    //value = (decimal)(branch.Inquiries.Where(x => x.IsActive ==true).Select(x => x.Payments.Where(x => x.)) paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentTypeId == i && (x.PaymentStatusId == (int)paymentstatus.PaymentApproved || x.PaymentStatusId == (int)paymentstatus.InstallmentApproved)).Sum(x => x.PaymentAmount) / report.AmountReceived) * 100;
-
-
+                    
                     report.receivedPaymentModes.Add(new ReceivedPaymentMode
                     {
                         PaymentMode = mode,
-                        Percentage = Convert.ToInt32(Math.Round((decimal)value, 0))
+                        Percentage = Convert.ToInt32(Math.Round(value, 0))
                     });
                 }
 

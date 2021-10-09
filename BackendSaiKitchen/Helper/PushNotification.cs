@@ -7,7 +7,14 @@ namespace BackendSaiKitchen.Helper
 {
     public class PushNotification
     {
-        public static PushNotification pushNotification = new PushNotification();
+        public static PushNotification _pushNotification = new PushNotification();
+
+        public static PushNotification pushNotification
+        {
+            get { return _pushNotification; }
+            set { _pushNotification = value; }
+        }
+
         PushNotification()
         {
             FirebaseApp.Create(new AppOptions()
@@ -20,9 +27,8 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 var registrationToken = fcmToken;
-                var message = new FirebaseAdmin.Messaging.Message()
-                {
-                    //Topic="Test", 
+                var message = new FirebaseAdmin.Messaging.Message
+                { 
                     Token = registrationToken,
                 };
                 message.Notification = new Notification();

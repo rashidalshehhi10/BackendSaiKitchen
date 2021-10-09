@@ -21,12 +21,11 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
 
-        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyId(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                  && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || y.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Promo)
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false))
@@ -36,7 +35,7 @@ namespace BackendSaiKitchen.Controllers
                 .FirstOrDefault();
             if (inquiry != null)
             {
-                GetfeesForQuotation getfees = new GetfeesForQuotation()
+                GetfeesForQuotation getfees = new GetfeesForQuotation
                 {
                     inquiry = inquiry,
                     fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
@@ -66,19 +65,17 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForQuotationAssignmentbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiries = InquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Quotations.Where(y => y.IsDeleted == false))
                 .Include(x => x.Building).Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
-                .Select(x => new ViewInquiryDetail()
+                .Select(x => new ViewInquiryDetail
                 {
                     InquiryId = x.InquiryId,
 
                     InquiryDescription = x.InquiryDescription,
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                    //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
-                    //WorkScopeCount = x.InquiryWorkscopes.Count,
                     Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
                     BuildingAddress = x.Building.BuildingAddress,
                     BuildingCondition = x.Building.BuildingCondition,
@@ -110,22 +107,20 @@ namespace BackendSaiKitchen.Controllers
             tableResponse.recordsFiltered = inquiries.Count();
             return tableResponse;
         }
-        // [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Read)]
+
         [HttpPost]
         [Route("[action]")]
         public async Task<object> GetInquiryForQuotationbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiries = InquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                   && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed) && y.IsActive == true && y.IsDeleted == false).Count()))
-                  .Select(x => new ViewInquiryDetail()
+                  .Select(x => new ViewInquiryDetail
                   {
                       InquiryId = x.InquiryId,
 
                       InquiryDescription = x.InquiryDescription,
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                      //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
-                      //WorkScopeCount = x.InquiryWorkscopes.Count,
                       Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
@@ -168,7 +163,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == customQuotation.InquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == customQuotation.InquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                  && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count()))
                 .Include(x => x.Customer).Include(x => x.Building).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Workscope)
                  .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -208,7 +203,6 @@ namespace BackendSaiKitchen.Controllers
                     formFile.Clear();
                     foreach (var fileUrl in customQuotation.QuotationFiles)
                     {
-                        //var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             files.Add(new Models.File
@@ -225,7 +219,6 @@ namespace BackendSaiKitchen.Controllers
                                 CreatedDate = Helper.Helper.GetDateTime(),
                             });
                         }
-                        //formFile.Add(Helper.Helper.ConvertBytestoIFormFile(file));
                     }
                     quotation.Files = files;
                     foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -285,7 +278,6 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedDate = Helper.Helper.GetDateTime(),
 
                             });
-                            //Helper.Helper.AddPayment(paymentAmount);
 
                         }
                     }
@@ -340,7 +332,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     inquiry.QuotationAddedOn = Helper.Helper.GetDateTime();
                     inquiry.Quotations.Add(quotation);
-                    inquiryRepository.Update(inquiry);
+                    InquiryRepository.Update(inquiry);
                     response.data = null;
 
                     List<int?> roletypeId = new List<int?>();
@@ -349,9 +341,6 @@ namespace BackendSaiKitchen.Controllers
                     sendNotificationToHead(
                        "New Quotation Added Of Inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
-                     //true,
-                     //Url.ActionLink("AcceptQuotation", "QuotationController", new { id = quotation.InquiryId }),
-                     //Url.ActionLink("DeclineQuotation", "QuotationController", new { id = quotation.InquiryId }),
                      roletypeId,
                      Constants.branchId,
                      (int)notificationCategory.Quotation);
@@ -377,12 +366,11 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpGet]
         [Route("[action]")]
         public object AcceptQuotation(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false))
+            var inquiry = InquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -395,7 +383,7 @@ namespace BackendSaiKitchen.Controllers
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationAccepted;
 
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -411,7 +399,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineQuotation(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            var inquiry = InquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -420,7 +408,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
 
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -434,25 +422,20 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
         {
-            //inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList().ForEach(c => {
-            //    int a = c.InquiryWorkscopeId;
-            //});
-            List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
-            List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
-            ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+            List<int> q = InquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
+            List<TermsAndCondition> terms = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            ViewQuotation viewQuotation = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
                     InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
                     CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
                     ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
-                    //SerialNo =
                     Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
                     Discount = x.IsMeasurementPromo == false ? x.PromoDiscount : "0",
                     MeasurementFee = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false).PaymentAmount.ToString(),
                     Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                     Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
                     IsInstallment = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).IsInstallment,
-                    //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
                     AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                     AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
@@ -468,7 +451,7 @@ namespace BackendSaiKitchen.Controllers
                     ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                     TermsAndConditionsDetail = terms,
                     Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
-                    Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
+                    Quantity = q,
                     inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
@@ -496,7 +479,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     for (int i = 0; i < viewQuotation.installments.Count - 1; i++)
                     {
-                        viewQuotation.TermsAndConditionsDetail.Add(new TermsAndCondition() { TermsAndConditionsDetail = viewQuotation.TermsAndConditionsDetail[1].TermsAndConditionsDetail, IsInstallmentTerms = true });
+                        viewQuotation.TermsAndConditionsDetail.Add(new TermsAndCondition { TermsAndConditionsDetail = viewQuotation.TermsAndConditionsDetail[1].TermsAndConditionsDetail, IsInstallmentTerms = true });
                     }
                 }
                 int j = -1;
@@ -522,35 +505,9 @@ namespace BackendSaiKitchen.Controllers
                             j++;
                         }
                     }
-                    else
-                    {
-                        //viewQuotation.TermsAndConditionsDetail.Remove(x);
-                    }
                 });
 
-                //var i=   (from xx in context.InquiryWorkscopes
-                //    group xx.InquiryWorkscopeId by xx into g
-                //    let count = g.Count()
-                //    orderby count descending
-                //    select new
-                //    {
-                //        Count = count,
-                //    });
-
-                //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
-                //  {
-                //      Quantity = count.ToString(),
-                //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
-                //  }),
-                //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
-
-                //.Select(z=>z.Key
-
-                //    ));
-                //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
-                //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
-                //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
-                response.data = viewQuotation;
+                 response.data = viewQuotation;
             }
             else
             {
@@ -566,8 +523,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ClientApproveQuotationAsync(UpdateQuotationStatus updateQuotation)
         {
-            List<IFormFile> files = new List<IFormFile>();
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            List<IFormFile> Ifiles = new List<IFormFile>();
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -580,8 +537,6 @@ namespace BackendSaiKitchen.Controllers
                 int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.jobOrderFilesPending : (int)inquiryStatus.quotationAccepted;
                 inquiry.InquiryStatusId = status;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-
-                //inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
@@ -631,14 +586,14 @@ namespace BackendSaiKitchen.Controllers
                     }
                     foreach (var file in quotation.Files)
                     {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                        Ifiles.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
                     }
 
                 }
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 try
                 {
-                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
+                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = Ifiles });
 
                 }
                 catch (Exception ex)
@@ -673,7 +628,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ClientRejectQuotation(UpdateQuotationStatus updateQuotation)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -685,7 +640,6 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.IsActive = false;
-                    //payment.PaymentStatusId = (int)paymentstatus.PaymentRejected;
                 }
 
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -711,7 +665,7 @@ namespace BackendSaiKitchen.Controllers
 
                     Sentry.SentrySdk.CaptureMessage(ex.Message);
                 }
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 response.data = inquiry;
                 context.SaveChanges();
             }
@@ -730,17 +684,16 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object stripe(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Customer).Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Customer).Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
                 decimal d = 0;
                 long amount = 0;
-                //foreach (var quotaion in inquiry.Quotations)
-                //{
+
                 d = (decimal.Parse(inquiry.Quotations.LastOrDefault().AdvancePayment) * (decimal.Parse(inquiry.Quotations.LastOrDefault().TotalAmount) / 100)) * 100;
                 amount += Convert.ToInt64(d);
-                //}
+                
                 var paymentIntents = new PaymentIntentService();
                 var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
@@ -753,7 +706,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).PaymentModeId = (int)paymentMode.OnlinePayment;
                 inquiry.Quotations.LastOrDefault().Payments.LastOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment).ClientSecret = paymentIntent.ClientSecret;
                 response.data = paymentIntent.ClientSecret;
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -770,23 +723,21 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object QuotationSchedule(quotationScheduleUpdate scheduleUpdate)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == scheduleUpdate.inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == scheduleUpdate.inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                  && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
-                //.Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 inquiry.QuotationScheduleDate = scheduleUpdate.date;
-                // inquiry.QuotationAssignTo = scheduleUpdate.userId;
                 foreach (var inworkscope in inquiry.InquiryWorkscopes)
                 {
                     inworkscope.InquiryStatusId = (int)inquiryStatus.quotationPending;
                 }
 
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else

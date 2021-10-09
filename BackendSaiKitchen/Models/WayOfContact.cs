@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class WayOfContact
+    public class WayOfContact
     {
         public WayOfContact()
         {

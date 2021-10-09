@@ -13,8 +13,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryJobOrderDetailsByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.BranchId == branchId || x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress ||/* x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved ||*/ x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed /*|| x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation*/ || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted))
+            var inquiries = InquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && (x.BranchId == branchId || x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed  || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted))
                 .Select(x => new CheckListByBranch
                 {
                     InquiryId = x.InquiryId,
@@ -63,7 +63,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquiryJobOrderDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
             && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -113,7 +113,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RequestForRescheduling(CustomJobOrder order)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -134,12 +134,12 @@ namespace BackendSaiKitchen.Controllers
                         jobOrderDetail.InstallationStartDate = order.installationStartDate;
                         //jobOrderDetail.InstallationEndDate = order.installationEndDate;
                         jobOrderDetail.IsNewlyRequested = false;
-                        jobOrderDetail.IsFromFactory = branchRepository?.FindByCondition(x => x.BranchId == inquiry.JobOrders.FirstOrDefault().FactoryId && x.IsActive == true && x.IsDeleted == false)?.FirstOrDefault()?.BranchTypeId == 3 ? true : false;
+                        jobOrderDetail.IsFromFactory = BranchRepository?.FindByCondition(x => x.BranchId == inquiry.JobOrders.FirstOrDefault().FactoryId && x.IsActive == true && x.IsDeleted == false)?.FirstOrDefault()?.BranchTypeId == 3 ? true : false;
                     }
                 }
 
                 response.data = "JobOrder Detail Reschedule Requested";
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -154,7 +154,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderDetailRescheduleApprove(JobOrderFactory job)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                  .FirstOrDefault();
             if (inquiry != null)
@@ -165,7 +165,7 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
                 });
 
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -180,11 +180,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderDetailRescheduleReject(JobOrderFactory job)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested)
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            //.Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-            //.ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderRescheduleRejected;
@@ -202,7 +201,7 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryComment = job.Reason;
 
                 response.data = "JobOrder Detail Reschedule Rejected";
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -217,7 +216,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderDelayRequested(CustomJobOrder order)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -236,7 +235,7 @@ namespace BackendSaiKitchen.Controllers
                     });
 
                 }
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -251,7 +250,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ReadyToInstall(Install ready)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested))
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == ready.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -270,7 +269,7 @@ namespace BackendSaiKitchen.Controllers
                         x.InstallationStartDate = ready.installationStartDate;
                     });
                 }
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 response.data = "JobOrder Ready To Install";
                 context.SaveChanges();
             }
@@ -286,7 +285,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderCompleted(Install install)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == install.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == install.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
@@ -308,7 +307,7 @@ namespace BackendSaiKitchen.Controllers
                     });
                 }
                 response.data = "JobOrder Completed";
-                inquiryRepository.Update(inquiry);
+                InquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else

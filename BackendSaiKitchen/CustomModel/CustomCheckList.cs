@@ -33,7 +33,7 @@ namespace BackendSaiKitchen.CustomModel
     public class AddFileonChecklist
     {
         public int documentType { get; set; }
-        public List<string>? files { get; set; }
+        public List<string> files { get; set; }
     }
     public class CustomCheckListReject
     {

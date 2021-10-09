@@ -2,8 +2,19 @@
 {
     public class FCMToken
     {
-        public int userId;
+        private int UserId;
+        public int userId
+        {
+            get { return UserId; }
+            set { UserId = value; }
+        }
 
-        public string userFCMToken;
+
+        private string UserFCMToken;
+        public string userFCMToken
+        {
+            get { return UserFCMToken; }
+            set { UserFCMToken = value; }
+        }
     }
 }

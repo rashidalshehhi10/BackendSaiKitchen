@@ -14,23 +14,6 @@ namespace BackendSaiKitchen.Controllers
             Helper.Helper.blobManager = blobManager;
         }
 
-        //[HttpPost]
-        //[Route("[action]")]
-        //public async Task<object> TestUpload(byte[] blob)
-        //{
-        //    try
-        //    {
-        //        var Url = await Helper.Helper.PostFile(blob, "pdf");
-        //        response.data = Url;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.isError = true;
-        //        response.errorMessage = ex.Message;
-
-        //    }
-        //    return response;
-        //}
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
@@ -39,11 +22,8 @@ namespace BackendSaiKitchen.Controllers
             foreach (var file in Request.Form.Files)
             {
                 var FileDataContent = file;
-                //var FileDataContent = Request.Form.Files["file"];
                 if (FileDataContent != null && FileDataContent.Length > 0)
-                {
-                    // take the input stream, and save it to a temp folder using  
-                    // the original file.part name posted  
+                {  
                     var stream = FileDataContent.OpenReadStream();
                     var fileName = Path.GetFileName(FileDataContent.FileName);
 
@@ -54,25 +34,6 @@ namespace BackendSaiKitchen.Controllers
 
                     response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), ContentType);
 
-                    //var UploadPath = Server.MapPath("~/App_Data/uploads");
-                    //Directory.CreateDirectory(UploadPath);
-                    //string path = Path.Combine(UploadPath, fileName);
-                    //try
-                    //{
-                    //    if (System.IO.File.Exists(path))
-                    //        System.IO.File.Delete(path);
-                    //    using (var fileStream = System.IO.File.Create(path))
-                    //    {
-                    //        stream.CopyTo(fileStream);
-                    //    }
-                    //    // Once the file part is saved, see if we have enough to merge it  
-                    //    Shared.Utils UT = new Shared.Utils();
-                    //    UT.MergeFile(path);
-                    //}
-                    //catch (IOException ex)
-                    //{
-                    //    // handle  
-                    //}
                 }
             }
             return response;
@@ -85,12 +46,12 @@ namespace BackendSaiKitchen.Controllers
             if (FileUrl != null)
             {
                 response.data = await Helper.Helper.DeleteFile(FileUrl);
-                var file = await fileRepository.FindByCondition(x => x.FileUrl == FileUrl && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                var file = await FileRepository.FindByCondition(x => x.FileUrl == FileUrl && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
                 if (file != null)
                 {
                     file.IsDeleted = true;
                     file.IsActive = false;
-                    fileRepository.Update(file);
+                    FileRepository.Update(file);
                 }
             }
             else
@@ -109,12 +70,12 @@ namespace BackendSaiKitchen.Controllers
             if (VideoId > 0)
             {
                 response.data = await Helper.Helper.DeleteVideo(VideoId);
-                var video = await fileRepository.FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                var video = await FileRepository.FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
                 if (video != null)
                 {
                     video.IsActive = false;
                     video.IsDeleted = true;
-                    fileRepository.Update(video);
+                    FileRepository.Update(video);
                 }
             }
             else
@@ -132,12 +93,12 @@ namespace BackendSaiKitchen.Controllers
             if (fileName != null)
             {
                 response.data = await Helper.Helper.DeleteFileFromBlob(fileName);
-                var file = await fileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                var file = await FileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
                 if (file != null)
                 {
                     file.IsDeleted = true;
                     file.IsActive = false;
-                    fileRepository.Update(file);
+                    FileRepository.Update(file);
                 }
 
             }

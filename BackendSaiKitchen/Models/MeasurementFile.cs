@@ -2,7 +2,7 @@
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class MeasurementFile
+    public class MeasurementFile
     {
         public int MeasurementFileId { get; set; }
         public int? MeasurementId { get; set; }

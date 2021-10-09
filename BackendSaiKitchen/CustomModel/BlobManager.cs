@@ -73,7 +73,6 @@ namespace BackendSaiKitchen.CustomModel
                 prevLastByte += bytesToCopy;
                 bytesRemain -= bytesToCopy;
 
-                //create blockId
                 string blockId = Guid.NewGuid().ToString();
                 string base64BlockId = Convert.ToBase64String(Encoding.UTF8.GetBytes(blockId));
 
@@ -87,7 +86,6 @@ namespace BackendSaiKitchen.CustomModel
 
             } while (bytesRemain > 0);
 
-            //post blocklist
             await blob.PutBlockListAsync(blocklist);
         }
 
