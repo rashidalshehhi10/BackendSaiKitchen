@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class Branch
+    public partial class Branch
     {
         public Branch()
         {

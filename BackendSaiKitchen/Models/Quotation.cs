@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class Quotation
+    public partial class Quotation
     {
         public Quotation()
         {

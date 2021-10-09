@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class PaymentType
+    public partial class PaymentType
     {
         public PaymentType()
         {

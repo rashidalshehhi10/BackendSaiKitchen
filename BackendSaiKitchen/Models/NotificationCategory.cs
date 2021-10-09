@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class NotificationCategory
+    public partial class NotificationCategory
     {
         public NotificationCategory()
         {

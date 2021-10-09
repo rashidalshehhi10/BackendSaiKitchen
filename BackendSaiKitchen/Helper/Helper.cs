@@ -46,9 +46,8 @@ namespace BackendSaiKitchen.Helper
         public static DateTime ConvertToDateTime(String dateTime)
         {
             //04 / 27 / 2021 10:01 AM
-            string[] s = new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" };
             DateTime dateTimeParsed;
-            _ = DateTime.TryParseExact(dateTime, s , provider, DateTimeStyles.None, out dateTimeParsed);
+            DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" }, provider, DateTimeStyles.None, out dateTimeParsed);
 
             return dateTimeParsed;
         }
@@ -66,6 +65,14 @@ namespace BackendSaiKitchen.Helper
         }
         public static Object SetResponse(Object obj)
         {
+
+
+            //string json = JsonConvert.SerializeObject(obj, Formatting.None, new JsonSerializerSettings
+            //{
+            //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //});
+
+            //json = json.Replace(@"\", " ");
             return obj;
         }
         public static string DecryptString(string encrString)
@@ -102,11 +109,11 @@ namespace BackendSaiKitchen.Helper
 
                 if (fileUrl.Contains('.'))
                 {
-                    result = "File " + await DeleteFileFromBlob(fileUrl).ConfigureAwait(false) + " Has Been Deleted";
+                    result = "File " + await DeleteFileFromBlob(fileUrl) + " Has Been Deleted";
                 }
                 else if (long.TryParse(fileUrl, out videoId))
                 {
-                    result = "Video " + await DeleteVideo(videoId).ConfigureAwait(false) + " Has Been Deleted";
+                    result = "Video " + await DeleteVideo(videoId) + " Has Been Deleted";
                 }
                 else
                 {
@@ -132,11 +139,12 @@ namespace BackendSaiKitchen.Helper
                 if (ext == "png" || ext == "jpg" || ext == "pdf" || ext == "dwg")
                 {
 
-                    fileUrl = await PostFile(fileByte, ext).ConfigureAwait(false);
+                    fileUrl = await PostFile(fileByte, ext);
+                    //fileUrl = await UploadFileToBlob(fileByte, ext);
                 }
                 else if (ext == "mp4")
                 {
-                    fileUrl = await UploadUpdateVideo(fileByte).ConfigureAwait(false);
+                    fileUrl = await UploadUpdateVideo(fileByte);
                 }
                 else
                 {
@@ -172,7 +180,7 @@ namespace BackendSaiKitchen.Helper
                 MemoryStream stream = new MemoryStream(fileByte);
                 fileUrl = Guid.NewGuid().ToString() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-                await blobManager.Upload(new Blob { File = blob });
+                await blobManager.Upload(new Blob() { File = blob });
             }
             catch (Exception e)
             {
@@ -188,12 +196,14 @@ namespace BackendSaiKitchen.Helper
         {
 
             string fileUrl = "";
+            //string ext = "";
             if (fileByte != null)
             {
                 if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") || ext.ToLower().Contains("pdf") || ext.ToLower().Contains("dwg"))
                 {
 
                     fileUrl = await PostFile(fileByte, ext);
+                    //fileUrl = await UploadFileToBlob(fileByte, ext);
                 }
                 else if (ext.ToLower().Contains("mp4"))
                 {
@@ -227,7 +237,7 @@ namespace BackendSaiKitchen.Helper
                     Headers = new HeaderDictionary(),
                     ContentType = ext
                 };
-                await blobManager.PostAsync(new Blob { File = blob });
+                await blobManager.PostAsync(new Blob() { File = blob });
             }
             catch (Exception e)
             {
@@ -264,6 +274,7 @@ namespace BackendSaiKitchen.Helper
             {
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                // fileUrl = Guid.NewGuid().ToString() + "." + exet;
 
                 VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
                 BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
@@ -271,12 +282,15 @@ namespace BackendSaiKitchen.Helper
 
                 if (authcheck.Name != null)
                 {
-                    IUploadRequest uploadRequest;
+                    IUploadRequest uploadRequest = new UploadRequest();
                     int chunksize = 0;
                     int contentlength = file.Length;
+                    // int temp = contentlength / 1024;
                     if (contentlength > 1048576)
                     {
                         chunksize = contentlength / 10;
+                        //chunksize = chunksize / 10;
+                        // chunksize = chunksize * 1048576;
                     }
                     else
                     {
@@ -360,7 +374,7 @@ namespace BackendSaiKitchen.Helper
         public static void Each<T>(IEnumerable<T> items, Action<T> action)
         {
             foreach (var item in items)
-            { action(item); }
+                action(item);
         }
 
         public static string AddPayment(decimal? amount)
@@ -389,6 +403,28 @@ namespace BackendSaiKitchen.Helper
             FileStream fileStream = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             XWPFDocument wordDocument = new XWPFDocument(fileStream);
 
+            //for (int i = 0; i < wordDocument.BodyElements.Count; i++)
+            //{
+            //    wordDocument.BodyElements[i].Body.Tables[0]a.ReplaceText("[invoiceCode]", "INV000");
+            //    wordDocument.BodyElements[i].ReplaceText("[createdDate]", "14/08/2021");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerName]", "Sameer".ToUpper());
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerEmail]", "sameer71095@gmail.com");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerContact]", "971545552471");
+            //    wordDocument.BodyElements[i].ReplaceText("[CustomerAddress]", "Villa 50, Al Khamaari St Jumeira 3, Dubai");
+            //    wordDocument.BodyElements[i].ReplaceText("[isPaid]", "");
+            //    wordDocument.BodyElements[i].ReplaceText("[inquiryCode]", "IN111332");
+            //    wordDocument.BodyElements[i].ReplaceText("[WorkScopeName]", "Kitchen");
+            //    wordDocument.BodyElements[i].ReplaceText("[Amount]", "1000");
+            //    wordDocument.BodyElements[i].ReplaceText("[Discount]", "15");
+            //    wordDocument.BodyElements[i].ReplaceText("[TaxAmount]", "5");
+            //    wordDocument.BodyElements[i].ReplaceText("[TotalAmount]", "850");
+            //    wordDocument.BodyElements[i].ReplaceText("[MeasurementFee]", "250");
+            //    wordDocument.BodyElements[i].ReplaceText("[PaymentAmount]", "200");
+            //    wordDocument.BodyElements[i].ReplaceText("[EnglishAmount]", "Two hundred only");
+
+            //    //paragraphs.Add(word);
+            //    //paragraphs .Add= word.Text.Replace("[CustomerName]", "Sameer");
+            //}
             for (int i = 0; i < wordDocument.Paragraphs.Count; i++)
             {
                 wordDocument.Paragraphs[i].ReplaceText("[invoiceCode]", "INV000");
@@ -408,6 +444,8 @@ namespace BackendSaiKitchen.Helper
                 wordDocument.Paragraphs[i].ReplaceText("[PaymentAmount]", "200");
                 wordDocument.Paragraphs[i].ReplaceText("[EnglishAmount]", "Two hundred only");
 
+                //paragraphs.Add(word);
+                //paragraphs .Add= word.Text.Replace("[CustomerName]", "Sameer");
             }
             using (FileStream file = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice2.docx", FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
@@ -415,6 +453,16 @@ namespace BackendSaiKitchen.Helper
                 file.Close();
             }
 
+            //XWPFDocument doc = new XWPFDocument();
+            //doc.CreateParagraph();
+            //using (FileStream sw = System.IO.File.OpenWrite(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx"))
+            //{
+            //  foreach(var v in doc.Paragraphs)
+            //    {
+
+            //    }
+            //doc.Write(sw);
+            //}
 
         }
     }

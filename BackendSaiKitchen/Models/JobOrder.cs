@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class JobOrder
+    public partial class JobOrder
     {
         public JobOrder()
         {

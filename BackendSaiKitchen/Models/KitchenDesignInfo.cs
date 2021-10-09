@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class KitchenDesignInfo
+    public partial class KitchenDesignInfo
     {
         public KitchenDesignInfo()
         {

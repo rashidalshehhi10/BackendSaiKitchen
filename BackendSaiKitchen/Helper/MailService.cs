@@ -14,6 +14,7 @@ namespace BackendSaiKitchen.Helper
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
+        //public static MailService mailService;
         public MailService(IOptions<MailSettings> mailSettings)
         {
             _mailSettings = mailSettings != null ? mailSettings.Value : new MailSettings();
@@ -22,6 +23,7 @@ namespace BackendSaiKitchen.Helper
         {
 
             _mailSettings = new MailSettings();
+            //mailService = this;
         }
 
         public async Task SendEmailAsync(MailRequest mailRequest)
@@ -152,6 +154,7 @@ namespace BackendSaiKitchen.Helper
                 string MailText = str.ReadToEnd();
                 str.Close();
                 MailText = MailText.Replace("[ReviewDesignURL]", reviewDesignURL);
+                //MailText = MailText.Replace("[ApproveDesignURL]", approveDesignURL).Replace("[RejectDesignURL]", rejectDesignURL).Replace("[ReviewDesignURL]", reviewDesignURL);
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(toEmail));
@@ -181,6 +184,7 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
+                //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
                 MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
@@ -210,6 +214,7 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
+                //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
                 MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);

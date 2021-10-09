@@ -61,7 +61,7 @@ namespace SaiKitchenBackend.Controllers
             //PushNotification.pushNotification.SendPushNotification();
 
 
-            return CustomerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
+            return customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
             { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId });
         }
 
@@ -70,7 +70,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetCustomerOfBranch(int branchId)
         {
-            List<CustomerResponse> customers = CustomerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+            List<CustomerResponse> customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                .Include(x => x.Inquiries)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
@@ -96,7 +96,7 @@ namespace SaiKitchenBackend.Controllers
                     CustomerNationalId = x.CustomerNationalId,
                     TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
                 }).ToList();
-            customers.AddRange(CustomerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null).Include(x => x.Inquiries)
+            customers.AddRange(customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null).Include(x => x.Inquiries)
              .Select(x => new CustomerResponse
              {
                  CustomerId = x.CustomerId,
@@ -138,16 +138,13 @@ namespace SaiKitchenBackend.Controllers
             CustomerResponse customer = null;
             try
             {
-                customer = CustomerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
+                customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerWhatsapp = x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, BranchId = x.Branch.BranchId, BranchName = x.Branch.BranchName, UserId = x.User.UserId, UserName = x.User.UserName, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
             }
-            catch (Exception e) 
-            {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
-            }
+            catch (Exception) { }
             if (customer == null)
             {
-                customer = CustomerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
+                customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).Select(x => new CustomerResponse
                 { CustomerId = x.CustomerId, CustomerName = x.CustomerName, CustomerNextMeetingDate = x.CustomerNextMeetingDate, CustomerNotes = x.CustomerNotes, CustomerWhatsapp = x.CustomerWhatsapp, CustomerContact = x.CustomerContact, CustomerEmail = x.CustomerEmail, CustomerCity = x.CustomerCity, CustomerCountry = x.CustomerCountry, CustomerNationality = x.CustomerNationality, WayofContactId = x.WayofContactId, ContactStatusId = x.ContactStatusId, CustomerAddress = x.CustomerAddress, CustomerNationalId = x.CustomerNationalId }).FirstOrDefault();
 
             }
@@ -160,10 +157,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetCustomerbyContact(String customerContact)
         {
-            response.data = CustomerRepository.FindByCondition(x => x.CustomerContact == customerContact && x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            response.data = customerRepository.FindByCondition(x => x.CustomerContact == customerContact && x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (response.data == null)
             {
-                Customer customer = CustomerRepository.FindByCondition(x => x.CustomerContact == customerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                Customer customer = customerRepository.FindByCondition(x => x.CustomerContact == customerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (customer != null)
                 {
                     customer.CustomerId = 0;
@@ -184,14 +181,15 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> AddWebsiteCustomerAsync([FromForm] CustomCustomer customer)
         {
-            Customer oldCustomer = CustomerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (oldCustomer == null)
             {
-                CustomerRepository.Create(new Customer { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail, WayofContactId = customer.WayofContactId, ContactStatusId = customer.ContactStatusId });
+                customerRepository.Create(new Customer() { CustomerName = customer.CustomerName, CustomerContact = customer.CustomerContact, CustomerNotes = customer.CustomerNotes, CustomerEmail = customer.CustomerEmail, WayofContactId = customer.WayofContactId, ContactStatusId = customer.ContactStatusId });
 
                 if (customer.CustomerEmail != null)
                 {
-                    var emails = UserRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                    //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                    var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
                     foreach (var email in emails)
                     {
                         try
@@ -204,10 +202,7 @@ namespace SaiKitchenBackend.Controllers
                             });
                         }
 
-                        catch (Exception e) 
-                        {
-                            Sentry.SentrySdk.CaptureMessage(e.Message);
-                        }
+                        catch (Exception) { }
                     }
                 }
             }
@@ -221,7 +216,8 @@ namespace SaiKitchenBackend.Controllers
                 }
                 if (oldCustomer.CustomerEmail != null)
                 {
-                    var emails = UserRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
+                    //|| x.BranchRole.RoleTypeId == (int)roleType.Manager
+                    var emails = userRoleRepository.FindByCondition(x => (x.BranchRole.RoleTypeId == (int)roleType.Sales) && x.IsActive == true && x.IsDeleted == false && x.User.IsActive == true && x.IsDeleted == false && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Select(x => x.User.UserEmail).ToList();
                     foreach (var email in emails)
                     {
                         try
@@ -234,10 +230,10 @@ namespace SaiKitchenBackend.Controllers
                                 ToEmail = email
                             });
                         }
-                        catch (Exception e) { Sentry.SentrySdk.CaptureMessage(e.Message); }
+                        catch (Exception) { }
                     }
                 }
-                CustomerRepository.Update(oldCustomer);
+                customerRepository.Update(oldCustomer);
             }
             context.SaveChanges();
             return response;
@@ -252,11 +248,13 @@ namespace SaiKitchenBackend.Controllers
             if (customer.CustomerId == 0)
             {
                 customer.BranchId = Constants.branchId;
-                Customer oldCustomer = CustomerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.BranchId == customer.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                Customer oldCustomer = customerRepository.FindByCondition(x => x.CustomerContact == customer.CustomerContact && x.BranchId == customer.BranchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (oldCustomer == null)
                 {
-                    CustomerRepository.Create(customer);
+                    customerRepository.Create(customer);
                     context.SaveChanges();
+                    //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
+                    //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
                     response.isError = false;
                     response.errorMessage = "Success";
                 }
@@ -268,8 +266,10 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                CustomerRepository.Update(customer);
+                customerRepository.Update(customer);
                 context.SaveChanges();
+                //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
+                //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
                 response.isError = false;
                 response.errorMessage = "Success";
 
@@ -284,7 +284,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetContactStatus()
         {
-            response.data = ContactStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            response.data = contactStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             return response;
         }
 
@@ -293,7 +293,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetWayOfContacts()
         {
-            response.data = WayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            response.data = wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             return response;
         }
 
@@ -303,10 +303,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object EscalateCustomer(int customerId)
         {
-            Customer customer = CustomerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (customer != null)
             {
-                CustomerRepository.Escalate(customer);
+                customerRepository.Escalate(customer);
                 context.SaveChanges();
                 response.data = "Escalated Request Sent";
             }
@@ -323,10 +323,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteCustomer(int customerId)
         {
-            Customer customer = CustomerRepository.FindByCondition(x => x.CustomerId == customerId).FirstOrDefault();
+            Customer customer = customerRepository.FindByCondition(x => x.CustomerId == customerId).FirstOrDefault();
             if (customer != null)
             {
-                CustomerRepository.Delete(customer);
+                customerRepository.Delete(customer);
                 context.SaveChanges();
                 response.data = "Deleted";
             }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class PaymentMode
+    public partial class PaymentMode
     {
         public int PaymentModeId { get; set; }
         public string PaymentModeName { get; set; }

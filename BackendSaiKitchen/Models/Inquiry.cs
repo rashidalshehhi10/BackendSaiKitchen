@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class Inquiry
+    public partial class Inquiry
     {
         public Inquiry()
         {

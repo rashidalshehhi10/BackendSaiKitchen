@@ -2,18 +2,8 @@
 {
     public class NewPassword
     {
-        private string UserId;
-        public string userId
-        {
-            get { return UserId; }
-            set { UserId = value; }
-        }
+        public string userId;
 
-        private string UserPassword;
-        public string userPassword
-        {
-            get { return userPassword; }
-            set { userPassword = value; }
-        }
+        public string userPassword;
     }
 }

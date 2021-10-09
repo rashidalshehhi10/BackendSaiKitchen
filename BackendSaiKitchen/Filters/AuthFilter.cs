@@ -12,9 +12,10 @@ namespace BackendSaiKitchen.ActionFilters
 {
     public class AuthFilter : ActionFilterAttribute
     {
-        private ServiceResponse response = new ServiceResponse();
-        private int permission { get; set; }
-        private int level { get; set; }
+        public ServiceResponse response = new ServiceResponse();
+        public int permission { get; set; }
+        //private int level;
+        public int level { get; set; }
         public AuthFilter(int permission, int level)
         {
             this.permission = permission;
@@ -26,12 +27,14 @@ namespace BackendSaiKitchen.ActionFilters
             branchRoleRepository = new Repository<BranchRole>(db);
         }
 
+        //public string resource { get; set; }
+        //public string action { get; set; }
 
 
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            //Do Nothing
+
         }
 
         public BackendSaiKitchen_dbContext db = new BackendSaiKitchen_dbContext();
@@ -42,9 +45,7 @@ namespace BackendSaiKitchen.ActionFilters
             StringValues branchRoleId;
             context.HttpContext.Request.Headers.TryGetValue("BranchRoleId", out branchRoleId);
             if (branchRoleId.Count > 0)
-            {
                 int.TryParse(branchRoleId[0], out Constants.branchRoleId);
-            }
             try
             {
                 var userPermissions = branchRoleRepository.FindByCondition(x => x.BranchRoleId == Constants.branchRoleId && x.IsActive == true && x.IsDeleted == false)

@@ -30,23 +30,25 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetQuotationDetailsFromCode(string code)
         {
-            int? inquiryId = QuotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.FirstOrDefault()?.InquiryId;
+            int? inquiryId = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.FirstOrDefault()?.InquiryId;
             if (inquiryId != null)
             {
-                List<int> q = InquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
-                List<TermsAndCondition> terms = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
-                ViewQuotation viewQuotation = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
+                List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+                ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                     .Select(x => new ViewQuotation
                     {
                         InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
                         CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
                         ValidDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
+                        //SerialNo =
                         Description = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Description,
                         Discount = x.IsMeasurementPromo == false ? x.PromoDiscount : "0",
                         MeasurementFee = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.Measurement && y.PaymentStatusId == (int)paymentstatus.PaymentApproved && y.IsActive == true && y.IsDeleted == false).PaymentAmount.ToString(),
                         Amount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
                         Vat = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Vat,
                         IsInstallment = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).IsInstallment,
+                        //MeasurementFees = x.Payments.OrderBy(y => y.PaymentId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Fees.FeesAmount,
                         AdvancePayment = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                         BeforeInstallation = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                         AfterDelivery = x.Payments.FirstOrDefault(y => y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true && y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
@@ -60,7 +62,7 @@ namespace BackendSaiKitchen.Controllers
                         ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                         TermsAndConditionsDetail = terms,
                         Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
-                        Quantity = q,
+                        Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
                         inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                         TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
@@ -72,7 +74,7 @@ namespace BackendSaiKitchen.Controllers
                         viewQuotation.invoiceDetails = new List<InvoiceDetail>();
                         for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
                         {
-                            viewQuotation.invoiceDetails.Add(new InvoiceDetail { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
+                            viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
                         }
 
                     }
@@ -114,6 +116,10 @@ namespace BackendSaiKitchen.Controllers
                                 j++;
                             }
                         }
+                        else
+                        {
+                            //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                        }
                     });
                     response.data = viewQuotation;
                 }
@@ -138,7 +144,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetUnPaidPaymentByCode(string code)
         {
 
-            response.data = QuotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved))).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            response.data = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted && x.IsActive == true && x.IsDeleted == false && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved))).Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).Include(x => x.Payments.Where(y => (y.PaymentStatusId != (int)paymentstatus.PaymentApproved && y.PaymentStatusId != (int)paymentstatus.InstallmentApproved) && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
@@ -146,12 +152,19 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+        //[HttpPost]
+        //[Route("[action]")]
+        //public void TestPayment(decimal? amount)
+        //{
+        //    Helper.Helper.AddPayment(amount);
+        //}
 
+        //[AuthFilter((int)permission.ManagePayment, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllInquiryForPayment()
         {
-            var payments = PaymentRepository.FindByCondition(x => x.PaymentStatusId != (int)paymentstatus.PaymentApproved && x.PaymentStatusId != (int)paymentstatus.InstallmentApproved && x.IsActive == true && x.IsDeleted == false).GroupBy(x => x.InquiryId).ToList();
+            var payments = paymentRepository.FindByCondition(x => x.PaymentStatusId != (int)paymentstatus.PaymentApproved && x.PaymentStatusId != (int)paymentstatus.InstallmentApproved && x.IsActive == true && x.IsDeleted == false).GroupBy(x => x.InquiryId).ToList();
 
             if (payments != null)
             {
@@ -169,7 +182,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AddPayment(Payment payment)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == payment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == payment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             Payment _payment = new Payment();
 
             foreach (var file in payment.Files)
@@ -178,7 +191,7 @@ namespace BackendSaiKitchen.Controllers
 
                 if (fileUrl != null)
                 {
-                    payment.Files.Add(new File
+                    payment.Files.Add(new File()
                     {
                         FileUrl = fileUrl.Item1,
                         FileName = fileUrl.Item1.Split('.')[0],
@@ -225,7 +238,7 @@ namespace BackendSaiKitchen.Controllers
             _payment.IsActive = true;
             _payment.IsDeleted = false;
             inquiry.Payments.Add(_payment);
-            InquiryRepository.Update(inquiry);
+            inquiryRepository.Update(inquiry);
             context.SaveChanges();
             response.data = inquiry;
             return response;
@@ -237,7 +250,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AcceptPayment(UpdatePaymentStatus updatePayment)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updatePayment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updatePayment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (inquiry != null)
             {
 
@@ -245,7 +258,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval).FirstOrDefault();
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
-                    InquiryRepository.Update(inquiry);
+                    inquiryRepository.Update(inquiry);
                     context.SaveChanges();
 
                 }
@@ -269,7 +282,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclinePayment(UpdatePaymentStatus updatePayment)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updatePayment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updatePayment.InquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (inquiry != null)
             {
 
@@ -277,7 +290,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     var payment = inquiry.Payments?.Where(x => x.PaymentId == updatePayment.PaymentId && x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval).FirstOrDefault();
                     payment.PaymentStatusId = (int)paymentstatus.PaymentRejected;
-                    InquiryRepository.Update(inquiry);
+                    inquiryRepository.Update(inquiry);
                     context.SaveChanges();
 
                 }
@@ -301,7 +314,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryForPaymentById(int inquiryId)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -322,7 +335,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GenerateSalesInvoicePaymentByIdAsync(SalesInvoiceRequest salesInvoiceRequest)
         {
 
-            var payment = PaymentRepository.FindByCondition(x => x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new SalesInvoiceReciept
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new SalesInvoiceReciept
             {
                 InvoiceCode = ("REF" + x.Quotation.QuotationCode + x.PaymentId).ToString().Replace("QTN", ""),
                 InquiryCode = x.Quotation.Inquiry.InquiryCode,
@@ -367,7 +380,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UploadInvoice(Invoice invoice)
         {
-            var payment = PaymentRepository.FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiry).ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiry).ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (payment != null)
@@ -376,6 +389,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     foreach (var fileUrl in invoice.Files)
                     {
+                        //var fileUrl = await Helper.Helper.UploadFile(file);
                         if (fileUrl != null)
                         {
                             payment.Files.Add(new Models.File
@@ -405,7 +419,7 @@ namespace BackendSaiKitchen.Controllers
                             inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderFilesPending;
                         }
                     }
-                    PaymentRepository.Update(payment);
+                    paymentRepository.Update(payment);
                     context.SaveChanges();
                 }
                 else

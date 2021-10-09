@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class CalendarEvent
+    public partial class CalendarEvent
     {
         public int CalendarEventId { get; set; }
         public string CalendarEventName { get; set; }

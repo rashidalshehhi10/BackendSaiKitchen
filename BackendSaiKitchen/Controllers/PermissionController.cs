@@ -15,7 +15,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetPermissions()
         {
 
-            response.data = PermissionRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = permissionRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
 
             return response;
         }
@@ -26,7 +26,7 @@ namespace SaiKitchenBackend.Controllers
         public Object AddPermission(Permission permission)
         {
 
-            PermissionRepository.Create(permission);
+            permissionRepository.Create(permission);
             context.SaveChanges();
             response.data = permission;
 
@@ -38,9 +38,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddPermissionRole(PermissionRole permissionRole)
         {
-            PermissionRoleRepository.Create(permissionRole);
+            permissionRoleRepository.Create(permissionRole);
             context.SaveChanges();
             response.data = permissionRole;
+            //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();
             return response;
         }
 
@@ -49,7 +50,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdatePermissionRole(PermissionRole permissionRole)
         {
-            PermissionRoleRepository.Update(permissionRole);
+            permissionRoleRepository.Update(permissionRole);
             context.SaveChanges();
             response.data = permissionRole;
             //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();

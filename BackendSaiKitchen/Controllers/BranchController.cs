@@ -16,7 +16,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetBranches()
         {
-            response.data = BranchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
 
@@ -26,7 +26,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetBranchByType(int typeId)
         {
 
-            response.data = BranchRepository.FindByCondition(x => x.BranchTypeId == typeId && x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = branchRepository.FindByCondition(x => x.BranchTypeId == typeId && x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
         //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
@@ -34,20 +34,28 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetBranchRoles()
         {
-            response.data = BranchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
-        readonly Dictionary<object, object> dic = new Dictionary<object, object>();
+        Dictionary<object, object> dic = new Dictionary<object, object>();
         //[AuthFilter((int)permission.ManageBranchRole, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
         public Object GetBranchRoleById(int branchRoleId)
         {
 
-            var branchRole = BranchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
-            
+            var branchRole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            //var permissionRole = permissionRoleRepository.GetAll().Where(x => x.IsActive == true && x.IsDeleted == false).Join(permissionRepository.GetAll(),
+            //         permissionRole => permissionRole.PermissionId,
+            //         permission => permission.PermissionId,
+            //         (permissionRole, permission) => new { permissionRole, permission }).ToList();
+            //var roleHead = branchRoleRepository.GetAll().Where(x => x.IsActive == true && x.IsDeleted == false).Join(roleHeadRepository.GetAll().Where(x=>x.IsActive==true && x.IsDeleted==false),
+            //                    branchRole => branchRole.BranchRoleId,
+            //                    roleHead => roleHead.EmployeeRoleId,
+            //                    (branchRole, roleHead) => new { branchRole = branchRole, roleHead = roleHead }).Where(x=>x.branchRole.BranchRoleId==x.roleHead.EmployeeRoleId).ToList();
+
             var roleHeadsId = branchRole.RoleHeads.Select(x => x.HeadRoleId).ToList();
-            var roleHeads = BranchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId));
+            var roleHeads = branchRoleRepository.FindByCondition(x => roleHeadsId.Contains(x.BranchRoleId));
             dic.Add("branchRole", branchRole);
             dic.Add("roleHeads", roleHeads);
             response.data = dic;
@@ -58,7 +66,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetBranchById(int branchId)
         {
-            var branch = BranchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var branch = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (branch != null)
             {
                 response.data = branch;
@@ -78,8 +86,8 @@ namespace SaiKitchenBackend.Controllers
         public Object GetBranchTypes()
         {
 
-            Request.Headers.FirstOrDefault(x => x.Key == "userId").Value.FirstOrDefault();
-            response.data = BranchTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            var val = Request.Headers.FirstOrDefault(x => x.Key == "userId").Value.FirstOrDefault();
+            response.data = branchTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
 
@@ -88,7 +96,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object GetRoleTypes()
         {
-            response.data = RoleTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = roleTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
 
@@ -99,11 +107,11 @@ namespace SaiKitchenBackend.Controllers
         {
             if (branch.BranchId != 0)
             {
-                BranchRepository.Update(branch);
+                branchRepository.Update(branch);
             }
             else
             {
-                BranchRepository.Create(branch);
+                branchRepository.Create(branch);
             }
             context.SaveChanges();
             response.data = branch;
@@ -119,11 +127,11 @@ namespace SaiKitchenBackend.Controllers
             {
                 branchRole.IsActive = true;
                 branchRole.IsDeleted = false;
-                BranchRoleRepository.Create(branchRole);
+                branchRoleRepository.Create(branchRole);
             }
             else
             {
-                var oldBranchrole = BranchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRole.BranchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                var oldBranchrole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRole.BranchRoleId && x.IsActive == true && x.IsDeleted == false).Include(obj => obj.PermissionRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(obj => obj.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
                 oldBranchrole.BranchRoleName = branchRole.BranchRoleName;
                 oldBranchrole.BranchRoleDescription = branchRole.BranchRoleDescription;
                 oldBranchrole.RoleTypeId = branchRole.RoleTypeId;
@@ -133,10 +141,11 @@ namespace SaiKitchenBackend.Controllers
                 oldBranchrole.IsDeleted = false;
 
 
-                BranchRoleRepository.Update(oldBranchrole);
+                branchRoleRepository.Update(oldBranchrole);
             }
             context.SaveChanges();
             response.data = "";
+            //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();
             return response;
         }
 
@@ -145,9 +154,10 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object UpdateBranchRole(BranchRole branchRole)
         {
-            BranchRoleRepository.Update(branchRole);
+            branchRoleRepository.Update(branchRole);
             context.SaveChanges();
             response.data = branchRole;
+            //Request.Headers.FirstOrDefault(x => x.Key == key).Value.FirstOrDefault();
             return response;
         }
 
@@ -156,7 +166,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteBranchRole(int branchRoleId)
         {
-            BranchRole branchRole = BranchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId)
+            BranchRole branchRole = branchRoleRepository.FindByCondition(x => x.BranchRoleId == branchRoleId)
                 .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.User).FirstOrDefault();
             if (branchRole != null)
@@ -164,10 +174,10 @@ namespace SaiKitchenBackend.Controllers
 
                 foreach (var userrole in branchRole.UserRoles)
                 {
-                    UserRoleRepository.Delete(userrole);
-                    UserRepository.Delete(userrole.User);
+                    userRoleRepository.Delete(userrole);
+                    userRepository.Delete(userrole.User);
                 }
-                BranchRoleRepository.Delete(branchRole);
+                branchRoleRepository.Delete(branchRole);
                 context.SaveChanges();
                 response.data = "Deleted";
             }
@@ -185,17 +195,17 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object DeleteBranch(int branchId)
         {
-            Branch branch = BranchRepository.FindByCondition(x => x.BranchId == branchId)
+            Branch branch = branchRepository.FindByCondition(x => x.BranchId == branchId)
                 .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.User).FirstOrDefault();
             if (branch != null)
             {
                 foreach (var userrole in branch.UserRoles)
                 {
-                    UserRoleRepository.Delete(userrole);
-                    UserRepository.Delete(userrole.User);
+                    userRoleRepository.Delete(userrole);
+                    userRepository.Delete(userrole.User);
                 }
-                BranchRepository.Delete(branch);
+                branchRepository.Delete(branch);
                 context.SaveChanges();
                 response.data = "Deleted";
             }

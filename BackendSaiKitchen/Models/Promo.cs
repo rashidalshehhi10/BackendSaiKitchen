@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class Promo
+    public partial class Promo
     {
         public Promo()
         {

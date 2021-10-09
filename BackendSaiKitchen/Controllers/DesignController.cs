@@ -21,7 +21,7 @@ namespace BackendSaiKitchen.Controllers
 
         static List<File> files = new List<File>();
 
-        
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Create)]
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
@@ -29,7 +29,7 @@ namespace BackendSaiKitchen.Controllers
         {
 
             files.Clear();
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested || x.InquiryStatusId == (int)inquiryStatus.designRejected))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == designCustomModel.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested || x.InquiryStatusId == (int)inquiryStatus.designRejected))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
             if (designCustomModel.base64f3d != null && designCustomModel.base64f3d.Count > 0)
@@ -41,10 +41,11 @@ namespace BackendSaiKitchen.Controllers
                     foreach (var fileUrl in designCustomModel.base64f3d)
                     {
 
+                        //var fileUrl = await Helper.Helper.UploadFile(file);
 
                         if (fileUrl != null)
                         {
-                            design.Files.Add(new File
+                            design.Files.Add(new File()
                             {
                                 FileUrl = fileUrl,
                                 FileName = fileUrl.Split('.')[0],
@@ -84,6 +85,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(Constants.DesignAdded + inquiry.Branch + "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null,
+                       //Url.Action("AcceptDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
+                       //Url.Action("DeclineDesing", "DesignController", new { id = inquiryworkscope.InquiryWorkscopeId }),
                        roletypeId, Constants.branchId, (int)notificationCategory.Design);
                 }
                 catch (Exception e)
@@ -92,7 +95,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
             else
@@ -109,7 +112,12 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> AcceptDesignAsync(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false)
+            //    .Include(x => x.Workscope)
+            //    .Include(x => x.Inquiry)
+            //    .ThenInclude(y => y.Customer)
+            //    .FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
@@ -121,7 +129,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.IsDesignApproved = true;
                 }
 
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
 
@@ -136,8 +144,18 @@ namespace BackendSaiKitchen.Controllers
                 }
                 try
                 {
+                    //await mailService.SendEmailAsync(new MailRequest()
+                    //{
+                    //    ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail,
+                    //    Subject = "Design Approval of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                    //    Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryId=" + inquiry.InquiryId +
+                    //    "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiry.InquiryId +
+                    //        "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiry.InquiryId
+
+                    //});
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     await mailService.SendDesignEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, Constants.CRMBaseUrl + "/viewdesigncustomer.html?inquiryWorkscopeId=" + updateInquiryStatus.Id, Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + updateInquiryStatus.Id, Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + updateInquiryStatus.Id);
+
                 }
 
                 catch (Exception ex)
@@ -146,6 +164,30 @@ namespace BackendSaiKitchen.Controllers
                 }
                 context.SaveChanges();
 
+                //   var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryWorkscope.InquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+                //&& x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => y.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false).Count())).FirstOrDefault();
+                //   if (inquiry != null) { 
+                //   try
+                //   {
+                //           //await mailService.SendEmailAsync(new MailRequest()
+                //           //{
+                //           //    ToEmail = inquiryWorkscope.Inquiry.Customer.CustomerEmail,
+                //           //    Subject = "Design Approval of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                //           //    Body = "Review Design on this link " + Constants.CRMBaseUrl + "/viewdesign.html?inquiryId=" + inquiry.InquiryId +
+                //           //    "\n Kindly click on this link if approve this design " + Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + inquiry.InquiryId +
+                //           //        "\n Kindly click on this link if reject this design " + Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + inquiry.InquiryId
+
+                //           //});
+                //           inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                //           await mailService.SendDesignEmailAsync(inquiry.Customer.CustomerEmail,inquiry.InquiryCode, Constants.CRMBaseUrl + "/viewdesigncustomer.html?inquiryWorkscopeId=" + updateInquiryStatus.Id, Constants.ServerBaseURL + "/api/Design/ClientAcceptDesign?id=" + updateInquiryStatus.Id, Constants.ServerBaseURL + "/api/Design/ClientRejectDesign?id=" + updateInquiryStatus.Id) ;
+
+                //       }
+
+                //       catch (Exception ex)
+                //   {
+                //       Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                //   }
+                //   }
             }
             else
             {
@@ -162,7 +204,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeclineDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+            //    .Include(x => x.Inquiry)
+            //    .Include(x => x.Workscope)
+            //    .FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
@@ -185,7 +231,7 @@ namespace BackendSaiKitchen.Controllers
 
                 }
 
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 try
                 {
                     sendNotificationToOneUser("Your Design Of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " is Rejected Comment: " + inquiry.InquiryComment, false
@@ -207,12 +253,13 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object ViewDesignById(int inquiryId)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
+            //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer || x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval) && x.IsActive == true && x.IsDeleted == false && x.Designs.Count > 0).Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.Measurements.Count > 0))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false)))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -236,7 +283,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ClientAcceptDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateInquiryStatus.Id && i.IsActive == true && i.IsDeleted == false)
+            //    .Include(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+            //    .Include(x => x.Workscope)
+            //    .Include(x => x.Inquiry)
+            //    .ThenInclude(y => y.Customer).FirstOrDefault();
+
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -255,11 +308,12 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
                     Helper.Helper.Each(inquiryWorkscope.Designs, i =>
                     {
+                        //i.IsActive = false;
                         i.DesignComment = updateInquiryStatus.DesignComment;
                     });
 
                 }
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
 
@@ -287,7 +341,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ClientRejectDesign(UpdateInquiryWorkscopeStatusModel updateInquiryStatus)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -304,11 +358,12 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.Comments = updateInquiryStatus.DesignComment;
                     Helper.Helper.Each(inquiryWorkscope.Designs, i =>
                     {
+                        //i.IsActive = false;
                         i.DesignComment = updateInquiryStatus.DesignComment;
                         i.DesignCustomerReviewDate = Helper.Helper.GetDateTime();
                     });
                 }
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
 
                 List<int?> roleTypeId = new List<int?>();
                 roleTypeId.Add((int)roleType.Manager);
@@ -339,7 +394,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveDesignAssignee(UpdateInquiryWorkscopeStatusModel updateInquiry)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false)
+            //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+            //    .Include(x => x.Inquiry)
+            //    .Include(x => x.Workscope).FirstOrDefault();
+
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
 
@@ -350,12 +409,12 @@ namespace BackendSaiKitchen.Controllers
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designPending;
                 }
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    var user = UserRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
@@ -381,7 +440,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectDesignAssignee(UpdateInquiryWorkscopeStatusModel updateInquiry)
         {
-            var inquiry = InquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false)
                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                    .Include(x => x.Customer).FirstOrDefault();
 
@@ -394,12 +453,12 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
                     inquiryWorkscope.Comments = updateInquiry.DesignComment;
                 }
-                InquiryRepository.Update(inquiry);
+                inquiryRepository.Update(inquiry);
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try
                 {
-                    var user = UserRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    var user = userRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
                     {
                         Name = y.UserName
                     }).FirstOrDefault();

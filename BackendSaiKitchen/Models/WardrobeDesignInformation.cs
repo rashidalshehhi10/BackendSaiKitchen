@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class WardrobeDesignInformation
+    public partial class WardrobeDesignInformation
     {
         public WardrobeDesignInformation()
         {

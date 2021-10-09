@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class Measurement
+    public partial class Measurement
     {
         public Measurement()
         {

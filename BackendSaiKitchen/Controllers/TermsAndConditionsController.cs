@@ -11,7 +11,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllTermsAndConditions()
         {
-            response.data = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            response.data = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             return response;
         }
 
@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetTermsAndConditionsById(int TermsAndConditionsId)
         {
-            var termsAndConditions = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == TermsAndConditionsId).FirstOrDefault();
+            var termsAndConditions = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == TermsAndConditionsId).FirstOrDefault();
             if (termsAndConditions != null)
             {
                 response.data = termsAndConditions;
@@ -36,11 +36,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeleteTermsAndConditionsById(int TermsAndConditionsId)
         {
-            var terms = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == TermsAndConditionsId).FirstOrDefault();
+            var terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == TermsAndConditionsId).FirstOrDefault();
             if (terms != null)
             {
                 response.data = terms;
-                TermsAndConditionsRepository.Delete(terms);
+                termsAndConditionsRepository.Delete(terms);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddTermsAndConditions(TermsAndCondition terms)
         {
-            var Terms = TermsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == terms.TermsAndConditionsId).FirstOrDefault();
+            var Terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.TermsAndConditionsId == terms.TermsAndConditionsId).FirstOrDefault();
             if (Terms != null)
             {
                 response.isError = true;
@@ -63,7 +63,7 @@ namespace BackendSaiKitchen.Controllers
             }
             else
             {
-                TermsAndConditionsRepository.Create(terms);
+                termsAndConditionsRepository.Create(terms);
                 response.data = terms;
             }
             return response;

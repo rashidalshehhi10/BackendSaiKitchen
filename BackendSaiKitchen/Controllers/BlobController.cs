@@ -29,7 +29,7 @@ namespace BackendSaiKitchen.Controllers
 
                 if (exet == "png" || exet == "jpg" || exet == "application/pdf")
                 {
-                    await _blobManager.Upload(new Blob { File = blob });
+                    await _blobManager.Upload(new Blob() { File = blob });
                 }
                 else
                 {

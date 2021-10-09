@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class PermissionLevel
+    public partial class PermissionLevel
     {
         public PermissionLevel()
         {

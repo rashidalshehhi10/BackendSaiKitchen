@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.Models
 {
-    public class RoleHead
+    public partial class RoleHead
     {
         public int RoleHeadId { get; set; }
         public int? EmployeeRoleId { get; set; }

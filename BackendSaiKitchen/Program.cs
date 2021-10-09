@@ -11,7 +11,7 @@ using System.IO;
 
 namespace BackendSaiKitchen
 {
-    public static class Program
+    public class Program
     {
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())

@@ -103,7 +103,11 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerName { get; set; }
         public string MobileNomber { get; set; }
         public string Email { get; set; }
+        //public string PaymentMethodId { get; set; }
+        //public string PaymentType { get; set; }
+        //public string PaymentMode { get; set; }
         public decimal AmountRecieved { get; set; }
+        //public string Date { get; set; }
         public List<reportPayment> reportPayments { get; set; }
     }
 
@@ -126,6 +130,7 @@ namespace BackendSaiKitchen.CustomModel
         public string MobileNomber { get; set; }
         public string Email { get; set; }
         public decimal AmountPending { get; set; }
+        //public string DueDate { get; set; }
         public List<reportPayment> reportPayments { get; set; }
 
     }
