@@ -554,9 +554,16 @@ namespace BackendSaiKitchen.Controllers
                             });
                         }
                     }
-                    
+                    quotation.Files = files;
+
                 }
-                quotation.Files = files;
+
+                if (_quotation.Payments != null && _quotation.Payments.Count > 0)
+                    {
+                        Helper.Helper.Each(_quotation.Payments, x => x.IsActive = false);
+                        quotation.Payments = _quotation.Payments;
+                    }
+                
 
 
                 quotationRepository.Update(quotation);
