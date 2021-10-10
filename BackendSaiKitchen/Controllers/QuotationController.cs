@@ -410,7 +410,7 @@ namespace BackendSaiKitchen.Controllers
 
 
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object DeclineQuotation(int inquiryId)
         {
@@ -434,7 +434,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object ViewQuotationDetailsById(int quotationId)
         {
@@ -474,10 +474,37 @@ namespace BackendSaiKitchen.Controllers
                 quotation.Amount = _quotation.Amount;
                 quotation.BeforeInstallation = _quotation.BeforeInstallation;
                 quotation.CalculationSheetFile = _quotation.CalculationSheetFile;
+                quotation.ProposalReferenceNumber = _quotation.ProposalReferenceNumber;
                 quotation.Description = _quotation.Description;
                 quotation.IsInstallment = _quotation.IsInstallment;
                 quotation.NoOfInstallment = _quotation.NoOfInstallment;
                 quotation.TotalAmount = _quotation.TotalAmount;
+                if (_quotation.Files != null && _quotation.Files.Count > 0)
+                {
+                    files.Clear();
+                    Helper.Helper.Each(quotation.Files, x => x.IsActive = false);
+                    foreach (var file in _quotation.Files)
+                    {
+                        if (file != null)
+                        {
+                            files.Add(new Models.File
+                            {
+                                FileUrl = file.FileUrl,
+                                FileName = file.FileUrl.Split('.')[0],
+                                FileContentType = file.FileUrl.Split('.').Length > 1 ? file.FileUrl.Split('.')[1] : "mp4",
+                                IsImage = file.FileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                            });
+                        }
+                    }
+                    
+                }
+                quotation.Files = files;
 
 
                 quotationRepository.Update(quotation);
