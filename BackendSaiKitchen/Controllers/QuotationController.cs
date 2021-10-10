@@ -436,12 +436,13 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ViewQuotationDetailsById(int quotationId)
+        public object ViewQuotationDetailsById(int inquiryId)
         {
-            var quotation = quotationRepository.FindByCondition(x => x.QuotationId == quotationId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (quotation != null)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
             {
-                response.data = quotation;
+                response.data = inquiry;
             }
             else
             {
@@ -542,6 +543,8 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+
         [HttpPost]
         [Route("[action]")]
         public async Task<object> ViewQuotationForCustomer(int inquiryId)
