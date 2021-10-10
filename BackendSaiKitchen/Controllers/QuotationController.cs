@@ -439,7 +439,9 @@ namespace BackendSaiKitchen.Controllers
         public object ViewQuotationDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 response.data = inquiry;
