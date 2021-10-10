@@ -452,7 +452,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object HeadAcceptQuotation(Quotation _quotation)
         {
@@ -519,7 +519,7 @@ namespace BackendSaiKitchen.Controllers
         }
 
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object HeadDeclineQuotation(int inquiryId)
         {
