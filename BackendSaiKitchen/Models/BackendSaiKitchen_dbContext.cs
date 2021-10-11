@@ -560,9 +560,9 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.JobOrderDetailName).HasMaxLength(50);
 
-                entity.Property(e => e.MaterialAvailabilityDate).HasMaxLength(50);
-
                 entity.Property(e => e.MaterialDeliveryFinalDate).HasMaxLength(50);
+
+                entity.Property(e => e.MaterialRequestDate).HasMaxLength(50);
 
                 entity.Property(e => e.MissingDocuments).HasMaxLength(500);
 

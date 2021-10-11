@@ -11,7 +11,7 @@ namespace BackendSaiKitchen.Models
         public int? JobOrderId { get; set; }
         public string JobOrderDetailName { get; set; }
         public string JobOrderDetailDescription { get; set; }
-        public string MaterialAvailabilityDate { get; set; }
+        public string MaterialRequestDate { get; set; }
         public string ShopDrawingCompletionDate { get; set; }
         public string MissingDocuments { get; set; }
         public string ProductionCompletionDate { get; set; }

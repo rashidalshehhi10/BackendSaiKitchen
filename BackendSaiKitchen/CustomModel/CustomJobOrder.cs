@@ -3,7 +3,7 @@
     public class CustomJobOrder
     {
         public int inquiryId { get; set; }
-        public string materialAvailablityDate { get; set; }
+        public string materialRequestDate { get; set; }
         public string shopDrawingCompletionDate { get; set; }
         public string productionCompletionDate { get; set; }
         public string woodenWorkCompletionDate { get; set; }

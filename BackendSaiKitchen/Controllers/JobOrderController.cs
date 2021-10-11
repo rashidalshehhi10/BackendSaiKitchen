@@ -26,7 +26,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var joborder in inquiry.JobOrders)
                 {
                     JobOrderDetail jobOrderDetail = new JobOrderDetail();
-                    jobOrderDetail.MaterialAvailabilityDate = order.materialAvailablityDate;
+                    jobOrderDetail.MaterialRequestDate = order.materialRequestDate;
                     jobOrderDetail.MaterialDeliveryFinalDate = order.materialDeliveryFinalDate;
                     jobOrderDetail.ProductionCompletionDate = order.productionCompletionDate;
                     jobOrderDetail.ShopDrawingCompletionDate = order.shopDrawingCompletionDate;
