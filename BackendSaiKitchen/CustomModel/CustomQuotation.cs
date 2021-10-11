@@ -26,14 +26,21 @@ namespace BackendSaiKitchen.CustomModel
         public int? NoOfInstallment { get; set; }
         public int PaymentTypeId { get; set; }
         public string CalculationSheetFile { get; set; }
-
-        public List<Payment> Payments { get; set; }
-
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public bool IsEdit { get; set; }
 
 
         public List<string> QuotationFiles { get; set; }
+        public List<Payment> Payments { get; set; }
+
+        
+    }
+
+    public class EditQuotation
+    {
+        public bool IsEdit { get; set; }
+        public Quotation quotation { get; set; }
     }
 
     public class UploadPdf
