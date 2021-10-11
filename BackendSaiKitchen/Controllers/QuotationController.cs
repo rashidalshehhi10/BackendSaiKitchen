@@ -79,7 +79,7 @@ namespace BackendSaiKitchen.Controllers
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                     //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                     //WorkScopeCount = x.InquiryWorkscopes.Count,
-                    Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                    Status = x.InquiryStatusId,
                     BuildingAddress = x.Building.BuildingAddress,
                     BuildingCondition = x.Building.BuildingCondition,
                     BuildingFloor = x.Building.BuildingFloor,
@@ -126,7 +126,7 @@ namespace BackendSaiKitchen.Controllers
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                       //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                       //WorkScopeCount = x.InquiryWorkscopes.Count,
-                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      Status = x.InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
                       BuildingFloor = x.Building.BuildingFloor,
@@ -165,9 +165,9 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForApprovalQuotationbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                   && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval) && y.IsActive == true && y.IsDeleted == false).Count()))
-                  .Select(x => new ViewInquiryDetail()
+                  .Select(x => new ViewInquiryDetail
                   {
                       InquiryId = x.InquiryId,
 
@@ -175,7 +175,7 @@ namespace BackendSaiKitchen.Controllers
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                       //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                       //WorkScopeCount = x.InquiryWorkscopes.Count,
-                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      Status = x.InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
                       BuildingFloor = x.Building.BuildingFloor,
