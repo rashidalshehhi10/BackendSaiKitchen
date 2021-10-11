@@ -531,6 +531,7 @@ namespace BackendSaiKitchen.Controllers
                 quotation.IsInstallment = _quotation.IsInstallment;
                 quotation.NoOfInstallment = _quotation.NoOfInstallment;
                 quotation.TotalAmount = _quotation.TotalAmount;
+
                 if (_quotation.Files != null && _quotation.Files.Count > 0)
                 {
                     files.Clear();
@@ -560,7 +561,11 @@ namespace BackendSaiKitchen.Controllers
 
                 if (_quotation.Payments != null && _quotation.Payments.Count > 0)
                     {
-                        Helper.Helper.Each(_quotation.Payments, x => x.IsActive = false);
+                        Helper.Helper.Each(_quotation.Payments, x => 
+                        {
+                            x.IsDeleted = true;
+                            x.IsActive = false;
+                        });
                         quotation.Payments = _quotation.Payments;
                     }
                 
@@ -580,9 +585,9 @@ namespace BackendSaiKitchen.Controllers
         [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
-        public object HeadDeclineQuotation(int inquiryId)
+        public object HeadDeclineQuotation(AddComment comment)
         {
-            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(i => i.IsActive == true && i.IsDeleted == false && i.InquiryId == comment.inquiryId && i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -590,7 +595,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
-
+                inquiry.InquiryComment = comment.comment;
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
