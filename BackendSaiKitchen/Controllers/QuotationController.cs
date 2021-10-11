@@ -509,6 +509,7 @@ namespace BackendSaiKitchen.Controllers
         public object HeadAcceptQuotation(CustomQuotation _quotation)
         {
             var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.QuotationId == _quotation.QuotationId)
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Inquiry)
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (quotation != null)
@@ -564,7 +565,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Helper.Helper.Each(quotation.Payments, x =>
                         {
-                            x.IsDeleted = true;
+                            x.IsActive = false
                         });
                         quotation.Payments = _quotation.Payments;
                     }
