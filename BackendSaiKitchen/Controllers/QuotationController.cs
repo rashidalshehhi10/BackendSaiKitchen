@@ -876,7 +876,8 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
-                inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationRejected;
+                Helper.Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationRejected);
+                //inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationRejected;
                 foreach (var payment in inquiry.Payments)
                 {
                     payment.IsActive = false;
