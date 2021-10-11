@@ -79,7 +79,7 @@ namespace BackendSaiKitchen.Controllers
                     InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                     //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                     //WorkScopeCount = x.InquiryWorkscopes.Count,
-                    Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                    Status = x.InquiryStatusId,
                     BuildingAddress = x.Building.BuildingAddress,
                     BuildingCondition = x.Building.BuildingCondition,
                     BuildingFloor = x.Building.BuildingFloor,
@@ -126,7 +126,7 @@ namespace BackendSaiKitchen.Controllers
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                       //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                       //WorkScopeCount = x.InquiryWorkscopes.Count,
-                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      Status = x.InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
                       BuildingFloor = x.Building.BuildingFloor,
@@ -165,9 +165,9 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> GetInquiryForApprovalQuotationbyBranchId(int branchId)
         {
 
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                   && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval) && y.IsActive == true && y.IsDeleted == false).Count()))
-                  .Select(x => new ViewInquiryDetail()
+                  .Select(x => new ViewInquiryDetail
                   {
                       InquiryId = x.InquiryId,
 
@@ -175,7 +175,7 @@ namespace BackendSaiKitchen.Controllers
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                       //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                       //WorkScopeCount = x.InquiryWorkscopes.Count,
-                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      Status = x.InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
                       BuildingFloor = x.Building.BuildingFloor,
@@ -506,9 +506,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object HeadAcceptQuotation(EditQuotation _quotation)
+        public object HeadAcceptQuotation(CustomQuotation _quotation)
         {
-            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.QuotationId == _quotation.quotation.QuotationId)
+            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.QuotationId == _quotation.QuotationId)
                 .Include(x => x.Inquiry)
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (quotation != null)
@@ -522,31 +522,31 @@ namespace BackendSaiKitchen.Controllers
 
                 if (_quotation.IsEdit)
                 {
-                    quotation.AdvancePayment = _quotation.quotation.AdvancePayment;
-                    quotation.AfterDelivery = _quotation.quotation.AfterDelivery;
-                    quotation.Amount = _quotation.quotation.Amount;
-                    quotation.BeforeInstallation = _quotation.quotation.BeforeInstallation;
-                    quotation.CalculationSheetFile = _quotation.quotation.CalculationSheetFile;
-                    quotation.ProposalReferenceNumber = _quotation.quotation.ProposalReferenceNumber;
-                    quotation.Description = _quotation.quotation.Description;
-                    quotation.IsInstallment = _quotation.quotation.IsInstallment;
-                    quotation.NoOfInstallment = _quotation.quotation.NoOfInstallment;
-                    quotation.TotalAmount = _quotation.quotation.TotalAmount;
+                    quotation.AdvancePayment = _quotation.AdvancePayment;
+                    quotation.AfterDelivery = _quotation.AfterDelivery;
+                    quotation.Amount = _quotation.Amount;
+                    quotation.BeforeInstallation = _quotation.BeforeInstallation;
+                    quotation.CalculationSheetFile = _quotation.CalculationSheetFile;
+                    quotation.ProposalReferenceNumber = _quotation.ProposalReferenceNumber;
+                    quotation.Description = _quotation.Description;
+                    quotation.IsInstallment = _quotation.IsInstallment;
+                    quotation.NoOfInstallment = _quotation.NoOfInstallment;
+                    quotation.TotalAmount = _quotation.TotalAmount;
 
-                    if (_quotation.quotation.Files != null && _quotation.quotation.Files.Count > 0)
+                    if (_quotation.QuotationFiles != null && _quotation.QuotationFiles.Count > 0)
                     {
                         files.Clear();
                         Helper.Helper.Each(quotation.Files, x => x.IsActive = false);
-                        foreach (var file in _quotation.quotation.Files)
+                        foreach (var file in _quotation.QuotationFiles)
                         {
                             if (file != null)
                             {
                                 files.Add(new Models.File
                                 {
-                                    FileUrl = file.FileUrl,
-                                    FileName = file.FileUrl.Split('.')[0],
-                                    FileContentType = file.FileUrl.Split('.').Length > 1 ? file.FileUrl.Split('.')[1] : "mp4",
-                                    IsImage = file.FileUrl.Split('.').Length > 1,
+                                    FileUrl = file,
+                                    FileName = file.Split('.')[0],
+                                    FileContentType = file.Split('.').Length > 1 ? file.Split('.')[1] : "mp4",
+                                    IsImage = file.Split('.').Length > 1,
                                     IsActive = true,
                                     IsDeleted = false,
                                     UpdatedBy = Constants.userId,
@@ -560,13 +560,13 @@ namespace BackendSaiKitchen.Controllers
 
                     }
 
-                    if (_quotation.quotation.Payments != null && _quotation.quotation.Payments.Count > 0)
+                    if (_quotation.Payments != null && _quotation.Payments.Count > 0)
                     {
-                        Helper.Helper.Each(_quotation.quotation.Payments, x =>
+                        Helper.Helper.Each(quotation.Payments, x =>
                         {
                             x.IsDeleted = true;
                         });
-                        quotation.Payments = _quotation.quotation.Payments;
+                        quotation.Payments = _quotation.Payments;
                     }
                 }
                 quotationRepository.Update(quotation);
