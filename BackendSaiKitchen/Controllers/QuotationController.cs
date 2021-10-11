@@ -963,7 +963,7 @@ namespace BackendSaiKitchen.Controllers
         public object QuotationSchedule(quotationScheduleUpdate scheduleUpdate)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == scheduleUpdate.inquiryId && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && y.IsActive == true && y.IsDeleted == false).Count()))
+                 && x.IsDeleted == false && (x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x.InquiryWorkscopes.Where(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending || y.InquiryStatusId == (int)inquiryStatus.quotationPending || y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested || y.InquiryStatusId == (int)inquiryStatus.quotationDelayed || y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true && y.IsDeleted == false).Count()))
                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 //.Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && x.IsDeleted == false))
