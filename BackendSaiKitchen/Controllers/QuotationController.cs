@@ -175,7 +175,7 @@ namespace BackendSaiKitchen.Controllers
                       InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
                       //WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).First(),
                       //WorkScopeCount = x.InquiryWorkscopes.Count,
-                      Status = x.InquiryWorkscopes.FirstOrDefault().InquiryStatusId,
+                      Status = x.InquiryStatusId,
                       BuildingAddress = x.Building.BuildingAddress,
                       BuildingCondition = x.Building.BuildingCondition,
                       BuildingFloor = x.Building.BuildingFloor,
