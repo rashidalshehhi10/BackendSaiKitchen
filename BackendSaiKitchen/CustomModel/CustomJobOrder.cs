@@ -16,16 +16,30 @@ namespace BackendSaiKitchen.CustomModel
         // public string installationEndDate { get; set; }
         public string Notes { get; set; }
 
+        
+
+    }
+
+    public class AddjobOrder
+    {
+        public int inquiryId { get; set; }
+        public string JobOrderRequestedDeadline { get; set; }
+        public string JobOrderRequestedComments { get; set; }
+        public string DataSheetApplianceFileUrl { get; set; }
+        public bool IsAppliancesProvidedByClient { get; set; }
+        public string DetailedDesignFile { get; set; }
+        public string MaterialSheetFileUrl { get; set; }
+        public string MepdrawingFileUrl { get; set; }
+        public string Comments { get; set; }
+
         public int PaymentTypeId { get; set; }
         public bool? IsInstallment { get; set; }
         public int? NoOfInstallment { get; set; }
         public string AdvancePayment { get; set; }
         public string BeforeInstallation { get; set; }
         public string AfterDelivery { get; set; }
-        //public string QuotationValidityDate { get; set; }
         public byte[] Pdf { get; set; }
         public List<Payment> Payments { get; set; }
-
     }
 
     public class JobOrderFactory
