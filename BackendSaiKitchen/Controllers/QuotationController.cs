@@ -211,7 +211,7 @@ namespace BackendSaiKitchen.Controllers
         static List<Models.File> files = new List<Models.File>();
         static List<IFormFile> formFile = new List<IFormFile>();
 
-        //[AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
+        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
@@ -529,11 +529,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Description = _quotation.Description;
                     quotation.TotalAmount = _quotation.TotalAmount;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
-                    //quotation.IsInstallment = _quotation.IsInstallment;
-                    //quotation.NoOfInstallment = _quotation.NoOfInstallment;
-                    //quotation.BeforeInstallation = _quotation.BeforeInstallation;
-                    //quotation.AfterDelivery = _quotation.AfterDelivery;
-                    //quotation.AdvancePayment = _quotation.AdvancePayment;
+                    
 
 
                     if (_quotation.QuotationFiles != null && _quotation.QuotationFiles.Count > 0)
@@ -563,14 +559,6 @@ namespace BackendSaiKitchen.Controllers
 
                     }
 
-                    //if (_quotation.Payments != null && _quotation.Payments.Count > 0)
-                    //{
-                    //    Helper.Helper.Each(quotation.Payments, x =>
-                    //    {
-                    //        x.IsActive = false;
-                    //    });
-                    //    quotation.Payments = _quotation.Payments;
-                    //}
                 }
                 quotationRepository.Update(quotation);
                 context.SaveChanges();
@@ -725,29 +713,6 @@ namespace BackendSaiKitchen.Controllers
                 deletedTermsAndConditions.ForEach((x) => viewQuotation.TermsAndConditionsDetail.Remove(x));
 
 
-
-                //var i=   (from xx in context.InquiryWorkscopes
-                //    group xx.InquiryWorkscopeId by xx into g
-                //    let count = g.Count()
-                //    orderby count descending
-                //    select new
-                //    {
-                //        Count = count,
-                //    });
-
-                //var   V = viewQuotation.invoiceDetails.Add(new InvoiceDetail()
-                //  {
-                //      Quantity = count.ToString(),
-                //      inquiryWorkScopeNames = g.Key.Workscope.WorkScopeName,
-                //  }),
-                //var v = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(y => y.InquiryWorkscopes.Where(z => z.IsActive == true && z.IsDeleted == false).GroupBy(z => z.WorkscopeId));
-
-                //.Select(z=>z.Key
-
-                //    ));
-                //viewQuotation.invoiceDetails.Add(inquiryRepository.FindByCondition(x=>x.InquiryWorkscopes.Where))
-                //Quantity = new List<object>().AddRange(x.InquiryWorkscopes.GroupBy(y => y.WorkscopeId).Count()),
-                //// inquiryWorkScopeNames = x.InquiryWorkscopes.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Workscope.WorkScopeName.ToList()
                 response.data = viewQuotation;
             }
             else
@@ -775,74 +740,17 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
 
-                //int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.jobOrderFilesPending : (int)inquiryStatus.quotationAccepted;
+               
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-
-                //inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
+                inquiry.InquiryComment = updateQuotation.reason;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
                     workscope.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 }
-                //foreach (var payment in inquiry.Payments)
-                //{
-                //    payment.PaymentModeId = updateQuotation.SelectedPaymentMode;
-                //    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
-                //    {
-                //        payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
-                //        payment.ClientSecret = updateQuotation.ClientSecret;
-                //        payment.PaymentMethod = updateQuotation.PaymentMethod;
-                //        payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
-                //        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
-
-                //    }
-                //    else
-                //    {
-                //        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
-                //    }
-                //    if (payment.PaymentAmount == 0)
-                //    {
-                //        payment.IsActive = false;
-                //    }
-                //}
-
-                foreach (var quotation in inquiry.Quotations)
-                {
-                    quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
-                    quotation.Description = updateQuotation.reason;
-                    quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
-                    quotation.QuotationStatusId = (int)inquiryStatus.contractInProgress;
-
-                    if (updateQuotation.Pdf != null && updateQuotation.Pdf.Count() >= 0)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
-                        quotation.Files.Add(new Models.File
-                        {
-                            FileUrl = fileUrl.Item1,
-                            FileName = fileUrl.Item1.Split('.')[0],
-                            FileContentType = fileUrl.Item2,
-                            IsImage = false,
-                            IsActive = true,
-                            IsDeleted = false,
-                        });
-                    }
-                    foreach (var file in quotation.Files)
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                    }
-
-                }
+                
                 inquiryRepository.Update(inquiry);
-                try
-                {
-                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
-
-                }
-                catch (Exception ex)
-                {
-                    Sentry.SentrySdk.CaptureMessage(ex.Message);
-                }
                 List<int?> roletypeId = new List<int?>();
                 roletypeId.Add((int)roleType.Manager);
                 try

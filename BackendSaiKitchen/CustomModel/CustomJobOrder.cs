@@ -1,4 +1,7 @@
-﻿namespace BackendSaiKitchen.CustomModel
+﻿using BackendSaiKitchen.Models;
+using System.Collections.Generic;
+
+namespace BackendSaiKitchen.CustomModel
 {
     public class CustomJobOrder
     {
@@ -12,6 +15,17 @@
         public string installationStartDate { get; set; }
         // public string installationEndDate { get; set; }
         public string Notes { get; set; }
+
+        public int PaymentTypeId { get; set; }
+        public bool? IsInstallment { get; set; }
+        public int? NoOfInstallment { get; set; }
+        public string AdvancePayment { get; set; }
+        public string BeforeInstallation { get; set; }
+        public string AfterDelivery { get; set; }
+        //public string QuotationValidityDate { get; set; }
+        public byte[] Pdf { get; set; }
+        public List<Payment> Payments { get; set; }
+
     }
 
     public class JobOrderFactory
