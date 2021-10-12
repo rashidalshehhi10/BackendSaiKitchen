@@ -528,6 +528,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.ProposalReferenceNumber = _quotation.ProposalReferenceNumber;
                     quotation.Description = _quotation.Description;
                     quotation.TotalAmount = _quotation.TotalAmount;
+                    quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     //quotation.IsInstallment = _quotation.IsInstallment;
                     //quotation.NoOfInstallment = _quotation.NoOfInstallment;
                     //quotation.BeforeInstallation = _quotation.BeforeInstallation;
@@ -764,9 +765,9 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> ClientApproveQuotationAsync(UpdateQuotationStatus updateQuotation)
         {
             List<IFormFile> files = new List<IFormFile>();
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y =>  y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer)
@@ -774,44 +775,44 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
 
-                int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.jobOrderFilesPending : (int)inquiryStatus.quotationAccepted;
-                inquiry.InquiryStatusId = status;
+                //int status = updateQuotation.PaymentMethod.ToString() != null && updateQuotation.PaymentMethod.ToString() != "" ? (int)inquiryStatus.jobOrderFilesPending : (int)inquiryStatus.quotationAccepted;
+                inquiry.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
                 //inquiry.Quotations.FirstOrDefault().QuotationStatusId = (int)inquiryStatus.quotationAccepted;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
-                    workscope.InquiryStatusId = status;
+                    workscope.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 }
-                foreach (var payment in inquiry.Payments)
-                {
-                    payment.PaymentModeId = updateQuotation.SelectedPaymentMode;
-                    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
-                    {
-                        payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
-                        payment.ClientSecret = updateQuotation.ClientSecret;
-                        payment.PaymentMethod = updateQuotation.PaymentMethod;
-                        payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
-                        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
+                //foreach (var payment in inquiry.Payments)
+                //{
+                //    payment.PaymentModeId = updateQuotation.SelectedPaymentMode;
+                //    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
+                //    {
+                //        payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                //        payment.ClientSecret = updateQuotation.ClientSecret;
+                //        payment.PaymentMethod = updateQuotation.PaymentMethod;
+                //        payment.PaymentIntentToken = updateQuotation.PaymentIntentToken;
+                //        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
 
-                    }
-                    else
-                    {
-                        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
-                    }
-                    if (payment.PaymentAmount == 0)
-                    {
-                        payment.IsActive = false;
-                    }
-                }
+                //    }
+                //    else
+                //    {
+                //        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
+                //    }
+                //    if (payment.PaymentAmount == 0)
+                //    {
+                //        payment.IsActive = false;
+                //    }
+                //}
 
                 foreach (var quotation in inquiry.Quotations)
                 {
                     quotation.FeedBackReactionId = updateQuotation.FeedBackReactionId;
                     quotation.Description = updateQuotation.reason;
                     quotation.QuotationCode = "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + quotation.QuotationId;
-                    quotation.QuotationStatusId = (int)inquiryStatus.quotationAccepted;
+                    quotation.QuotationStatusId = (int)inquiryStatus.contractInProgress;
 
                     if (updateQuotation.Pdf != null && updateQuotation.Pdf.Count() >= 0)
                     {
