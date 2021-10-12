@@ -743,7 +743,7 @@ namespace BackendSaiKitchen.Controllers
                
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                inquiry.InquiryComment = updateQuotation.reason;
+               // inquiry.InquiryComment = updateQuotation.reason;
 
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
