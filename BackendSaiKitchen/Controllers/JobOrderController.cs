@@ -198,7 +198,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquiryJobOrderByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending)).Select(x => new CheckListByBranch
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.contractInProgress)).Select(x => new CheckListByBranch
             {
                 InquiryId = x.InquiryId,
                 QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
@@ -247,7 +247,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryJobOrderDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed || x.InquiryStatusId == (int)inquiryStatus.contractInProgress))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
