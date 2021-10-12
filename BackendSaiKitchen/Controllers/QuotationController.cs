@@ -749,6 +749,22 @@ namespace BackendSaiKitchen.Controllers
                 {
                     workscope.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 }
+                foreach (var quotation in inquiry.Quotations)
+                {
+                    if (updateQuotation.Pdf != null && updateQuotation.Pdf.Count() >= 0)
+                    {
+                        var fileUrl = await Helper.Helper.UploadFile(updateQuotation.Pdf);
+                        quotation.Files.Add(new Models.File
+                        {
+                            FileUrl = fileUrl.Item1,
+                            FileName = fileUrl.Item1.Split('.')[0],
+                            FileContentType = fileUrl.Item2,
+                            IsImage = false,
+                            IsActive = true,
+                            IsDeleted = false,
+                        });
+                    }
+                }
                 
                 inquiryRepository.Update(inquiry);
                 List<int?> roletypeId = new List<int?>();

@@ -433,19 +433,7 @@ namespace BackendSaiKitchen.Controllers
                             payment.IsActive = false;
                         }
                     }
-                    if (order.Pdf != null && order.Pdf.Count() >= 0)
-                    {
-                        var fileUrl = await Helper.Helper.UploadFile(order.Pdf);
-                        quotation.Files.Add(new Models.File
-                        {
-                            FileUrl = fileUrl.Item1,
-                            FileName = fileUrl.Item1.Split('.')[0],
-                            FileContentType = fileUrl.Item2,
-                            IsImage = false,
-                            IsActive = true,
-                            IsDeleted = false,
-                        });
-                    }
+                    
                     foreach (var file in quotation.Files)
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));

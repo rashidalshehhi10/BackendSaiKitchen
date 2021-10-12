@@ -52,7 +52,7 @@ namespace BackendSaiKitchen.CustomModel
         //public string ClientSecret { get; set; }
         //public string PaymentMethod { get; set; }
         //public int SelectedPaymentMode { get; set; }
-        //public byte[] Pdf { get; set; }
+        public byte[] Pdf { get; set; }
     }
 
     public class quotationScheduleUpdate
