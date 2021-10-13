@@ -433,7 +433,18 @@ namespace BackendSaiKitchen.Controllers
                             payment.IsActive = false;
                         }
                     }
+
+                    if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.DetailedDesignFile)) != null)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.DetailedDesignFile)));
+                    }
+
+                    if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)) != null)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
+                    }
                     
+
                     foreach (var file in quotation.Files)
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
