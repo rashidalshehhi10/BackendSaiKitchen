@@ -302,7 +302,9 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted ==false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false ))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
@@ -320,10 +322,22 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.IsDeleted = false;
                 _jobOrder.CreatedBy = Constants.userId;
                 _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
-                Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
+                
+                foreach (var inWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
-                });
+                    inWorkscope.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
+                    foreach (var design in inWorkscope.Designs)
+                    {
+                        foreach (var file in design.Files)
+                        {
+                            if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)) != null)
+                            {
+                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                            }
+                        }
+                    }
+                }
+
                 foreach (var quotation in inquiry.Quotations)
                 {
                     quotation.AdvancePayment = order.AdvancePayment;
@@ -434,10 +448,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.DetailedDesignFile)) != null)
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.DetailedDesignFile)));
-                    }
+                    
 
                     if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)) != null)
                     {
