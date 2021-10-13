@@ -20,17 +20,35 @@ namespace BackendSaiKitchen.CustomModel
 
     }
 
+    public class ContrcatApprove
+    {
+        public int inquiryId { get; set; }
+        public string Comment { get; set; }
+        public int FeedBackReactionId { get; set; }
+        public string PaymentIntentToken { get; set; }
+        public string ClientSecret { get; set; }
+        public string PaymentMethod { get; set; }
+        public int SelectedPaymentMode { get; set; }
+    }
+
+    public class ContractReject {
+        public int inquiryId { get; set; }
+        public string Comment { get; set; }
+        public int FeedBackReactionId { get; set; }
+    }
+
+
     public class AddjobOrder
     {
         public int inquiryId { get; set; }
-        public string JobOrderRequestedDeadline { get; set; }
-        public string JobOrderRequestedComments { get; set; }
+        //public string JobOrderRequestedDeadline { get; set; }
+        //public string JobOrderRequestedComments { get; set; }
         public string DataSheetApplianceFileUrl { get; set; }
         public bool IsAppliancesProvidedByClient { get; set; }
         public string DetailedDesignFile { get; set; }
         public string MaterialSheetFileUrl { get; set; }
         public string MepdrawingFileUrl { get; set; }
-        public string Comments { get; set; }
+        //public string Comments { get; set; }
 
         public int PaymentTypeId { get; set; }
         public bool? IsInstallment { get; set; }

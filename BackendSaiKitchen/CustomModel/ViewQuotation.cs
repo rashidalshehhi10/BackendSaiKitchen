@@ -55,6 +55,8 @@ namespace BackendSaiKitchen.CustomModel
         public byte[] Pdf { get; set; }
     }
 
+   
+
     public class quotationScheduleUpdate
     {
         public int inquiryId { get; set; }

@@ -308,14 +308,14 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
-                _jobOrder.JobOrderRequestedDeadline = order.JobOrderRequestedDeadline;
-                _jobOrder.JobOrderRequestedComments = order.JobOrderRequestedComments;
+                //_jobOrder.JobOrderRequestedDeadline = order.JobOrderRequestedDeadline;
+                //_jobOrder.JobOrderRequestedComments = order.JobOrderRequestedComments;
                 _jobOrder.DataSheetApplianceFileUrl = order.DataSheetApplianceFileUrl;
                 _jobOrder.IsAppliancesProvidedByClient = order.IsAppliancesProvidedByClient;
                 _jobOrder.DetailedDesignFile = order.DetailedDesignFile;
                 _jobOrder.MaterialSheetFileUrl = order.MaterialSheetFileUrl;
                 _jobOrder.MepdrawingFileUrl = order.MepdrawingFileUrl;
-                _jobOrder.Comments = order.Comments;
+               // _jobOrder.Comments = order.Comments;
                 _jobOrder.IsActive = true;
                 _jobOrder.IsDeleted = false;
                 _jobOrder.CreatedBy = Constants.userId;
@@ -458,6 +458,16 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientApproveContract(UpdateQuotationStatus updateQuotation)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsDeleted == false && x.IsActive == true)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            response.data = inquiry;
             return response;
         }
 
