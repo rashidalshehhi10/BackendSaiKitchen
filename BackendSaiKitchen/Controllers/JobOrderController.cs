@@ -463,11 +463,143 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ClientApproveContract(UpdateQuotationStatus updateQuotation)
+        public async Task<object> ClientApproveContract(ContrcatApprove approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateQuotation.inquiryId && x.IsDeleted == false && x.IsActive == true)
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-            response.data = inquiry;
+            List<IFormFile> files = new List<IFormFile>();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.contractWaitingForCustomerApproval)
+               .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer)
+                .FirstOrDefault();
+            if (inquiry != null)
+            {
+
+
+                inquiry.InquiryStatusId = (int)inquiryStatus.contractApproved;
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                // inquiry.InquiryComment = updateQuotation.reason;
+
+                foreach (var workscope in inquiry.InquiryWorkscopes)
+                {
+                    workscope.InquiryStatusId = (int)inquiryStatus.contractApproved;
+
+                }
+                foreach (var payment in inquiry.Payments)
+                {
+                    payment.PaymentModeId = approve.SelectedPaymentMode;
+                    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
+                    {
+                        payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                        payment.ClientSecret = approve.ClientSecret;
+                        payment.PaymentMethod = approve.PaymentMethod;
+                        payment.PaymentIntentToken = approve.PaymentIntentToken;
+                        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId + "" + payment.PaymentId;
+
+                    }
+                    else
+                    {
+                        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
+                    }
+                    if (payment.PaymentAmount == 0)
+                    {
+                        payment.IsActive = false;
+                    }
+                }
+                foreach (var quotation in inquiry.Quotations)
+                {
+
+                    if (approve.Pdf != null && approve.Pdf.Count() >= 0)
+                    {
+                        var fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
+                        quotation.Files.Add(new Models.File
+                        {
+                            FileUrl = fileUrl.Item1,
+                            FileName = fileUrl.Item1.Split('.')[0],
+                            FileContentType = fileUrl.Item2,
+                            IsImage = false,
+                            IsActive = true,
+                            IsDeleted = false,
+                        });
+                    }
+                }
+
+                inquiryRepository.Update(inquiry);
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead("Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Approved By Client", false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                }
+                catch (Exception ex)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
+                }
+                response.data = inquiry;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = false;
+                response.errorMessage = "inquiry does not exist";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ClientRejectContract(ContractReject reject)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.contractRejected;
+                //Helper.Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.contractRejected);
+                foreach (var payment in inquiry.Payments)
+                {
+                    payment.IsActive = false;
+                }
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.contractRejected;
+                }
+
+                foreach (var quotation in inquiry.Quotations)
+                {
+                    quotation.IsActive = false;
+                    quotation.Description = reject.Comment;
+                    quotation.FeedBackReactionId = reject.FeedBackReactionId;
+                }
+                List<int?> roletypeId = new List<int?>();
+                roletypeId.Add((int)roleType.Manager);
+                try
+                {
+                    sendNotificationToHead("Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Rejected By Client Reason: " + reject.Comment, false,
+                        " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                }
+                catch (Exception ex)
+                {
+
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
+                }
+                inquiryRepository.Update(inquiry);
+                response.data = inquiry;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Doesn't Exist";
+            }
+
             return response;
         }
 
