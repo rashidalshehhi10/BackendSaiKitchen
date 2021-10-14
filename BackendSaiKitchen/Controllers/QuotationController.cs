@@ -1286,7 +1286,7 @@ namespace BackendSaiKitchen.Controllers
                 }
                 foreach (var quotation in inquiry.Quotations)
                 {
-
+                    quotation.QuotationStatusId = (int)inquiryStatus.contractApproved;
                     if (approve.Pdf != null && approve.Pdf.Count() >= 0)
                     {
                         var fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
