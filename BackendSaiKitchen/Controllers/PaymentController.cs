@@ -30,7 +30,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetQuotationDetailsFromCode(string code)
         {
-            int? inquiryId = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.quotationAccepted)?.FirstOrDefault()?.InquiryId;
+            int? inquiryId = quotationRepository.FindByCondition(x => (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.contractApproved)?.FirstOrDefault()?.InquiryId;
             if (inquiryId != null)
             {
                 List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
