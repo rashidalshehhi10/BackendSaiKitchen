@@ -961,7 +961,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (var file in design.Files)
                         {
-                            if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)) != null)
+                            if (file.FileUrl != null && file.FileUrl != "")
                             {
                                 files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
                             }
@@ -1081,7 +1081,7 @@ namespace BackendSaiKitchen.Controllers
 
 
 
-                    if (Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)) != null)
+                    if (_jobOrder.MepdrawingFileUrl != null && _jobOrder.MepdrawingFileUrl != "")
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
                     }
