@@ -516,6 +516,7 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (quotation != null)
             {
+                quotation.QuotationCode = "QTN" + quotation.Inquiry.BranchId + "" + quotation.Inquiry.CustomerId + "" + quotation.InquiryId + "" + quotation.QuotationId;
 
                 foreach (var inquiryWorkscope in quotation.Inquiry.InquiryWorkscopes)
                 {
@@ -531,7 +532,6 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Description = _quotation.Description;
                     quotation.TotalAmount = _quotation.TotalAmount;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
-                    
 
 
                     if (_quotation.QuotationFiles != null && _quotation.QuotationFiles.Count > 0)
