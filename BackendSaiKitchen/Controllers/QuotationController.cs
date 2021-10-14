@@ -602,12 +602,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> ViewContractForCustomer(int inquiryId)
         {
-            //inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList().ForEach(c => {
-            //    int a = c.InquiryWorkscopeId;
-            //});
             List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
             List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
-            ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+            ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.contractWaitingForCustomerApproval)
                 .Select(x => new ViewQuotation
                 {
                     InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
