@@ -32,7 +32,7 @@ namespace BackendSaiKitchen.CustomModel
         public List<string> inquiryWorkScopeNames { get; set; }
         public List<int> Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
         public List<InvoiceDetail> invoiceDetails { get; set; }
-        public ICollection<File> Files { get; set; }
+        public List<string> Files { get; set; }
         public string TotalAmount { get; set; }
         public string QuotationScheduleDate { get; set; }
     }

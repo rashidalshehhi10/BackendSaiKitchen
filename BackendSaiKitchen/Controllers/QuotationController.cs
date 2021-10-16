@@ -605,7 +605,7 @@ namespace BackendSaiKitchen.Controllers
             List<int> q = inquiryWorkscopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId).OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
             List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.contractWaitingForCustomerApproval)
-                .Select(x => new ViewQuotation
+               .Select(x => new ViewQuotation
                 {
                     InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
                     CreatedDate = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
@@ -632,20 +632,40 @@ namespace BackendSaiKitchen.Controllers
                     BranchContact = x.Branch.BranchContact,
                     ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                     TermsAndConditionsDetail = terms,
-                    Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
+                    Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files.Select(x => x.FileUrl).ToList(),
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
                     inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
 
                 }).FirstOrDefault();
+            
             if (viewQuotation != null)
             {
+                var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                    .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                    .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                    .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                    .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                foreach (var inws in inquiry.InquiryWorkscopes)
+                {
+                    foreach (var design in inws.Designs)
+                    {
+                        foreach (var file in design.Files)
+                        {
+                            viewQuotation.Files.Add(file.FileUrl);
+                        }
+                    }
+                }
+                foreach (var job in inquiry.JobOrders)
+                {
+                    viewQuotation.Files.Add(job.MepdrawingFileUrl);
+                }
                 try
                 {
                     viewQuotation.invoiceDetails = new List<InvoiceDetail>();
                     for (int i = 0; i < viewQuotation.inquiryWorkScopeNames.Count; i++)
                     {
-                        viewQuotation.invoiceDetails.Add(new InvoiceDetail() { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
+                        viewQuotation.invoiceDetails.Add(new InvoiceDetail { inquiryWorkScopeNames = viewQuotation.inquiryWorkScopeNames[i], Quantity = viewQuotation.Quantity[i] });
                     }
 
                 }
@@ -760,7 +780,7 @@ namespace BackendSaiKitchen.Controllers
                     BranchContact = x.Branch.BranchContact,
                     ProposalReferenceNumber = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
                     TermsAndConditionsDetail = terms,
-                    Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files,
+                    Files = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files.Select(x => x.FileUrl).ToList(),
                     Quantity = q,//x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).GroupBy(g => g.WorkscopeId).Select(g => g.Count()).ToList(),
                     inquiryWorkScopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
                     TotalAmount = x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
@@ -768,6 +788,7 @@ namespace BackendSaiKitchen.Controllers
                 }).FirstOrDefault();
             if (viewQuotation != null)
             {
+
                 try
                 {
                     viewQuotation.invoiceDetails = new List<InvoiceDetail>();
