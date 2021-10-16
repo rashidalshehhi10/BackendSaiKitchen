@@ -1086,6 +1086,7 @@ namespace BackendSaiKitchen.Controllers
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
+                Helper.Helper.Each(inquiry.JobOrders, x => x.IsActive = false);
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
                 //_jobOrder.JobOrderRequestedDeadline = order.JobOrderRequestedDeadline;
                 //_jobOrder.JobOrderRequestedComments = order.JobOrderRequestedComments;
@@ -1355,7 +1356,8 @@ namespace BackendSaiKitchen.Controllers
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval && y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Payments.Where(y => y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer).FirstOrDefault();
 
             if (inquiry != null)
             {
