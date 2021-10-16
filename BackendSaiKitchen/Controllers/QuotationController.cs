@@ -1080,7 +1080,8 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer).FirstOrDefault();
 
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)

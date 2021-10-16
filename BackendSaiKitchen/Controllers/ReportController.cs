@@ -141,12 +141,10 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetReportForBranch(ReqReport req)
         {
-            var _branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
-                .FirstOrDefault();
+            //var _branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
+            //    .FirstOrDefault();
 
-            if (_branch != null)
-            {
-                var branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
+            var branch = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.Workscope)
@@ -163,6 +161,15 @@ namespace BackendSaiKitchen.Controllers
                     .ThenInclude(x => x.User)
                     .Include(x => x.UserRoles.Where(y => y.IsActive == true && y.IsDeleted == false))
                     .ThenInclude(x => x.BranchRole).FirstOrDefault();
+
+            //var br = branchRepository.FindByCondition(x => x.BranchId == req.Id && x.IsActive == true && x.IsDeleted == false).Select(x => new BranchReport
+            //{
+            //    AmountPending = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Select(y => y.Payments.Where(z => z.IsActive == true && z.IsDeleted == false && (z.PaymentStatusId == (int)paymentstatus.PaymentApproved || z.PaymentStatusId == (int)paymentstatus.InstallmentApproved))).Select(z)
+            //}).FirstOrDefault();
+
+            if (branch != null)
+            {
+                
 
                 BranchReport report = new BranchReport();
 
@@ -196,7 +203,7 @@ namespace BackendSaiKitchen.Controllers
                         //inWCount += (int)inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)?.Count();
                     }
                     //satisfy = satisfy / inWCount;
-                    report = new BranchReport()
+                    report = new BranchReport
                     {
                         AmountPending = pending,//branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentPending || y.PaymentStatusId == (int)paymentstatus.InstallmentWaitingofApproval || y.PaymentStatusId == (int)paymentstatus.PaymentWaitingofApproval))?.Sum(y => (decimal?)y.PaymentAmount / 100),
                         AmountReceived = received,//branch?.Inquiries?.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false && (Helper.Helper.ConvertToDateTime(y.CreatedDate) >= Helper.Helper.ConvertToDateTime(req.StartDate) && Helper.Helper.ConvertToDateTime(y.CreatedDate) <= Helper.Helper.ConvertToDateTime(req.EndDate)))?.Payments?.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved))?.Sum(y => (decimal?)y.PaymentAmount / 100),
