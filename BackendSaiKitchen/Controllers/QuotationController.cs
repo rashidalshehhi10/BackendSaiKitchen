@@ -1108,10 +1108,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (var file in design.Files)
                         {
-                            if (file.FileUrl != null && file.FileUrl != "")
-                            {
-                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                            }
+                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
                         }
                     }
                 }
@@ -1156,7 +1153,7 @@ namespace BackendSaiKitchen.Controllers
                             }
 
                             var paymentAmount = ((amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage) * 100;
-                            quotation.Payments.Add(new Payment()
+                            quotation.Payments.Add(new Payment
                             {
                                 PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
                                 InquiryId = order.inquiryId,
@@ -1180,7 +1177,7 @@ namespace BackendSaiKitchen.Controllers
                     }
                     else
                     {
-                        quotation.Payments.Add(new Payment()
+                        quotation.Payments.Add(new Payment
                         {
                             PaymentAmountinPercentage = decimal.Parse(order.BeforeInstallation),
                             InquiryId = order.inquiryId,
@@ -1199,7 +1196,7 @@ namespace BackendSaiKitchen.Controllers
 
                         });
                         order.AfterDelivery = (100 - (decimal.Parse(order.BeforeInstallation) + decimal.Parse(order.AdvancePayment))).ToString();
-                        quotation.Payments.Add(new Payment()
+                        quotation.Payments.Add(new Payment
                         {
                             PaymentAmountinPercentage = decimal.Parse(order.AfterDelivery),
                             InquiryId = order.inquiryId,
@@ -1226,14 +1223,8 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-
-
-                    if (_jobOrder.MepdrawingFileUrl != null && _jobOrder.MepdrawingFileUrl != "")
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
-                    }
-
-
+                    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
+                    
                     foreach (var file in quotation.Files)
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
