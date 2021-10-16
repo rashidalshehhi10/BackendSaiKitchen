@@ -912,6 +912,11 @@ namespace BackendSaiKitchen.Controllers
                             IsDeleted = false,
                         });
                     }
+
+                    foreach (var file in quotation.Files)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    }
                 }
                 
                 inquiryRepository.Update(inquiry);
@@ -921,6 +926,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     sendNotificationToHead("Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Approved By Client", false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
+
                 }
                 catch (Exception ex)
                 {
@@ -1112,9 +1119,10 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
                 }
-
+                int quotationId = 0;
                 foreach (var quotation in inquiry.Quotations)
                 {
+                    quotationId = quotation.QuotationId;
                     quotation.AdvancePayment = order.AdvancePayment;
                     quotation.IsInstallment = order.IsInstallment;
                     quotation.NoOfInstallment = order.NoOfInstallment;
@@ -1225,18 +1233,17 @@ namespace BackendSaiKitchen.Controllers
 
                     files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
                     
-                    foreach (var file in quotation.Files)
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                    }
+                    //foreach (var file in quotation.Files)
+                    //{
+                    //    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    //}
 
                 }
                 inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 try
                 {
-                    await mailService.SendEmailAsync(new MailRequest { Subject = "Quotation Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Quotation File", Attachments = files });
-
+                    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode, Constants.CRMBaseUrl + "/payinvoice.html?inquiryId=" + inquiry.InquiryId, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).AdvancePayment, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Amount, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Discount, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Vat, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).TotalAmount, inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).QuotationValidityDate, Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId, Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
                 }
                 catch (Exception ex)
                 {
@@ -1275,7 +1282,13 @@ namespace BackendSaiKitchen.Controllers
                 foreach (var workscope in inquiry.InquiryWorkscopes)
                 {
                     workscope.InquiryStatusId = (int)inquiryStatus.contractApproved;
-
+                    foreach (var design in workscope.Designs)
+                    {
+                        foreach (var file in design.Files)
+                        {
+                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                        }
+                    }
                 }
                 foreach (var payment in inquiry.Payments)
                 {
@@ -1314,6 +1327,14 @@ namespace BackendSaiKitchen.Controllers
                             IsDeleted = false,
                         });
                     }
+                    foreach (var file in quotation.Files)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    }
+                }
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(joborder.MepdrawingFileUrl)));
                 }
 
                 inquiryRepository.Update(inquiry);
@@ -1323,6 +1344,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     sendNotificationToHead("Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Approved By Client", false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " + inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId, (int)notificationCategory.Quotation);
+                    await mailService.SendEmailAsync(new MailRequest { Subject = "Contract Files", ToEmail = inquiry.Customer.CustomerEmail, Body = "Contract Files", Attachments = files });
+
                 }
                 catch (Exception ex)
                 {
