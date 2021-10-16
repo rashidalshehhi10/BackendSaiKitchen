@@ -232,7 +232,7 @@ namespace SaiKitchenBackend.Controllers
 
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
             var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false)
-            .Select(x => new ViewInquiryDetail()
+            .Select(x => new ViewInquiryDetail
             {
                 // InquiryWorkscopeId = x.InquiryWorkscopeId,
                 InquiryId = x.InquiryId,
@@ -273,7 +273,8 @@ namespace SaiKitchenBackend.Controllers
                 CommentAddedOn = x.InquiryCommentsAddedOn,
                 DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
                 MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
-                QuotationAddedOn = x.QuotationAddedOn
+                QuotationAddedOn = x.QuotationAddedOn,
+                FactorName = x.Branch.BranchName
             }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
