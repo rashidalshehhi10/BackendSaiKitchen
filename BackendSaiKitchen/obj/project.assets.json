@@ -10432,23 +10432,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\G.force_sy\\.nuget\\packages\\": {},
+    "C:\\Users\\samee\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "projectUniqueName": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
       "projectName": "BackendSaiKitchen",
-      "projectPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
-      "packagesPath": "C:\\Users\\G.force_sy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\G.force_sy\\source\\repos\\Sameer71095\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
+      "projectPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\BackendSaiKitchen.csproj",
+      "packagesPath": "C:\\Users\\samee\\.nuget\\packages\\",
+      "outputPath": "D:\\SAI Kitchen\\BackendSaiKitchen\\BackendSaiKitchen\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\G.force_sy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\samee\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -10626,7 +10626,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   },
