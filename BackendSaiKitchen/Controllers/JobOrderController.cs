@@ -304,6 +304,8 @@ namespace BackendSaiKitchen.Controllers
                 {
                     joborder.FactoryId = factroy.FactoryId;
                 }
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
