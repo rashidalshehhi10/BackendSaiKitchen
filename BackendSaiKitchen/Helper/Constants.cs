@@ -156,7 +156,9 @@ namespace BackendSaiKitchen.Helper
         contractInProgress = 62,
         contractRejected = 63,
         jobOrderAuditPending = 64,
-        jobOrderAuditRejected = 65
+        jobOrderAuditRejected = 65,
+        specialApprovalPending = 66,
+        specialApprovalRejected = 67
     }
 
     public enum roleType

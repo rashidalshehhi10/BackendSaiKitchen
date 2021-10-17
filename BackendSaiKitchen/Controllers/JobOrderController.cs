@@ -245,7 +245,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveAudit(CustomCommercialCheckListApproval approve)
+        public object ApproveAudit(Approval approve)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -276,7 +276,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object RejectAudit(CustomCommercialCheckListApproval Reject)
+        public object RejectAudit(Approval Reject)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending  ))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();

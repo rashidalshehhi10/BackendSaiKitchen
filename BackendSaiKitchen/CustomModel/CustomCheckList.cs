@@ -4,10 +4,17 @@ using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
-    public class CustomCommercialCheckListApproval
+    public class Approval
     {
         public int inquiryId { get; set; }
         public string Reason { get; set; }
+    }
+
+    public class commerical
+    {
+        public int inquiryId { get; set; }
+        public string Reason { get; set; }
+        public bool IsSpecialApprovalRequired { get; set; }
     }
     public class CustomCheckListapprove
     {
