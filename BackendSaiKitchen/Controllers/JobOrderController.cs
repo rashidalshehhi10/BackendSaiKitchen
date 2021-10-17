@@ -18,7 +18,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderFactoryApprove(CustomJobOrder order)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == order.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected))
                  .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                  .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                  .ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -26,10 +26,10 @@ namespace BackendSaiKitchen.Controllers
                  .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderAuditPending;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
+                    x.InquiryStatusId = (int)inquiryStatus.jobOrderAuditPending;
                 });
                 foreach (var joborder in inquiry.JobOrders)
                 {
@@ -67,7 +67,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object JobOrderFactoryReject(JobOrderFactory job)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending)
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == job.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -98,7 +98,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetinquiryJobOrderFactoryDetailsById(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -148,7 +148,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquiryJobOrderFactoryByBranchId(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
                 .Select(x => new CheckListByBranch
                 {
                     InquiryId = x.InquiryId,
@@ -189,6 +189,118 @@ namespace BackendSaiKitchen.Controllers
             {
                 response.isError = true;
                 response.errorMessage = "there is no inquiries to Check";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetInquirieslistofAuditbyBranch(int branchId)
+        {
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
+                .Select(x => new CheckListByBranch
+                {
+                    InquiryId = x.InquiryId,
+                    QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
+                    InquiryDescription = x.InquiryDescription,
+                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    Status = x.InquiryStatusId,
+                    BuildingAddress = x.Building.BuildingAddress,
+                    BuildingCondition = x.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor,
+                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    CustomerId = x.CustomerId,
+                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BranchId = x.BranchId,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
+                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn
+                }).ToList();
+            if (inquiries != null)
+            {
+                response.data = inquiries;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "there is no inquiries to Check";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object ApproveAudit(CustomCommercialCheckListApproval approve)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
+                inquiry.InquiryComment = approve.Reason;
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
+                    inquiryWorkscope.Comments = approve.Reason;
+                }
+
+
+                response.data = "Job Order Audit Approved";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Does not exist";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RejectAudit(CustomCommercialCheckListApproval Reject)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending  ))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderAuditRejected;
+                inquiry.InquiryComment = Reject.Reason;
+
+                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderAuditRejected;
+                    inquiryWorkscope.Comments = Reject.Reason;
+                }
+
+
+                response.data = "Job Order Audit Rejected";
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Does not exist";
             }
             return response;
         }
