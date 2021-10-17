@@ -198,7 +198,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquirieslistofAuditbyBranch(int branchId)
         {
             var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))
+            && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending) && x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false))
                 .Select(x => new CheckListByBranch
                 {
                     InquiryId = x.InquiryId,
