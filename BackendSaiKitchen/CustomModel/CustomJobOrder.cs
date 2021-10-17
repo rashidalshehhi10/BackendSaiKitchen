@@ -75,4 +75,10 @@ namespace BackendSaiKitchen.CustomModel
         public string JobOrderDetailsDescription { get; set; }
         public string installationStartDate { get; set; }
     }
+
+    public class Factroy
+    {
+       public int inquiryId { get; set; }
+       public int FactoryId { get; set; }
+    }
 }

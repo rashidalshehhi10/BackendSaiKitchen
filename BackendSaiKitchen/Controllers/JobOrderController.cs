@@ -292,7 +292,28 @@ namespace BackendSaiKitchen.Controllers
 
         }
 
-        
+        [HttpPost]
+        [Route("[action]")]
+        public object ChangeFactory(Factroy factroy)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == factroy.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                foreach (var joborder in inquiry.JobOrders)
+                {
+                    joborder.FactoryId = factroy.FactoryId;
+                }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
+            }
+            return response;
+        }
+
+
 
     }
 }
