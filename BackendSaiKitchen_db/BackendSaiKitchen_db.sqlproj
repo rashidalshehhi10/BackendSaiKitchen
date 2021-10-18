@@ -58,42 +58,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\Tables\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Build Include="dbo\Tables\Inquiry.sql" />
-    <Build Include="dbo\Tables\Fees.sql" />
-    <Build Include="dbo\Tables\RoleHead.sql" />
-    <Build Include="dbo\Tables\UserRole.sql" />
-    <Build Include="dbo\Tables\Appliances.sql" />
-    <Build Include="dbo\Tables\Building.sql" />
-    <Build Include="dbo\Tables\Accesories.sql" />
-    <Build Include="dbo\Tables\User.sql" />
-    <Build Include="dbo\Tables\Log.sql" />
-    <Build Include="dbo\Tables\Notification.sql" />
-    <Build Include="dbo\Tables\MeasurementDetail.sql" />
-    <Build Include="dbo\Tables\MeasurementDetailInfo.sql" />
-    <Build Include="dbo\Tables\KitchenDesignInfo.sql" />
-    <Build Include="dbo\Tables\WayOfContact.sql" />
-    <Build Include="dbo\Tables\ContactStatus.sql" />
-    <Build Include="dbo\Tables\RoleType.sql" />
-    <Build Include="dbo\Tables\BranchRole.sql" />
-    <Build Include="dbo\Tables\File.sql" />
-    <Build Include="dbo\Tables\Measurement.sql" />
-    <Build Include="dbo\Tables\CustomerBranch.sql" />
-    <Build Include="dbo\Tables\PermissionLevel.sql" />
-    <Build Include="dbo\Tables\WorkScope.sql" />
-    <Build Include="dbo\Tables\PermissionRole.sql" />
-    <Build Include="dbo\Tables\NotificationCategory.sql" />
-    <Build Include="dbo\Tables\Customer.sql" />
-    <Build Include="dbo\Tables\Design.sql" />
-    <Build Include="dbo\Tables\BranchType.sql" />
-    <Build Include="dbo\Tables\WardrobeDesignInformation.sql" />
-    <Build Include="dbo\Tables\Branch.sql" />
-    <Build Include="dbo\Tables\InquiryWorkscope.sql" />
-    <Build Include="dbo\Tables\InquiryStatus.sql" />
-    <Build Include="dbo\Tables\Permission.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BackendSaiKitchen_db.publish.xml" />
