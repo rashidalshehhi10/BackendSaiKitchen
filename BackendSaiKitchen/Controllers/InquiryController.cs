@@ -896,20 +896,36 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetCountByBranchId(int branchId)
         {
-            var Numbers = branchRepository
-                .FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x =>
-                    new
-                    {
-                        inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
-                        customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
-                        measurementAssinee = x.Inquiries.Where(x =>
-                            x.IsActive == true && x.IsDeleted == false &&
-                            x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending),
-                        measurements = x.Inquiries.Where(x =>
-                            x.IsActive == true && x.IsDeleted == false &&
-                            x.InquiryStatusId == (int)inquiryStatus.measurementInProgress &&
-                            x.InquiryStatusId == (int)inquiryStatus.measurementRejected)
-                    });
+            var Branches = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+            var BranchRoles = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+            var Workscopes = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+            var Promos = promoRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+            var Numbers = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                measurementAssinee = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).Count(),
+                measurements = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementInProgress && x.InquiryStatusId == (int)inquiryStatus.measurementRejected)).Count(),
+                measurementApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval)).Count(),
+                designAssigne = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending).Count(),
+                designs = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending && x.InquiryStatusId == (int)inquiryStatus.designRejected)).Count(),
+                designApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval)).Count(),
+                quotationAssign = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false && (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending)).Count(),
+                quotations = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested)).Count(),
+                quotationApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval).Count(),
+                uploadcontract = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.contractInProgress || x.InquiryStatusId == (int)inquiryStatus.contractRejected)).Count(),
+                technicalChecklist = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected)).Count(),
+                commericalChecklist = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected)).Count(),
+                specialApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)).Count(),
+                joborderAudit = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending)).Count(),
+                joborderStatus = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted)).Count(),
+                users = x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.User).Count(),
+                branches = Branches,
+                branchroles =BranchRoles,
+                workscopes = Workscopes,
+                promos = Promos
+            });
+            response.data = Numbers;
             return response;
         }
 
