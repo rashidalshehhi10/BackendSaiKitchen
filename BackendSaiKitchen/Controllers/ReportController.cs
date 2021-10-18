@@ -179,9 +179,7 @@ namespace BackendSaiKitchen.Controllers
                 UserReport userReport = new UserReport
                 {
                     reviews = new List<Review>(),
-                    CustomerCount = user.Customers.Where(x =>
-                        DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate) &&
-                        DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate)).Count()
+                    CustomerCount = user.Customers.Count(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate))
                 };
                 foreach (Models.Inquiry inquiry in user.InquiryManagedByNavigations)
                 {

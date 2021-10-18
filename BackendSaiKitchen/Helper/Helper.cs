@@ -206,7 +206,7 @@ namespace BackendSaiKitchen.Helper
                 if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") ||
                     ext.ToLower().Contains("pdf") || ext.ToLower().Contains("dwg"))
                 {
-                    fileUrl = await PostFile(fileByte, ext);
+                    fileUrl = await PostFile(fileByte, ext).ConfigureAwait(false);
                 }
                 //fileUrl = await UploadFileToBlob(fileByte, ext);
                 else if (ext.ToLower().Contains("mp4"))
