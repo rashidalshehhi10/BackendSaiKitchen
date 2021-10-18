@@ -3,6 +3,7 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Serilog;
 using System;
+using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Helper
 {
@@ -18,7 +19,7 @@ namespace BackendSaiKitchen.Helper
             });
         }
 
-        public async void SendPushNotification(string fcmToken, string title, string body)
+        public async Task SendPushNotification(string fcmToken, string title, string body)
         {
             try
             {
