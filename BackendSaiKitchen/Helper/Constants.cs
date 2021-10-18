@@ -236,13 +236,13 @@
 public class ServiceResponse
 {
     public object data;
-    public string errorMessage = "";
-    public bool isError = false;
+    public string errorMessage;
+    public bool isError;
 }
 
 public class TableResponse
 {
     public object data;
-    public int recordsFiltered = 0;
-    public int recordsTotal = 0;
+    public int recordsFiltered;
+    public int recordsTotal;
 }
