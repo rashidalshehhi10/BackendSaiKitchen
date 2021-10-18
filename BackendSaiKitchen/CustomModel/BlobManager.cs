@@ -60,7 +60,7 @@ namespace BackendSaiKitchen.CustomModel
             using (MemoryStream ms = new MemoryStream())
             {
                 Stream fileStream = file.OpenReadStream();
-                await fileStream.CopyToAsync(ms);
+                await fileStream.CopyToAsync(ms).ConfigureAwait(false);
                 bytes = ms.ToArray();
             }
 

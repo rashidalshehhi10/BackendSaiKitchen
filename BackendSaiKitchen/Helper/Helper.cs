@@ -113,11 +113,11 @@ namespace BackendSaiKitchen.Helper
             {
                 if (fileUrl.Contains('.'))
                 {
-                    result = "File " + await DeleteFileFromBlob(fileUrl) + " Has Been Deleted";
+                    result = "File " + await DeleteFileFromBlob(fileUrl).ConfigureAwait(false) + " Has Been Deleted";
                 }
                 else if (long.TryParse(fileUrl, out long videoId))
                 {
-                    result = "Video " + await DeleteVideo(videoId) + " Has Been Deleted";
+                    result = "Video " + await DeleteVideo(videoId).ConfigureAwait(false) + " Has Been Deleted";
                 }
                 else
                 {
@@ -142,12 +142,12 @@ namespace BackendSaiKitchen.Helper
                 ext = GuessFileType(fileByte);
                 if (ext == "png" || ext == "jpg" || ext == "pdf" || ext == "dwg")
                 {
-                    fileUrl = await PostFile(fileByte, ext);
+                    fileUrl = await PostFile(fileByte, ext).ConfigureAwait(false);
                 }
                 //fileUrl = await UploadFileToBlob(fileByte, ext);
                 else if (ext == "mp4")
                 {
-                    fileUrl = await UploadUpdateVideo(fileByte);
+                    fileUrl = await UploadUpdateVideo(fileByte).ConfigureAwait(false);
                 }
                 else
                 {

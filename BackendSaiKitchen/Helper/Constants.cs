@@ -2,35 +2,35 @@
 {
     public class Constants
     {
-        public static string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
-        public static string ServerBaseURL = "https://backendsaikitchen.azurewebsites.net/";
-        public static string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/files/";
-        public static string VimeoUrl = "https://vimeo.com/";
-        public static string VimeoAccessToken = "00378b95cc11173f483f7f6b602f6790";
-        public static string loginErrormessage = "Incorrect Email or Password";
-        public static string inquiryOnAnotherBranchMessage = ", generated inquiry on another branch";
-        public static string measurementRescheduleBranchMessage = " measurement reschedule to ";
-        public static string designRescheduleBranchMessage = " Design reschedule to ";
-        public static string measurementAssign = " You are assigned for the new measurement at ";
-        public static string wrongFileUpload = "Kindly upload jpg,png or PDF";
-        public static string MeasurementFileMissing = "Measurement File missing";
-        public static string DesignVideoFileMissing = "Design Video File Missing";
-        public static string QuotationFileMissing = "Quotation File Missing";
-        public static string ContractFileMissing = "Contract File Missing";
-        public static string MeasurementMissing = "Measurement doesnt Exist";
-        public static string DesginMissing = "Design doesnt Exist";
-        public static string QuotationMissing = "Quotation Doesnt Exist";
-        public static string MeasurementDelayed = " Delayed the Measurement";
-        public static string MeasurementAssigneeDelayed = " Measuremnt Assignment Rejected by system";
-        public static string DesignAssigneeDelayed = " Design Assignment Rejected by system";
-        public static string MeasurementAdded = "New Measurement added ";
-        public static string PaymentAdded = "New Payment added";
-        public static string DesignAssign = "You assign for new Design at ";
-        public static string DesignDelayed = "Delayed the Design";
-        public static string QuotationDelayed = "Delayed the Quotation";
-        public static string DesignAdded = "New Design added For Inquiry Code: IN";
+        public const  string CRMBaseUrl = "https://saikitchen.azurewebsites.net";
+        public const string ServerBaseURL = "https://backendsaikitchen.azurewebsites.net/";
+        public const string AzureUrl = "https://saikitchenstorage.blob.core.windows.net/files/";
+        public const string VimeoUrl = "https://vimeo.com/";
+        public const string VimeoAccessToken = "00378b95cc11173f483f7f6b602f6790";
+        public const string loginErrormessage = "Incorrect Email or Password";
+        public const string inquiryOnAnotherBranchMessage = ", generated inquiry on another branch";
+        public const string measurementRescheduleBranchMessage = " measurement reschedule to ";
+        public const string designRescheduleBranchMessage = " Design reschedule to ";
+        public const string measurementAssign = " You are assigned for the new measurement at ";
+        public const string wrongFileUpload = "Kindly upload jpg,png or PDF";
+        public const string MeasurementFileMissing = "Measurement File missing";
+        public const string DesignVideoFileMissing = "Design Video File Missing";
+        public const string QuotationFileMissing = "Quotation File Missing";
+        public const string ContractFileMissing = "Contract File Missing";
+        public const string MeasurementMissing = "Measurement doesnt Exist";
+        public const string DesginMissing = "Design doesnt Exist";
+        public const string QuotationMissing = "Quotation Doesnt Exist";
+        public const string MeasurementDelayed = " Delayed the Measurement";
+        public const string MeasurementAssigneeDelayed = " Measuremnt Assignment Rejected by system";
+        public const string DesignAssigneeDelayed = " Design Assignment Rejected by system";
+        public const string MeasurementAdded = "New Measurement added ";
+        public const string PaymentAdded = "New Payment added";
+        public const string DesignAssign = "You assign for new Design at ";
+        public const string DesignDelayed = "Delayed the Design";
+        public const string QuotationDelayed = "Delayed the Quotation";
+        public const string DesignAdded = "New Design added For Inquiry Code: IN";
 
-        public static string UnAuthorizedUser =
+        public const string UnAuthorizedUser =
             "You are not authorized to perform this action, Kindly contact the admin";
 
         public static int userId;
