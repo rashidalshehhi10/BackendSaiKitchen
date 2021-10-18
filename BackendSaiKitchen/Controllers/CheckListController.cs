@@ -510,7 +510,7 @@ namespace BackendSaiKitchen.Controllers
                     }
                
 
-                response.data = "Commerical Checklist Approved";
+                response.data = "Special Approval Approved";
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -540,12 +540,12 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscope.Comments = Reject.Reason;
                 }
 
-                foreach (var joboreder in inquiry.JobOrders)
-                {
-                    joboreder.IsActive = false;
-                }
+                //foreach (var joboreder in inquiry.JobOrders)
+                //{
+                //    joboreder.IsActive = false;
+                //}
 
-                response.data = "Commerical Checklist Rejected";
+                response.data = "Special Approval Rejected";
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
