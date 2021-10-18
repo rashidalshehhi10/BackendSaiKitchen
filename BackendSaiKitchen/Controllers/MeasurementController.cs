@@ -366,7 +366,7 @@ namespace BackendSaiKitchen.Controllers
         public object ViewMeasurementById(int inquiryId)
         {
             //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count > 0).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
-            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementInProgress && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.Measurements.Count > 0))
                 .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false)))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -403,12 +403,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
-                    inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementPending;
+                    inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementInProgress;
                     //inquiryWorkscope.MeasurementAssignedTo = updateInquiryWorkscope.MeasurementAssignedTo;
                     //inquiryWorkscope.MeasurementScheduleDate = updateInquiryWorkscope.MeasurementScheduleDate;
 
                 }
-                inquiry.InquiryStatusId = (int?)inquiryStatus.measurementPending;
+                inquiry.InquiryStatusId = (int?)inquiryStatus.measurementInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                 inquiryRepository.Update(inquiry);
 

@@ -123,6 +123,9 @@ namespace SaiKitchenBackend.Controllers
             }
             return response;
         }
+
+
+
         [HttpPost]
         [Route("[action]")]
         public object AddComment(AddComment comment)
@@ -149,7 +152,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public Object AddWorkscopetoInquiry(WorkscopeInquiry workscopeInquiry)
         {
-            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && (i.InquiryStatusId == (int)inquiryStatus.measurementPending || i.InquiryStatusId == (int)inquiryStatus.measurementRejected || i.InquiryStatusId == (int)inquiryStatus.measurementdelayed || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted)).FirstOrDefault();
+            var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryId == workscopeInquiry.inquiryWorkscopeId && i.IsActive == true && (i.InquiryStatusId == (int)inquiryStatus.measurementInProgress || i.InquiryStatusId == (int)inquiryStatus.measurementRejected || i.InquiryStatusId == (int)inquiryStatus.measurementdelayed || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeRejected || i.InquiryStatusId == (int)inquiryStatus.measurementAssigneeAccepted)).FirstOrDefault();
             if (inquiryWorkscope != null)
             {
                 inquiryWorkscope.CreatedDate = null;
@@ -402,10 +405,10 @@ namespace SaiKitchenBackend.Controllers
                 var inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
                 foreach (var inquiryWorkscope in inquiryWorkscopes)
                 {
-                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementPending)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
-                        inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementInProgress;
+                        inquiry.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementInProgress;
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
                     {
@@ -457,9 +460,9 @@ namespace SaiKitchenBackend.Controllers
                 {
                     var measurement = measurementRepository.FindByCondition(m => m.InquiryWorkscopeId == inquiryWorkscope.InquiryWorkscopeId && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
 
-                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementPending)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress)
                     {
-                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementPending;
+                        inquiryWorkscope.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) ? (int)inquiryStatus.measurementdelayed : (int)inquiryStatus.measurementInProgress;
 
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
                         {
@@ -683,6 +686,21 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetCountByBranchId(int branchId)
+        {
+            var Numbers = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                measurementAssinee = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending),
+                measurements=x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false &&( x.InquiryStatusId == (int)inquiryStatus.measurementInProgress && x.InquiryStatusId == (int)inquiryStatus.measurementRejected))
+            });
+            return response;
+        }
+
         #region workscope
 
         [AuthFilter((int)permission.ManageWorkscope, (int)permissionLevel.Read)]
@@ -813,7 +831,7 @@ namespace SaiKitchenBackend.Controllers
         public Object GetMeasurementOfBranch(int branchId)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.MeasurementAssignedTo == Constants.userId && x.Inquiry.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false
-            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementPending || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.IsDeleted == false
+            var inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && (x.InquiryStatusId == (int)inquiryStatus.measurementInProgress || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.measurementRejected) && x.IsActive == true && x.IsDeleted == false
                         && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Select(x => new ViewInquiryDetail()
                         {
                             //InquiryWorkscopeId = x.InquiryWorkscopeId,

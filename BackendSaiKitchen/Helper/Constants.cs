@@ -92,7 +92,7 @@ namespace BackendSaiKitchen.Helper
     }
     public enum inquiryStatus
     {
-        measurementPending = 1,
+        measurementInProgress = 1,
         measurementdelayed = 2,
         designPending = 3,
         designDelayed = 4,
