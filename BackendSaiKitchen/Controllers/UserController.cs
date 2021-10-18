@@ -160,7 +160,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public async Task<object> ForgotPasswordUserAsync(User user)
         {
-            User oldUser = userRepository.FindByCondition(x => x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.Branch.IsActive == true && y.Branch.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(obj => obj.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            User oldUser = userRepository.FindByCondition(x =>x.UserEmail==user.UserEmail && x.IsActive==true && x.IsDeleted==false &&x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.Branch.IsActive == true && y.Branch.IsDeleted == false) && x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false)).Include(obj => obj.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (oldUser != null)
             {
                 await mailService.SendForgotEmailAsync(new PasswordRequest() { ToEmail = oldUser.UserEmail, UserName = oldUser.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(oldUser.UserId.ToString()) });
