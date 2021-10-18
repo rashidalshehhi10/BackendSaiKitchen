@@ -429,6 +429,11 @@ namespace BackendSaiKitchen.Controllers
                                                 IsDeleted = false
                                             });
                                             break;
+
+                                        default:
+                                            SentrySdk.CaptureMessage(approve.addFileonChecklists[i].documentType +
+                                                                     " type of document try to upload");
+                                            break;
                                     }
                                 }
                             }
@@ -764,6 +769,11 @@ namespace BackendSaiKitchen.Controllers
                             }
 
                             inquiry.InquiryComment = reason.reason;
+                            break;
+
+                        default:
+                            SentrySdk.CaptureMessage(reason.rejectionType +
+                                                     " reason.rejectionType");
                             break;
                     }
                 }
