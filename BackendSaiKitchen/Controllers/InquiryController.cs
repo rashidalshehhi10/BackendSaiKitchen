@@ -900,6 +900,8 @@ namespace SaiKitchenBackend.Controllers
             var BranchRoles = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var Workscopes = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var Promos = promoRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+            var userList = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
+
             var Numbers = branchRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
@@ -919,9 +921,10 @@ namespace SaiKitchenBackend.Controllers
                 specialApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)).Count(),
                 joborderAudit = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending)).Count(),
                 joborderStatus = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted)).Count(),
-                users = x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.User).Count(),
+                joborderApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected)).Count(),
+                users = userList,
                 branches = Branches,
-                branchroles =BranchRoles,
+                branchroles = BranchRoles,
                 workscopes = Workscopes,
                 promos = Promos
             });
