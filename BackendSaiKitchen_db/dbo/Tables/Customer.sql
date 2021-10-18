@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[Customer] (
+    [CustomerId]            INT            IDENTITY (1, 1) NOT NULL,
+    [CustomerName]          NVARCHAR (50)  NULL,
+    [CustomerEmail]         NVARCHAR (50)  NULL,
+    [CustomerContact]       NVARCHAR (50)  NULL,
+    [CustomerAddress]       NVARCHAR (MAX) NULL,
+    [CustomerCity]          NVARCHAR (50)  NULL,
+    [CustomerCountry]       NVARCHAR (50)  NULL,
+    [CustomerNationality]   NVARCHAR (50)  NULL,
+    [CustomerNationalId]    NVARCHAR (500) NULL,
+    [ContactStatusId]       INT            NULL,
+    [WayofContactId]        INT            NULL,
+    [BranchId]              INT            NULL,
+    [UserId]                INT            NULL,
+    [IsActive]              BIT            NULL,
+    [IsEscalationRequested] BIT            NULL,
+    [IsDeleted]             BIT            NULL,
+    [CreatedBy]             INT            NULL,
+    [CreatedDate]           NVARCHAR (50)  NULL,
+    [UpdatedBy]             INT            NULL,
+    [UpdatedDate]           NVARCHAR (50)  NULL,
+    CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([CustomerId] ASC),
+    CONSTRAINT [FK_Customer_Branch] FOREIGN KEY ([BranchId]) REFERENCES [dbo].[Branch] ([BranchId]),
+    CONSTRAINT [FK_Customer_ContactStatus] FOREIGN KEY ([ContactStatusId]) REFERENCES [dbo].[ContactStatus] ([ContactStatusId]),
+    CONSTRAINT [FK_Customer_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([UserId]),
+    CONSTRAINT [FK_Customer_WayOfContact] FOREIGN KEY ([WayofContactId]) REFERENCES [dbo].[WayOfContact] ([WayOfContactId])
+);
+

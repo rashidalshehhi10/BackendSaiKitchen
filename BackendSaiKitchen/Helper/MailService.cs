@@ -209,27 +209,27 @@ namespace BackendSaiKitchen.Helper
         {
             try
             {
-                var FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\QuotationApprovalTemplate.html";
-                var str = new StreamReader(FilePath);
-                var MailText = str.ReadToEnd();
+                string FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\QuotationApprovalTemplate.html";
+                StreamReader str = new StreamReader(FilePath);
+                string MailText = str.ReadToEnd();
                 str.Close();
                 //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
                 MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation)
                     .Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount)
                     .Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount)
                     .Replace("[ValidityTill]", validityTill);
-                var email = new MimeMessage
+                MimeMessage email = new MimeMessage
                 {
                     Sender = MailboxAddress.Parse(_mailSettings.Mail)
                 };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "Quotation Approval of " + inquiryCode;
-                var builder = new BodyBuilder
+                BodyBuilder builder = new BodyBuilder
                 {
                     HtmlBody = MailText
                 };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -248,27 +248,27 @@ namespace BackendSaiKitchen.Helper
         {
             try
             {
-                var FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\QuotationApprovalTemplate.html";
-                var str = new StreamReader(FilePath);
-                var MailText = str.ReadToEnd();
+                string FilePath = Directory.GetCurrentDirectory() + "\\EmailTemplate\\QuotationApprovalTemplate.html";
+                StreamReader str = new StreamReader(FilePath);
+                string MailText = str.ReadToEnd();
                 str.Close();
                 //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
                 MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation)
                     .Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount)
                     .Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount)
                     .Replace("[ValidityTill]", validityTill);
-                var email = new MimeMessage
+                MimeMessage email = new MimeMessage
                 {
                     Sender = MailboxAddress.Parse(_mailSettings.Mail)
                 };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "Quotation Approval of " + inquiryCode;
-                var builder = new BodyBuilder
+                BodyBuilder builder = new BodyBuilder
                 {
                     HtmlBody = MailText
                 };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
