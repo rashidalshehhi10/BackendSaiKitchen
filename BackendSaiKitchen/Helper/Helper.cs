@@ -211,7 +211,7 @@ namespace BackendSaiKitchen.Helper
                 //fileUrl = await UploadFileToBlob(fileByte, ext);
                 else if (ext.ToLower().Contains("mp4"))
                 {
-                    fileUrl = await UploadUpdateVideo(fileByte);
+                    fileUrl = await UploadUpdateVideo(fileByte).ConfigureAwait(false);
                 }
                 else
                 {
