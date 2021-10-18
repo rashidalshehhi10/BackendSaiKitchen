@@ -408,7 +408,7 @@ namespace SaiKitchenBackend.Controllers
         {
             List<InquiryStatus> inquiryStatus = inquiryStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .ToList();
-            List<object> inquiries = new List<object>();
+            List<object> list = new List<object>();
             foreach (InquiryStatus status in inquiryStatus)
             {
                 var inquiry = branchRepository
@@ -422,9 +422,13 @@ namespace SaiKitchenBackend.Controllers
                             inquiryStatusId = status.InquiryStatusId,
                             inquiryStatusName = status.InquiryStatusName
                         });
-                inquiries.Add(inquiry);
+                list.Add(inquiry);
             }
-
+            var inquiries = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Select(x => new
+            {
+                totalinquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                inquiries = list,
+            });
             response.data = inquiries;
             return response;
         }
@@ -920,8 +924,8 @@ namespace SaiKitchenBackend.Controllers
                 commericalChecklist = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected) && x.ManagedBy == Constants.userId).Count(),
                 specialApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending) && x.ManagedBy == Constants.userId).Count(),
                 joborderAudit = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending) && x.ManagedBy == Constants.userId).Count(),
-                joborderStatus = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted) && x.ManagedBy == Constants.userId).Count(),
-                joborderApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected) && x.ManagedBy == Constants.userId).Count(),
+                joborderStatus = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress || x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed || x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted)).Count(),
+                joborderApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected)).Count(),
                 users = userList,
                 branches = Branches,
                 branchroles = BranchRoles,
