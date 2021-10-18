@@ -9,6 +9,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Log = Serilog.Log;
 
 namespace SaiKitchenBackend.Controllers
 {
@@ -17,50 +18,44 @@ namespace SaiKitchenBackend.Controllers
     [Route("Api/[controller]")]
     public class BaseController : Controller
     {
-
-
-        public BackendSaiKitchen_dbContext context = new BackendSaiKitchen_dbContext();
-
-        public ServiceResponse response = new ServiceResponse();
-        public TableResponse tableResponse = new TableResponse();
-
-        public Notification notification = new Notification();
-
-        public MailService mailService = new MailService();
         public Repository<Accesory> accesoryRepository;
-        public Repository<User> userRepository;
         public Repository<Branch> branchRepository;
         public Repository<BranchRole> branchRoleRepository;
-        public Repository<Permission> permissionRepository;
-        public Repository<PermissionRole> permissionRoleRepository;
-        public Repository<UserRole> userRoleRepository;
-        public Repository<RoleHead> roleHeadRepository;
         public Repository<BranchType> branchTypeRepository;
-        public Repository<Customer> customerRepository;
+        public Repository<CalendarEvent> calendarEventRepository;
         public Repository<ContactStatus> contactStatusRepository;
-        public Repository<WayOfContact> wayOfContactRepository;
-        public Repository<RoleType> roleTypeRepository;
+
+
+        public BackendSaiKitchen_dbContext context = new();
+        public Repository<Customer> customerRepository;
+        public Dictionary<object, object> dicResponse = new();
+        public Repository<File> fileRepository;
         public Repository<Inquiry> inquiryRepository;
-        public Repository<WorkScope> workScopeRepository;
-        private Repository<Fee> feesRepository;
-        public Repository<Fee> FeesRepository
-        {
-            get { return feesRepository; }
-            set { feesRepository = value; }
-        }
-        public Repository<Promo> promoRepository;
-        public Repository<Notification> noificationRepository;
+        public Repository<InquiryStatus> inquiryStatusRepository;
 
         public Repository<InquiryWorkscope> inquiryWorkscopeRepository;
+
+        public MailService mailService = new();
         public Repository<Measurement> measurementRepository;
-        public Repository<File> fileRepository;
-        public Repository<Quotation> quotationRepository;
-        public Repository<TermsAndCondition> termsAndConditionsRepository;
+        public Repository<Notification> noificationRepository;
+
+        public Notification notification = new();
         public Repository<Payment> paymentRepository;
-        public Repository<CalendarEvent> calendarEventRepository;
+        public Repository<Permission> permissionRepository;
+        public Repository<PermissionRole> permissionRoleRepository;
+        public Repository<Promo> promoRepository;
+        public Repository<Quotation> quotationRepository;
+
+        public ServiceResponse response = new();
+        public Repository<RoleHead> roleHeadRepository;
+        public Repository<RoleType> roleTypeRepository;
         public Repository<Setting> settingRepository;
-        public Repository<InquiryStatus> inquiryStatusRepository;
-        public Dictionary<object, object> dicResponse = new Dictionary<object, object>();
+        public TableResponse tableResponse = new();
+        public Repository<TermsAndCondition> termsAndConditionsRepository;
+        public Repository<User> userRepository;
+        public Repository<UserRole> userRoleRepository;
+        public Repository<WayOfContact> wayOfContactRepository;
+        public Repository<WorkScope> workScopeRepository;
 
 
         public BaseController()
@@ -79,7 +74,7 @@ namespace SaiKitchenBackend.Controllers
             roleTypeRepository = new Repository<RoleType>(context);
             inquiryRepository = new Repository<Inquiry>(context);
             workScopeRepository = new Repository<WorkScope>(context);
-            feesRepository = new Repository<Fee>(context);
+            FeesRepository = new Repository<Fee>(context);
             promoRepository = new Repository<Promo>(context);
             noificationRepository = new Repository<Notification>(context);
             inquiryWorkscopeRepository = new Repository<InquiryWorkscope>(context);
@@ -93,37 +88,43 @@ namespace SaiKitchenBackend.Controllers
             settingRepository = new Repository<Setting>(context);
             inquiryStatusRepository = new Repository<InquiryStatus>(context);
         }
-        override
-        public void OnActionExecuting(ActionExecutingContext context)
+
+        public Repository<Fee> FeesRepository { get; set; }
+
+        public
+            override void OnActionExecuting(ActionExecutingContext context)
         {
             try
             {
-                StringValues authorizationToken;
-                context.HttpContext.Request.Headers.TryGetValue("UserToken", out authorizationToken);
+                context.HttpContext.Request.Headers.TryGetValue("UserToken", out StringValues authorizationToken);
                 if (authorizationToken.Count > 0)
                 {
                     Constants.userToken = authorizationToken[0];
                 }
 
-                StringValues userId;
-                context.HttpContext.Request.Headers.TryGetValue("UserId", out userId);
+                context.HttpContext.Request.Headers.TryGetValue("UserId", out StringValues userId);
                 if (userId.Count > 0)
+                {
                     int.TryParse(userId[0], out Constants.userId);
+                }
 
-                StringValues userRoleId;
-                context.HttpContext.Request.Headers.TryGetValue("userRoleId", out userRoleId);
+                context.HttpContext.Request.Headers.TryGetValue("userRoleId", out StringValues userRoleId);
                 if (userRoleId.Count > 0)
+                {
                     int.TryParse(userRoleId[0], out Constants.userRoleId);
+                }
 
-                StringValues branchId;
-                context.HttpContext.Request.Headers.TryGetValue("BranchId", out branchId);
+                context.HttpContext.Request.Headers.TryGetValue("BranchId", out StringValues branchId);
                 if (branchId.Count > 0)
+                {
                     int.TryParse(branchId[0], out Constants.branchId);
+                }
 
-                StringValues branchRoleId;
-                context.HttpContext.Request.Headers.TryGetValue("BranchRoleId", out branchRoleId);
+                context.HttpContext.Request.Headers.TryGetValue("BranchRoleId", out StringValues branchRoleId);
                 if (branchRoleId.Count > 0)
+                {
                     int.TryParse(branchRoleId[0], out Constants.branchRoleId);
+                }
 
                 //var va = context.HttpContext.Request.Method;
                 //int val;
@@ -132,47 +133,51 @@ namespace SaiKitchenBackend.Controllers
             }
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
 
 
         [HttpPost]
         [Route("[action]")]
-        public async void sendNotificationToHead(string content, bool isActionable, String acceptAction, String declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
+        public async void sendNotificationToHead(string content, bool isActionable, string acceptAction,
+            string declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
         {
-
-            var branchRoleIds = branchRoleRepository.FindByCondition(x => roleTypeId.Contains(x.RoleTypeId) && x.IsActive == true && x.IsDeleted == false).Select(x => x.BranchRoleId).ToList();
-            List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x => branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault())
-            && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.User != null).Select(x => new NotificationModel
-            {
-                userRoleId = x.UserRoleId,
-                user = x.User,
-                NotificationContent = content,
-                NotificationCategoryId = categoryId,
-                IsActionable = isActionable,
-                IsRead = false,
-                BranchId = branchId,
-                NotificationAcceptAction = acceptAction,
-                UserRoleId = x.UserRoleId,
-                NotificationDeclineAction = declineAction
-            }).ToList();
+            List<int> branchRoleIds = branchRoleRepository
+                .FindByCondition(x => roleTypeId.Contains(x.RoleTypeId) && x.IsActive == true && x.IsDeleted == false)
+                .Select(x => x.BranchRoleId).ToList();
+            List<NotificationModel> notificationsModel = userRoleRepository.FindByCondition(x =>
+                branchRoleIds.Contains(x.BranchRoleId.GetValueOrDefault())
+                && x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.User != null).Select(x =>
+                new NotificationModel
+                {
+                    userRoleId = x.UserRoleId,
+                    user = x.User,
+                    NotificationContent = content,
+                    NotificationCategoryId = categoryId,
+                    IsActionable = isActionable,
+                    IsRead = false,
+                    BranchId = branchId,
+                    NotificationAcceptAction = acceptAction,
+                    UserRoleId = x.UserRoleId,
+                    NotificationDeclineAction = declineAction
+                }).ToList();
 
 
             //List<NotificationModel> notifications = notificationModel.ToList();
-            foreach (var notificationModel in notificationsModel)
+            foreach (NotificationModel notificationModel in notificationsModel)
             {
-                Notification notification = new Notification();
-
-                notification.NotificationContent = notificationModel.NotificationContent;
-                notification.IsActionable = notificationModel.IsActionable;
-                notification.IsRead = false;
-                notification.NotificationAcceptAction = notificationModel.NotificationAcceptAction;
-                notification.NotificationDeclineAction = notificationModel.NotificationDeclineAction;
-                notification.UserRoleId = notificationModel.userRoleId;
-                notification.NotificationCategoryId = notificationModel.NotificationCategoryId;
-                notification.User = notificationModel.user;
+                Notification notification = new Notification
+                {
+                    NotificationContent = notificationModel.NotificationContent,
+                    IsActionable = notificationModel.IsActionable,
+                    IsRead = false,
+                    NotificationAcceptAction = notificationModel.NotificationAcceptAction,
+                    NotificationDeclineAction = notificationModel.NotificationDeclineAction,
+                    UserRoleId = notificationModel.userRoleId,
+                    NotificationCategoryId = notificationModel.NotificationCategoryId,
+                    User = notificationModel.user
+                };
                 notification.UserRoleId = notificationModel.userRoleId;
                 notification.BranchId = notificationModel.BranchId;
                 notification.IsActive = true;
@@ -186,7 +191,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken,
+                            notificationModel.NotificationContent, null);
                         // Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
                         string subject = Enum.GetName(typeof(NotificationCategory), categoryId) + acceptAction;
                         await mailService.SendEmailAsync(new MailRequest
@@ -200,26 +206,39 @@ namespace SaiKitchenBackend.Controllers
 
                 catch (Exception ex)
                 {
-
-                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                    Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
                 }
             }
             //context.SaveChanges();
-
         }
 
 
         [HttpPost]
         [Route("[action]")]
-        public async void sendNotificationToOneUser(string content, bool isActionable, String acceptAction, String declineAction, int userId, int branchId, int categoryId)
+        public async void sendNotificationToOneUser(string content, bool isActionable, string acceptAction,
+            string declineAction, int userId, int branchId, int categoryId)
         {
-            var user = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            List<NotificationModel> notificationsModel = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Select(x => new NotificationModel
-            { BranchId = branchId, user = x, UserId = x.UserId, NotificationContent = content, NotificationCategoryId = categoryId, IsActionable = isActionable, IsRead = false, NotificationAcceptAction = acceptAction, NotificationDeclineAction = declineAction }).ToList();
+            User user = userRepository
+                .FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
+            List<NotificationModel> notificationsModel = userRepository
+                .FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Select(x =>
+                    new NotificationModel
+                    {
+                        BranchId = branchId,
+                        user = x,
+                        UserId = x.UserId,
+                        NotificationContent = content,
+                        NotificationCategoryId = categoryId,
+                        IsActionable = isActionable,
+                        IsRead = false,
+                        NotificationAcceptAction = acceptAction,
+                        NotificationDeclineAction = declineAction
+                    }).ToList();
 
 
             //List<NotificationModel> notifications = notificationModel.ToList();
-            foreach (var notificationModel in notificationsModel)
+            foreach (NotificationModel notificationModel in notificationsModel)
             {
                 notification.NotificationContent = notificationModel.NotificationContent;
                 notification.IsActionable = notificationModel.IsActionable;
@@ -240,7 +259,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (notificationModel.user.UserFcmtoken != null && notificationModel.user.UserFcmtoken != "")
                     {
-                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null);
+                        PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken,
+                            notificationModel.NotificationContent, null);
                         //Task.Run(() => PushNotification.pushNotification.SendPushNotification(notificationModel.user.UserFcmtoken, notificationModel.NotificationContent, null));
 
                         string subject = Enum.GetName(typeof(notificationCategory), categoryId) + acceptAction;
@@ -255,16 +275,9 @@ namespace SaiKitchenBackend.Controllers
 
                 catch (Exception ex)
                 {
-
-                    Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                    Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
                 }
             }
-
-
-
-
         }
-
     }
-
 }

@@ -23,14 +23,14 @@ namespace SaiKitchenBackend.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public Object GeAllNotification()
+        public object GeAllNotification()
         {
             response.data = noificationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             return response;
         }
         [HttpPost]
         [Route("[action]")]
-        public Object GeAllNotificationofUser(int userId)
+        public object GeAllNotificationofUser(int userId)
         {
             User user = userRepository.FindByCondition(x => x.UserId == userId && x.IsActive == true && x.IsDeleted == false).Include(x => x.UserRoles).FirstOrDefault();
             Console.WriteLine(user);

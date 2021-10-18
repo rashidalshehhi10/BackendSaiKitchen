@@ -4,6 +4,7 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,49 +15,55 @@ namespace BackendSaiKitchen.Helper
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
+
         //public static MailService mailService;
         public MailService(IOptions<MailSettings> mailSettings)
         {
             _mailSettings = mailSettings != null ? mailSettings.Value : new MailSettings();
         }
+
         public MailService()
         {
-
             _mailSettings = new MailSettings();
             //mailService = this;
         }
 
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            MimeMessage email = new MimeMessage
+            {
+                Sender = MailboxAddress.Parse(_mailSettings.Mail)
+            };
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
-            var builder = new BodyBuilder();
+            BodyBuilder builder = new BodyBuilder();
             if (mailRequest.Attachments != null)
             {
                 byte[] fileBytes;
-                foreach (var file in mailRequest.Attachments)
+                foreach (IFormFile file in mailRequest.Attachments)
                 {
                     if (file.Length > 0)
                     {
-                        using (var ms = new MemoryStream())
+                        using (MemoryStream ms = new MemoryStream())
                         {
                             file.CopyTo(ms);
                             fileBytes = ms.ToArray();
                         }
+
                         builder.Attachments.Add(file.FileName, fileBytes, ContentType.Parse(file.ContentType));
                     }
                 }
             }
+
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
-            using var smtp = new SmtpClient();
+            using SmtpClient smtp = new SmtpClient();
             smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
+
         public async Task SendWelcomeEmailAsync(PasswordRequest request)
         {
             try
@@ -65,15 +72,20 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
-                MailText = MailText.Replace("[username]", request.UserName).Replace("[email]", request.ToEmail).Replace("[link]", request.Link);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MailText = MailText.Replace("[username]", request.UserName).Replace("[email]", request.ToEmail)
+                    .Replace("[link]", request.Link);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(request.ToEmail));
                 email.Subject = $"Welcome {request.UserName}";
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -81,9 +93,10 @@ namespace BackendSaiKitchen.Helper
             }
             catch (Exception ex)
             {
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
+
         public async Task SendForgotEmailAsync(PasswordRequest request)
         {
             try
@@ -92,15 +105,20 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
-                MailText = MailText.Replace("[username]", request.UserName).Replace("[email]", request.ToEmail).Replace("[link]", request.Link);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MailText = MailText.Replace("[username]", request.UserName).Replace("[email]", request.ToEmail)
+                    .Replace("[link]", request.Link);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(request.ToEmail));
                 email.Subject = "Reset Password";
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -109,13 +127,13 @@ namespace BackendSaiKitchen.Helper
 
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
 
 
-        public async Task SendInquiryEmailAsync(String toEmail, String inquiryCode, String measurementScheduleDate, String assignTo, String contactNumber, String buildingAddress)
+        public async Task SendInquiryEmailAsync(string toEmail, string inquiryCode, string measurementScheduleDate,
+            string assignTo, string contactNumber, string buildingAddress)
         {
             try
             {
@@ -123,15 +141,21 @@ namespace BackendSaiKitchen.Helper
                 StreamReader str = new StreamReader(FilePath);
                 string MailText = str.ReadToEnd();
                 str.Close();
-                MailText = MailText.Replace("[inquirycode]", inquiryCode).Replace("[measurementscheduledate]", measurementScheduleDate).Replace("[assignto]", assignTo).Replace("[contactnumber]", contactNumber).Replace("[buildingaddress]", buildingAddress);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MailText = MailText.Replace("[inquirycode]", inquiryCode)
+                    .Replace("[measurementscheduledate]", measurementScheduleDate).Replace("[assignto]", assignTo)
+                    .Replace("[contactnumber]", contactNumber).Replace("[buildingaddress]", buildingAddress);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "New Inquiry";
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -140,12 +164,12 @@ namespace BackendSaiKitchen.Helper
 
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
 
-        public async Task SendDesignEmailAsync(String toEmail, String inquiryCode, String reviewDesignURL, String approveDesignURL, String rejectDesignURL)
+        public async Task SendDesignEmailAsync(string toEmail, string inquiryCode, string reviewDesignURL,
+            string approveDesignURL, string rejectDesignURL)
         {
             try
             {
@@ -155,14 +179,18 @@ namespace BackendSaiKitchen.Helper
                 str.Close();
                 MailText = MailText.Replace("[ReviewDesignURL]", reviewDesignURL);
                 //MailText = MailText.Replace("[ApproveDesignURL]", approveDesignURL).Replace("[RejectDesignURL]", rejectDesignURL).Replace("[ReviewDesignURL]", reviewDesignURL);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "Design Review of " + inquiryCode;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -171,12 +199,13 @@ namespace BackendSaiKitchen.Helper
 
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
 
-        public async Task SendQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo, String vAT, String totalAmount, String validityTill, String approveQuotationURL, String rejectQuotationURL)
+        public async Task SendQuotationEmailAsync(string toEmail, string inquiryCode, string reviewQuotation,
+            string advancePaymentRate, string amount, string promo, string vAT, string totalAmount, string validityTill,
+            string approveQuotationURL, string rejectQuotationURL)
         {
             try
             {
@@ -185,15 +214,22 @@ namespace BackendSaiKitchen.Helper
                 string MailText = str.ReadToEnd();
                 str.Close();
                 //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
-                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation)
+                    .Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount)
+                    .Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount)
+                    .Replace("[ValidityTill]", validityTill);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "Quotation Approval of " + inquiryCode;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -202,11 +238,13 @@ namespace BackendSaiKitchen.Helper
 
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
-        public async Task ApproveQuotationEmailAsync(String toEmail, String inquiryCode, String reviewQuotation, String advancePaymentRate, String amount, String promo, String vAT, String totalAmount, String validityTill, String approveQuotationURL, String rejectQuotationURL, List<IFormFile> Attachments)
+
+        public async Task ApproveQuotationEmailAsync(string toEmail, string inquiryCode, string reviewQuotation,
+            string advancePaymentRate, string amount, string promo, string vAT, string totalAmount, string validityTill,
+            string approveQuotationURL, string rejectQuotationURL, List<IFormFile> Attachments)
         {
             try
             {
@@ -215,15 +253,22 @@ namespace BackendSaiKitchen.Helper
                 string MailText = str.ReadToEnd();
                 str.Close();
                 //MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill).Replace("[ApproveQuotationURL]", approveQuotationURL).Replace("[RejectQuotationURL]", rejectQuotationURL);
-                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation).Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount).Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount).Replace("[ValidityTill]", validityTill);
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+                MailText = MailText.Replace("[ReviewQuotationURL]", reviewQuotation)
+                    .Replace("[AdvancePaymentRate]", advancePaymentRate).Replace("[Amount]", amount)
+                    .Replace("[Promo]", promo).Replace("[VAT]", vAT).Replace("[TotalAmount]", totalAmount)
+                    .Replace("[ValidityTill]", validityTill);
+                MimeMessage email = new MimeMessage
+                {
+                    Sender = MailboxAddress.Parse(_mailSettings.Mail)
+                };
                 email.To.Add(MailboxAddress.Parse(toEmail));
                 email.Subject = "Quotation Approval of " + inquiryCode;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = MailText;
+                BodyBuilder builder = new BodyBuilder
+                {
+                    HtmlBody = MailText
+                };
                 email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
+                using SmtpClient smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
                 await smtp.SendAsync(email);
@@ -232,11 +277,8 @@ namespace BackendSaiKitchen.Helper
 
             catch (Exception ex)
             {
-
-                Serilog.Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex.ToString());
+                Log.Error("Error: UserId=" + Constants.userId + " Error=" + ex.Message + " " + ex);
             }
         }
-
-
     }
 }

@@ -1,20 +1,25 @@
 ﻿using BackendSaiKitchen.Models;
-using System;
 using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
     public class ViewQuotation
     {
-        public string InvoiceNo { get; set; } // "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
+        public string
+            InvoiceNo
+        {
+            get;
+            set;
+        } // "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
+
         public string CreatedDate { get; set; }
         public string ValidDate { get; set; }
         public string Description { get; set; }
-        public string Discount { get; set; }//promoCode
+        public string Discount { get; set; } //promoCode
         public string MeasurementFee { get; set; }
         public string Amount { get; set; }
         public string Vat { get; set; }
-        public string MeasurementFees { get; set; }//payment.p
+        public string MeasurementFees { get; set; } //payment.p
         public string AdvancePayment { get; set; }
         public string BeforeInstallation { get; set; }
         public bool? IsInstallment { get; set; }
@@ -36,10 +41,10 @@ namespace BackendSaiKitchen.CustomModel
         public string TotalAmount { get; set; }
         public string QuotationScheduleDate { get; set; }
     }
+
     public class InvoiceDetail
     {
-
-        public String inquiryWorkScopeNames { get; set; }
+        public string inquiryWorkScopeNames { get; set; }
         public int Quantity { get; set; } //inqruiryWorkScope.workscopesId == 1.count
     }
 
@@ -47,7 +52,9 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         public string reason { get; set; }
+
         public int FeedBackReactionId { get; set; }
+
         //public string PaymentIntentToken { get; set; }
         //public string ClientSecret { get; set; }
         //public string PaymentMethod { get; set; }
@@ -55,7 +62,6 @@ namespace BackendSaiKitchen.CustomModel
         public byte[] Pdf { get; set; }
     }
 
-   
 
     public class quotationScheduleUpdate
     {

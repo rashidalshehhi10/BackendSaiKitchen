@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BackendSaiKitchen.Helper
+﻿namespace BackendSaiKitchen.Helper
 {
     public class Constants
     {
@@ -31,18 +29,21 @@ namespace BackendSaiKitchen.Helper
         public static string DesignDelayed = "Delayed the Design";
         public static string QuotationDelayed = "Delayed the Quotation";
         public static string DesignAdded = "New Design added For Inquiry Code: IN";
-        public static string UnAuthorizedUser = "You are not authorized to perform this action, Kindly contact the admin";
+
+        public static string UnAuthorizedUser =
+            "You are not authorized to perform this action, Kindly contact the admin";
+
         public static int userId;
         public static int userRoleId;
         public static int branchId;
         public static int branchRoleId;
         public static string userToken;
 
-        public static string InquiryEmailResponse(string CustomerName, String InquiryCode)
+        public static string InquiryEmailResponse(string CustomerName, string InquiryCode)
         {
             return "";
         }
-    };
+    }
 
 
     public enum contactStatus
@@ -50,6 +51,7 @@ namespace BackendSaiKitchen.Helper
         Contacted = 1,
         NeedToContact = 2
     }
+
     public enum eventType
     {
         Customer = 1,
@@ -65,6 +67,7 @@ namespace BackendSaiKitchen.Helper
         Promo = 11,
         Other = 12
     }
+
     public enum permission
     {
         ManageBranch = 2,
@@ -82,6 +85,7 @@ namespace BackendSaiKitchen.Helper
         ManageJobOrder = 14,
         ManagePayment = 15
     }
+
     public enum permissionLevel
     {
         Read = 1,
@@ -90,6 +94,7 @@ namespace BackendSaiKitchen.Helper
         Escalate = 4,
         Delete = 5
     }
+
     public enum inquiryStatus
     {
         measurementInProgress = 1,
@@ -150,7 +155,7 @@ namespace BackendSaiKitchen.Helper
         designRevisionRequested = 56,
         quotationWaitingForApproval = 57,
         contractPending = 58,
-        contractWaitingForCustomerApproval=59,
+        contractWaitingForCustomerApproval = 59,
         contractApproved = 60,
         quotationRevisionRequested = 61,
         contractInProgress = 62,
@@ -227,15 +232,17 @@ namespace BackendSaiKitchen.Helper
         Blessed = 7
     }
 }
+
 public class ServiceResponse
 {
+    public object data;
+    public string errorMessage = "";
     public bool isError = false;
-    public String errorMessage = "";
-    public Object data;
 }
+
 public class TableResponse
 {
-    public int recordsTotal = 0;
+    public object data;
     public int recordsFiltered = 0;
-    public Object data;
+    public int recordsTotal = 0;
 }

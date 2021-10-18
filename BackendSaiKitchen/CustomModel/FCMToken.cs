@@ -2,8 +2,7 @@
 {
     public class FCMToken
     {
-        public int userId;
-
         public string userFCMToken;
+        public int userId;
     }
 }

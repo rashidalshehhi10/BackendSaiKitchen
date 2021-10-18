@@ -20,8 +20,9 @@ namespace BackendSaiKitchen.Controllers
         {
             Helper.Helper.blobManager = blobManager;
         }
-        static List<File> files = new List<File>();
-        static List<Accesory> Accesories = new List<Accesory>();
+
+        private static readonly List<File> files = new List<File>();
+        private static readonly List<Accesory> Accesories = new List<Accesory>();
 
         [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
         [DisableRequestSizeLimit]
@@ -32,43 +33,49 @@ namespace BackendSaiKitchen.Controllers
             files.Clear();
             Accesories.Clear();
 
-            Measurement measurement = new Measurement();
-            measurement.MeasurementComment = measurementVM.MeasurementComment;
+            Measurement measurement = new Measurement
+            {
+                MeasurementComment = measurementVM.MeasurementComment
+            };
 
 
 
-            MeasurementDetail measurementDetail = new MeasurementDetail();
-            measurementDetail.MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight;
-            measurementDetail.MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter;
-            measurementDetail.MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight;
-            measurementDetail.MeasurementDetailCornishDiameter = measurementVM.MeasurementDetailCornishDiameter;
-            measurementDetail.MeasurementDetailDoorHeight = measurementVM.MeasurementDetailDoorHeight;
-            measurementDetail.MeasurementDetailPlinthHeight = measurementVM.MeasurementDetailPlinthHeight;
-            measurementDetail.MeasurementDetailPlinthDiameter = measurementVM.MeasurementDetailPlinthDiameter;
-            measurementDetail.MeasurementDetailSkirtingHeight = measurementVM.MeasurementDetailSkirtingHeight;
-            measurementDetail.MeasurementDetailSpotLightFromWall = measurementVM.MeasurementDetailSpotLightFromWall;
-            measurementDetail.IsActive = true;
-            measurementDetail.IsDeleted = false;
+            MeasurementDetail measurementDetail = new MeasurementDetail
+            {
+                MeasurementDetailCeilingHeight = measurementVM.MeasurementDetailCeilingHeight,
+                MeasurementDetailCielingDiameter = measurementVM.MeasurementDetailCielingDiameter,
+                MeasurementDetailCornishHeight = measurementVM.MeasurementDetailCornishHeight,
+                MeasurementDetailCornishDiameter = measurementVM.MeasurementDetailCornishDiameter,
+                MeasurementDetailDoorHeight = measurementVM.MeasurementDetailDoorHeight,
+                MeasurementDetailPlinthHeight = measurementVM.MeasurementDetailPlinthHeight,
+                MeasurementDetailPlinthDiameter = measurementVM.MeasurementDetailPlinthDiameter,
+                MeasurementDetailSkirtingHeight = measurementVM.MeasurementDetailSkirtingHeight,
+                MeasurementDetailSpotLightFromWall = measurementVM.MeasurementDetailSpotLightFromWall,
+                IsActive = true,
+                IsDeleted = false
+            };
 
 
-            WardrobeDesignInformation wDInfo = new WardrobeDesignInformation();
-            wDInfo.WdiclosetType = measurementVM.WdiclosetType;
-            wDInfo.WdiboardModel = measurementVM.WdiboardModel;
-            wDInfo.WdiselectedColor = measurementVM.WdiselectedColor;
-            wDInfo.WdiceilingHeight = measurementVM.WdiceilingHeight;
-            wDInfo.WdiclosetHeight = measurementVM.WdiclosetHeight;
-            wDInfo.WdistorageDoor = measurementVM.WdistorageDoor;
-            wDInfo.WdidoorDesign = measurementVM.WdidoorDesign;
-            wDInfo.WdihandleDesign = measurementVM.WdihandleDesign;
-            wDInfo.WdidoorMaterial = measurementVM.WdidoorMaterial;
-            wDInfo.Wdinotes = measurementVM.Wdinotes;
-            wDInfo.IsActive = true;
-            wDInfo.IsDeleted = false;
+            WardrobeDesignInformation wDInfo = new WardrobeDesignInformation
+            {
+                WdiclosetType = measurementVM.WdiclosetType,
+                WdiboardModel = measurementVM.WdiboardModel,
+                WdiselectedColor = measurementVM.WdiselectedColor,
+                WdiceilingHeight = measurementVM.WdiceilingHeight,
+                WdiclosetHeight = measurementVM.WdiclosetHeight,
+                WdistorageDoor = measurementVM.WdistorageDoor,
+                WdidoorDesign = measurementVM.WdidoorDesign,
+                WdihandleDesign = measurementVM.WdihandleDesign,
+                WdidoorMaterial = measurementVM.WdidoorMaterial,
+                Wdinotes = measurementVM.Wdinotes,
+                IsActive = true,
+                IsDeleted = false
+            };
 
 
 
 
-            foreach (var acc in measurementVM.Accesories)
+            foreach (CustomAccossries acc in measurementVM.Accesories)
             {
                 Accesories.Add(new Accesory()
                 {
@@ -86,7 +93,7 @@ namespace BackendSaiKitchen.Controllers
 
             if (measurementVM.base64img.Count > 0)
             {
-                foreach (var fileUrl in measurementVM.base64img)
+                foreach (string fileUrl in measurementVM.base64img)
                 {
                     // var fileUrl = await Helper.Helper.UploadFile(file);
 
@@ -125,9 +132,10 @@ namespace BackendSaiKitchen.Controllers
                 response.data = measurement;
 
 
-                List<int?> roletypeId = new List<int?>();
-
-                roletypeId.Add((int)roleType.Manager);
+                List<int?> roletypeId = new List<int?>
+                {
+                    (int)roleType.Manager
+                };
 
 
                 try
@@ -166,13 +174,13 @@ namespace BackendSaiKitchen.Controllers
             //    .Include(x => x.Inquiry)
             //    .Include(x => x.Workscope).FirstOrDefault();
             //please Provide inquiryId
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.Workscope)
                 .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneePending;
                     inquiryWorkscope.DesignAssignedTo = updateMeasurementStatus.DesignAssignedTo;
@@ -207,13 +215,13 @@ namespace BackendSaiKitchen.Controllers
         {
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(i => i.InquiryWorkscopeId == updateMeasurementStatus.Id && i.IsActive == true && i.IsDeleted == false).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
+            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                     inquiryWorkscope.MeasurementAssignedTo = updateMeasurementStatus.MeasurementAssignedTo;
@@ -262,15 +270,15 @@ namespace BackendSaiKitchen.Controllers
             {
                 try
                 {
-                    var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == customMeasFiles.inquiryid && x.IsActive == true && x.IsDeleted == false)
+                    Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == customMeasFiles.inquiryid && x.IsActive == true && x.IsDeleted == false)
                         .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
                     //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == customMeasFiles.Ininquiryworkscopeid && x.IsActive == true && x.IsDeleted == false)
                     //    .Include(x => x.Inquiry).FirstOrDefault();
-                    foreach (var inworkscope in inquiry.InquiryWorkscopes)
+                    foreach (InquiryWorkscope inworkscope in inquiry.InquiryWorkscopes)
                     {
                         List<File> Files = new List<File>();
 
-                        foreach (var fileUrl in customMeasFiles.base64img)
+                        foreach (string fileUrl in customMeasFiles.base64img)
                         {
 
 
@@ -317,9 +325,10 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                     inquiryRepository.Update(inquiry);
-                    List<int?> roletypeId = new List<int?>();
-
-                    roletypeId.Add((int)roleType.Manager);
+                    List<int?> roletypeId = new List<int?>
+                    {
+                        (int)roleType.Manager
+                    };
                     try
                     {
                         sendNotificationToHead(Constants.MeasurementAdded + "Of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
@@ -366,7 +375,7 @@ namespace BackendSaiKitchen.Controllers
         public object ViewMeasurementById(int inquiryId)
         {
             //var inquiryworkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == inquiryWorkscopeId && x.InquiryStatusId != (int)inquiryStatus.measurementPending && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed && x.IsActive == true && x.IsDeleted == false && x.Measurements.Count > 0).Include(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false))).ThenInclude(y => y.Files.Where(z => z.IsActive == true && z.IsDeleted == false)).FirstOrDefault();
-            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementInProgress && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
+            Inquiry inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId && x.InquiryStatusId != (int)inquiryStatus.measurementInProgress && x.InquiryStatusId != (int)inquiryStatus.measurementdelayed)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false && y.Measurements.Count > 0))
                 .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false && y.Files.Any(z => z.IsActive == true && z.IsDeleted == false)))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
@@ -395,13 +404,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
+            Inquiry inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                .Include(x => x.Customer).FirstOrDefault();
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiryWorkscope.Id && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending).FirstOrDefault();
             if (inquiry != null)
             {
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementInProgress;
                     //inquiryWorkscope.MeasurementAssignedTo = updateInquiryWorkscope.MeasurementAssignedTo;
@@ -412,8 +421,10 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                 inquiryRepository.Update(inquiry);
 
-                List<int?> roletypeId = new List<int?>();
-                roletypeId.Add((int)roleType.Manager);
+                List<int?> roletypeId = new List<int?>
+                {
+                    (int)roleType.Manager
+                };
                 try
                 {
                     var user = userRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new
@@ -441,12 +452,12 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectMeasurementAssignee(UpdateInquiryWorkscopeStatusModel updateInquiryWorkscope)
         {
-            var inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
+            Inquiry inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeRejected;
                     inquiryWorkscope.Comments = updateInquiryWorkscope.MeasurementComment;
@@ -458,9 +469,10 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
                 inquiryRepository.Update(inquiry);
-                List<int?> roletypeId = new List<int?>();
-
-                roletypeId.Add((int)roleType.Manager);
+                List<int?> roletypeId = new List<int?>
+                {
+                    (int)roleType.Manager
+                };
                 try
                 {
                     var user = userRepository.FindByCondition(x => x.UserId == inquiry.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo && x.IsActive == true && x.IsDeleted == false).Select(y => new

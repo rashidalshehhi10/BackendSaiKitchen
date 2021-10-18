@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 #nullable disable
 
 namespace BackendSaiKitchen.Models
 {
-    public partial class DbSaiKitchenContext : DbContext
+    public class DbSaiKitchenContext : DbContext
     {
         public DbSaiKitchenContext()
         {
@@ -53,8 +54,9 @@ namespace BackendSaiKitchen.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer(
+                    "Server=backendsaikitchendbserver.database.windows.net,1433;Database=BackendSaiKitchen_db;User Id=SaiAdmin;Password=SaiKitchen123;MultipleActiveResultSets=true;");
             }
         }
 
@@ -306,7 +308,6 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.QuotationId)
                     .HasConstraintName("FK_File_Quotation");
-
             });
 
             modelBuilder.Entity<Inquiry>(entity =>
@@ -428,7 +429,7 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.KdiboardModelDoorShutterColor)
                     .HasMaxLength(10)
                     .HasColumnName("KDIBoardModelDoorShutterColor")
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.KdiboradModelDoorShutter)
                     .HasMaxLength(50)
@@ -696,7 +697,6 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Quotations)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_Quotation_Inquiry");
-
             });
 
 
@@ -856,6 +856,9 @@ namespace BackendSaiKitchen.Models
             OnModelCreatingPartial(modelBuilder);
         }
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        private void OnModelCreatingPartial(ModelBuilder modelBuilder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

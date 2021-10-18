@@ -2,21 +2,18 @@
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
 
 namespace SaiKitchenBackend.Controllers
 {
     public class PromoController : BaseController
     {
-
         [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllPromo()
         {
             return promoRepository.FindByCondition(x => x.IsDeleted == false);
-
         }
 
         [AuthFilter((int)permission.ManagePromo, (int)permissionLevel.Read)]
@@ -24,20 +21,24 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetPromoById(int promoId)
         {
-            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId && x.IsDeleted == false).FirstOrDefault();
+            response.data = promoRepository.FindByCondition(x => x.PromoId == promoId && x.IsDeleted == false)
+                .FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
                 response.errorMessage = "Promo doesn't Exist";
             }
+
             return response;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public object GetPromoByCode(String promoCode)
+        public object GetPromoByCode(string promoCode)
         {
-            var promo = promoRepository.FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Promo promo = promoRepository
+                .FindByCondition(x => x.PromoCode == promoCode && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (promo == null)
             {
                 response.isError = true;
@@ -45,7 +46,8 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
+                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) &&
+                    Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
                 {
                     response.data = promo;
                 }
@@ -58,6 +60,7 @@ namespace SaiKitchenBackend.Controllers
                     response.errorMessage = "Promo doesn't Exist";
                 }
             }
+
             return response;
         }
 
@@ -66,7 +69,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object AddPromo(Promo promo)
         {
-            Promo oldPromo = promoRepository.FindByCondition(x => (x.PromoId == promo.PromoId || x.PromoCode == promo.PromoCode) && x.IsDeleted == false).FirstOrDefault();
+            Promo oldPromo = promoRepository.FindByCondition(x =>
+                    (x.PromoId == promo.PromoId || x.PromoCode == promo.PromoCode) && x.IsDeleted == false)
+                .FirstOrDefault();
 
             if (oldPromo == null)
             {
@@ -85,7 +90,8 @@ namespace SaiKitchenBackend.Controllers
                 oldPromo.PromoTermsAndCondition = promo.PromoTermsAndCondition;
                 oldPromo.IsPercentage = promo.IsPercentage;
                 oldPromo.IsMeasurementPromo = promo.IsMeasurementPromo;
-                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) && Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
+                if (Helper.ConvertToDateTime(Helper.GetDate()) >= Helper.ConvertToDateTime(promo.PromoStartDate) &&
+                    Helper.ConvertToDateTime(Helper.GetDate()) <= Helper.ConvertToDateTime(promo.PromoExpiryDate))
                 {
                     oldPromo.IsActive = true;
                 }
@@ -93,10 +99,12 @@ namespace SaiKitchenBackend.Controllers
                 {
                     oldPromo.IsActive = false;
                 }
+
                 promoRepository.Update(oldPromo);
                 context.SaveChanges();
                 response.data = oldPromo;
             }
+
             return response;
         }
 
@@ -105,7 +113,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object EditPromo(Promo promo)
         {
-            Promo oldPromo = promoRepository.FindByCondition(x => x.PromoId == promo.PromoId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Promo oldPromo = promoRepository
+                .FindByCondition(x => x.PromoId == promo.PromoId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (oldPromo != null)
             {
                 oldPromo.PromoName = promo.PromoName;
@@ -126,6 +136,7 @@ namespace SaiKitchenBackend.Controllers
                 response.isError = true;
                 response.errorMessage = "Promo doesnt exist";
             }
+
             return response;
         }
 
@@ -134,7 +145,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object DeletePromo(int promoId)
         {
-            Promo oldPromo = promoRepository.FindByCondition(x => x.PromoId == promoId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Promo oldPromo = promoRepository
+                .FindByCondition(x => x.PromoId == promoId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (oldPromo != null)
             {
                 promoRepository.Delete(oldPromo);
@@ -145,8 +158,8 @@ namespace SaiKitchenBackend.Controllers
                 response.isError = true;
                 response.errorMessage = "Promo doesn't exist";
             }
+
             return response;
         }
-
     }
 }

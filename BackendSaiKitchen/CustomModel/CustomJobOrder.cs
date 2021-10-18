@@ -12,12 +12,11 @@ namespace BackendSaiKitchen.CustomModel
         public string woodenWorkCompletionDate { get; set; }
         public string materialDeliveryFinalDate { get; set; }
         public string counterTopFixingDate { get; set; }
+
         public string installationStartDate { get; set; }
+
         // public string installationEndDate { get; set; }
         public string Notes { get; set; }
-
-        
-
     }
 
     public class ContrcatApprove
@@ -32,7 +31,8 @@ namespace BackendSaiKitchen.CustomModel
         public byte[] Pdf { get; set; }
     }
 
-    public class ContractReject {
+    public class ContractReject
+    {
         public int inquiryId { get; set; }
         public string Comment { get; set; }
         public int FeedBackReactionId { get; set; }
@@ -42,12 +42,14 @@ namespace BackendSaiKitchen.CustomModel
     public class AddjobOrder
     {
         public int inquiryId { get; set; }
+
         //public string JobOrderRequestedDeadline { get; set; }
         //public string JobOrderRequestedComments { get; set; }
         public string DataSheetApplianceFileUrl { get; set; }
         public bool IsAppliancesProvidedByClient { get; set; }
         public string DetailedDesignFile { get; set; }
         public string MaterialSheetFileUrl { get; set; }
+
         public string MepdrawingFileUrl { get; set; }
         //public string Comments { get; set; }
 
@@ -78,7 +80,7 @@ namespace BackendSaiKitchen.CustomModel
 
     public class Factroy
     {
-       public int inquiryId { get; set; }
-       public int FactoryId { get; set; }
+        public int inquiryId { get; set; }
+        public int FactoryId { get; set; }
     }
 }

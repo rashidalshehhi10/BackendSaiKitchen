@@ -32,9 +32,6 @@ namespace BackendSaiKitchen.CustomModel
 
         public List<string> base64img { get; set; }
         public List<CustomAccossries> Accesories { get; set; }
-
-
-
     }
 
     public class CustomAccossries

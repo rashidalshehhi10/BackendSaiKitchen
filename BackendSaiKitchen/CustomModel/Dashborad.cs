@@ -15,7 +15,6 @@ namespace BackendSaiKitchen.CustomModel
         public int TotalJoborder { get; set; }
         public int InquiryIncomplete { get; set; }
         public List<Calendar> calendar { get; set; }
-
     }
 
     public class OldCalendar
@@ -28,6 +27,7 @@ namespace BackendSaiKitchen.CustomModel
         public string WorkscopeName { get; set; }
         public int InquiryworkscopeStatusId { get; set; }
     }
+
     public class Calendar
     {
         public int Id { get; set; }

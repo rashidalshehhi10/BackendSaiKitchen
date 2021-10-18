@@ -11,5 +11,4 @@
         public object notificationAcceptAction { get; set; }
         public object notificationDeclineAction { get; set; }
     }
-
 }

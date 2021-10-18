@@ -8,14 +8,12 @@ namespace SaiKitchenBackend.Controllers
 {
     public class FeesController : BaseController
     {
-
         [AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllFees()
         {
             return FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
-
         }
 
         //[AuthFilter((int)permission.ManageFees, (int)permissionLevel.Read)]
@@ -23,12 +21,15 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetFeesById(int feesId)
         {
-            response.data = FeesRepository.FindByCondition(x => x.FeesId == feesId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            response.data = FeesRepository
+                .FindByCondition(x => x.FeesId == feesId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (response.data == null)
             {
                 response.isError = true;
                 response.errorMessage = "Fees doesn't Exist";
             }
+
             return response;
         }
 
@@ -44,7 +45,9 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                Fee oldFees = FeesRepository.FindByCondition(x => x.FeesId == fee.FeesId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                Fee oldFees = FeesRepository
+                    .FindByCondition(x => x.FeesId == fee.FeesId && x.IsActive == true && x.IsDeleted == false)
+                    .FirstOrDefault();
                 if (oldFees != null)
                 {
                     oldFees.FeesAmount = fee.FeesAmount;
@@ -60,6 +63,7 @@ namespace SaiKitchenBackend.Controllers
                     response.errorMessage = "Fees doesn't exist";
                 }
             }
+
             return response;
         }
 
@@ -68,7 +72,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object EditFees(Fee fee)
         {
-            Fee oldFees = FeesRepository.FindByCondition(x => x.FeesId == fee.FeesId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Fee oldFees = FeesRepository
+                .FindByCondition(x => x.FeesId == fee.FeesId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (oldFees != null)
             {
                 oldFees.FeesAmount = fee.FeesAmount;
@@ -83,6 +89,7 @@ namespace SaiKitchenBackend.Controllers
                 response.isError = true;
                 response.errorMessage = "Fees doesnt exist";
             }
+
             return response;
         }
 
@@ -91,7 +98,9 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object DeleteFees(int feesId)
         {
-            Fee oldFees = FeesRepository.FindByCondition(x => x.FeesId == feesId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Fee oldFees = FeesRepository
+                .FindByCondition(x => x.FeesId == feesId && x.IsActive == true && x.IsDeleted == false)
+                .FirstOrDefault();
             if (oldFees != null)
             {
                 FeesRepository.Delete(oldFees);
@@ -102,8 +111,8 @@ namespace SaiKitchenBackend.Controllers
                 response.isError = true;
                 response.errorMessage = "Fees doesn't exist";
             }
+
             return response;
         }
-
     }
 }

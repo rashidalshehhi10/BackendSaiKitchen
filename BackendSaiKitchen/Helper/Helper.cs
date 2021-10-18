@@ -2,6 +2,7 @@
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
 using NPOI.XWPF.UserModel;
+using Sentry;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using VimeoDotNet;
 using VimeoDotNet.Net;
@@ -17,56 +19,59 @@ namespace BackendSaiKitchen.Helper
 {
     public class Helper
     {
-        static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static readonly CultureInfo provider = CultureInfo.InvariantCulture;
         public static IBlobManager blobManager;
 
 
-        static TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
-        public static String GenerateToken(int userId)
+        private static readonly TimeZoneInfo UAETimeZone = TimeZoneInfo.FindSystemTimeZoneById("Arabian Standard Time");
+        private readonly List<XWPFParagraph> paragraphs = new();
+
+        public static string GenerateToken(int userId)
         {
             byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
             byte[] key = Guid.NewGuid().ToByteArray();
-            byte[] id = System.Text.Encoding.ASCII.GetBytes(userId.ToString());
+            byte[] id = Encoding.ASCII.GetBytes(userId.ToString());
             return Convert.ToBase64String(id.Concat(time.Concat(key)).ToArray());
         }
-        public static String GetDateTime()
+
+        public static string GetDateTime()
         {
             DateTime utc = DateTime.UtcNow;
             DateTime UAE = TimeZoneInfo.ConvertTimeFromUtc(utc, UAETimeZone);
             //04 / 27 / 2021 10:01 AM
             return UAE.ToString("MM/dd/yyyy hh:mm tt");
         }
-        public static String GetDate()
+
+        public static string GetDate()
         {
             DateTime utc = DateTime.UtcNow;
             DateTime UAE = TimeZoneInfo.ConvertTimeFromUtc(utc, UAETimeZone);
             //04 / 27 / 2021 10:01 AM
             return UAE.ToString("MM/dd/yyyy");
         }
-        public static DateTime ConvertToDateTime(String dateTime)
+
+        public static DateTime ConvertToDateTime(string dateTime)
         {
             //04 / 27 / 2021 10:01 AM
-            DateTime dateTimeParsed;
-            DateTime.TryParseExact(dateTime, new string[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" }, provider, DateTimeStyles.None, out dateTimeParsed);
+            DateTime.TryParseExact(dateTime, new[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" },
+                provider, DateTimeStyles.None, out DateTime dateTimeParsed);
 
             return dateTimeParsed;
         }
-        public static String GetDateFromString(String dateTime)
+
+        public static string GetDateFromString(string dateTime)
         {
             //04 / 27 / 2021 10:01 AM
             if (dateTime != null)
             {
                 return DateTime.ParseExact(dateTime, "MM/dd/yyyy hh:mm tt", null).ToString("MM/dd/yyyy");
             }
-            else
-            {
-                return "";
-            }
+
+            return "";
         }
-        public static Object SetResponse(Object obj)
+
+        public static object SetResponse(object obj)
         {
-
-
             //string json = JsonConvert.SerializeObject(obj, Formatting.None, new JsonSerializerSettings
             //{
             //    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -75,6 +80,7 @@ namespace BackendSaiKitchen.Helper
             //json = json.Replace(@"\", " ");
             return obj;
         }
+
         public static string DecryptString(string encrString)
         {
             byte[] b;
@@ -82,18 +88,19 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 b = Convert.FromBase64String(encrString);
-                decrypted = System.Text.ASCIIEncoding.ASCII.GetString(b);
+                decrypted = Encoding.ASCII.GetString(b);
             }
-            catch (FormatException fe)
+            catch (FormatException)
             {
                 decrypted = "";
             }
+
             return decrypted;
         }
 
         public static string EnryptString(string strEncrypted)
         {
-            byte[] b = System.Text.ASCIIEncoding.ASCII.GetBytes(strEncrypted);
+            byte[] b = Encoding.ASCII.GetBytes(strEncrypted);
             string encrypted = Convert.ToBase64String(b);
             return encrypted;
         }
@@ -101,17 +108,14 @@ namespace BackendSaiKitchen.Helper
 
         public static async Task<object> DeleteFile(string fileUrl)
         {
-            long videoId;
             string result = "";
             if (fileUrl != null)
             {
-
-
                 if (fileUrl.Contains('.'))
                 {
                     result = "File " + await DeleteFileFromBlob(fileUrl) + " Has Been Deleted";
                 }
-                else if (long.TryParse(fileUrl, out videoId))
+                else if (long.TryParse(fileUrl, out long videoId))
                 {
                     result = "Video " + await DeleteVideo(videoId) + " Has Been Deleted";
                 }
@@ -124,13 +128,13 @@ namespace BackendSaiKitchen.Helper
             {
                 throw new FileNotFoundException(Constants.MeasurementFileMissing);
             }
+
             return result;
         }
 
 
         public static async Task<Tuple<string, string>> UploadFile(byte[] fileByte)
         {
-
             string fileUrl = "";
             string ext = "";
             if (fileByte != null)
@@ -138,10 +142,9 @@ namespace BackendSaiKitchen.Helper
                 ext = GuessFileType(fileByte);
                 if (ext == "png" || ext == "jpg" || ext == "pdf" || ext == "dwg")
                 {
-
                     fileUrl = await PostFile(fileByte, ext);
-                    //fileUrl = await UploadFileToBlob(fileByte, ext);
                 }
+                //fileUrl = await UploadFileToBlob(fileByte, ext);
                 else if (ext == "mp4")
                 {
                     fileUrl = await UploadUpdateVideo(fileByte);
@@ -155,18 +158,21 @@ namespace BackendSaiKitchen.Helper
             {
                 throw new FileNotFoundException(Constants.MeasurementFileMissing);
             }
+
             return new Tuple<string, string>(fileUrl, ext);
         }
+
         public static IFormFile ConvertBytestoIFormFile(byte[] fileByte)
         {
             string fileUrl = "";
-            var ext = GuessFileType(fileByte);
+            string ext = GuessFileType(fileByte);
             MemoryStream stream = new MemoryStream(fileByte);
-            fileUrl = Guid.NewGuid().ToString() + "." + ext;
+            fileUrl = Guid.NewGuid() + "." + ext;
             IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
             {
                 Headers = new HeaderDictionary(),
-                ContentType = ext == "pdf" ? "application/" + ext : (ext == "dwg" ? "application/octet-stream" : "image/" + ext)
+                ContentType = ext == "pdf" ? "application/" + ext :
+                    ext == "dwg" ? "application/octet-stream" : "image/" + ext
             };
 
             return blob;
@@ -178,33 +184,31 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 MemoryStream stream = new MemoryStream(fileByte);
-                fileUrl = Guid.NewGuid().ToString() + "." + ext;
+                fileUrl = Guid.NewGuid() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl);
-                await blobManager.Upload(new Blob() { File = blob });
+                await blobManager.Upload(new Blob { File = blob });
             }
             catch (Exception e)
             {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
+                SentrySdk.CaptureMessage(e.Message);
             }
+
             return fileUrl;
         }
 
 
-
-
         public static async Task<Tuple<string, string>> UploadFormDataFile(byte[] fileByte, string ext)
         {
-
             string fileUrl = "";
             //string ext = "";
             if (fileByte != null)
             {
-                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") || ext.ToLower().Contains("pdf") || ext.ToLower().Contains("dwg"))
+                if (ext.ToLower().Contains("png") || ext.ToLower().Contains("jpg") || ext.ToLower().Contains("jpeg") ||
+                    ext.ToLower().Contains("pdf") || ext.ToLower().Contains("dwg"))
                 {
-
                     fileUrl = await PostFile(fileByte, ext);
-                    //fileUrl = await UploadFileToBlob(fileByte, ext);
                 }
+                //fileUrl = await UploadFileToBlob(fileByte, ext);
                 else if (ext.ToLower().Contains("mp4"))
                 {
                     fileUrl = await UploadUpdateVideo(fileByte);
@@ -218,8 +222,10 @@ namespace BackendSaiKitchen.Helper
             {
                 throw new FileNotFoundException(Constants.MeasurementFileMissing);
             }
+
             return new Tuple<string, string>(fileUrl, ext);
         }
+
         public static async Task<string> PostFile(byte[] fileByte, string ext)
         {
             string fileUrl = "";
@@ -231,18 +237,20 @@ namespace BackendSaiKitchen.Helper
                     ext = ext.Split('/')[1];
                     ext = ext.Contains('.') ? ext.Split('.')[1] : ext;
                 }
-                fileUrl = Guid.NewGuid().ToString() + "." + ext;
+
+                fileUrl = Guid.NewGuid() + "." + ext;
                 IFormFile blob = new FormFile(stream, 0, fileByte.Length, "azure", fileUrl)
                 {
                     Headers = new HeaderDictionary(),
                     ContentType = ext
                 };
-                await blobManager.PostAsync(new Blob() { File = blob });
+                await blobManager.PostAsync(new Blob { File = blob });
             }
             catch (Exception e)
             {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
+                SentrySdk.CaptureMessage(e.Message);
             }
+
             return fileUrl;
         }
 
@@ -254,7 +262,7 @@ namespace BackendSaiKitchen.Helper
 
         public static async Task<string> DeleteFileFromBlob(string filename)
         {
-            var status = "";
+            string status = "";
             if (filename != null)
             {
                 await blobManager.Delete(filename);
@@ -264,6 +272,7 @@ namespace BackendSaiKitchen.Helper
             {
                 status = "File Not Found";
             }
+
             return status;
         }
 
@@ -278,7 +287,7 @@ namespace BackendSaiKitchen.Helper
 
                 VimeoClient vimeoClient = new VimeoClient(Constants.VimeoAccessToken);
                 BinaryContent binaryContent = new BinaryContent(file, "video/mp4");
-                var authcheck = await vimeoClient.GetAccountInformationAsync();
+                VimeoDotNet.Models.User authcheck = await vimeoClient.GetAccountInformationAsync();
 
                 if (authcheck.Name != null)
                 {
@@ -289,36 +298,33 @@ namespace BackendSaiKitchen.Helper
                     if (contentlength > 1048576)
                     {
                         chunksize = contentlength / 10;
-                        //chunksize = chunksize / 10;
-                        // chunksize = chunksize * 1048576;
                     }
+                    //chunksize = chunksize / 10;
+                    // chunksize = chunksize * 1048576;
                     else
                     {
                         chunksize = 1048576;
                     }
 
-                    uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize, null);
+                    uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize);
                     fileUrl = uploadRequest.ClipId.ToString();
-
                 }
-
-
             }
             catch (Exception e)
             {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
+                SentrySdk.CaptureMessage(e.Message);
             }
+
             return fileUrl;
         }
 
         public static async Task<string> DeleteVideo(long VideoId = 0)
         {
-            var status = "";
+            string status = "";
             try
             {
                 if (VideoId > 0)
                 {
-
                     ServicePointManager.Expect100Continue = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
@@ -330,7 +336,7 @@ namespace BackendSaiKitchen.Helper
             }
             catch (Exception e)
             {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
+                SentrySdk.CaptureMessage(e.Message);
                 status = e.Message;
             }
 
@@ -373,8 +379,10 @@ namespace BackendSaiKitchen.Helper
 
         public static void Each<T>(IEnumerable<T> items, Action<T> action)
         {
-            foreach (var item in items)
+            foreach (T item in items)
+            {
                 action(item);
+            }
         }
 
         public static string AddPayment(decimal? amount)
@@ -382,25 +390,27 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 amount *= 100;
-                var paymentIntents = new PaymentIntentService();
-                var paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
+                PaymentIntentService paymentIntents = new PaymentIntentService();
+                PaymentIntent paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
                 {
                     Amount = (long?)amount,
-                    Currency = "aed",
+                    Currency = "aed"
                 });
                 return paymentIntent.ClientSecret;
             }
             catch (Exception e)
             {
-                Sentry.SentrySdk.CaptureMessage(e.Message);
+                SentrySdk.CaptureMessage(e.Message);
             }
 
             return "";
         }
-        List<XWPFParagraph> paragraphs = new List<XWPFParagraph>();
+
         public static void GenerateInvoice()
         {
-            FileStream fileStream = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            FileStream fileStream =
+                new FileStream(@"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice.docx",
+                    FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             XWPFDocument wordDocument = new XWPFDocument(fileStream);
 
             //for (int i = 0; i < wordDocument.BodyElements.Count; i++)
@@ -432,7 +442,8 @@ namespace BackendSaiKitchen.Helper
                 wordDocument.Paragraphs[i].ReplaceText("[CustomerName]", "Sameer".ToUpper());
                 wordDocument.Paragraphs[i].ReplaceText("[CustomerEmail]", "sameer71095@gmail.com");
                 wordDocument.Paragraphs[i].ReplaceText("[CustomerContact]", "971545552471");
-                wordDocument.Paragraphs[i].ReplaceText("[CustomerAddress]", "Villa 50, Al Khamaari St Jumeira 3, Dubai");
+                wordDocument.Paragraphs[i]
+                    .ReplaceText("[CustomerAddress]", "Villa 50, Al Khamaari St Jumeira 3, Dubai");
                 wordDocument.Paragraphs[i].ReplaceText("[isPaid]", "");
                 wordDocument.Paragraphs[i].ReplaceText("[inquiryCode]", "IN111332");
                 wordDocument.Paragraphs[i].ReplaceText("[WorkScopeName]", "Kitchen");
@@ -447,7 +458,10 @@ namespace BackendSaiKitchen.Helper
                 //paragraphs.Add(word);
                 //paragraphs .Add= word.Text.Replace("[CustomerName]", "Sameer");
             }
-            using (FileStream file = new FileStream(path: @"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice2.docx", FileMode.OpenOrCreate, FileAccess.ReadWrite))
+
+            using (FileStream file =
+                new FileStream(@"D:\SAI Kitchen\BackendSaiKitchen\BackendSaiKitchen\Assets\invoice\invoice2.docx",
+                    FileMode.OpenOrCreate, FileAccess.ReadWrite))
             {
                 wordDocument.Write(file);
                 file.Close();
@@ -463,7 +477,6 @@ namespace BackendSaiKitchen.Helper
             //    }
             //doc.Write(sw);
             //}
-
         }
     }
 }

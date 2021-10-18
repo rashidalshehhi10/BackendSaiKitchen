@@ -36,18 +36,22 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UploadFile()
         {
-            foreach (var file in Request.Form.Files)
+            foreach (Microsoft.AspNetCore.Http.IFormFile file in Request.Form.Files)
             {
-                var FileDataContent = file;
+                Microsoft.AspNetCore.Http.IFormFile FileDataContent = file;
                 //var FileDataContent = Request.Form.Files["file"];
                 if (FileDataContent != null && FileDataContent.Length > 0)
                 {
                     // take the input stream, and save it to a temp folder using  
                     // the original file.part name posted  
-                    var stream = FileDataContent.OpenReadStream();
-                    var fileName = Path.GetFileName(FileDataContent.FileName);
+                    Stream stream = FileDataContent.OpenReadStream();
+                    string fileName = Path.GetFileName(FileDataContent.FileName);
 
-                    var ContentType = FileDataContent.ContentType.Contains('.') ? FileDataContent.ContentType.Split('.')[1] : (FileDataContent.ContentType.Contains("application") ? fileName.Split('.')[1] : FileDataContent.ContentType);
+                    string ContentType = FileDataContent.ContentType.Contains('.')
+                        ? FileDataContent.ContentType.Split('.')[1]
+                        : FileDataContent.ContentType.Contains("application")
+                            ? fileName.Split('.')[1]
+                            : FileDataContent.ContentType;
 
                     MemoryStream ms = new MemoryStream();
                     stream.CopyTo(ms);
@@ -75,6 +79,7 @@ namespace BackendSaiKitchen.Controllers
                     //}
                 }
             }
+
             return response;
         }
 
@@ -85,7 +90,9 @@ namespace BackendSaiKitchen.Controllers
             if (FileUrl != null)
             {
                 response.data = await Helper.Helper.DeleteFile(FileUrl);
-                var file = await fileRepository.FindByCondition(x => x.FileUrl == FileUrl && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                Models.File file = await fileRepository
+                    .FindByCondition(x => x.FileUrl == FileUrl && x.IsActive == true && x.IsDeleted == false)
+                    .FirstOrDefaultAsync();
                 if (file != null)
                 {
                     file.IsDeleted = true;
@@ -109,7 +116,9 @@ namespace BackendSaiKitchen.Controllers
             if (VideoId > 0)
             {
                 response.data = await Helper.Helper.DeleteVideo(VideoId);
-                var video = await fileRepository.FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                Models.File video = await fileRepository
+                    .FindByCondition(x => x.FileUrl == VideoId.ToString() && x.IsActive == true && x.IsDeleted == false)
+                    .FirstOrDefaultAsync();
                 if (video != null)
                 {
                     video.IsActive = false;
@@ -122,6 +131,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Video Not Deleted";
             }
+
             return response;
         }
 
@@ -132,20 +142,22 @@ namespace BackendSaiKitchen.Controllers
             if (fileName != null)
             {
                 response.data = await Helper.Helper.DeleteFileFromBlob(fileName);
-                var file = await fileRepository.FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false).FirstOrDefaultAsync();
+                Models.File file = await fileRepository
+                    .FindByCondition(x => x.FileUrl == fileName && x.IsActive == true && x.IsDeleted == false)
+                    .FirstOrDefaultAsync();
                 if (file != null)
                 {
                     file.IsDeleted = true;
                     file.IsActive = false;
                     fileRepository.Update(file);
                 }
-
             }
             else
             {
                 response.isError = true;
                 response.errorMessage = "Video Not Deleted";
             }
+
             return response;
         }
 
@@ -154,22 +166,21 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> TestUploadFile()
         {
-            foreach (var file in Request.Form.Files)
+            foreach (Microsoft.AspNetCore.Http.IFormFile file in Request.Form.Files)
             {
-                var FileDataContent = file;
+                Microsoft.AspNetCore.Http.IFormFile FileDataContent = file;
                 if (FileDataContent != null && FileDataContent.Length > 0)
                 {
-                    var stream = FileDataContent.OpenReadStream();
-                    var fileName = Path.GetFileName(FileDataContent.FileName);
+                    Stream stream = FileDataContent.OpenReadStream();
+                    string fileName = Path.GetFileName(FileDataContent.FileName);
 
                     MemoryStream ms = new MemoryStream();
                     stream.CopyTo(ms);
 
                     response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), FileDataContent.ContentType);
-
-
                 }
             }
+
             return response;
         }
     }

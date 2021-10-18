@@ -5,7 +5,6 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class CustomQuotation
     {
-
         public int QuotationId { get; set; }
         public int? InquiryId { get; set; }
         public string Description { get; set; }
@@ -14,7 +13,9 @@ namespace BackendSaiKitchen.CustomModel
         public string Vat { get; set; }
         public string QuotationValidityDate { get; set; }
         public string Discount { get; set; }
+
         public string ProposalReferenceNumber { get; set; }
+
         //public bool? IsInstallment { get; set; }
         //public int? NoOfInstallment { get; set; }
         //public string AdvancePayment { get; set; }
@@ -32,9 +33,7 @@ namespace BackendSaiKitchen.CustomModel
 
 
         public List<string> QuotationFiles { get; set; }
-       // public List<Payment> Payments { get; set; }
-
-        
+        // public List<Payment> Payments { get; set; }
     }
 
     public class EditQuotation
@@ -48,5 +47,4 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public byte[] Pdf { get; set; }
     }
-
 }

@@ -12,7 +12,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetSetting()
         {
-            var setting = settingRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Setting setting = settingRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (setting != null)
             {
                 response.data = setting;
@@ -31,7 +31,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object UpdateSetting(Setting setting)
         {
-            var Setting = settingRepository.FindByCondition(x => x.SettingId == setting.SettingId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Setting Setting = settingRepository.FindByCondition(x => x.SettingId == setting.SettingId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
 
             if (Setting != null)
             {

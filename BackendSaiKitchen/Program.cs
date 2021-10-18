@@ -21,7 +21,7 @@ namespace BackendSaiKitchen
         public static void Main(string[] args)
         {
             string connectionString = Configuration.GetConnectionString("DBConnectionString");
-            var columnOptions = new ColumnOptions
+            ColumnOptions columnOptions = new ColumnOptions
             {
                 AdditionalColumns = new Collection<SqlColumn>
                {
@@ -37,29 +37,31 @@ namespace BackendSaiKitchen
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    //webBuilder.UseStartup<Startup>().UseKestrel(options =>
-                    //{
-                    //    options.Limits.MaxRequestBodySize = 1073741824; //1024MB
-                    //});
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+.ConfigureWebHostDefaults(webBuilder =>
+{
+    webBuilder.UseStartup<Startup>();
+    //webBuilder.UseStartup<Startup>().UseKestrel(options =>
+    //{
+    //    options.Limits.MaxRequestBodySize = 1073741824; //1024MB
+    //});
 
-                    //webBuilder.UseKestrel(options =>
-                    //{
-                    //    options.Limits.MaxRequestBodySize = long.MaxValue;
-                    //});
-                    webBuilder.UseSentry(o =>
-                    {
-                        o.Dsn = "https://bbed6cdf32de428aaedd7d0e5ff1b433@o840718.ingest.sentry.io/5813746";
-                        // When configuring for the first time, to see what the SDK is doing:
-                        o.Debug = true;
-                        // Set traces_sample_rate to 1.0 to capture 100% of transactions for performance monitoring.
-                        // We recommend adjusting this value in production.
-                        o.TracesSampleRate = 1.0;
-                    });
-                });
+    //webBuilder.UseKestrel(options =>
+    //{
+    //    options.Limits.MaxRequestBodySize = long.MaxValue;
+    //});
+    webBuilder.UseSentry(o =>
+{
+    o.Dsn = "https://bbed6cdf32de428aaedd7d0e5ff1b433@o840718.ingest.sentry.io/5813746";
+    // When configuring for the first time, to see what the SDK is doing:
+    o.Debug = true;
+    // Set traces_sample_rate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production.
+    o.TracesSampleRate = 1.0;
+});
+});
+        }
     }
 }

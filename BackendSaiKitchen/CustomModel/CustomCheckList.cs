@@ -1,5 +1,4 @@
 ﻿using BackendSaiKitchen.Models;
-using System;
 using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
@@ -16,6 +15,7 @@ namespace BackendSaiKitchen.CustomModel
         public string Reason { get; set; }
         public bool IsSpecialApprovalRequired { get; set; }
     }
+
     public class CustomCheckListapprove
     {
         public int inquiryId { get; set; }
@@ -37,11 +37,13 @@ namespace BackendSaiKitchen.CustomModel
         public string AppliancesDataSheetNotes { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
     }
+
     public class AddFileonChecklist
     {
         public int documentType { get; set; }
         public List<string>? files { get; set; }
     }
+
     public class CustomCheckListReject
     {
         public int inquiryId { get; set; }
@@ -54,6 +56,7 @@ namespace BackendSaiKitchen.CustomModel
         public int rejectionType { get; set; }
         public string reason { get; set; }
     }
+
     public class Inquirychecklist
     {
         public object inquiry { get; set; }
@@ -62,7 +65,6 @@ namespace BackendSaiKitchen.CustomModel
 
     public class CheckListByBranch
     {
-
         public string QuotationNo { get; set; }
         public int InquiryWorkscopeId { get; set; }
         public int? InquiryId { get; set; }
@@ -91,14 +93,14 @@ namespace BackendSaiKitchen.CustomModel
         public string BuildingTypeOfUnit { get; set; }
         public string BuildingCondition { get; set; }
         public string BuildingFloor { get; set; }
-        public String BuildingReconstruction { get; set; }
-        public String IsOccupied { get; set; }
+        public string BuildingReconstruction { get; set; }
+        public string IsOccupied { get; set; }
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public string? InquiryAddedBy { get; set; }
         public string? MeasurementFee { get; set; }
         public int? InquiryAddedById { get; set; }
-        public Object Actions { get; set; }
+        public object Actions { get; set; }
         public int? NoOfRevision { get; set; }
         public string CommentAddedOn { get; set; }
         public string MeasurementAddedOn { get; set; }

@@ -25,7 +25,6 @@ namespace BackendSaiKitchen.CustomModel
         public int TotalJoborder { get; set; }
         public int Payments { get; set; }
         public List<Review> reviews { get; set; }
-
     }
 
     public class BranchReport
@@ -76,6 +75,7 @@ namespace BackendSaiKitchen.CustomModel
         public string ContactMode { get; set; }
         public decimal? Percentage { get; set; }
     }
+
     public class TopFivePaidCustomer
     {
         public string Name { get; set; }
@@ -95,6 +95,7 @@ namespace BackendSaiKitchen.CustomModel
         public int CustomerCount { get; set; }
         public List<Review> reviews { get; set; }
     }
+
     public class InquiryReceivedDetails
     {
         public string InquiryCode { get; set; }
@@ -102,18 +103,20 @@ namespace BackendSaiKitchen.CustomModel
         public string Address { get; set; }
         public string CustomerName { get; set; }
         public string MobileNomber { get; set; }
+
         public string Email { get; set; }
+
         //public string PaymentMethodId { get; set; }
         //public string PaymentType { get; set; }
         //public string PaymentMode { get; set; }
         public decimal AmountRecieved { get; set; }
+
         //public string Date { get; set; }
         public List<reportPayment> reportPayments { get; set; }
     }
 
     public class reportPayment
     {
-
         public string PaymentMethod { get; set; }
         public string PaymentType { get; set; }
         public int PaymentModeId { get; set; }
@@ -129,10 +132,11 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerName { get; set; }
         public string MobileNomber { get; set; }
         public string Email { get; set; }
+
         public decimal AmountPending { get; set; }
+
         //public string DueDate { get; set; }
         public List<reportPayment> reportPayments { get; set; }
-
     }
 
     public class Employee

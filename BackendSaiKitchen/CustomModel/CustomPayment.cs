@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
     public class CustomPayment
     {
-
         public string PaymentName { get; set; }
         public string PaymentDetail { get; set; }
         public int? PaymentAmount { get; set; }
@@ -27,6 +25,7 @@ namespace BackendSaiKitchen.CustomModel
         public int InquiryId { get; set; }
         public int PaymentId { get; set; }
     }
+
     public class SalesInvoiceRequest
     {
         public int PaymentId { get; set; }
@@ -42,22 +41,20 @@ namespace BackendSaiKitchen.CustomModel
 
     public class SalesInvoiceReciept
     {
-        public String InvoiceCode { get; set; }
-        public String InquiryCode { get; set; }
-        public String CreatedDate { get; set; }
-        public String CustomerName { get; set; }
-        public String CustomerContact { get; set; }
-        public String CustomerEmail { get; set; }
-        public String BuildiingAddress { get; set; }
-        public List<String> WorkscopeName { get; set; }
-        public String Amount { get; set; }
-        public String Discount { get; set; }
-        public String VAT { get; set; }
-        public String Deduction { get; set; }
-        public String TotalAmount { get; set; }
+        public string InvoiceCode { get; set; }
+        public string InquiryCode { get; set; }
+        public string CreatedDate { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerContact { get; set; }
+        public string CustomerEmail { get; set; }
+        public string BuildiingAddress { get; set; }
+        public List<string> WorkscopeName { get; set; }
+        public string Amount { get; set; }
+        public string Discount { get; set; }
+        public string VAT { get; set; }
+        public string Deduction { get; set; }
+        public string TotalAmount { get; set; }
         public decimal? AmounttoBePaid { get; set; }
-        public String PaymentType { get; set; }
-
-
+        public string PaymentType { get; set; }
     }
 }

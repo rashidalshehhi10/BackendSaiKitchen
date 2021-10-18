@@ -2,7 +2,6 @@
 using Azure.Storage.Blobs.Models;
 using BackendSaiKitchen.Models;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,12 +10,10 @@ using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.CustomModel
 {
-
     public class BlobManager : IBlobManager
     {
-
-
         private readonly BlobServiceClient _blobServiceClient;
+
         public BlobManager(BlobServiceClient blobServiceClient)
         {
             _blobServiceClient = blobServiceClient;
@@ -24,33 +21,36 @@ namespace BackendSaiKitchen.CustomModel
 
         public async Task Upload(Blob File)
         {
+            BlobContainerClient blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
 
-            var blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
 
-
-            var blobclient = blobcontainer.GetBlobClient(File.File.FileName);
+            BlobClient blobclient = blobcontainer.GetBlobClient(File.File.FileName);
             await blobcontainer.CreateIfNotExistsAsync();
             string Content = File.File.FileName.Split('.')[1];
-            BlobHttpHeaders httpHeaders = new BlobHttpHeaders();
-            httpHeaders.ContentType = Content;
+            BlobHttpHeaders httpHeaders = new BlobHttpHeaders
+            {
+                ContentType = Content
+            };
 
             await blobclient.UploadAsync(File.File.OpenReadStream(), httpHeaders);
         }
 
         public async Task PostAsync(Blob File)
         {
-            string Conn = "DefaultEndpointsProtocol=https;AccountName=saikitchenstorage;AccountKey=3T0N76fi775rEzIVVWkx1mb89luBAjrbpr4znDtF0Ca/j6by/5ecteMWzodOeqH9C8MunRyC8iuVqhGJ40R9Gw==;EndpointSuffix=core.windows.net";
+            string Conn =
+                "DefaultEndpointsProtocol=https;AccountName=saikitchenstorage;AccountKey=3T0N76fi775rEzIVVWkx1mb89luBAjrbpr4znDtF0Ca/j6by/5ecteMWzodOeqH9C8MunRyC8iuVqhGJ40R9Gw==;EndpointSuffix=core.windows.net";
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Conn);
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            CloudBlobContainer Container = blobClient.GetContainerReference("files");
+            Microsoft.WindowsAzure.Storage.Blob.CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            Microsoft.WindowsAzure.Storage.Blob.CloudBlobContainer Container = blobClient.GetContainerReference("files");
             await Container.CreateIfNotExistsAsync();
             string Content = File.File.FileName.Split('.')[1];
             Content = Content.Contains('.') ? Content.Split('.')[1] : Content;
-            CloudBlockBlob blob = Container.GetBlockBlobReference(File.File.FileName);
-            blob.Properties.ContentType = Content == "pdf" ? "application/" + Content : (Content == "dwg" ? "application/octet-stream" : "image/" + Content);
+            Microsoft.WindowsAzure.Storage.Blob.CloudBlockBlob blob = Container.GetBlockBlobReference(File.File.FileName);
+            blob.Properties.ContentType = Content == "pdf" ? "application/" + Content :
+                Content == "dwg" ? "application/octet-stream" : "image/" + Content;
 
             HashSet<string> blocklist = new HashSet<string>();
-            var file = File.File;
+            Microsoft.AspNetCore.Http.IFormFile file = File.File;
             const int pageSizeInBytes = 10485760;
             long prevLastByte = 0;
             long bytesRemain = file.Length;
@@ -59,7 +59,7 @@ namespace BackendSaiKitchen.CustomModel
 
             using (MemoryStream ms = new MemoryStream())
             {
-                var fileStream = file.OpenReadStream();
+                Stream fileStream = file.OpenReadStream();
                 await fileStream.CopyToAsync(ms);
                 bytes = ms.ToArray();
             }
@@ -81,10 +81,9 @@ namespace BackendSaiKitchen.CustomModel
                     base64BlockId,
                     new MemoryStream(bytesToSend, true),
                     null
-                    );
+                );
 
                 blocklist.Add(base64BlockId);
-
             } while (bytesRemain > 0);
 
             //post blocklist
@@ -93,22 +92,21 @@ namespace BackendSaiKitchen.CustomModel
 
         public async Task<byte[]> Read(string fileName)
         {
-            var blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
+            BlobContainerClient blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
 
-            var blobclient = blobcontainer.GetBlobClient(fileName);
-            var imgDownload = await blobclient.DownloadAsync();
+            BlobClient blobclient = blobcontainer.GetBlobClient(fileName);
+            Azure.Response<BlobDownloadInfo> imgDownload = await blobclient.DownloadAsync();
             using (MemoryStream ms = new MemoryStream())
             {
                 await imgDownload.Value.Content.CopyToAsync(ms);
                 return ms.ToArray();
-
             }
         }
 
         public async Task Delete(string FileName)
         {
-            var blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
-            var blobclient = blobcontainer.GetBlobClient(FileName);
+            BlobContainerClient blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
+            BlobClient blobclient = blobcontainer.GetBlobClient(FileName);
             await blobclient.DeleteAsync();
         }
     }

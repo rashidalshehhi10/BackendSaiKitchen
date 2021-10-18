@@ -4,9 +4,11 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
+using Sentry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Constants = BackendSaiKitchen.Helper.Constants;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -16,8 +18,12 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquiryChecklistDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+                    && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance ||
+                        x.InquiryStatusId == (int)inquiryStatus.checklistPending ||
+                        x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected ||
+                        x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 //                .Select(x => new {
                 //quotation = x.Quotations.FirstOrDefault(y => y.IsActive == true && y.IsDeleted ==false).Files.Where(y => y.IsActive == true && y.IsDeleted == false),
                 //payment = x.Payments.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Files.Where(y => y.IsActive == true && y.IsDeleted ==false)
@@ -37,13 +43,15 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
             if (inquiry != null)
             {
-                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                Inquirychecklist inquirychecklist = new Inquirychecklist
                 {
                     inquiry = inquiry,
-                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository
+                        .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {
@@ -61,16 +69,19 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            return response;
 
+            return response;
         }
 
         [HttpPost]
         [Route("[action]")]
         public object GetinquiryCommercialChecklistDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected))
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+                    && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending ||
+                        x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected ||
+                        x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -86,14 +97,16 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
-                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                Inquirychecklist inquirychecklist = new Inquirychecklist
                 {
                     inquiry = inquiry,
-                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository
+                        .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {
@@ -111,16 +124,17 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            return response;
 
+            return response;
         }
 
         [HttpPost]
         [Route("[action]")]
         public object GetAllInquiryChecklist()
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending));
+            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false
+                && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance ||
+                    x.InquiryStatusId == (int)inquiryStatus.checklistPending));
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -130,6 +144,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "there is no inquiries to Check";
             }
+
             return response;
         }
 
@@ -137,35 +152,40 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected)).Select(x => new CheckListByBranch
-            {
-                InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
-                InquiryDescription = x.InquiryDescription,
-                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
-                WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryStatusId,
-                BuildingAddress = x.Building.BuildingAddress,
-                BuildingCondition = x.Building.BuildingCondition,
-                BuildingFloor = x.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested,
-                CustomerId = x.CustomerId,
-                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                CustomerName = x.Customer.CustomerName,
-                CustomerEmail = x.Customer.CustomerEmail,
-                CustomerContact = x.Customer.CustomerContact,
-                BranchId = x.BranchId,
-                InquiryAddedBy = x.ManagedByNavigation.UserName,
-                InquiryAddedById = x.ManagedBy,
-                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
-            }).ToList();
+            List<CheckListByBranch> inquiries = inquiryRepository.FindByCondition(x =>
+                x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+                && (x.InquiryStatusId == (int)inquiryStatus.checklistPending ||
+                    x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected)).Select(x =>
+                new CheckListByBranch
+                {
+                    InquiryId = x.InquiryId,
+                    QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
+                        .OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false)
+                        .QuotationId,
+                    InquiryDescription = x.InquiryDescription,
+                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    Status = x.InquiryStatusId,
+                    BuildingAddress = x.Building.BuildingAddress,
+                    BuildingCondition = x.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor,
+                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    CustomerId = x.CustomerId,
+                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BranchId = x.BranchId,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
+                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                }).ToList();
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -175,6 +195,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "there is no inquiries to Check";
             }
+
             return response;
         }
 
@@ -182,35 +203,40 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquiryCommercialChecklistByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected)).Select(x => new CheckListByBranch
-            {
-                InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
-                InquiryDescription = x.InquiryDescription,
-                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
-                WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryStatusId,
-                BuildingAddress = x.Building.BuildingAddress,
-                BuildingCondition = x.Building.BuildingCondition,
-                BuildingFloor = x.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested,
-                CustomerId = x.CustomerId,
-                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                CustomerName = x.Customer.CustomerName,
-                CustomerEmail = x.Customer.CustomerEmail,
-                CustomerContact = x.Customer.CustomerContact,
-                BranchId = x.BranchId,
-                InquiryAddedBy = x.ManagedByNavigation.UserName,
-                InquiryAddedById = x.ManagedBy,
-                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
-            }).ToList();
+            List<CheckListByBranch> inquiries = inquiryRepository.FindByCondition(x =>
+                x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+                && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending ||
+                    x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected ||
+                    x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected)).Select(x => new CheckListByBranch
+                    {
+                        InquiryId = x.InquiryId,
+                        QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
+                    .OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false)
+                    .QuotationId,
+                        InquiryDescription = x.InquiryDescription,
+                        InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                        WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                        WorkScopeCount = x.InquiryWorkscopes.Count,
+                        Status = x.InquiryStatusId,
+                        BuildingAddress = x.Building.BuildingAddress,
+                        BuildingCondition = x.Building.BuildingCondition,
+                        BuildingFloor = x.Building.BuildingFloor,
+                        BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                        IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                        InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                        BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                        IsEscalationRequested = x.IsEscalationRequested,
+                        CustomerId = x.CustomerId,
+                        CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                        CustomerName = x.Customer.CustomerName,
+                        CustomerEmail = x.Customer.CustomerEmail,
+                        CustomerContact = x.Customer.CustomerContact,
+                        BranchId = x.BranchId,
+                        InquiryAddedBy = x.ManagedByNavigation.UserName,
+                        InquiryAddedById = x.ManagedBy,
+                        NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                        InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                    }).ToList();
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -220,6 +246,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "there is no inquiries to Check";
             }
+
             return response;
         }
 
@@ -228,8 +255,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object InquiryChecklist(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+                    && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance ||
+                        x.InquiryStatusId == (int)inquiryStatus.checklistPending ||
+                        x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -239,20 +269,30 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false
-                && (y.PaymentStatusId == (int)paymentstatus.PaymentApproved || y.PaymentStatusId == (int)paymentstatus.InstallmentApproved)
-                && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
+                                                                       && (y.PaymentStatusId ==
+                                                                           (int)paymentstatus.PaymentApproved ||
+                                                                           y.PaymentStatusId ==
+                                                                           (int)paymentstatus.InstallmentApproved)
+                                                                       && (y.PaymentTypeId ==
+                                                                           (int)paymenttype.AdvancePayment ||
+                                                                           y.PaymentTypeId ==
+                                                                           (int)paymenttype.Installment)))
+                .FirstOrDefault();
             if (inquiry != null)
             {
-                List<int?> roleTypeId = new List<int?>();
-                roleTypeId.Add((int)roleType.Manager);
+                List<int?> roleTypeId = new List<int?>
+                {
+                    (int)roleType.Manager
+                };
 
                 try
                 {
-                    sendNotificationToHead("Inquiry " + inquiryId + "  Waiting for approval on CheckList", false, null, null, roleTypeId, Constants.branchId, (int)notificationCategory.Other);
+                    sendNotificationToHead("Inquiry " + inquiryId + "  Waiting for approval on CheckList", false, null,
+                        null, roleTypeId, Constants.branchId, (int)notificationCategory.Other);
                 }
                 catch (Exception e)
                 {
-                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                    SentrySdk.CaptureMessage(e.Message);
                 }
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
@@ -264,6 +304,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does Not exist";
             }
+
             return response;
         }
 
@@ -272,7 +313,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false)// && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+            Inquiry inquiry = inquiryRepository
+                .FindByCondition(x =>
+                    x.InquiryId == approve.inquiryId && x.IsActive == true &&
+                    x.IsDeleted ==
+                    false) // && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
                 .ThenInclude(y => y.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
@@ -287,7 +332,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
                 inquiry.InquiryComment = approve.Comment;
-                foreach (var joborder in inquiry.JobOrders)
+                foreach (JobOrder joborder in inquiry.JobOrders)
                 {
                     joborder.Comments = approve.Comment;
                     // joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
@@ -299,30 +344,31 @@ namespace BackendSaiKitchen.Controllers
                     joborder.MaterialConfirmationNotes = approve.MatrialConfirmationNotes;
                     joborder.Mepdrawing = approve.MEPDrawing;
                     joborder.MepdrawingNotes = approve.MEPDrawingNotes;
-                    joborder.QuotationAndCalculationSheetMatchingProposal = approve.QuotationAndCalculationSheetMatchingProposal;
-                    joborder.QuotationAndCalculationSheetMatchingProposalNotes = approve.QuotationAndCalculationSheetMatchingProposalNotes;
-                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignature = approve.ApprovedDrawingsAndAvailabilityOfClientSignture;
-                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignatureNotes = approve.ApprovedDrawingsAndAvailabilityOfClientSigntureNotes;
+                    joborder.QuotationAndCalculationSheetMatchingProposal =
+                        approve.QuotationAndCalculationSheetMatchingProposal;
+                    joborder.QuotationAndCalculationSheetMatchingProposalNotes =
+                        approve.QuotationAndCalculationSheetMatchingProposalNotes;
+                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignature =
+                        approve.ApprovedDrawingsAndAvailabilityOfClientSignture;
+                    joborder.ApprovedDrawingsAndAvailabilityOfClientSignatureNotes =
+                        approve.ApprovedDrawingsAndAvailabilityOfClientSigntureNotes;
                     joborder.AppliancesDataSheet = approve.AppliancesDataSheet;
                     joborder.AppliancesDataSheetNotes = approve.AppliancesDataSheetNotes;
                     joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
-
                 }
 
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
                 }
-
 
                 if (approve.addFileonChecklists.Count != 0 && approve.addFileonChecklists != null)
                 {
                     for (int i = 0; i < approve.addFileonChecklists.Count; i++)
                     {
-
                         try
                         {
-                            foreach (var fileUrl in approve.addFileonChecklists[i].files)
+                            foreach (string fileUrl in approve.addFileonChecklists[i].files)
                             {
                                 if (fileUrl != null)
                                 {
@@ -331,58 +377,69 @@ namespace BackendSaiKitchen.Controllers
                                     switch (approve.addFileonChecklists[i].documentType)
                                     {
                                         case (int)permission.ManageMeasurement:
-                                            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+                                            foreach (InquiryWorkscope inquiryworkscope in inquiry.InquiryWorkscopes)
                                             {
-                                                var measurement = inquiryworkscope.Measurements.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                                measurement.Files.Add(new Models.File
+                                                Measurement measurement = inquiryworkscope.Measurements.FirstOrDefault(x =>
+                                                    x.IsActive == true && x.IsDeleted == false);
+                                                measurement.Files.Add(new File
                                                 {
                                                     FileUrl = fileUrl,
                                                     FileName = fileUrl.Split('.')[0],
-                                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                    FileContentType = fileUrl.Split('.').Length > 1
+                                                        ? fileUrl.Split('.')[1]
+                                                        : "mp4",
                                                     IsImage = false,
                                                     IsActive = true,
-                                                    IsDeleted = false,
+                                                    IsDeleted = false
                                                 });
                                             }
+
                                             break;
                                         case (int)permission.ManageDesign:
-                                            foreach (var inquiryworkscope in inquiry.InquiryWorkscopes)
+                                            foreach (InquiryWorkscope inquiryworkscope in inquiry.InquiryWorkscopes)
                                             {
-                                                var design = inquiryworkscope.Designs.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                                design.Files.Add(new Models.File
+                                                Design design = inquiryworkscope.Designs.FirstOrDefault(x =>
+                                                    x.IsActive == true && x.IsDeleted == false);
+                                                design.Files.Add(new File
                                                 {
                                                     FileUrl = fileUrl,
                                                     FileName = fileUrl.Split('.')[0],
-                                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                    FileContentType = fileUrl.Split('.').Length > 1
+                                                        ? fileUrl.Split('.')[1]
+                                                        : "mp4",
                                                     IsImage = false,
                                                     IsActive = true,
-                                                    IsDeleted = false,
+                                                    IsDeleted = false
                                                 });
                                             }
+
                                             break;
                                         case (int)permission.ManageQuotation:
-                                            var quotation = inquiry.Quotations.FirstOrDefault(x => x.IsActive == true && x.IsDeleted == false);
-                                            quotation.Files.Add(new Models.File
+                                            Quotation quotation = inquiry.Quotations.FirstOrDefault(x =>
+                                                x.IsActive == true && x.IsDeleted == false);
+                                            quotation.Files.Add(new File
                                             {
                                                 FileUrl = fileUrl,
                                                 FileName = fileUrl.Split('.')[0],
-                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                FileContentType = fileUrl.Split('.').Length > 1
+                                                    ? fileUrl.Split('.')[1]
+                                                    : "mp4",
                                                 IsImage = false,
                                                 IsActive = true,
-                                                IsDeleted = false,
+                                                IsDeleted = false
                                             });
                                             break;
                                     }
                                 }
-
                             }
                         }
                         catch (Exception ex)
                         {
-                            Sentry.SentrySdk.CaptureMessage(ex.Message);
+                            SentrySdk.CaptureMessage(ex.Message);
                         }
                     }
                 }
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -391,6 +448,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
 
@@ -398,35 +456,38 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetInquirySpecialApprovalByBranchId(int branchId)
         {
-            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
-            && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)).Select(x => new CheckListByBranch
-            {
-                InquiryId = x.InquiryId,
-                QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations.OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationId,
-                InquiryDescription = x.InquiryDescription,
-                InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
-                WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
-                WorkScopeCount = x.InquiryWorkscopes.Count,
-                Status = x.InquiryStatusId,
-                BuildingAddress = x.Building.BuildingAddress,
-                BuildingCondition = x.Building.BuildingCondition,
-                BuildingFloor = x.Building.BuildingFloor,
-                BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
-                IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
-                InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
-                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested,
-                CustomerId = x.CustomerId,
-                CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
-                CustomerName = x.Customer.CustomerName,
-                CustomerEmail = x.Customer.CustomerEmail,
-                CustomerContact = x.Customer.CustomerContact,
-                BranchId = x.BranchId,
-                InquiryAddedBy = x.ManagedByNavigation.UserName,
-                InquiryAddedById = x.ManagedBy,
-                NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
-            }).ToList();
+            List<CheckListByBranch> inquiries = inquiryRepository.FindByCondition(x =>
+                x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId
+                && x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending).Select(x => new CheckListByBranch
+                {
+                    InquiryId = x.InquiryId,
+                    QuotationNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
+                    .OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false)
+                    .QuotationId,
+                    InquiryDescription = x.InquiryDescription,
+                    InquiryStartDate = Helper.Helper.GetDateFromString(x.InquiryStartDate),
+                    WorkScopeName = x.InquiryWorkscopes.Select(y => y.Workscope.WorkScopeName).ToList(),
+                    WorkScopeCount = x.InquiryWorkscopes.Count,
+                    Status = x.InquiryStatusId,
+                    BuildingAddress = x.Building.BuildingAddress,
+                    BuildingCondition = x.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor,
+                    BuildingReconstruction = (bool)x.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied = (bool)x.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    CustomerId = x.CustomerId,
+                    CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
+                    CustomerName = x.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact,
+                    BranchId = x.BranchId,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
+                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                }).ToList();
             if (inquiries != null)
             {
                 response.data = inquiries;
@@ -436,6 +497,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "there is no inquiries to Check";
             }
+
             return response;
         }
 
@@ -443,8 +505,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetinquirySpecialApprovalDetailsById(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
-            && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending))
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
+                    && x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -460,14 +523,16 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             if (inquiry != null)
             {
-                Inquirychecklist inquirychecklist = new Inquirychecklist()
+                Inquirychecklist inquirychecklist = new Inquirychecklist
                 {
                     inquiry = inquiry,
-                    fees = FeesRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
+                    fees = FeesRepository
+                        .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
                 };
                 if (inquirychecklist == null)
                 {
@@ -485,30 +550,31 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "Inquiry Not Found";
             }
-            return response;
 
+            return response;
         }
 
         [HttpPost]
         [Route("[action]")]
         public object ApproveSpecialApproval(Approval approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
-                
-                
-                    inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
-                    inquiry.InquiryComment = approve.Reason;
+                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
+                inquiry.InquiryComment = approve.Reason;
 
-                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
-                    {
-                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
-                        inquiryWorkscope.Comments = approve.Reason;
-                    }
-               
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
+                    inquiryWorkscope.Comments = approve.Reason;
+                }
+
 
                 response.data = "Special Approval Approved";
                 inquiryRepository.Update(inquiry);
@@ -519,6 +585,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
 
@@ -526,15 +593,18 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectSpecialApproval(Approval Reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalRejected;
                 inquiry.InquiryComment = Reject.Reason;
 
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.specialApprovalRejected;
                     inquiryWorkscope.Comments = Reject.Reason;
@@ -554,6 +624,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
 
@@ -561,13 +632,16 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object ApproveinquiryCommericalChecklist(commerical approve)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending ||
+                     x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
             if (inquiry != null)
             {
-                foreach (var joborder in inquiry.JobOrders)
+                foreach (JobOrder joborder in inquiry.JobOrders)
                 {
                     joborder.IsSpecialApprovalRequired = approve.IsSpecialApprovalRequired;
                 }
@@ -577,7 +651,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
                     inquiry.InquiryComment = approve.Reason;
 
-                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                    foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
                         inquiryWorkscope.Comments = approve.Reason;
@@ -588,12 +662,11 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
                     inquiry.InquiryComment = approve.Reason;
 
-                    foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                    foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
                         inquiryWorkscope.Comments = approve.Reason;
                     }
-
                 }
 
                 response.data = "Commerical Checklist Approved";
@@ -605,6 +678,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
 
@@ -612,21 +686,25 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectinquiryCommericalChecklist(Approval Reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending ||
+                     x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
                 inquiry.InquiryComment = Reject.Reason;
 
-                foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
                     inquiryWorkscope.Comments = Reject.Reason;
                 }
 
-                foreach (var joboreder in inquiry.JobOrders)
+                foreach (JobOrder joboreder in inquiry.JobOrders)
                 {
                     joboreder.IsActive = false;
                 }
@@ -640,6 +718,7 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
 
@@ -648,14 +727,21 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object RejectinquiryChecklist(CustomCheckListReject reject)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance || x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
-                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    (x.InquiryStatusId == (int)inquiryStatus.waitingForAdvance ||
+                     x.InquiryStatusId == (int)inquiryStatus.checklistPending ||
+                     x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
-                foreach (var reason in reject.Addrejections)
+                foreach (Addrejection reason in reject.Addrejections)
                 {
-                    var inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x => x.InquiryWorkscopeId == reason.inquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false);
+                    InquiryWorkscope inquiryworkscope = inquiry.InquiryWorkscopes.FirstOrDefault(x =>
+                        x.InquiryWorkscopeId == reason.inquiryWorkscopeId && x.IsActive == true &&
+                        x.IsDeleted == false);
                     switch (reason.rejectionType)
                     {
                         case (int)permission.ManageMeasurement:
@@ -672,10 +758,11 @@ namespace BackendSaiKitchen.Controllers
 
                         case (int)permission.ManageQuotation:
                             inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
-                            foreach (var inquiryWorkscope in inquiry.InquiryWorkscopes)
+                            foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                             {
                                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                             }
+
                             inquiry.InquiryComment = reason.reason;
                             break;
                     }
@@ -690,8 +777,8 @@ namespace BackendSaiKitchen.Controllers
                 response.isError = true;
                 response.errorMessage = "inquiry Does not exist";
             }
+
             return response;
         }
-
     }
 }

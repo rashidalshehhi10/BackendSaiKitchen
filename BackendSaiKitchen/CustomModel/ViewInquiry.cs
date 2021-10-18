@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
     public class ViewInquiryDetail
     {
-
         //public int InquiryWorkscopeId { get; set; }
         public int? InquiryId { get; set; }
         public string InquiryCode { get; set; }
@@ -17,7 +15,9 @@ namespace BackendSaiKitchen.CustomModel
         public string? IsDesignProvidedByCustomer { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementAssignTo { get; set; }
+
         public string InquiryComment { get; set; }
+
         //public int? WorkScopeId { get; set; }
         //public int? WorkScopeCount { get; set; }
         //public string WorkScopeName { get; set; }
@@ -35,14 +35,14 @@ namespace BackendSaiKitchen.CustomModel
         public string BuildingTypeOfUnit { get; set; }
         public string BuildingCondition { get; set; }
         public string BuildingFloor { get; set; }
-        public String BuildingReconstruction { get; set; }
-        public String IsOccupied { get; set; }
+        public string BuildingReconstruction { get; set; }
+        public string IsOccupied { get; set; }
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public string? InquiryAddedBy { get; set; }
         public string? MeasurementFee { get; set; }
         public int? InquiryAddedById { get; set; }
-        public Object Actions { get; set; }
+        public object Actions { get; set; }
         public int? NoOfRevision { get; set; }
         public string QuotationScheduleDate { get; set; }
         public List<string> WorkscopeNames { get; set; }
@@ -50,12 +50,15 @@ namespace BackendSaiKitchen.CustomModel
         public string CommentAddedOn { get; set; }
         public string MeasurementAddedOn { get; set; }
         public string DesignAddedOn { get; set; }
+
         public string QuotationAddedOn { get; set; }
         //public List<InquiryWorkscope> InquiryWorkscopes { get; set; }
     }
+
     public class UpdateInquirySchedule
     {
         public int InquiryId { get; set; }
+
         //public int InquiryWorkscopeId { get; set; }
         public int? MeasurementAssignedTo { get; set; }
         public string MeasurementScheduleDate { get; set; }
@@ -64,6 +67,7 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignScheduleDate { get; set; }
         public bool IsProvidedByCustomer { get; set; }
     }
+
     public class UpdateInquiryWorkscopeStatusModel
     {
         public int Id { get; set; }
@@ -75,6 +79,7 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignComment { get; set; }
         public int FeedBackReaction { get; set; }
     }
+
     public class WorkscopeInquiry
     {
         public int? inquiryWorkscopeId { get; set; }
