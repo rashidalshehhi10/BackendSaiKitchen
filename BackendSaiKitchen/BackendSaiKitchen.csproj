@@ -49,10 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EmailTemplate\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Assets\invoice\invoice.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
