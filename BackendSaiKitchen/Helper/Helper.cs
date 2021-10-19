@@ -291,7 +291,7 @@ namespace BackendSaiKitchen.Helper
 
                 if (authcheck.Name != null)
                 {
-                    IUploadRequest uploadRequest = new UploadRequest();
+                    //IUploadRequest uploadRequest = new UploadRequest();
                     int chunksize = 0;
                     int contentlength = file.Length;
                     // int temp = contentlength / 1024;
@@ -306,7 +306,7 @@ namespace BackendSaiKitchen.Helper
                         chunksize = 1048576;
                     }
 
-                    uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize);
+                    IUploadRequest uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize);
                     fileUrl = uploadRequest.ClipId.ToString();
                 }
             }
