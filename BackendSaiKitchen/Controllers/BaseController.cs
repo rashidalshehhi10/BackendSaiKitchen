@@ -9,6 +9,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Log = Serilog.Log;
 
 namespace SaiKitchenBackend.Controllers
@@ -140,7 +141,7 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async void sendNotificationToHead(string content, bool isActionable, string acceptAction,
+        public async Task sendNotificationToHead(string content, bool isActionable, string acceptAction,
             string declineAction, List<int?> roleTypeId, int? branchId, int categoryId)
         {
             List<int> branchRoleIds = branchRoleRepository
@@ -215,7 +216,7 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async void sendNotificationToOneUser(string content, bool isActionable, string acceptAction,
+        public async Task sendNotificationToOneUser(string content, bool isActionable, string acceptAction,
             string declineAction, int userId, int branchId, int categoryId)
         {
             User user = userRepository
