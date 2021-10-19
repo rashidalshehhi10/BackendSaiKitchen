@@ -273,6 +273,91 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> GetInquiriesByBranch(int pageId)
+        {
+            var inquiry = await inquiryRepository.GetPagedAsync(x => x.OrderByDescending(y => y.InquiryId),
+                (x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId),
+                pageId, 10, null);
+            var inquiries = inquiry.Select(x => new ViewInquiryDetail
+            {
+                // InquiryWorkscopeId = x.InquiryWorkscopeId,
+                InquiryId = x.InquiryId,
+                InquiryDescription = x.InquiryDescription, //x.Inquiry.InquiryDescription,
+                InquiryStartDate =
+                        Helper.GetDateFromString(x
+                            .InquiryStartDate), //Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+                MeasurementAssignTo =
+                        x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
+                            .UserName, //x.MeasurementAssignedToNavigation.UserName,
+                InquiryComment = x.InquiryComment, //x.Comments,
+                                                   //WorkScopeId = x.WorkscopeId,
+                                                   //WorkScopeName = x.Workscope.WorkScopeName,
+                DesignScheduleDate =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate, // x.DesignScheduleDate,
+                DesignAssignTo =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
+                            .UserName, // x.DesignAssignedToNavigation.UserName,
+                Status = x.InquiryStatusId,
+                IsMeasurementProvidedByCustomer =
+                        x.IsMeasurementProvidedByCustomer == true
+                            ? "yes"
+                            : "No", // x.Inquiry.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                IsDesignProvidedByCustomer =
+                        x.IsDesignProvidedByCustomer == true
+                            ? "Yes"
+                            : "No", // x.Inquiry.IsDesignProvidedByCustomer == true ? "Yes" : "No",
+                MeasurementScheduleDate =
+                        x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, // x.MeasurementScheduleDate,
+                BuildingAddress = x.Building.BuildingAddress, //x.Inquiry.Building.BuildingAddress,
+                BuildingMakaniMap = x.Building.BuildingMakaniMap, //x.Inquiry.Building.BuildingMakaniMap,
+                BuildingCondition = x.Building.BuildingCondition, // x.Inquiry.Building.BuildingCondition,
+                BuildingFloor = x.Building.BuildingFloor, //x.Inquiry.Building.BuildingFloor,
+                BuildingReconstruction =
+                        (bool)x.Building.BuildingReconstruction
+                            ? "Yes"
+                            : "No", //(bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                IsOccupied =
+                        (bool)x.Building.IsOccupied
+                            ? "Yes"
+                            : "No", //(bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
+                InquiryEndDate =
+                        Helper.GetDateFromString(x
+                            .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+                BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
+                IsEscalationRequested = x.IsEscalationRequested, //x.Inquiry.IsEscalationRequested,
+                CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
+                CustomerCode =
+                        "CS" + x.BranchId + "" + x.CustomerId, //"CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
+                CustomerName = x.Customer.CustomerName, // x.Inquiry.Customer.CustomerName,
+                CustomerEmail = x.Customer.CustomerEmail, //x.Inquiry.Customer.CustomerEmail,
+                CustomerContact = x.Customer.CustomerContact, //x.Inquiry.Customer.CustomerContact,
+                CustomerWhatsapp = x.Customer.CustomerWhatsapp, //x.Inquiry.Customer.CustomerWhatsapp,
+                BranchId = x.BranchId, //x.Inquiry.BranchId,
+                InquiryAddedBy = x.ManagedByNavigation.UserName, //x.Inquiry.AddedByNavigation.UserName,
+                InquiryAddedById = x.ManagedBy, // x.Inquiry.AddedBy,
+                NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements
+                        .Count(y => y.IsDeleted == false), //x.Measurements.Where(y => y.IsDeleted == false).Count(),
+                InquiryCode =
+                        "IN" + x.BranchId + "" + x.CustomerId + "" +
+                        x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName)
+                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                                   //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
+                CommentAddedOn = x.InquiryCommentsAddedOn,
+                DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.DesignAddedOn).FirstOrDefault(),
+                MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                QuotationAddedOn = x.QuotationAddedOn,
+                FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName
+            });
+            response.data = inquiries;
+            return response;
+        }
+
         //[AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
@@ -886,7 +971,7 @@ namespace SaiKitchenBackend.Controllers
                 inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
                 customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
                 measurementAssinee = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Count(),
-                measurements = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementInProgress || x.InquiryStatusId == (int)inquiryStatus.measurementRejected || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed)).Count(),
+                measurements = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementInProgress || x.InquiryStatusId == (int)inquiryStatus.measurementRejected || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Count(),
                 measurementApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval && x.ManagedBy == Constants.userId)).Count(),
                 designAssigne = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)).Count(),
                 designs = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected || x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)).Count(),
