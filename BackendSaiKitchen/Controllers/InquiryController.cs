@@ -458,32 +458,7 @@ namespace SaiKitchenBackend.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .FirstOrDefault();
 
-            if (inquiry != null)
-            {
-                Inquirychecklist inquirychecklist = new Inquirychecklist
-                {
-                    inquiry = inquiry,
-                    fees = FeesRepository
-                        .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.FeesId != 1).ToList()
-                };
-                if (inquirychecklist == null)
-                {
-                    response.isError = true;
-                    response.errorMessage = "No Inquiry Found";
-                }
-                else
-                {
-                    inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                    response.data = inquirychecklist;
-                }
-            }
-            else
-            {
-                response.isError = true;
-                response.errorMessage = "Inquiry Not Found";
-            }
-
-            return response;
+            return InquiryDetail(inquiry);
         }
 
 
