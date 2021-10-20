@@ -362,7 +362,7 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
             var inquiries = await inquiryRepository
