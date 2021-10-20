@@ -474,8 +474,8 @@ namespace BackendSaiKitchen.Controllers
                     };
 
                     sendNotificationToHead(
-                        "New Quotation Added Of Inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                        "" + inquiry.InquiryId, false,
+                        content: "New Quotation Added Of Inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                 "" + inquiry.InquiryId, false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null,
                         //true,
@@ -1134,8 +1134,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(
-                        "Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
-                        inquiry.InquiryId + " Approved By Client", false,
+                        content: "Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
+                                 inquiry.InquiryId + " Approved By Client", false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId,
                         (int)notificationCategory.Quotation);
@@ -1209,8 +1209,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(
-                        "Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
-                        inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false,
+                        content: "Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
+                                 inquiry.InquiryId + " Rejected By Client Reason: " + updateQuotation.reason, false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId,
                         (int)notificationCategory.Quotation);
@@ -1629,8 +1629,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(
-                        "Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
-                        inquiry.InquiryId + " Approved By Client", false,
+                        content: "Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
+                                 inquiry.InquiryId + " Approved By Client", false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId,
                         (int)notificationCategory.Quotation);
@@ -1701,8 +1701,8 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(
-                        "Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
-                        inquiry.InquiryId + " Rejected By Client Reason: " + reject.Comment, false,
+                        content: "Contract Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
+                                 inquiry.InquiryId + " Rejected By Client Reason: " + reject.Comment, false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, inquiry.BranchId,
                         (int)notificationCategory.Quotation);

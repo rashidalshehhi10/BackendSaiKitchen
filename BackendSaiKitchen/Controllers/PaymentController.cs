@@ -311,7 +311,7 @@ namespace BackendSaiKitchen.Controllers
 
             try
             {
-                sendNotificationToHead(Constants.PaymentAdded, false,
+                sendNotificationToHead(content: Constants.PaymentAdded, false,
                     null,
                     null,
                     roletypeId, Constants.branchId, (int)notificationCategory.Other);

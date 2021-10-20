@@ -263,7 +263,7 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToHead("Inquiry " + inquiryId + "  Waiting for approval on CheckList", false, null,
+                    sendNotificationToHead(content: "Inquiry " + inquiryId + "  Waiting for approval on CheckList", false, null,
                         null, roleTypeId, Constants.branchId, (int)notificationCategory.Other);
                 }
                 catch (Exception e)

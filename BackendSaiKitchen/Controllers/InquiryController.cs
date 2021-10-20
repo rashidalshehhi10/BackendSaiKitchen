@@ -737,7 +737,7 @@ namespace SaiKitchenBackend.Controllers
                     x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
                 foreach (InquiryWorkscope inquiryWorkscope in inquiryWorkscopes)
                 {
-                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress || inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementRejected)
                     {
                         inquiryWorkscope.InquiryStatusId =
                             Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
@@ -750,7 +750,7 @@ namespace SaiKitchenBackend.Controllers
                                 ? (int)inquiryStatus.measurementdelayed
                                 : (int)inquiryStatus.measurementInProgress;
                     }
-                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending || inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designRevisionRequested)
                     {
                         inquiryWorkscope.InquiryStatusId =
                             Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) <
@@ -813,7 +813,7 @@ namespace SaiKitchenBackend.Controllers
                         m.InquiryWorkscopeId == inquiryWorkscope.InquiryWorkscopeId && m.IsActive == true &&
                         m.IsDeleted == false).FirstOrDefault();
 
-                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementInProgress|| inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementRejected)
                     {
                         inquiryWorkscope.InquiryStatusId =
                             Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
@@ -837,7 +837,7 @@ namespace SaiKitchenBackend.Controllers
                                 (int)notificationCategory.Measurement);
                         }
                     }
-                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending)
+                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designPending|| inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designRevisionRequested)
                     {
                         inquiryWorkscope.InquiryStatusId =
                             Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) <

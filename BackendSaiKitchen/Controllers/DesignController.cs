@@ -91,7 +91,7 @@ namespace BackendSaiKitchen.Controllers
                 try
                 {
                     sendNotificationToHead(
-                        Constants.DesignAdded + inquiry.Branch + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        content: Constants.DesignAdded + inquiry.Branch + "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                         false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null,
@@ -148,8 +148,8 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToHead("Design Of inquiry Code:IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                           "" + inquiry.InquiryId + " Is Waiting for customer Approval"
+                    sendNotificationToHead(content: "Design Of inquiry Code:IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                                    "" + inquiry.InquiryId + " Is Waiting for customer Approval"
                         , false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roleTypeId, Constants.branchId,
@@ -355,9 +355,9 @@ namespace BackendSaiKitchen.Controllers
 
                 try
                 {
-                    sendNotificationToHead("Customer Approved the Design Of inquiry Code:IN" + inquiry.BranchId + "" +
-                                           inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " +
-                                           inquiry.InquiryComment
+                    sendNotificationToHead(content: "Customer Approved the Design Of inquiry Code:IN" + inquiry.BranchId + "" +
+                                                    inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " +
+                                                    inquiry.InquiryComment
                         , false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roleTypeId, Constants.branchId,
@@ -423,8 +423,8 @@ namespace BackendSaiKitchen.Controllers
                         inquiry.Customer.CustomerName, null, (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                         (int)notificationCategory.Design);
                     sendNotificationToHead(
-                        "Customer Rejected the Design Of inquiry Code: IN" + +inquiry.BranchId + "" +
-                        inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment, false,
+                        content: "Customer Rejected the Design Of inquiry Code: IN" + +inquiry.BranchId + "" +
+                                 inquiry.CustomerId + "" + inquiry.InquiryId + " Comment : " + inquiry.InquiryComment, false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roleTypeId, inquiry.BranchId,
                         (int)notificationCategory.Design);
@@ -480,8 +480,8 @@ namespace BackendSaiKitchen.Controllers
                         {
                             Name = y.UserName
                         }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Accepted Designing The Inquiry Code: IN" + inquiry.BranchId +
-                                           "" + inquiry.CustomerId + "" + inquiry.InquiryId
+                    sendNotificationToHead(content: user.Name + " Accepted Designing The Inquiry Code: IN" + inquiry.BranchId +
+                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId
                         , false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId,
@@ -536,9 +536,9 @@ namespace BackendSaiKitchen.Controllers
                         {
                             Name = y.UserName
                         }).FirstOrDefault();
-                    sendNotificationToHead(user.Name + " Rejected Designing The Inquiry Code: IN" + inquiry.BranchId +
-                                           "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment: " +
-                                           inquiry.InquiryComment
+                    sendNotificationToHead(content: user.Name + " Rejected Designing The Inquiry Code: IN" + inquiry.BranchId +
+                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId + " Comment: " +
+                                                    inquiry.InquiryComment
                         , false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
                         inquiry.Customer.CustomerName, null, roletypeId, Constants.branchId,
