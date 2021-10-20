@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 using Log = Serilog.Log;
 
 namespace SaiKitchenBackend.Controllers
@@ -361,7 +362,7 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetPagingInquiriesOfBranch(int branchId, int draw, int start, int length)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
             var inquiries = await inquiryRepository
@@ -439,11 +440,12 @@ namespace SaiKitchenBackend.Controllers
                         .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
                     QuotationAddedOn = x.QuotationAddedOn,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName
-                }).OrderByDescending(x => x.InquiryId).Skip(start * length).Take(draw)
+                }).OrderByDescending(x => x.InquiryId).Skip(start).Take(length)
                 .ToListAsync();
             tableResponse.data = inquiries;
-            tableResponse.recordsTotal = inquiries.Count;
-            tableResponse.recordsFiltered = inquiries.Count;
+            tableResponse.recordsTotal =  inquiryRepository
+                .FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Count();
+            tableResponse.recordsFiltered = tableResponse.recordsTotal;
             return tableResponse;
         }
 
