@@ -529,7 +529,7 @@ namespace SaiKitchenBackend.Controllers
                         .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
                     QuotationAddedOn = x.QuotationAddedOn,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName
-                }).OrderByDescending(x => x.InquiryId).Skip((page - 1) * Constants.pageSize).Take(Constants.pageSize)
+                }).OrderByDescending(x => x.InquiryId).Skip((page - 1) * Constants.PageSize).Take(Constants.PageSize)
                 .ToListAsync();
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count;

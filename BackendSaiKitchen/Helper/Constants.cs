@@ -39,7 +39,7 @@
         public static int branchRoleId;
         public static string userToken;
 
-        public static int pageSize=10;
+        public static readonly int PageSize=10;
 
         public static string InquiryEmailResponse(string CustomerName, string InquiryCode)
         {

@@ -160,13 +160,12 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
                     x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                     && x.IsDeleted == false &&
-                    x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x
-                        .InquiryWorkscopes.Where(y =>
-                            (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
-                             x.InquiryStatusId == (int)inquiryStatus.quotationDelayed ||
-                             x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
-                            y.IsActive == true && y.IsDeleted == false).Count())
+                    x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
+                        .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationDelayed ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
+                                                      y.IsActive == true && y.IsDeleted == false))
                 .Select(x => new ViewInquiryDetail
                 {
                     InquiryId = x.InquiryId,
@@ -193,7 +192,7 @@ namespace BackendSaiKitchen.Controllers
                     BranchId = x.BranchId,
                     InquiryAddedBy = x.ManagedByNavigation.UserName,
                     InquiryAddedById = x.ManagedBy,
-                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    NoOfRevision = x.Quotations.Count(y => y.IsDeleted == false),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     QuotationScheduleDate = x.QuotationScheduleDate,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -220,10 +219,9 @@ namespace BackendSaiKitchen.Controllers
                     x.BranchId == branchId && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval &&
                     x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                     && x.IsDeleted == false &&
-                    x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x
-                        .InquiryWorkscopes.Where(y =>
-                            y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval && y.IsActive == true &&
-                            y.IsDeleted == false).Count())
+                    x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
+                        .InquiryWorkscopes.Count(y => y.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval && y.IsActive == true &&
+                                                      y.IsDeleted == false))
                 .Select(x => new ViewInquiryDetail
                 {
                     InquiryId = x.InquiryId,
@@ -250,7 +248,7 @@ namespace BackendSaiKitchen.Controllers
                     BranchId = x.BranchId,
                     InquiryAddedBy = x.ManagedByNavigation.UserName,
                     InquiryAddedById = x.ManagedBy,
-                    NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
+                    NoOfRevision = x.Quotations.Count(y => y.IsDeleted == false),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     QuotationScheduleDate = x.QuotationScheduleDate,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -278,12 +276,11 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == customQuotation.InquiryId &&
                     x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                     && x.IsDeleted == false &&
-                    x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x
-                        .InquiryWorkscopes.Where(y =>
-                            (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
-                             x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
-                            y.IsActive == true && y.IsDeleted == false).Count())
+                    x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
+                        .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
+                                                      y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Workscope)
@@ -1254,8 +1251,8 @@ namespace BackendSaiKitchen.Controllers
                 long amount = 0;
                 //foreach (var quotaion in inquiry.Quotations)
                 //{
-                d = decimal.Parse(inquiry.Quotations.LastOrDefault().AdvancePayment) *
-                    (decimal.Parse(inquiry.Quotations.LastOrDefault().TotalAmount) / 100) * 100;
+                d = decimal.Parse(inquiry.Quotations.LastOrDefault()?.AdvancePayment) *
+                    (decimal.Parse(inquiry.Quotations.LastOrDefault()?.TotalAmount) / 100) * 100;
                 amount += Convert.ToInt64(d);
                 //}
                 PaymentIntentService paymentIntents = new PaymentIntentService();
@@ -1296,14 +1293,13 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == scheduleUpdate.inquiryId &&
                     x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
                     && x.IsDeleted == false &&
-                    x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == x
-                        .InquiryWorkscopes.Where(y =>
-                            (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationDelayed ||
-                             y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true &&
-                            y.IsDeleted == false).Count())
+                    x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
+                        .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationDelayed ||
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRejected) && y.IsActive == true &&
+                                                      y.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 //.Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && x.IsDeleted == false))
@@ -1595,7 +1591,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
                     quotation.QuotationStatusId = (int)inquiryStatus.contractApproved;
-                    if (approve.Pdf != null && approve.Pdf.Count() >= 0)
+                    if (approve.Pdf != null)
                     {
                         Tuple<string, string> fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
                         quotation.Files.Add(new File
