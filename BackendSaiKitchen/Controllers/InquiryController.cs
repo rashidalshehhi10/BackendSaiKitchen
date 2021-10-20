@@ -540,7 +540,7 @@ namespace SaiKitchenBackend.Controllers
         //[AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
-        public object GetInquiriesOfBranchOld(int branchId)
+        public object GetInquiriesOfBranch(int branchId)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
             var inquiries = inquiryRepository
