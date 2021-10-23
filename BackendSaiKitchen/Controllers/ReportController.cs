@@ -551,8 +551,8 @@ namespace BackendSaiKitchen.Controllers
                 }
 
 
-                int x = 0;
-                foreach (Models.Customer Customer in branch.Customers.OrderBy(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
+                
+                foreach (Models.Customer Customer in branch.Customers.OrderByDescending(x => Helper.Helper.ConvertToDateTime(x.CreatedDate)))
                 {
                     report.TopFiveNewCustomers.Add(new TopFiveNewCustomers
                     {
@@ -578,14 +578,9 @@ namespace BackendSaiKitchen.Controllers
                         AmountRecieved = amount,
                         CustomerContact = Customer.CustomerContact
                     });
-                    if (x >= 4)
-                    {
-                        break;
-                    }
-
-                    x++;
+                    
                 }
-                
+                report.topFivePaidCustomers = report.topFivePaidCustomers.OrderByDescending(x => x.AmountRecieved).ToList();
                 foreach (Models.WayOfContact wayofcontact in wayOfContactRepository.FindByCondition(x =>
                     x.IsActive == true && x.IsDeleted == false))
                 {
