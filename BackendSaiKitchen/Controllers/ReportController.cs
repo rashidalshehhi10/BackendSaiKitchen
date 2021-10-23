@@ -585,7 +585,7 @@ namespace BackendSaiKitchen.Controllers
 
                     x++;
                 }
-
+                
                 foreach (Models.WayOfContact wayofcontact in wayOfContactRepository.FindByCondition(x =>
                     x.IsActive == true && x.IsDeleted == false))
                 {
