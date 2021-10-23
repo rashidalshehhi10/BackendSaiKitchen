@@ -591,7 +591,8 @@ namespace BackendSaiKitchen.Controllers
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
                     (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending ||
-                     x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected))
+                     x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || 
+                     x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
 
