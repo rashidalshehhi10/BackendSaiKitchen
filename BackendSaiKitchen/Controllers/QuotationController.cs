@@ -297,9 +297,9 @@ namespace BackendSaiKitchen.Controllers
                 Helper.Helper.Each(inquiry.Quotations, x => x.IsActive = false);
                 Quotation quotation = new Quotation
                 {
-                    //quotation.AdvancePayment = customQuotation.AdvancePayment;
-                    //quotation.BeforeInstallation = customQuotation.BeforeInstallation;
-                    //quotation.AfterDelivery = customQuotation.AfterDelivery;
+                    AdvancePayment = customQuotation.AdvancePayment,
+                    BeforeInstallation = customQuotation.BeforeInstallation,
+                    AfterDelivery = customQuotation.AfterDelivery,
                     //quotation.IsInstallment = customQuotation.IsInstallment;
                     //quotation.NoOfInstallment = customQuotation.NoOfInstallment;
                     Description = customQuotation.Description,
@@ -625,7 +625,9 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Description = _quotation.Description;
                     quotation.TotalAmount = _quotation.TotalAmount;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
-
+                    quotation.AdvancePayment = _quotation.AdvancePayment;
+                    quotation.AfterDelivery = _quotation.AfterDelivery;
+                    quotation.BeforeInstallation = _quotation.BeforeInstallation;
 
                     if (_quotation.QuotationFiles != null && _quotation.QuotationFiles.Count > 0)
                     {

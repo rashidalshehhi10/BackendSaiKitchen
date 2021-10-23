@@ -18,9 +18,9 @@ namespace BackendSaiKitchen.CustomModel
 
         //public bool? IsInstallment { get; set; }
         //public int? NoOfInstallment { get; set; }
-        //public string AdvancePayment { get; set; }
-        //public string BeforeInstallation { get; set; }
-        //public string AfterDelivery { get; set; }
+        public string AdvancePayment { get; set; }
+        public string BeforeInstallation { get; set; }
+        public string AfterDelivery { get; set; }
         //public bool? IsActive { get; set; }
         //public bool? IsDeleted { get; set; }
         //public string CreatedDate { get; set; }
