@@ -788,7 +788,10 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (File file in design.Files)
                         {
-                            viewQuotation.Files.Add(file.FileUrl);
+                            if (file != null)
+                            {
+                                viewQuotation.Files.Add(file.FileUrl);
+                            }
                         }
                     }
                 }
@@ -798,7 +801,6 @@ namespace BackendSaiKitchen.Controllers
                     if (job.MepdrawingFileUrl != null && job.MepdrawingFileUrl != "")
                     {
                         viewQuotation.Files.Add(job.MepdrawingFileUrl);
-
                     }
                 }
 
@@ -1635,7 +1637,7 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (JobOrder joborder in inquiry.JobOrders)
                 {
-                    if (joborder.MepdrawingFileUrl != null)
+                    if (joborder.MepdrawingFileUrl != null && joborder.MepdrawingFileUrl != "")
                     {
 
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(
