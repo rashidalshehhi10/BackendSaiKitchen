@@ -1613,7 +1613,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
                     quotation.QuotationStatusId = (int)inquiryStatus.contractApproved;
-                    if (approve.Pdf != null && approve.Pdf != "")
+                    if (approve.Pdf != null && approve.Pdf.Length != 0)
                     {
                         Tuple<string, string> fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
                         quotation.Files.Add(new File
