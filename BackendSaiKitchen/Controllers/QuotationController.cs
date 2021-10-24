@@ -1556,6 +1556,8 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
                     x.InquiryStatusId == (int)inquiryStatus.contractWaitingForCustomerApproval)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == true))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y =>
@@ -1611,7 +1613,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
                     quotation.QuotationStatusId = (int)inquiryStatus.contractApproved;
-                    if (approve.Pdf != null)
+                    if (approve.Pdf != null && approve.Pdf != "")
                     {
                         Tuple<string, string> fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
                         quotation.Files.Add(new File
