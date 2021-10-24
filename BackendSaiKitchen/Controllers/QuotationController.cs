@@ -1503,7 +1503,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    if (_jobOrder.MepdrawingFileUrl != null)
+                    if (_jobOrder.MepdrawingFileUrl != null || _jobOrder.MepdrawingFileUrl != "")
                     {
                         files.Add(Helper.Helper.ConvertBytestoIFormFile(
                                                 await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
