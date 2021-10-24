@@ -795,7 +795,11 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (JobOrder job in inquiry.JobOrders)
                 {
-                    viewQuotation.Files.Add(job.MepdrawingFileUrl);
+                    if (job.MepdrawingFileUrl != null && job.MepdrawingFileUrl != "")
+                    {
+                        viewQuotation.Files.Add(job.MepdrawingFileUrl);
+
+                    }
                 }
 
                 try
