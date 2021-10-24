@@ -1555,6 +1555,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y =>
                     y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer)
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
