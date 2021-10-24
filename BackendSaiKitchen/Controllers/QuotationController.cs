@@ -1374,8 +1374,11 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (File file in design.Files)
                         {
-                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                        
+                            if (file != null)
+                            {
+                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                            }
+
                         }
                     }
                 }
@@ -1494,8 +1497,12 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    files.Add(Helper.Helper.ConvertBytestoIFormFile(
-                        await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
+                    if (_jobOrder.MepdrawingFileUrl != null)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(
+                                                await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
+                    }
+                    
 
                     //foreach (var file in quotation.Files)
                     //{
