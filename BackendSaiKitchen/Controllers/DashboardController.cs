@@ -42,7 +42,7 @@ namespace BackendSaiKitchen.Controllers
                             (x.InquiryStatusId == (int)inquiryStatus.quotationAccepted ||
                              x.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
                              x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId ==
-                             (int)inquiryStatus.quotationWaitingForCustomerApproval)).Select(y => y.Quotations).Count(),
+                             (int)inquiryStatus.quotationWaitingForCustomerApproval)).Count(),
                         QuotationAccepted = x.Inquiries.Where(x =>
                             x.IsActive == true && x.IsDeleted == false &&
                             x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),

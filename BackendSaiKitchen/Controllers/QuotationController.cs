@@ -1569,7 +1569,10 @@ namespace BackendSaiKitchen.Controllers
                     {
                         foreach (File file in design.Files)
                         {
-                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                            if (file != null)
+                            {
+                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                            }
                         }
                     }
                 }
@@ -1617,14 +1620,22 @@ namespace BackendSaiKitchen.Controllers
 
                     foreach (File file in quotation.Files)
                     {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                        if (file != null)
+                        {
+                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+
+                        }
                     }
                 }
 
                 foreach (JobOrder joborder in inquiry.JobOrders)
                 {
-                    files.Add(Helper.Helper.ConvertBytestoIFormFile(
-                        await Helper.Helper.GetFile(joborder.MepdrawingFileUrl)));
+                    if (joborder.MepdrawingFileUrl != null)
+                    {
+
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(
+                            await Helper.Helper.GetFile(joborder.MepdrawingFileUrl)));
+                    }
                 }
 
                 inquiryRepository.Update(inquiry);
