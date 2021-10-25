@@ -642,7 +642,8 @@ namespace BackendSaiKitchen.Controllers
                     }
                 }
 
-                report.topFivePaidCustomers.OrderBy(x => x.AmountRecieved);
+                report.topFivePaidCustomers = report.topFivePaidCustomers.OrderByDescending(x => x.AmountRecieved).SkipLast(report.TopFiveNewCustomers.Count() - 5).ToList();
+                report.TopFiveNewCustomers = report.TopFiveNewCustomers.SkipLast(report.TopFiveNewCustomers.Count() - 5).ToList();
                 response.data = report;
             }
             else
