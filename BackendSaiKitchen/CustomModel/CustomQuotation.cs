@@ -30,6 +30,7 @@ namespace BackendSaiKitchen.CustomModel
         public int PaymentTypeId { get; set; }
         public string CalculationSheetFile { get; set; }
         public bool IsEdit { get; set; }
+        public bool IsPaid { get; set; }
 
 
         public List<string> QuotationFiles { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
@@ -39,6 +40,7 @@ namespace BackendSaiKitchen.Models
         public int? QuotationAddedBy { get; set; }
         public string QuotationCustomerReviewDate { get; set; }
         public string CalculationSheetFile { get; set; }
+        public bool? IsPaid { get; set; }
 
         public virtual Inquiry Inquiry { get; set; }
         public virtual InquiryStatus QuotationStatus { get; set; }

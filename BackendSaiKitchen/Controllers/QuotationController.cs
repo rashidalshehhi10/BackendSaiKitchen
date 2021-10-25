@@ -266,7 +266,7 @@ namespace BackendSaiKitchen.Controllers
             return tableResponse;
         }
 
-        [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
+       // [AuthFilter((int)permission.ManageQuotation, (int)permissionLevel.Create)]
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
@@ -310,10 +310,11 @@ namespace BackendSaiKitchen.Controllers
                     ProposalReferenceNumber = customQuotation.ProposalReferenceNumber,
                     IsActive = true,
                     IsDeleted = false,
-                    Amount = customQuotation.Amount,
-                    TotalAmount = customQuotation.TotalAmount,
+                    Amount = customQuotation.IsPaid ? customQuotation.Amount : "0",
+                    TotalAmount = customQuotation.IsPaid ? customQuotation.TotalAmount : "0",
                     QuotationStatusId = (int)inquiryStatus.quotationWaitingForApproval,
                     CalculationSheetFile = customQuotation.CalculationSheetFile,
+                    IsPaid = customQuotation.IsPaid,
                     CreatedDate = Helper.Helper.GetDateTime(),
                     CreatedBy = Constants.userId,
                     UpdatedBy = Constants.userId,
@@ -1138,7 +1139,7 @@ namespace BackendSaiKitchen.Controllers
                 };
                 try
                 {
-                    sendNotificationToHead(
+                    await sendNotificationToHead(
                         content: "Quotation Of inquiry Code: " + "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
                                  inquiry.InquiryId + " Approved By Client", false,
                         " Of IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId + " For " +
@@ -1393,55 +1394,79 @@ namespace BackendSaiKitchen.Controllers
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
                     quotationId = quotation.QuotationId;
-                    quotation.AdvancePayment = order.AdvancePayment;
+                    quotation.AdvancePayment = (bool)quotation.IsPaid ? order.AdvancePayment : "0";
                     quotation.IsInstallment = order.IsInstallment;
                     quotation.NoOfInstallment = order.NoOfInstallment;
                     quotation.AfterDelivery = order.AfterDelivery;
-
-                    decimal percent = 0;
-                    decimal amountwithoutAdvance = decimal.Parse(quotation.TotalAmount) -
-                                               decimal.Parse(quotation.TotalAmount) / 100 *
-                                               decimal.Parse(quotation.AdvancePayment);
-                    quotation.Payments.Add(new Payment
+                    if ((bool)quotation.IsPaid)
                     {
-                        PaymentAmountinPercentage = decimal.Parse(order.AdvancePayment),
-                        InquiryId = order.inquiryId,
-                        PaymentName = "Advance Payment",
-                        PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                        PaymentTypeId = (int)paymenttype.AdvancePayment,
-                        PaymentDetail = "Advance Payment of " + order.inquiryId,
-                        PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
-                                                         decimal.Parse(order.AdvancePayment) * 100),
-                        PaymentExpectedDate = quotation.QuotationValidityDate,
-                        IsActive = true,
-                        IsDeleted = false,
-                        CreatedDate = Helper.Helper.GetDateTime(),
-                        CreatedBy = Constants.userId,
-                        UpdatedBy = Constants.userId,
-                        UpdatedDate = Helper.Helper.GetDateTime()
-                    });
-                    if (order.IsInstallment == true)
-                    {
-                        for (int i = 0; i < order.Payments.Count; i++)
+                        decimal percent = 0;
+                        decimal amountwithoutAdvance = decimal.Parse(quotation.TotalAmount) -
+                                                   decimal.Parse(quotation.TotalAmount) / 100 *
+                                                   decimal.Parse(quotation.AdvancePayment);
+                        quotation.Payments.Add(new Payment
                         {
-                            Payment pay = order.Payments[i];
-                            percent += (decimal)pay.PaymentAmountinPercentage;
-                            if (order.Payments.Count - 1 == i)
+                            PaymentAmountinPercentage = decimal.Parse(order.AdvancePayment),
+                            InquiryId = order.inquiryId,
+                            PaymentName = "Advance Payment",
+                            PaymentStatusId = (int)paymentstatus.PaymentCreated,
+                            PaymentTypeId = (int)paymenttype.AdvancePayment,
+                            PaymentDetail = "Advance Payment of " + order.inquiryId,
+                            PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                                                             decimal.Parse(order.AdvancePayment) * 100),
+                            PaymentExpectedDate = quotation.QuotationValidityDate,
+                            IsActive = true,
+                            IsDeleted = false,
+                            CreatedDate = Helper.Helper.GetDateTime(),
+                            CreatedBy = Constants.userId,
+                            UpdatedBy = Constants.userId,
+                            UpdatedDate = Helper.Helper.GetDateTime()
+                        });
+                        if (order.IsInstallment == true)
+                        {
+                            for (int i = 0; i < order.Payments.Count; i++)
                             {
-                                pay.PaymentAmountinPercentage += 100 - decimal.Parse(order.AdvancePayment) - percent;
-                            }
+                                Payment pay = order.Payments[i];
+                                percent += (decimal)pay.PaymentAmountinPercentage;
+                                if (order.Payments.Count - 1 == i)
+                                {
+                                    pay.PaymentAmountinPercentage += 100 - decimal.Parse(order.AdvancePayment) - percent;
+                                }
 
-                            decimal? paymentAmount = amountwithoutAdvance / 100 * pay.PaymentAmountinPercentage * 100;
+                                decimal? paymentAmount = amountwithoutAdvance / 100 * pay.PaymentAmountinPercentage * 100;
+                                quotation.Payments.Add(new Payment
+                                {
+                                    PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
+                                    InquiryId = order.inquiryId,
+                                    PaymentName = "Installment# " + (i + 1),
+                                    PaymentStatusId = (int)paymentstatus.InstallmentCreated,
+                                    PaymentTypeId = (int)paymenttype.Installment,
+                                    PaymentDetail = "Installment of " + order.inquiryId,
+                                    PaymentAmount = decimal.Truncate((decimal)paymentAmount),
+                                    PaymentExpectedDate = pay.PaymentExpectedDate,
+                                    IsActive = true,
+                                    IsDeleted = false,
+                                    CreatedDate = Helper.Helper.GetDateTime(),
+                                    CreatedBy = Constants.userId,
+                                    UpdatedBy = Constants.userId,
+                                    UpdatedDate = Helper.Helper.GetDateTime()
+                                });
+                                //Helper.Helper.AddPayment(paymentAmount);
+                            }
+                        }
+                        else
+                        {
                             quotation.Payments.Add(new Payment
                             {
-                                PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
+                                PaymentAmountinPercentage = decimal.Parse(order.BeforeInstallation),
                                 InquiryId = order.inquiryId,
-                                PaymentName = "Installment# " + (i + 1),
-                                PaymentStatusId = (int)paymentstatus.InstallmentCreated,
-                                PaymentTypeId = (int)paymenttype.Installment,
-                                PaymentDetail = "Installment of " + order.inquiryId,
-                                PaymentAmount = decimal.Truncate((decimal)paymentAmount),
-                                PaymentExpectedDate = pay.PaymentExpectedDate,
+                                PaymentName = "Before Installation",
+                                PaymentStatusId = (int)paymentstatus.PaymentCreated,
+                                PaymentTypeId = (int)paymenttype.BeforeInstallation,
+                                PaymentDetail = "Before Installation of " + order.inquiryId,
+                                PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                                                                 decimal.Parse(order.BeforeInstallation) * 100),
+                                PaymentExpectedDate = "",
                                 IsActive = true,
                                 IsDeleted = false,
                                 CreatedDate = Helper.Helper.GetDateTime(),
@@ -1449,59 +1474,38 @@ namespace BackendSaiKitchen.Controllers
                                 UpdatedBy = Constants.userId,
                                 UpdatedDate = Helper.Helper.GetDateTime()
                             });
-                            //Helper.Helper.AddPayment(paymentAmount);
+                            order.AfterDelivery =
+                                (100 - (decimal.Parse(order.BeforeInstallation) + decimal.Parse(order.AdvancePayment)))
+                                .ToString();
+                            quotation.Payments.Add(new Payment
+                            {
+                                PaymentAmountinPercentage = decimal.Parse(order.AfterDelivery),
+                                InquiryId = order.inquiryId,
+                                PaymentName = "After Delivery",
+                                PaymentStatusId = (int)paymentstatus.PaymentCreated,
+                                PaymentTypeId = (int)paymenttype.AfterDelivery,
+                                PaymentDetail = "After Delivery of " + order.inquiryId,
+                                PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                                                                 decimal.Parse(order.AfterDelivery) * 100),
+                                PaymentExpectedDate = "",
+                                IsActive = true,
+                                IsDeleted = false,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime()
+                            });
                         }
-                    }
-                    else
-                    {
-                        quotation.Payments.Add(new Payment
-                        {
-                            PaymentAmountinPercentage = decimal.Parse(order.BeforeInstallation),
-                            InquiryId = order.inquiryId,
-                            PaymentName = "Before Installation",
-                            PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                            PaymentTypeId = (int)paymenttype.BeforeInstallation,
-                            PaymentDetail = "Before Installation of " + order.inquiryId,
-                            PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
-                                                             decimal.Parse(order.BeforeInstallation) * 100),
-                            PaymentExpectedDate = "",
-                            IsActive = true,
-                            IsDeleted = false,
-                            CreatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime()
-                        });
-                        order.AfterDelivery =
-                            (100 - (decimal.Parse(order.BeforeInstallation) + decimal.Parse(order.AdvancePayment)))
-                            .ToString();
-                        quotation.Payments.Add(new Payment
-                        {
-                            PaymentAmountinPercentage = decimal.Parse(order.AfterDelivery),
-                            InquiryId = order.inquiryId,
-                            PaymentName = "After Delivery",
-                            PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                            PaymentTypeId = (int)paymenttype.AfterDelivery,
-                            PaymentDetail = "After Delivery of " + order.inquiryId,
-                            PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
-                                                             decimal.Parse(order.AfterDelivery) * 100),
-                            PaymentExpectedDate = "",
-                            IsActive = true,
-                            IsDeleted = false,
-                            CreatedDate = Helper.Helper.GetDateTime(),
-                            CreatedBy = Constants.userId,
-                            UpdatedBy = Constants.userId,
-                            UpdatedDate = Helper.Helper.GetDateTime()
-                        });
-                    }
 
-                    foreach (Payment payment in quotation.Payments)
-                    {
-                        if (payment.PaymentAmount == 0)
+                        foreach (Payment payment in quotation.Payments)
                         {
-                            payment.IsActive = false;
+                            if (payment.PaymentAmount == 0)
+                            {
+                                payment.IsActive = false;
+                            }
                         }
                     }
+                    
 
                     if (_jobOrder.MepdrawingFileUrl != null && _jobOrder.MepdrawingFileUrl != "")
                     {
@@ -1567,52 +1571,11 @@ namespace BackendSaiKitchen.Controllers
                 .FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.contractApproved;
-                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                // inquiry.InquiryComment = updateQuotation.reason;
-
-                foreach (InquiryWorkscope workscope in inquiry.InquiryWorkscopes)
-                {
-                    workscope.InquiryStatusId = (int)inquiryStatus.contractApproved;
-                    foreach (Design design in workscope.Designs)
-                    {
-                        foreach (File file in design.Files)
-                        {
-                            if (file != null)
-                            {
-                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                            }
-                        }
-                    }
-                }
-
-                foreach (Payment payment in inquiry.Payments)
-                {
-                    payment.PaymentModeId = approve.SelectedPaymentMode;
-                    if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
-                    {
-                        payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
-                        payment.ClientSecret = approve.ClientSecret;
-                        payment.PaymentMethod = approve.PaymentMethod;
-                        payment.PaymentIntentToken = approve.PaymentIntentToken;
-                        payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
-                                              inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId +
-                                              "" + payment.PaymentId;
-                    }
-                    else
-                    {
-                        payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
-                    }
-
-                    if (payment.PaymentAmount == 0)
-                    {
-                        payment.IsActive = false;
-                    }
-                }
-
+                bool ispaid = false;
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
-                    quotation.QuotationStatusId = (int)inquiryStatus.contractApproved;
+                    ispaid =(bool) quotation.IsPaid;
+                    quotation.QuotationStatusId = ispaid ? (int)inquiryStatus.contractApproved : (int)inquiryStatus.checklistPending;
                     if (approve.Pdf != null && approve.Pdf.Length != 0)
                     {
                         Tuple<string, string> fileUrl = await Helper.Helper.UploadFile(approve.Pdf);
@@ -1636,6 +1599,52 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
                 }
+                inquiry.InquiryStatusId = ispaid ? (int)inquiryStatus.contractApproved :(int)inquiryStatus.checklistPending ;
+                inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
+                // inquiry.InquiryComment = updateQuotation.reason;
+
+                foreach (InquiryWorkscope workscope in inquiry.InquiryWorkscopes)
+                {
+                    workscope.InquiryStatusId = ispaid ? (int)inquiryStatus.contractApproved : (int)inquiryStatus.checklistPending;
+                    foreach (Design design in workscope.Designs)
+                    {
+                        foreach (File file in design.Files)
+                        {
+                            if (file != null)
+                            {
+                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                            }
+                        }
+                    }
+                }
+                if (ispaid)
+                {
+                    foreach (Payment payment in inquiry.Payments)
+                    {
+                        payment.PaymentModeId = approve.SelectedPaymentMode;
+                        if (payment.PaymentModeId == (int)paymentMode.OnlinePayment)
+                        {
+                            payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                            payment.ClientSecret = approve.ClientSecret;
+                            payment.PaymentMethod = approve.PaymentMethod;
+                            payment.PaymentIntentToken = approve.PaymentIntentToken;
+                            payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
+                                                  inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId +
+                                                  "" + payment.PaymentId;
+                        }
+                        else
+                        {
+                            payment.PaymentStatusId = (int)paymentstatus.PaymentPending;
+                        }
+
+                        if (payment.PaymentAmount == 0)
+                        {
+                            payment.IsActive = false;
+                        }
+                    }
+                }
+                
+
 
                 foreach (JobOrder joborder in inquiry.JobOrders)
                 {
