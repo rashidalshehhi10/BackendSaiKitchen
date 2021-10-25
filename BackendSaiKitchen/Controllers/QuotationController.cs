@@ -295,6 +295,13 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 Helper.Helper.Each(inquiry.Quotations, x => x.IsActive = false);
+                if (customQuotation.PromoCode != null && customQuotation.PromoCode != "")
+                {
+                    var promo = promoRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PromoCode == customQuotation.PromoCode).FirstOrDefault();
+                    inquiry.Promo = promo;
+                    inquiry.PromoId = promo.PromoId;
+                    inquiry.PromoDiscount = promo.PromoDiscount;
+                }
                 Quotation quotation = new Quotation
                 {
                     AdvancePayment = customQuotation.AdvancePayment,
@@ -582,7 +589,8 @@ namespace BackendSaiKitchen.Controllers
                 .FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Promo).FirstOrDefault();
             if (inquiry != null)
             {
                 response.data = inquiry;

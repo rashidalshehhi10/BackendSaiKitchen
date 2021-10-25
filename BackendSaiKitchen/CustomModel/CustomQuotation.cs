@@ -13,7 +13,7 @@ namespace BackendSaiKitchen.CustomModel
         public string Vat { get; set; }
         public string QuotationValidityDate { get; set; }
         public string Discount { get; set; }
-
+        public string PromoCode { get; set; }
         public string ProposalReferenceNumber { get; set; }
 
         //public bool? IsInstallment { get; set; }
