@@ -36,6 +36,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int PaymentId { get; set; }
         public int PaymentModeId { get; set; }
+        public int userId { get; set; }
         public List<string> Files { get; set; }
     }
 

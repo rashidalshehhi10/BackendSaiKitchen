@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
@@ -487,11 +488,13 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UploadInvoice(Invoice invoice)
         {
+            List<IFormFile> files = new List<IFormFile>();
             Payment payment = paymentRepository
                 .FindByCondition(x => x.PaymentId == invoice.PaymentId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Inquiry).ThenInclude(x =>
                     x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Inquiry).ThenInclude(x => x.Customer).FirstOrDefault();
 
             if (payment != null)
             {
@@ -515,12 +518,16 @@ namespace BackendSaiKitchen.Controllers
                                 CreatedBy = Constants.userId,
                                 CreatedDate = Helper.Helper.GetDateTime()
                             });
+
+                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(fileUrl)));
                         }
                     }
 
                     payment.PaymentModeId = invoice.PaymentModeId;
 
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                    payment.PaymentDoneBy = invoice.userId;
+                    payment.PaymentCompletionDate = Helper.Helper.GetDateTime();
                     if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                     {
                         payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
@@ -528,6 +535,21 @@ namespace BackendSaiKitchen.Controllers
                         {
                             inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistPending;
                         }
+                    }
+
+                    try
+                    {
+                        await mailService.SendEmailAsync(new MailRequest
+                        {
+                            Subject = "Payment Files",
+                            ToEmail = payment.Inquiry.Customer.CustomerEmail,
+                            Body = "Payment Files",
+                            Attachments = files
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        SentrySdk.CaptureMessage(ex.Message);
                     }
 
                     paymentRepository.Update(payment);
