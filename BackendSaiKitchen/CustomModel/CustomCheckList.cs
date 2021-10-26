@@ -14,6 +14,7 @@ namespace BackendSaiKitchen.CustomModel
         public int inquiryId { get; set; }
         public string Reason { get; set; }
         public bool IsSpecialApprovalRequired { get; set; }
+        public int userId { get; set; }
     }
 
     public class CustomCheckListapprove
@@ -35,6 +36,7 @@ namespace BackendSaiKitchen.CustomModel
         public string ApprovedDrawingsAndAvailabilityOfClientSigntureNotes { get; set; }
         public bool AppliancesDataSheet { get; set; }
         public string AppliancesDataSheetNotes { get; set; }
+        public int userId { get; set; }
         public List<AddFileonChecklist> addFileonChecklists { get; set; }
     }
 

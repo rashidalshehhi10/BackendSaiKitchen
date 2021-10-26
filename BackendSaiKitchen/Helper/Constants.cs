@@ -165,7 +165,8 @@
         jobOrderAuditPending = 64,
         jobOrderAuditRejected = 65,
         specialApprovalPending = 66,
-        specialApprovalRejected = 67
+        specialApprovalRejected = 67,
+        jobOrderFactoryDelayed = 68
     }
 
     public enum roleType

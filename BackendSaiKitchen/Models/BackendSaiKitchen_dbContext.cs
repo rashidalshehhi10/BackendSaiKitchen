@@ -503,6 +503,8 @@ namespace BackendSaiKitchen.Models
             {
                 entity.ToTable("JobOrder");
 
+                entity.Property(e => e.CommercialCheckListCompletionDate).HasMaxLength(50);
+
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.DataSheetApplianceFileUrl).HasColumnName("DataSheetApplianceFileURL");
@@ -532,6 +534,8 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.MepdrawingFileUrl).HasColumnName("MEPDrawingFileURL");
 
                 entity.Property(e => e.MepdrawingNotes).HasColumnName("MEPDrawingNotes");
+
+                entity.Property(e => e.TechnicalCheckListCompletionDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 

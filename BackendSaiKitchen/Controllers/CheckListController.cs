@@ -331,6 +331,8 @@ namespace BackendSaiKitchen.Controllers
                     joborder.AppliancesDataSheet = approve.AppliancesDataSheet;
                     joborder.AppliancesDataSheetNotes = approve.AppliancesDataSheetNotes;
                     joborder.JobOrderChecklistFileUrl = approve.jobOrderChecklistFileUrl;
+                    joborder.TechnicalCheckListDoneBy = approve.userId;
+                    joborder.TechnicalCheckListCompletionDate = Helper.Helper.GetDateTime();
                 }
 
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -601,6 +603,8 @@ namespace BackendSaiKitchen.Controllers
                 foreach (JobOrder joborder in inquiry.JobOrders)
                 {
                     joborder.IsSpecialApprovalRequired = approve.IsSpecialApprovalRequired;
+                    joborder.CommercialCheckListCompletionDate = Helper.Helper.GetDateTime();
+                    joborder.CommercialCheckListDoneBy = approve.userId;
                 }
 
                 if (approve.IsSpecialApprovalRequired)

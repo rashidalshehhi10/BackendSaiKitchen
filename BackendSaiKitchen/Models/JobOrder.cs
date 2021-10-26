@@ -50,6 +50,10 @@ namespace BackendSaiKitchen.Models
         public string AppliancesDataSheetNotes { get; set; }
         public string DetailedDesignFile { get; set; }
         public bool? IsSpecialApprovalRequired { get; set; }
+        public string TechnicalCheckListCompletionDate { get; set; }
+        public int? TechnicalCheckListDoneBy { get; set; }
+        public string CommercialCheckListCompletionDate { get; set; }
+        public int? CommercialCheckListDoneBy { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
