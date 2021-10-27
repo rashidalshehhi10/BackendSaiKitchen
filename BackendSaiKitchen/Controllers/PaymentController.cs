@@ -433,7 +433,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> GenerateSalesInvoicePaymentByIdAsync(SalesInvoiceRequest salesInvoiceRequest)
         {
-            IQueryable<SalesInvoiceReciept> payment = paymentRepository
+            var payment = paymentRepository
                 .FindByCondition(x =>
                     x.PaymentId == salesInvoiceRequest.PaymentId && x.IsActive == true && x.IsDeleted == false).Select(
                     x => new SalesInvoiceReciept
@@ -455,22 +455,25 @@ namespace BackendSaiKitchen.Controllers
                         TotalAmount = x.Quotation.TotalAmount,
                         AmounttoBePaid = x.PaymentAmount
                     });
-            if (payment != null && payment.Count() > 0)
+             if (payment.Any())
             {
                 try
                 {
                     if (salesInvoiceRequest.PaymentModeId == (int)paymentMode.OnlinePayment)
                     {
+
+                        string customerEmail = payment.FirstOrDefault().CustomerEmail;
                         await mailService.SendEmailAsync(new MailRequest
                         {
                             ToEmail = payment.FirstOrDefault().CustomerEmail,
                             Subject = "Pay Online using Link",
-                            Body = "https://saikitchen.azurewebsites.net/onlinepay"
+                            Body = "https://saikitchen.azurewebsites.net/onlinepay?paymentId="+ salesInvoiceRequest.PaymentId
                         });
                     }
                 }
                 catch (Exception)
                 {
+
                 }
 
                 response.data = payment;
