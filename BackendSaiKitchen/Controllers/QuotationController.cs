@@ -280,7 +280,7 @@ namespace BackendSaiKitchen.Controllers
                         .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
                                                        y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
                                                        y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
-                                                       y.InquiryStatusId == (int)InquiryStatus.quotationDelayed
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationDelayed
                                                        ) &&
                                                       y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building)
@@ -1641,6 +1641,8 @@ namespace BackendSaiKitchen.Controllers
                             payment.InvoiceCode = "INV" + inquiry.BranchId + "" + inquiry.CustomerId + "" +
                                                   inquiry.InquiryId + "" + inquiry.Quotations.FirstOrDefault().QuotationId +
                                                   "" + payment.PaymentId;
+                            inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                            Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.checklistPending);
                         }
                         else
                         {
