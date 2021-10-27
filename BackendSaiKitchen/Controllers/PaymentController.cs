@@ -616,5 +616,39 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object AddPaymentByPaymentId(int paymentId)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentId == paymentId)
+                .Include(x => x.Inquiry).ThenInclude(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (payment != null)
+            {
+                if (payment.PaymentTypeId == (int)paymenttype.Installment)
+                {
+                    payment.PaymentStatusId = (int)paymentstatus.InstallmentApproved;
+                }
+                else if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
+                {
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                    payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                    Helper.Helper.Each(payment.Inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.checklistPending);
+                }
+                else
+                {
+                    payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                }
+                response.data = "Payment Approved";
+                paymentRepository.Update(payment);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Payment Not Found";
+            }
+            return response;
+        }
     }
 }
