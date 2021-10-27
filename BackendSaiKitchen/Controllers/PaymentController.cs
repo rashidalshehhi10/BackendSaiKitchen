@@ -580,6 +580,7 @@ namespace BackendSaiKitchen.Controllers
             var payment = paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentId == PaymentId).Select(x => new
             {
                 PaymentId = PaymentId,
+                InquiryId = x.InquiryId,
                 InquiryCode = x.Inquiry.InquiryCode,
                 InvoiceNo = "QTN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId + "" + x.Inquiry.Quotations.
                         FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false)
