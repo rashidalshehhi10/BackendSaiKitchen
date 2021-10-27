@@ -493,12 +493,7 @@ namespace BackendSaiKitchen.Controllers
                         (int)notificationCategory.Quotation);
 
 
-                    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode,
-                        Constants.CRMBaseUrl + "/invoice.html?inquiryId=" + inquiry.InquiryId, quotation.AdvancePayment,
-                        quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount,
-                        quotation.QuotationValidityDate,
-                        Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId,
-                        Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
+                    
 
 
                     context.SaveChanges();
@@ -608,13 +603,14 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object HeadAcceptQuotation(CustomQuotation _quotation)
+        public async Task<object> HeadAcceptQuotation(CustomQuotation _quotation)
         {
             Quotation quotation = quotationRepository.FindByCondition(x =>
                     x.IsActive == true && x.IsDeleted == false && x.QuotationId == _quotation.QuotationId)
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Inquiry)
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Inquiry).ThenInclude(x => x.Customer)
                 .FirstOrDefault();
             if (quotation != null)
             {
@@ -667,7 +663,19 @@ namespace BackendSaiKitchen.Controllers
                         quotation.Files = files;
                     }
                 }
-
+                try
+                {
+                    await mailService.SendQuotationEmailAsync(quotation.Inquiry.Customer.CustomerEmail, quotation.Inquiry.InquiryCode,
+                        Constants.CRMBaseUrl + "/invoice.html?inquiryId=" + quotation.InquiryId, quotation.AdvancePayment,
+                        quotation.Amount, quotation.Discount, quotation.Vat, quotation.TotalAmount,
+                        quotation.QuotationValidityDate,
+                        Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + quotation.InquiryId,
+                        Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + quotation.InquiryId);
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureMessage(ex.Message);
+                }
                 quotationRepository.Update(quotation);
                 context.SaveChanges();
             }
