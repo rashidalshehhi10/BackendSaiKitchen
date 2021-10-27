@@ -1308,8 +1308,8 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetCountByBranchId(int branchId)
         {
-            var Customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true 
-            && x.Branch.IsDeleted == false && (x.BranchId == branchId || x.BranchId == null)).Count();
+            var Customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true
+            && x.Branch.IsDeleted == false && (x.BranchId == branchId || string.IsNullOrEmpty(x.BranchId.ToString()))).Count();
             var Branches = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var BranchRoles = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var Workscopes = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
