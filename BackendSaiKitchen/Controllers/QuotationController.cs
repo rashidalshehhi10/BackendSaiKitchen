@@ -1266,7 +1266,7 @@ namespace BackendSaiKitchen.Controllers
                 .FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer)
                 .Include(x => x.Quotations.Where(y =>
-                    y.QuotationStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval &&
+                    y.QuotationStatusId == (int)inquiryStatus.contractWaitingForCustomerApproval &&
                     y.IsActive == true && y.IsDeleted == false)).ThenInclude(x =>
                     x.Payments.Where(y =>
                         y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
@@ -1416,6 +1416,7 @@ namespace BackendSaiKitchen.Controllers
                     quotation.IsInstallment = order.IsInstallment;
                     quotation.NoOfInstallment = order.NoOfInstallment;
                     quotation.AfterDelivery = order.AfterDelivery;
+                    quotation.QuotationStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
                     if ((bool)quotation.IsPaid)
                     {
                         decimal percent = 0;
