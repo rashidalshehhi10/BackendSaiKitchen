@@ -610,7 +610,7 @@ namespace BackendSaiKitchen.Controllers
                 if (approve.IsSpecialApprovalRequired)
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
-                    inquiry.InquiryComment = approve.Reason;
+                    inquiry.InquiryDescription = approve.Reason;
 
                     foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
