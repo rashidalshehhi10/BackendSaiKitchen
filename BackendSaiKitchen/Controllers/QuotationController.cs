@@ -279,7 +279,9 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
                         .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
                                                        y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
-                                                       x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) &&
+                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
+                                                       y.InquiryStatusId == (int)InquiryStatus.quotationDelayed
+                                                       ) &&
                                                       y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).Include(x => x.Building)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
