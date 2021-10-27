@@ -1308,6 +1308,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetCountByBranchId(int branchId)
         {
+            var Customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var Branches = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var BranchRoles = branchRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
             var Workscopes = workScopeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Count();
@@ -1319,7 +1320,7 @@ namespace SaiKitchenBackend.Controllers
             var Numbers = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId).Select(x => new
             {
                 inquiriesCount = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
-                customers = x.Customers.Where(x =>  x.IsActive == true && x.IsDeleted == false).Count(),
+                customers = Customers,
                 measurementAssinee = x.Inquiries.Where(x =>  x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Count(),
                 measurements = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementInProgress || x.InquiryStatusId == (int)inquiryStatus.measurementRejected || x.InquiryStatusId == (int)inquiryStatus.measurementdelayed) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)).Count(),
                 measurementApprovals = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementWaitingForApproval && x.ManagedBy == Constants.userId)).Count(),
