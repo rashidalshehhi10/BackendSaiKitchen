@@ -572,5 +572,49 @@ namespace BackendSaiKitchen.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetPaymentDetailsByPaymentId(int PaymentId)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentId == PaymentId).Select(x => new
+            {
+                PaymentId = PaymentId,
+                InquiryCode = x.Inquiry.InquiryCode,
+                InvoiceNo = "QTN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId + "" + x.Inquiry.Quotations.
+                        FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false)
+                        .QuotationId,
+                CreatedDate = x.Inquiry.Quotations
+                        .FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).CreatedDate,
+                ValidDate = x.Inquiry.Quotations
+                        .FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).QuotationValidityDate,
+                CustomerName = x.Inquiry.Customer.CustomerName,
+                CustomerEmail = x.Inquiry.Customer.CustomerEmail,
+                CustomerContact = x.Inquiry.Customer.CustomerContact,
+                CustomerWhatsapp = x.Inquiry.Customer.CustomerWhatsapp,
+                ProposalReferenceNumber = x.Inquiry.Quotations
+                        .FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).ProposalReferenceNumber,
+                PaidAmount = x.Inquiry.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && (y.PaymentStatusId == (int)paymentstatus.InstallmentApproved || y.PaymentStatusId == (int)paymentstatus.PaymentApproved)).Sum(x => x.PaymentAmount) / 100,
+                PaymentAmount = x.PaymentAmount / 100,
+                PaymnetMode = x.PaymentModeId,
+                Paymentstatus = x.PaymentStatus.PaymentStatusName,
+                Paymenttype = x.PaymentType.PaymentTypeName,
+                TotalAmount = x.Inquiry.Quotations.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount,
+                Amount = x.Inquiry.Quotations.FirstOrDefault(y => y.IsActive == true && y.IsDeleted == false).Amount,
+                inquiryWorkScopeNames = x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .OrderBy(x => x.WorkscopeId).Select(x => x.Workscope.WorkScopeName).ToList(),
+
+            }).FirstOrDefault();
+            if (payment != null)
+            {
+                response.data = payment;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = " Payment Not Found";
+            }
+            return response;
+        }
     }
 }
