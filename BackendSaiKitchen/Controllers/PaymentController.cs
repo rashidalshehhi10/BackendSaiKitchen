@@ -467,7 +467,7 @@ namespace BackendSaiKitchen.Controllers
                         {
                             ToEmail = payment.FirstOrDefault().CustomerEmail,
                             Subject = "Pay Online using Link",
-                            Body = "https://saikitchen.azurewebsites.net/onlinepay?paymentId="+ salesInvoiceRequest.PaymentId
+                            Body = "https://saikitchen.azurewebsites.net/onlinepay.html?paymentId="+ salesInvoiceRequest.PaymentId
                         });
                     }
                 }
