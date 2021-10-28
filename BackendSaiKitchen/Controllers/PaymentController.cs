@@ -620,25 +620,37 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object AddPaymentByPaymentId(int paymentId)
+        public object AddPaymentByPaymentId(addPayment add)
         {
-            var payment = paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentId == paymentId)
+            var payment = paymentRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PaymentId == add.paymentId)
                 .Include(x => x.Inquiry).ThenInclude(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (payment != null)
             {
                 if (payment.PaymentTypeId == (int)paymenttype.Installment)
                 {
                     payment.PaymentStatusId = (int)paymentstatus.InstallmentApproved;
+                    payment.ClientSecret = add.ClientSecret;
+                    payment.PaymentIntentToken = add.PaymentIntentToken;
+                    payment.PaymentMethod = add.PaymentMethod;
+                    payment.PaymentModeId = add.SelectedPaymentMode;
                 }
                 else if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                 {
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                    payment.ClientSecret = add.ClientSecret;
+                    payment.PaymentIntentToken = add.PaymentIntentToken;
+                    payment.PaymentMethod = add.PaymentMethod;
+                    payment.PaymentModeId = add.SelectedPaymentMode;
                     payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
                     Helper.Helper.Each(payment.Inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.checklistPending);
                 }
                 else
                 {
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                    payment.ClientSecret = add.ClientSecret;
+                    payment.PaymentIntentToken = add.PaymentIntentToken;
+                    payment.PaymentMethod = add.PaymentMethod;
+                    payment.PaymentModeId = add.SelectedPaymentMode;
                 }
                 response.data = "Payment Approved";
                 paymentRepository.Update(payment);

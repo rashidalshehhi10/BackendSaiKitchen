@@ -20,6 +20,15 @@ namespace BackendSaiKitchen.CustomModel
         public List<byte[]> base64 { get; set; }
     }
 
+     public class addPayment
+    {
+        public int paymentId { get; set; }
+        public string PaymentIntentToken { get; set; }
+        public string ClientSecret { get; set; }
+        public string PaymentMethod { get; set; }
+        public int SelectedPaymentMode { get; set; }
+    }
+
     public class UpdatePaymentStatus
     {
         public int InquiryId { get; set; }
