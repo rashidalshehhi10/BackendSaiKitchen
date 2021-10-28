@@ -1311,6 +1311,41 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object stripeByPaymentId(int PaymentId)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == PaymentId && x.IsActive == true && x.IsDeleted == false && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false)
+                .Include(x => x.Inquiry).ThenInclude(x => x.Customer)
+            .FirstOrDefault();
+
+            if (payment != null)
+            {
+                PaymentIntentService paymentIntents = new PaymentIntentService();
+                PaymentIntent paymentIntent = paymentIntents.Create(new PaymentIntentCreateOptions
+                {
+                    Amount =(long?)payment.PaymentAmount,
+                    Currency = "aed",
+                    ReceiptEmail = payment.Inquiry.Customer.CustomerEmail,
+                });
+                payment.PaymentStatusId =
+                    (int)paymentstatus.PaymentPending;
+                payment.PaymentModeId =
+                    (int)paymentMode.OnlinePayment;
+               payment.ClientSecret =
+                    paymentIntent.ClientSecret;
+                response.data = paymentIntent.ClientSecret;
+                paymentRepository.Update(payment);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Payment Not Found";
+            }
+
+            return response;
+        }
 
         [HttpPost]
         [Route("[action]")]
