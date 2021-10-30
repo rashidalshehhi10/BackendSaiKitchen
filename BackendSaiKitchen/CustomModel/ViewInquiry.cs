@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BackendSaiKitchen.Models;
+using System.Collections.Generic;
 
 namespace BackendSaiKitchen.CustomModel
 {
@@ -52,6 +53,7 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignAddedOn { get; set; }
 
         public string QuotationAddedOn { get; set; }
+        public List<Payment> payments { get; set; }
         //public List<InquiryWorkscope> InquiryWorkscopes { get; set; }
     }
 

@@ -810,6 +810,8 @@ namespace BackendSaiKitchen.Models
             {
                 entity.ToTable("Payment");
 
+                entity.Property(e => e.AmountRecievedDate).HasMaxLength(50);
+
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.PaymentAmount).HasColumnType("decimal(38, 0)");

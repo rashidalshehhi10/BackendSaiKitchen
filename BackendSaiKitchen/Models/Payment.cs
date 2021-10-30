@@ -38,6 +38,9 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public int? PaymentDoneBy { get; set; }
         public string PaymentCompletionDate { get; set; }
+        public bool? IsAmountRecieved { get; set; }
+        public int? AmountRecievedBy { get; set; }
+        public string AmountRecievedDate { get; set; }
 
         public virtual Fee Fees { get; set; }
         public virtual Inquiry Inquiry { get; set; }
