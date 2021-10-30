@@ -663,5 +663,27 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object PaymentRecieveAmount(int paymentId)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).FirstOrDefault();
+            if (payment != null)
+            {
+                payment.IsAmountRecieved = true;
+                payment.AmountRecievedBy = Constants.userId;
+                payment.AmountRecievedDate = Helper.Helper.GetDateTime();
+                paymentRepository.Update(payment);
+                context.SaveChanges();
+                response.data = "Amount Recieved";
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Payment Not Found";
+            }
+            return response;
+        }
     }
 }

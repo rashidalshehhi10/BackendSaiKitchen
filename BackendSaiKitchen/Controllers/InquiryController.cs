@@ -786,7 +786,7 @@ namespace SaiKitchenBackend.Controllers
                         .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
                     QuotationAddedOn = x.QuotationAddedOn,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName,
-                    payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved == false && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId !=(int) paymentstatus.InstallmentApproved)&& x.PaymentModeId == (int)paymentMode.Cheque).ToList()
+                    payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId !=(int) paymentstatus.PaymentApproved)&& x.PaymentModeId == (int)paymentMode.Cheque).ToList()
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
