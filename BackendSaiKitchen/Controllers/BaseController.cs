@@ -126,7 +126,7 @@ namespace SaiKitchenBackend.Controllers
                 {
                     int.TryParse(branchRoleId[0], out Constants.branchRoleId);
                 }
-
+                
                 //var va = context.HttpContext.Request.Method;
                 //int val;
                 //_ = int.TryParse(context.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "UserId").Value.FirstOrDefault(), out Constants.userId);

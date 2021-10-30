@@ -384,7 +384,7 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length,[FromForm] int? inquiryId,[FromForm] string inquiryCode,[FromForm] int? status,[FromForm] string customerName,[FromForm] string workscopeNames, [FromForm] string measurementScheduleDate, [FromForm] int? measurementAssignTo, [FromForm] string? designScheduleDate, [FromForm] int? designAssignTo, [FromForm] string customerCode, [FromForm] string customerContact, [FromForm] string buildingAddress)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length,[FromForm(Name = "columns[0][data]")] int? inquiryId,[FromForm(Name = "columns[1][data]")] string inquiryCode, [FromForm(Name = "columns[2][data]")] int? status, [FromForm(Name = "columns[3][data]")] string customerName, [FromForm(Name = "columns[4][data]")] string workscopeNames, [FromForm(Name = "columns[6][data]")] string measurementScheduleDate, [FromForm(Name = "columns[7][data]")] int? measurementAssignTo, [FromForm(Name = "columns[8][data]")] string? designScheduleDate, [FromForm(Name = "columns[9][data]")] int? designAssignTo, [FromForm(Name = "columns[12][data]")] string customerCode, [FromForm(Name = "columns[13][data]")] string customerContact, [FromForm(Name = "columns[15][data]")] string buildingAddress)
         {
             var type = typeof(Inquiry);
             var parameterExprission = Expression.Parameter(typeof(Inquiry), "x");

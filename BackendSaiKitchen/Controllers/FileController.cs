@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -36,6 +37,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task<object> UploadFile()
         {
+            
             foreach (Microsoft.AspNetCore.Http.IFormFile file in Request.Form.Files)
             {
                 Microsoft.AspNetCore.Http.IFormFile FileDataContent = file;
@@ -159,6 +161,37 @@ namespace BackendSaiKitchen.Controllers
             }
 
             return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> GetFile(string FileName)
+        {
+            if (FileName != null)
+            {
+
+                var file = await Helper.Helper.GetFile(FileName);
+                
+                var type = Helper.Helper.GuessFileType(file);
+                
+                if (type == "pdf")
+                {
+                    type = "application/" + type;
+                }
+                else
+                {
+                    type = "image/" + type;
+                }
+
+                return File(file, type);
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Please Enter The File Name";
+                return response;
+            }
+                
         }
 
         [DisableRequestSizeLimit]
