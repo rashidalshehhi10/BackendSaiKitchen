@@ -666,6 +666,26 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetPaymentUnRecieved(int inquiryId)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsActive == true && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved != true && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved != true && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
+                .FirstOrDefault();
+            if (inquiry != null)
+            {
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "No Payment For This inquiry";
+            }
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
         public object PaymentRecieveAmount(int paymentId)
         {
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).FirstOrDefault();
