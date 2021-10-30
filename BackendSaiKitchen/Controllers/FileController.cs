@@ -169,29 +169,25 @@ namespace BackendSaiKitchen.Controllers
         {
             if (FileName != null)
             {
-
-                var file = await Helper.Helper.GetFile(FileName);
-                
-                var type = Helper.Helper.GuessFileType(file);
-                
-                if (type == "pdf")
+                try
                 {
-                    type = "application/" + type;
+                    var file = await Helper.Helper.GetFile(FileName);
+                    response.data = file;
                 }
-                else
+                catch (Exception ex)
                 {
-                    type = "image/" + type;
+                    response.isError = true;
+                    response.errorMessage = ex.Message;
                 }
 
-                return File(file, type);
             }
             else
             {
                 response.isError = true;
                 response.errorMessage = "Please Enter The File Name";
-                return response;
-            }
                 
+            }
+            return response;
         }
 
         [DisableRequestSizeLimit]
