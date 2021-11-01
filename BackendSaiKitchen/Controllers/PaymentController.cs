@@ -740,7 +740,7 @@ namespace BackendSaiKitchen.Controllers
                 TransactionNumber = x.Quotation.QuotationCode,
                 ProposalReferenceNumber = x.Quotation.ProposalReferenceNumber,
                 Amount = x.PaymentAmount / 100,
-                PaymentMethod = x.PaymentMethod == null ? string.Empty : x.PaymentMethod,
+                PaymentMethod = x.PaymentModeId,
                 PaymentDescreption = x.PaymentDetail,
                 InquiryCode = x.Inquiry.InquiryCode,
                 CouponCode = x.Inquiry.Promo.PromoCode == null ? string.Empty : x.Inquiry.Promo.PromoCode,
