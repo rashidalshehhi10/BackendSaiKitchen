@@ -779,22 +779,14 @@ namespace BackendSaiKitchen.Controllers
                             deletedTermsAndConditions.Add(x);
                         }
                         else if (x.TermsAndConditionsDetail.Contains("[BeforeInstallation]") &&
-                                 (_quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null ||
-                                  _quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == "0"))
+                                 (_quotation.Quotation.BeforeInstallation == null ||
+                                  _quotation.Quotation.BeforeInstallation == "0"))
                         {
                             //viewQuotation.TermsAndConditionsDetail.Remove(x);
                             deletedTermsAndConditions.Add(x);
                         }
                         else if (x.TermsAndConditionsDetail.Contains("[AfterDelivery]") &&
-                                 (_quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null || _quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == "0"))
+                                 (_quotation.Quotation.AfterDelivery == null || _quotation.Quotation.AfterDelivery == "0"))
                         {
                             //viewQuotation.TermsAndConditionsDetail.Remove(x);
                             deletedTermsAndConditions.Add(x);
