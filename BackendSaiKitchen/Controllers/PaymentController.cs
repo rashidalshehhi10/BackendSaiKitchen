@@ -733,7 +733,7 @@ namespace BackendSaiKitchen.Controllers
         {
             List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .ToList();
-            var _quotation = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsDeleted == false && x.IsActive == true).Include(x => x.Quotation).FirstOrDefault();
+            var _quotation = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsDeleted == false && x.IsActive == true).Include(x => x.Quotation).ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 CustomerName = x.Inquiry.Customer.CustomerName,
@@ -779,30 +779,46 @@ namespace BackendSaiKitchen.Controllers
                             deletedTermsAndConditions.Add(x);
                         }
                         else if (x.TermsAndConditionsDetail.Contains("[BeforeInstallation]") &&
-                                 (_quotation.Quotation.BeforeInstallation == null ||
-                                  _quotation.Quotation.BeforeInstallation == "0"))
+                                 (_quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null ||
+                                  _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == "0"))
                         {
                             //viewQuotation.TermsAndConditionsDetail.Remove(x);
                             deletedTermsAndConditions.Add(x);
                         }
                         else if (x.TermsAndConditionsDetail.Contains("[AfterDelivery]") &&
-                                 (_quotation.Quotation.AfterDelivery == null || _quotation.Quotation.AfterDelivery == "0"))
+                                 (_quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null || _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() == "0"))
                         {
                             //viewQuotation.TermsAndConditionsDetail.Remove(x);
                             deletedTermsAndConditions.Add(x);
                         }
 
                         x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
-                            .Replace("[AdvancePayment]", _quotation.Quotation.AdvancePayment + "%")
-                            .Replace("[BeforeInstallation]", _quotation.Quotation.BeforeInstallation + "%")
-                            .Replace("[AfterDelivery]", _quotation.Quotation.AfterDelivery + "%");
+                            .Replace("[AdvancePayment]", _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%")
+                            .Replace("[BeforeInstallation]", _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%")
+                            .Replace("[AfterDelivery]", _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%");
                     }
                     else
                     {
                         if (j == -1)
                         {
                             x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]",
-                                _quotation.Quotation.AdvancePayment + "%");
+                                _quotation.Quotation.Payments.FirstOrDefault(y =>
+                            y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
+                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%");
                         }
                         else
                         {
