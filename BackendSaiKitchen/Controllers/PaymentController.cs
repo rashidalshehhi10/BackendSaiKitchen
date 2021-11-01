@@ -542,20 +542,24 @@ namespace BackendSaiKitchen.Controllers
                         }
                     }
 
-                    try
+                    if ((bool)payment.IsAmountRecieved)
                     {
-                        await mailService.SendEmailAsync(new MailRequest
+                        try
                         {
-                            Subject = "Payment Files",
-                            ToEmail = payment.Inquiry.Customer.CustomerEmail,
-                            Body = "Payment Files",
-                            Attachments = files
-                        });
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Subject = "Payment Files",
+                                ToEmail = payment.Inquiry.Customer.CustomerEmail,
+                                Body = "Payment Files",
+                                Attachments = files
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            SentrySdk.CaptureMessage(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        SentrySdk.CaptureMessage(ex.Message);
-                    }
+                    
 
                     paymentRepository.Update(payment);
                     context.SaveChanges();
@@ -688,7 +692,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object PaymentRecieveAmount(int paymentId)
+        public async Task<object> PaymentRecieveAmount(int paymentId)
         {
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved == false && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).FirstOrDefault();
             if (payment != null)
@@ -696,6 +700,21 @@ namespace BackendSaiKitchen.Controllers
                 payment.IsAmountRecieved = true;
                 payment.AmountRecievedBy = Constants.userId;
                 payment.AmountRecievedDate = Helper.Helper.GetDateTime();
+
+                try
+                {
+                    await mailService.SendEmailAsync(new MailRequest
+                    {
+                        Subject = "Payment Files",
+                        ToEmail = payment.Inquiry.Customer.CustomerEmail,
+                        Body = "Payment Files",
+                        //Attachments = files
+                    });
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureMessage(ex.Message);
+                }
                 paymentRepository.Update(payment);
                 context.SaveChanges();
                 response.data = "Amount Recieved";
@@ -715,13 +734,14 @@ namespace BackendSaiKitchen.Controllers
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 CustomerName = x.Inquiry.Customer.CustomerName,
-                TransactionNumber= x.Quotation.ProposalReferenceNumber,
+                TransactionNumber = x.Quotation.QuotationCode,
+                ProposalReferenceNumber = x.Quotation.ProposalReferenceNumber,
                 Amount = x.PaymentAmount / 100,
-                PaymentMethod = x.PaymentMethod,
+                PaymentMethod = x.PaymentMethod == null ? string.Empty : x.PaymentMethod,
                 PaymentDescreption = x.PaymentDetail,
                 InquiryCode = x.Inquiry.InquiryCode,
-                CouponCode = x.Inquiry.Promo.PromoCode,
-                PaymentDate = x.AmountRecievedDate,
+                CouponCode = x.Inquiry.Promo.PromoCode == null ? string.Empty : x.Inquiry.Promo.PromoCode,
+                PaymentDate = x.AmountRecievedDate == null ? string.Empty : x.AmountRecievedDate,
             }).FirstOrDefault();
             if (payment != null)
             {
