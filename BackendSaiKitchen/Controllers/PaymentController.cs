@@ -527,7 +527,9 @@ namespace BackendSaiKitchen.Controllers
                     }
 
                     payment.PaymentModeId = invoice.PaymentModeId;
-
+                    payment.IsAmountRecieved = invoice.PaymentModeId == (int)paymentMode.Cheque ? false : true;
+                    payment.AmountRecievedBy = Constants.userId;
+                    payment.AmountRecievedDate = Helper.Helper.GetDateTime();
                     payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                     payment.PaymentDoneBy = invoice.userId;
                     payment.PaymentCompletionDate = Helper.Helper.GetDateTime();
@@ -669,7 +671,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetPaymentUnRecieved(int inquiryId)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsActive == true && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved != true && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
-                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved != true && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved == false && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
                 .FirstOrDefault();
             if (inquiry != null)
             {
@@ -688,7 +690,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object PaymentRecieveAmount(int paymentId)
         {
-            var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).FirstOrDefault();
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved == false && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).FirstOrDefault();
             if (payment != null)
             {
                 payment.IsAmountRecieved = true;

@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using NPOI.XWPF.UserModel;
 using Sentry;
 using Stripe;
@@ -14,6 +15,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VimeoDotNet;
 using VimeoDotNet.Net;
+using VimeoDotNet.Models;
+using static BackendSaiKitchen.CustomModel.VimeoCustomModel;
+using VimeoDotNet.Authorization;
 
 namespace BackendSaiKitchen.Helper
 {
@@ -276,6 +280,18 @@ namespace BackendSaiKitchen.Helper
             return status;
         }
 
+        public static async Task<object> testDownload(long clipId)
+        {
+            VimeoDotNet.Models.Video video = new VimeoDotNet.Models.Video();
+            ServicePointManager.Expect100Continue = true;
+            var vimeoClient = new VimeoClientFactory().GetVimeoClient(Constants.VimeoAccessToken);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var dvideo = vimeoClient.GetVideoAsync(clipId);
+            
+            return dvideo;
+        }
+
         public static async Task<string> UploadUpdateVideo(byte[] file)
         {
             string fileUrl = "";
@@ -306,6 +322,7 @@ namespace BackendSaiKitchen.Helper
                         chunksize = 1048576;
                     }
 
+                    
                     IUploadRequest uploadRequest = await vimeoClient.UploadEntireFileAsync(binaryContent, chunksize);
                     fileUrl = uploadRequest.ClipId.ToString();
                 }
@@ -316,6 +333,71 @@ namespace BackendSaiKitchen.Helper
             }
 
             return fileUrl;
+        }
+
+        public static VideoDownloadURL GetVimeoVideoDownloadURL(String VideoID)
+        {
+            // First we build the Vimeo URL...
+            String VimeoURL = "http://vimeo.com/" + VideoID;
+
+            // now we retrieve that page...
+
+            var VimeoVideoPage = string.Empty;
+            using (var webClient = new System.Net.WebClient())
+            {
+                webClient.Headers.Add("user-agent", "Mozilla/5.0");
+                VimeoVideoPage = webClient.DownloadString(VimeoURL);
+            }
+
+            if (VimeoVideoPage == string.Empty)
+            {
+                return null;
+            }
+            else
+            {
+                // we have the page and now we need to find the video configuration in there...
+
+                // Convert the VideoPage into it's lines
+                string[] VimeoVideoPageLines = VimeoVideoPage.Split('\n');
+
+                var data_config_url_line = string.Empty;
+
+                // Grep through the Lines and find the one with "data-config-url"
+                foreach (String _line in VimeoVideoPageLines)
+                {
+
+                    if (_line.Contains("data-config-url"))
+                    {
+                        data_config_url_line = _line;
+                        break;
+                    }
+                }
+
+                // first find the data-config-url
+                String ConfigURL = data_config_url_line.Remove(0, data_config_url_line.IndexOf("data-config-url=") + 17);
+                ConfigURL = WebUtility.HtmlDecode(ConfigURL.Remove(ConfigURL.IndexOf("\""), ConfigURL.Length - ConfigURL.IndexOf("\"")));
+
+                // Retrieve the configuration now
+                var VimeoVideoConfiguration = string.Empty;
+                using (var webClient = new System.Net.WebClient())
+                {
+                    webClient.Headers.Add("user-agent", "Mozilla/5.0");
+                    VimeoVideoConfiguration = webClient.DownloadString(ConfigURL);
+                }
+
+                if (VimeoVideoConfiguration == string.Empty)
+                {
+                    return null;
+                }
+                else
+                {
+
+                    VimeoVideoConfigurationRootObject VimeoVideoConfigurationRoot = JsonConvert.DeserializeObject<VimeoVideoConfigurationRootObject>(WebUtility.HtmlDecode(VimeoVideoConfiguration));
+
+                    return new VideoDownloadURL(VimeoVideoConfigurationRoot.request.files.h264.hd.url, VimeoVideoConfigurationRoot.video.title);
+                }
+            }
+            return null;
         }
 
         public static async Task<string> DeleteVideo(long VideoId = 0)

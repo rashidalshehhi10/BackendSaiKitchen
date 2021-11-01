@@ -157,7 +157,7 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "Video Not Deleted";
+                response.errorMessage = "File Not Deleted";
             }
 
             return response;
@@ -193,24 +193,21 @@ namespace BackendSaiKitchen.Controllers
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> TestUploadFile()
+        public async Task<IActionResult> Test(String Vid)
         {
-            foreach (Microsoft.AspNetCore.Http.IFormFile file in Request.Form.Files)
+            try
             {
-                Microsoft.AspNetCore.Http.IFormFile FileDataContent = file;
-                if (FileDataContent != null && FileDataContent.Length > 0)
-                {
-                    Stream stream = FileDataContent.OpenReadStream();
-                    string fileName = Path.GetFileName(FileDataContent.FileName);
+                response.data = Helper.Helper.GetVimeoVideoDownloadURL(Vid);
 
-                    MemoryStream ms = new MemoryStream();
-                    stream.CopyTo(ms);
-
-                    response.data = await Helper.Helper.UploadFormDataFile(ms.ToArray(), FileDataContent.ContentType);
-                }
             }
+            catch (Exception e)
+            {
+                response.isError = true;
+                response.errorMessage = e.Message;
 
-            return response;
+            }
+            return Ok();
+            
         }
     }
 }
