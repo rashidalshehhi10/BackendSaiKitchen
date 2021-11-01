@@ -705,5 +705,33 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetPaymentDetails(int paymentId)
+        {
+            var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                CustomerName = x.Inquiry.Customer.CustomerName,
+                TransactionNumber= x.Quotation.ProposalReferenceNumber,
+                Amount = x.PaymentAmount / 100,
+                PaymentMethod = x.PaymentMethod,
+                PaymentDescreption = x.PaymentDetail,
+                InquiryCode = x.Inquiry.InquiryCode,
+                CouponCode = x.Inquiry.Promo.PromoCode,
+                PaymentDate = x.AmountRecievedDate,
+            }).FirstOrDefault();
+            if (payment != null)
+            {
+                response.data = payment;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Payment Not Found";
+            }
+            return response;
+        }
+
     }
 }
