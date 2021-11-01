@@ -674,7 +674,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetPaymentUnRecieved(int inquiryId)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsActive == true && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved != true && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsActive == true && x.Payments.Any(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved == false && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false && y.IsAmountRecieved == false && (y.PaymentStatusId != (int)paymentstatus.InstallmentApproved || y.PaymentStatusId != (int)paymentstatus.PaymentApproved) && y.PaymentModeId == (int)paymentMode.Cheque))
                 .FirstOrDefault();
             if (inquiry != null)
@@ -684,7 +684,7 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "No Payment For This inquiry";
+                response.errorMessage = "No Payments For This inquiry";
             }
             return response;
         }
@@ -731,6 +731,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetPaymentDetails(int paymentId)
         {
+            List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
+                .ToList();
+            var _quotation = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsDeleted == false && x.IsActive == true).Include(x => x.Quotation).FirstOrDefault();
             var payment = paymentRepository.FindByCondition(x => x.PaymentId == paymentId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 CustomerName = x.Inquiry.Customer.CustomerName,
@@ -742,7 +745,81 @@ namespace BackendSaiKitchen.Controllers
                 InquiryCode = x.Inquiry.InquiryCode,
                 CouponCode = x.Inquiry.Promo.PromoCode == null ? string.Empty : x.Inquiry.Promo.PromoCode,
                 PaymentDate = x.AmountRecievedDate == null ? string.Empty : x.AmountRecievedDate,
+                TermsAndConditionsDetail = terms,
             }).FirstOrDefault();
+
+            payment.TermsAndConditionsDetail.RemoveAll(x =>
+                    x.IsInstallmentTerms != _quotation.Quotation.IsInstallment);
+
+            if (_quotation.Quotation.IsInstallment == true)
+            {
+                for (int i = 0; i < _quotation.Quotation.NoOfInstallment - 1; i++)
+                {
+                    payment.TermsAndConditionsDetail.Add(new TermsAndCondition
+                    {
+                        TermsAndConditionsDetail =
+                            payment.TermsAndConditionsDetail[1].TermsAndConditionsDetail,
+                        IsInstallmentTerms = true
+                    });
+                }
+            }
+
+            int j = -1;
+            List<TermsAndCondition> deletedTermsAndConditions = new List<TermsAndCondition>();
+            payment.TermsAndConditionsDetail.ForEach(x =>
+            {
+                if (x.IsInstallmentTerms == _quotation.Quotation.IsInstallment)
+                {
+                    if (_quotation.Quotation.IsInstallment == false)
+                    {
+                        if (x.TermsAndConditionsDetail.Contains("[AdvancePayment]") &&
+                            (_quotation.Quotation.AdvancePayment == null || _quotation.Quotation.AdvancePayment == "0"))
+                        {
+                            //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                            deletedTermsAndConditions.Add(x);
+                        }
+                        else if (x.TermsAndConditionsDetail.Contains("[BeforeInstallation]") &&
+                                 (_quotation.Quotation.BeforeInstallation == null ||
+                                  _quotation.Quotation.BeforeInstallation == "0"))
+                        {
+                            //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                            deletedTermsAndConditions.Add(x);
+                        }
+                        else if (x.TermsAndConditionsDetail.Contains("[AfterDelivery]") &&
+                                 (_quotation.Quotation.AfterDelivery == null || _quotation.Quotation.AfterDelivery == "0"))
+                        {
+                            //viewQuotation.TermsAndConditionsDetail.Remove(x);
+                            deletedTermsAndConditions.Add(x);
+                        }
+
+                        x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
+                            .Replace("[AdvancePayment]", _quotation.Quotation.AdvancePayment + "%")
+                            .Replace("[BeforeInstallation]", _quotation.Quotation.BeforeInstallation + "%")
+                            .Replace("[AfterDelivery]", _quotation.Quotation.AfterDelivery + "%");
+                    }
+                    else
+                    {
+                        if (j == -1)
+                        {
+                            x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]",
+                                _quotation.Quotation.AdvancePayment + "%");
+                        }
+                        else
+                        {
+                            x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
+                                .Replace("[noofInstallment]", j + 1 + "")
+                                .Replace("[installmentPercentage]",
+                                    _quotation.PaymentAmountinPercentage + "%")
+                                .Replace("[installmentDate]",
+                                    _quotation.PaymentExpectedDate + "");
+                        }
+
+                        j++;
+                    }
+                }
+            });
+            deletedTermsAndConditions.ForEach(x => payment.TermsAndConditionsDetail.Remove(x));
+
             if (payment != null)
             {
                 response.data = payment;

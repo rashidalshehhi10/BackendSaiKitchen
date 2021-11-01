@@ -937,8 +937,10 @@ namespace BackendSaiKitchen.Controllers
             List<TermsAndCondition> terms = termsAndConditionsRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .ToList();
             ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x =>
-                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false &&
-                    x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval)
+                    x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false 
+                    //&&
+                    //x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForCustomerApproval
+                    )
                 .Select(x => new ViewQuotation
                 {
                     InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
