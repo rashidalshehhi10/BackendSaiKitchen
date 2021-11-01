@@ -801,15 +801,9 @@ namespace BackendSaiKitchen.Controllers
                         }
 
                         x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
-                            .Replace("[AdvancePayment]", _quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%")
-                            .Replace("[BeforeInstallation]", _quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%")
-                            .Replace("[AfterDelivery]", _quotation.Quotation.Payments.FirstOrDefault(y =>
-                            y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%");
+                            .Replace("[AdvancePayment]", _quotation.Quotation.AdvancePayment + "%")
+                            .Replace("[BeforeInstallation]", _quotation.Quotation.BeforeInstallation + "%")
+                            .Replace("[AfterDelivery]", _quotation.Quotation.AfterDelivery + "%");
                     }
                     else
                     {
