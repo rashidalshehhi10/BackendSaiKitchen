@@ -273,16 +273,12 @@ namespace BackendSaiKitchen.Controllers
         public async Task<object> AddQuotation(CustomQuotation customQuotation)
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
-                    x.InquiryId == customQuotation.InquiryId &&
-                    x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false) && x.IsActive == true
-                    && x.IsDeleted == false &&
-                    x.InquiryWorkscopes.Count(y => y.IsActive == true && y.IsDeleted == false) == x
-                        .InquiryWorkscopes.Count(y => (y.InquiryStatusId == (int)inquiryStatus.quotationPending ||
-                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
-                                                       y.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
-                                                       y.InquiryStatusId == (int)inquiryStatus.quotationDelayed
-                                                       ) &&
-                                                      y.IsActive == true && y.IsDeleted == false))
+                    x.InquiryId == customQuotation.InquiryId && x.IsActive == true
+                    && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationPending ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationRejected ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested ||
+                                                       x.InquiryStatusId == (int)inquiryStatus.quotationDelayed
+                                                       ))
                 .Include(x => x.Customer).Include(x => x.Building)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Workscope)
@@ -701,10 +697,7 @@ namespace BackendSaiKitchen.Controllers
                     y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
             if (inquiry != null)
             {
-                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
-                {
-                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
-                }
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested);
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
                 inquiry.InquiryComment = comment.comment;
