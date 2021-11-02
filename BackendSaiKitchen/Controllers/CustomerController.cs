@@ -115,6 +115,7 @@ namespace SaiKitchenBackend.Controllers
                         CustomerNotes = x.CustomerNotes,
                         CustomerNextMeetingDate = x.CustomerNextMeetingDate,
                         WayofContactId = x.WayofContactId,
+                        WayofContact = x.WayofContact.WayOfContactName,
                         ContactStatusId = x.ContactStatusId,
                         ContactStatus = x.ContactStatus.ContactStatusName,
                         CustomerAddress = x.CustomerAddress,

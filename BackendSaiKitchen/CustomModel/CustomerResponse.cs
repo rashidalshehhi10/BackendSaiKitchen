@@ -28,6 +28,7 @@
         public int? ContactStatusId { get; set; }
         public string? ContactStatus { get; set; }
         public int? WayofContactId { get; set; }
+        public string WayofContact { get; set; }
         public int? TotalCustomers { get; set; }
         public int? ContactedCustomers { get; set; }
         public int? NeedToContactCustomers { get; set; }
