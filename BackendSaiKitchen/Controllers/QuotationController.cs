@@ -693,8 +693,7 @@ namespace BackendSaiKitchen.Controllers
                 .FindByCondition(i =>
                     i.IsActive == true && i.IsDeleted == false && i.InquiryId == comment.inquiryId &&
                     i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y =>
-                    y.IsActive == true && y.IsDeleted == false &&
-                    y.InquiryStatusId == (int)inquiryStatus.designAccepted)).FirstOrDefault();
+                    y.IsActive == true && y.IsDeleted == false )).FirstOrDefault();
             if (inquiry != null)
             {
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested);
