@@ -88,10 +88,8 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-                _accessory.CreatedBy = Constants.userId;
-                _accessory.CreatedDate = Helper.Helper.GetDateTime();
-                _accessory.IsActive = true;
-                _accessory.IsDeleted = false;
+                _accessory.UpdatedBy = Constants.userId;
+                _accessory.UpdatedDate = Helper.Helper.GetDateTime();
                 applianceAccessoryRepository.Update(_accessory);
                 context.SaveChanges();
                 response.data = "Appliance And Accessory Updated Successfully ";

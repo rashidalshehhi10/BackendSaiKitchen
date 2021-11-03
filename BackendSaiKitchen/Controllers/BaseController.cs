@@ -59,6 +59,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<WorkScope> workScopeRepository;
         public Repository<Brand> brandRepository;
         public Repository<ApplianceAccessory> applianceAccessoryRepository;
+        public Repository<UnitOfMeasurement> unitOfMeasurementRepository;
 
         public BaseController()
         {
@@ -91,6 +92,7 @@ namespace SaiKitchenBackend.Controllers
             inquiryStatusRepository = new Repository<InquiryStatus>(context);
             brandRepository = new Repository<Brand>(context);
             applianceAccessoryRepository = new Repository<ApplianceAccessory>(context);
+            unitOfMeasurementRepository = new Repository<UnitOfMeasurement>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }
