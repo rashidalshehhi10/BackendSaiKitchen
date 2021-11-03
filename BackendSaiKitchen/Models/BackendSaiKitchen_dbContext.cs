@@ -19,9 +19,12 @@ namespace BackendSaiKitchen.Models
 
         public virtual DbSet<Accesory> Accesories { get; set; }
         public virtual DbSet<Appliance> Appliances { get; set; }
+        public virtual DbSet<ApplianceAccessory> ApplianceAccessories { get; set; }
+        public virtual DbSet<ApplianceAccessoryType> ApplianceAccessoryTypes { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<BranchRole> BranchRoles { get; set; }
         public virtual DbSet<BranchType> BranchTypes { get; set; }
+        public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Building> Buildings { get; set; }
         public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
@@ -56,6 +59,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; }
+        public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<WardrobeDesignInformation> WardrobeDesignInformations { get; set; }
@@ -107,6 +111,49 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_Appliances_KitchenDesignInfo");
             });
 
+            modelBuilder.Entity<ApplianceAccessory>(entity =>
+            {
+                entity.ToTable("ApplianceAccessory");
+
+                entity.Property(e => e.ApplianceAccesoryDescription).HasMaxLength(500);
+
+                entity.Property(e => e.ApplianceAccessoryName).HasMaxLength(500);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.ApplianceAccessoryType)
+                    .WithMany(p => p.ApplianceAccessories)
+                    .HasForeignKey(d => d.ApplianceAccessoryTypeId)
+                    .HasConstraintName("FK_ApplianceAccessory_ApplianceAccessoryType");
+
+                entity.HasOne(d => d.Brand)
+                    .WithMany(p => p.ApplianceAccessories)
+                    .HasForeignKey(d => d.BrandId)
+                    .HasConstraintName("FK_ApplianceAccessory_Brand");
+
+                entity.HasOne(d => d.UnitOfMeasurement)
+                    .WithMany(p => p.ApplianceAccessories)
+                    .HasForeignKey(d => d.UnitOfMeasurementId)
+                    .HasConstraintName("FK_ApplianceAccessory_UnitOfMeasurement");
+            });
+
+            modelBuilder.Entity<ApplianceAccessoryType>(entity =>
+            {
+                entity.ToTable("ApplianceAccessoryType");
+
+                entity.Property(e => e.ApplianceAccessoryTypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.ApplianceAccessoryTypeDescription).HasMaxLength(500);
+
+                entity.Property(e => e.ApplianceAccessoryTypeName).HasMaxLength(500);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Branch>(entity =>
             {
                 entity.ToTable("Branch");
@@ -152,6 +199,19 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.BranchTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.BranchTypeName).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Brand>(entity =>
+            {
+                entity.ToTable("Brand");
+
+                entity.Property(e => e.BrandDescription).HasMaxLength(500);
+
+                entity.Property(e => e.BrandName).HasMaxLength(500);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
@@ -1064,6 +1124,19 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.TermsAndConditionsId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<UnitOfMeasurement>(entity =>
+            {
+                entity.ToTable("UnitOfMeasurement");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UnitOfMeasurementDescription).HasMaxLength(500);
+
+                entity.Property(e => e.UnitOfMeasurementName).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
