@@ -38,6 +38,24 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetAllBrand()
+        {
+            var brands = brandRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            if (brands != null)
+            {
+                response.data = brands;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "There is No Brands";
+            }
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetBrandById(int brandId)
         {
             var brand = brandRepository.FindByCondition(x => x.BrandId == brandId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
