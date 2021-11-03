@@ -40,7 +40,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object UpdateUnitOfMeasurement(UnitOfMeasurement unit)
         {
-            var _unit = unitOfMeasurementRepository.FindByCondition(x => x.UnitOfMeasurementId = unit.UnitOfMeasurementId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var _unit = unitOfMeasurementRepository.FindByCondition(x => x.UnitOfMeasurementId == unit.UnitOfMeasurementId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (_unit != null)
             {
                 _unit.UnitOfMeasurementName = unit.UnitOfMeasurementName;
