@@ -57,7 +57,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<UserRole> userRoleRepository;
         public Repository<WayOfContact> wayOfContactRepository;
         public Repository<WorkScope> workScopeRepository;
-
+        public Repository<Brand> brandRepository;
 
         public BaseController()
         {
@@ -88,6 +88,7 @@ namespace SaiKitchenBackend.Controllers
             calendarEventRepository = new Repository<CalendarEvent>(context);
             settingRepository = new Repository<Setting>(context);
             inquiryStatusRepository = new Repository<InquiryStatus>(context);
+            brandRepository = new Repository<Brand>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }

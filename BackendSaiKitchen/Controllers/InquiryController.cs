@@ -176,6 +176,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+
         [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Update)]
         [HttpPost]
         [Route("[action]")]
