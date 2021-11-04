@@ -17,6 +17,7 @@ namespace BackendSaiKitchen.Controllers
         {
             User user = userRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
+                .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.BranchRole)
                 .FirstOrDefault();
 
             Dashborad dashborad;
@@ -55,12 +56,14 @@ namespace BackendSaiKitchen.Controllers
                         TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count()
                     }).FirstOrDefault();
 
-                Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Inquiry, WorkScope> inquiries = inquiryRepository.FindByCondition(x =>
-                        x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
-                    .Include(x => x.InquiryWorkscopes.Where(y =>
-                        y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId ||
-                                                                       y.DesignAssignedTo == Constants.userId)))
-                    .ThenInclude(y => y.Workscope);
+                // Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Inquiry, WorkScope> 
+                var inquiries = inquiryRepository.FindByCondition(x =>
+                    x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y =>
+                    y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId ||
+                                                                   y.DesignAssignedTo == Constants.userId)))
+                .ThenInclude(y => y.Workscope).Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false));
 
                 dashborad.calendar = new List<Calendar>();
                 foreach (Inquiry inquiry in inquiries)
@@ -95,6 +98,80 @@ namespace BackendSaiKitchen.Controllers
                                 OnClickURL = "",
                                 EventTypeId = (int)eventType.Design
                             });
+                        }
+                    }
+                    if (user.UserRoles.FirstOrDefault().BranchRole.RoleTypeId == 1)
+                    {
+                        foreach (var job in inquiry.JobOrders)
+                        {
+                            foreach (var jobdetail in job.JobOrderDetails)
+                            {
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Shop Drawing Completion Date",
+                                    Description = "Shop Drawing Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.ShopDrawingCompletionDate,
+                                    Date = jobdetail.ShopDrawingCompletionDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Production Completion Date",
+                                    Description = "Production Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.ProductionCompletionDate,
+                                    Date = jobdetail.ProductionCompletionDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Wooden Work Completion Date",
+                                    Description = "Wooden Work Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.WoodenWorkCompletionDate,
+                                    Date = jobdetail.WoodenWorkCompletionDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Material Delivery Final Date",
+                                    Description = "Material Delivery Final Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.MaterialDeliveryFinalDate,
+                                    Date = jobdetail.MaterialDeliveryFinalDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Counter top Fixing Date",
+                                    Description = "Counter top Fixing Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.CountertopFixingDate,
+                                    Date = jobdetail.CountertopFixingDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = job.JobOrderId,
+                                    Name = "Installation Start Date",
+                                    Description = "Installation Start Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                              "" + inquiry.InquiryId + " at " + jobdetail.InstallationStartDate,
+                                    Date = jobdetail.InstallationStartDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.JobOrder
+                                });
+                            }
                         }
                     }
                 }
