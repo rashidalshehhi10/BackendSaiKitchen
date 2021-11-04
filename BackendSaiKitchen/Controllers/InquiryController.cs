@@ -385,8 +385,20 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int draw,[FromForm] int start,[FromForm] int length,[FromForm(Name = "columns[0][data]")] int? inquiryId,[FromForm(Name = "columns[1][data]")] string inquiryCode, [FromForm(Name = "columns[2][data]")] int? status, [FromForm(Name = "columns[3][data]")] string customerName, [FromForm(Name = "columns[4][data]")] string workscopeNames, [FromForm(Name = "columns[6][data]")] string measurementScheduleDate, [FromForm(Name = "columns[7][data]")] int? measurementAssignTo, [FromForm(Name = "columns[8][data]")] string? designScheduleDate, [FromForm(Name = "columns[9][data]")] int? designAssignTo, [FromForm(Name = "columns[12][data]")] string customerCode, [FromForm(Name = "columns[13][data]")] string customerContact, [FromForm(Name = "columns[15][data]")] string buildingAddress)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int? draw,[FromForm] int? start,[FromForm] int? length,[FromForm(Name = "columns[0][data]")] int? inquiryId,[FromForm(Name = "columns[1][data]")] string inquiryCode, [FromForm(Name = "columns[2][data]")] int? status, [FromForm(Name = "columns[3][data]")] string customerName, [FromForm(Name = "columns[4][data]")] string workscopeNames, [FromForm(Name = "columns[6][data]")] string measurementScheduleDate, [FromForm(Name = "columns[7][data]")] int? measurementAssignTo, [FromForm(Name = "columns[8][data]")] string? designScheduleDate, [FromForm(Name = "columns[9][data]")] int? designAssignTo, [FromForm(Name = "columns[12][data]")] string customerCode, [FromForm(Name = "columns[13][data]")] string customerContact, [FromForm(Name = "columns[15][data]")] string buildingAddress)
         {
+            if (draw == null)
+            {
+                draw = 20;
+            }
+            if (length == null)
+            {
+                length = 10;
+            }
+            if (start == null)
+            {
+                start = 0;
+            }
             var type = typeof(Inquiry);
             var parameterExprission = Expression.Parameter(typeof(Inquiry), "x");
             var constant = Expression.Constant(true, typeof(bool?));
@@ -610,7 +622,7 @@ namespace SaiKitchenBackend.Controllers
                     QuotationAddedOn = x.QuotationAddedOn,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName,
                     payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).ToList()
-                }).OrderByDescending(x => x.InquiryId).Skip(start).Take(length)
+                }).OrderByDescending(x => x.InquiryId).Skip((int)start).Take((int)length)
                 .ToListAsync();
             tableResponse.data = inquiries;
             tableResponse.recordsTotal =  inquiryRepository
