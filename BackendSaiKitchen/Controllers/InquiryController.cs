@@ -913,7 +913,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public void CheckScheduleDate()
         {
-            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == 1);
             foreach (Inquiry inquiry in inquiries)
             {
                 IQueryable<InquiryWorkscope> inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x =>
@@ -963,7 +963,8 @@ namespace SaiKitchenBackend.Controllers
                             Helper.ConvertToDateTime(Helper.GetDateTime()))
                         {
                             inquiry.InquiryStatusId = (int)inquiryStatus.quotationDelayed;
-                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationDelayed;
+                            Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationDelayed);
+                            Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationDelayed);
                         }
                     }
 
@@ -975,6 +976,7 @@ namespace SaiKitchenBackend.Controllers
                             Helper.ConvertToDateTime(Helper.GetDateTime()))
                         {
                             inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                            Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed);
                         }
                     }
                     //inquiryWorkscopeRepository.Update(inquiryWorkscope);
@@ -990,7 +992,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public void CheckNotifyScheduleDate()
         {
-            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == 1);
 
             List<int?> roletypeId = new List<int?>
             {
@@ -1098,6 +1100,8 @@ namespace SaiKitchenBackend.Controllers
 
                     if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationDelayed)
                     {
+                        Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationDelayed);
+                        Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationDelayed);
                         sendNotificationToHead(inquiry.ManagedBy + Constants.QuotationDelayed, true,
                             null,
                             null,
@@ -1107,6 +1111,30 @@ namespace SaiKitchenBackend.Controllers
                         sendNotificationToOneUser(inquiry.ManagedBy + Constants.QuotationDelayed, false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
+                    }
+                }
+
+                if (inquiry.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
+                {
+                    var job = jobOrderRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                        .Include(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                    if (Helper.ConvertToDateTime(job.JobOrderDetails.FirstOrDefault().InstallationStartDate) <
+                        Helper.ConvertToDateTime(Helper.GetDateTime()))
+                    {
+                        inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                        Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed);
+
+                        sendNotificationToHead(inquiry.ManagedBy + Constants.JobOrderDelayed, true,
+                            null,
+                            null,
+                            roletypeId, (int)inquiry.BranchId,
+                            (int)notificationCategory.JobOrder);
+
+                        sendNotificationToHead(inquiry.ManagedBy + Constants.JobOrderDelayed, true,
+                            null,
+                            null,
+                            roletypeId, (int)job.FactoryId,
+                            (int)notificationCategory.JobOrder);
                     }
                 }
 

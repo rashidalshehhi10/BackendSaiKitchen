@@ -28,6 +28,7 @@
         public static readonly string DesignAssign = "You assign for new Design at ";
         public static readonly string DesignDelayed = "Delayed the Design";
         public static readonly string QuotationDelayed = "Delayed the Quotation";
+        public static readonly string JobOrderDelayed = "Delayed The Job Order";
         public static readonly string DesignAdded = "New Design added For Inquiry Code: IN";
 
         public static readonly string UnAuthorizedUser =
