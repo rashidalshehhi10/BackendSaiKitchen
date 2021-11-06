@@ -58,7 +58,7 @@ namespace BackendSaiKitchen.Controllers
 
                 // Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Inquiry, WorkScope> 
                 var inquiries = inquiryRepository.FindByCondition(x =>
-                    x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false)
+                    (x.BranchId == Constants.branchId || x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == Constants.branchId)) && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y =>
                     y.IsActive == true && y.IsDeleted == false && (y.MeasurementAssignedTo == Constants.userId ||
                                                                    y.DesignAssignedTo == Constants.userId)))
@@ -68,41 +68,46 @@ namespace BackendSaiKitchen.Controllers
                 dashborad.calendar = new List<Calendar>();
                 foreach (Inquiry inquiry in inquiries)
                 {
-                    foreach (InquiryWorkscope inworkscope in inquiry.InquiryWorkscopes)
+                    if (inquiry.BranchId == Constants.branchId)
                     {
-                        if (inworkscope.MeasurementAssignedTo == Constants.userId)
+                        foreach (InquiryWorkscope inworkscope in inquiry.InquiryWorkscopes)
                         {
-                            dashborad.calendar.Add(new Calendar
+                            if (inworkscope.MeasurementAssignedTo == Constants.userId)
                             {
-                                Id = inworkscope.InquiryWorkscopeId,
-                                Name = inworkscope.Workscope.WorkScopeName + " Measurement",
-                                Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
-                                              " measurement of Inquiry Code: IN" + inquiry.BranchId + "" +
-                                              inquiry.CustomerId + "" + inquiry.InquiryId,
-                                Date = inworkscope.MeasurementScheduleDate,
-                                OnClickURL = "",
-                                EventTypeId = (int)eventType.Measurement
-                            });
-                        }
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = inworkscope.InquiryWorkscopeId,
+                                    Name = inworkscope.Workscope.WorkScopeName + " Measurement",
+                                    Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
+                                                  " measurement of Inquiry Code: IN" + inquiry.BranchId + "" +
+                                                  inquiry.CustomerId + "" + inquiry.InquiryId,
+                                    Date = inworkscope.MeasurementScheduleDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.Measurement
+                                });
+                            }
 
-                        if (inworkscope.DesignAssignedTo == Constants.userId)
-                        {
-                            dashborad.calendar.Add(new Calendar
+                            if (inworkscope.DesignAssignedTo == Constants.userId)
                             {
-                                Id = inworkscope.InquiryWorkscopeId,
-                                Name = inworkscope.Workscope.WorkScopeName + " Design",
-                                Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
-                                              " Design of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId,
-                                Date = inworkscope.DesignScheduleDate,
-                                OnClickURL = "",
-                                EventTypeId = (int)eventType.Design
-                            });
+                                dashborad.calendar.Add(new Calendar
+                                {
+                                    Id = inworkscope.InquiryWorkscopeId,
+                                    Name = inworkscope.Workscope.WorkScopeName + " Design",
+                                    Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
+                                                  " Design of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
+                                                  "" + inquiry.InquiryId,
+                                    Date = inworkscope.DesignScheduleDate,
+                                    OnClickURL = "",
+                                    EventTypeId = (int)eventType.Design
+                                });
+                            }
                         }
                     }
-                    if (user.UserRoles.FirstOrDefault().BranchRole.RoleTypeId == 1)
+
+
+                    foreach (var job in inquiry.JobOrders)
                     {
-                        foreach (var job in inquiry.JobOrders)
+                        if (user.UserRoles.FirstOrDefault().BranchRole.RoleTypeId == 1 && (job.FactoryId == Constants.branchId || inquiry.BranchId == Constants.branchId))
                         {
                             foreach (var jobdetail in job.JobOrderDetails)
                             {
@@ -174,6 +179,7 @@ namespace BackendSaiKitchen.Controllers
                             }
                         }
                     }
+                    
                 }
 
                 var customers = customerRepository.FindByCondition(x =>

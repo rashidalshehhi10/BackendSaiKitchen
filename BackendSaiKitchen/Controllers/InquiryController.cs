@@ -626,7 +626,7 @@ namespace SaiKitchenBackend.Controllers
                 .ToListAsync();
             tableResponse.data = inquiries;
             tableResponse.recordsTotal =  inquiryRepository
-                .FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Count();
+                .FindByCondition(lambda).Count();
             tableResponse.recordsFiltered = tableResponse.recordsTotal;
             return tableResponse;
         }
@@ -966,6 +966,17 @@ namespace SaiKitchenBackend.Controllers
                             inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationDelayed;
                         }
                     }
+
+                    //if (inquiry.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
+                    //{
+                    //    var job = jobOrderRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                    //        .Include(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                    //    if (Helper.ConvertToDateTime(job.JobOrderDetails.FirstOrDefault().InstallationStartDate) < 
+                    //        Helper.ConvertToDateTime(Helper.GetDateTime()))
+                    //    {
+                    //        inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                    //    }
+                    //}
                     //inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
 
