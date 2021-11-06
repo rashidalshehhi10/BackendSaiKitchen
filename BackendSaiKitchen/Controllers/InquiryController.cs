@@ -1019,17 +1019,23 @@ namespace SaiKitchenBackend.Controllers
 
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
                         {
+                            var user = userRepository.FindByCondition(x =>
+                        x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
+                        x.IsActive == true && x.IsDeleted == false).Select(y => new
+                        {
+                            Name = y.UserName
+                        }).FirstOrDefault();
                             sendNotificationToHead(
-                                inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementDelayed, false,
+                                user + Constants.MeasurementDelayed, false,
                                 null,
                                 null,
-                                roletypeId, Constants.branchId,
+                                roletypeId, inquiry.BranchId,
                                 (int)notificationCategory.Measurement);
 
                             sendNotificationToOneUser(
-                                inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementDelayed, false, null,
+                                user + Constants.MeasurementDelayed, false, null,
                                 null,
-                                Constants.userId, Constants.branchId,
+                                (int)inquiry.ManagedBy,(int)inquiry.BranchId,
                                 (int)notificationCategory.Measurement);
                         }
                     }
@@ -1042,13 +1048,19 @@ namespace SaiKitchenBackend.Controllers
                                 : (int)inquiryStatus.designPending;
                         if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                         {
-                            sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + Constants.DesignDelayed, true,
+                            var user = userRepository.FindByCondition(x =>
+                        x.UserId == inquiryWorkscope.DesignAssignedTo &&
+                        x.IsActive == true && x.IsDeleted == false).Select(y => new
+                        {
+                            Name = y.UserName
+                        }).FirstOrDefault();
+                            sendNotificationToHead(user + Constants.DesignDelayed, true,
                                 null,
                                 null,
                                 roletypeId, (int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
 
-                            sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignDelayed,
+                            sendNotificationToOneUser(user + Constants.DesignDelayed,
                                 false, null, null,
                                 (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                                 (int)notificationCategory.Design);
@@ -1056,33 +1068,46 @@ namespace SaiKitchenBackend.Controllers
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
                     {
+                        var user = userRepository.FindByCondition(x =>
+                        x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
+                        x.IsActive == true && x.IsDeleted == false).Select(y => new
+                        {
+                            Name = y.UserName
+                        }).FirstOrDefault();
+
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
 
                         sendNotificationToHead(
-                            inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementAssigneeDelayed, false,
+                            user + Constants.MeasurementAssigneeDelayed, false,
                             null,
                             null,
-                            roletypeId, Constants.branchId,
+                            roletypeId, inquiry.BranchId,
                             (int)notificationCategory.Measurement);
 
                         sendNotificationToOneUser(
-                            inquiryWorkscope.MeasurementAssignedTo + Constants.MeasurementAssigneeDelayed, false, null,
+                            user + Constants.MeasurementAssigneeDelayed, false, null,
                             null,
-                            Constants.userId, Constants.branchId,
+                            (int)inquiryWorkscope.MeasurementAssignedTo,(int)inquiry.BranchId,
                             (int)notificationCategory.Measurement);
                     }
                     else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
                     {
+                        var user = userRepository.FindByCondition(x =>
+                        x.UserId == inquiryWorkscope.DesignAssignedTo &&
+                        x.IsActive == true && x.IsDeleted == false).Select(y => new
+                        {
+                            Name = y.UserName
+                        }).FirstOrDefault();
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
 
-                        sendNotificationToHead(inquiryWorkscope.DesignAssignedTo + Constants.DesignAssigneeDelayed,
+                        sendNotificationToHead(user + Constants.DesignAssigneeDelayed,
                             true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
 
-                        sendNotificationToOneUser(inquiryWorkscope.DesignAssignedTo + Constants.DesignAssigneeDelayed,
+                        sendNotificationToOneUser(user + Constants.DesignAssigneeDelayed,
                             false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
@@ -1100,15 +1125,21 @@ namespace SaiKitchenBackend.Controllers
 
                     if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationDelayed)
                     {
+                        var user = userRepository.FindByCondition(x =>
+                        x.UserId == inquiry.ManagedBy &&
+                        x.IsActive == true && x.IsDeleted == false).Select(y => new
+                        {
+                            Name = y.UserName
+                        }).FirstOrDefault();
                         Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationDelayed);
                         Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationDelayed);
-                        sendNotificationToHead(inquiry.ManagedBy + Constants.QuotationDelayed, true,
+                        sendNotificationToHead(user + Constants.QuotationDelayed, true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
 
-                        sendNotificationToOneUser(inquiry.ManagedBy + Constants.QuotationDelayed, false, null, null,
+                        sendNotificationToOneUser(user + Constants.QuotationDelayed, false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
                     }
@@ -1124,13 +1155,14 @@ namespace SaiKitchenBackend.Controllers
                         inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
                         Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed);
 
-                        sendNotificationToHead(inquiry.ManagedBy + Constants.JobOrderDelayed, true,
+
+                        sendNotificationToHead(Constants.JobOrderDelayed, true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.JobOrder);
 
-                        sendNotificationToHead(inquiry.ManagedBy + Constants.JobOrderDelayed, true,
+                        sendNotificationToHead(Constants.JobOrderDelayed, true,
                             null,
                             null,
                             roletypeId, (int)job.FactoryId,
