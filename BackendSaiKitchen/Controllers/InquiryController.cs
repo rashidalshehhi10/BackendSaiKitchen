@@ -967,16 +967,16 @@ namespace SaiKitchenBackend.Controllers
                         }
                     }
 
-                    //if (inquiry.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
-                    //{
-                    //    var job = jobOrderRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
-                    //        .Include(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
-                    //    if (Helper.ConvertToDateTime(job.JobOrderDetails.FirstOrDefault().InstallationStartDate) < 
-                    //        Helper.ConvertToDateTime(Helper.GetDateTime()))
-                    //    {
-                    //        inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
-                    //    }
-                    //}
+                    if (inquiry.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
+                    {
+                        var job = jobOrderRepository.FindByCondition(x => x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false)
+                            .Include(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                        if (Helper.ConvertToDateTime(job.JobOrderDetails.FirstOrDefault().InstallationStartDate) <
+                            Helper.ConvertToDateTime(Helper.GetDateTime()))
+                        {
+                            inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                        }
+                    }
                     //inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
 
