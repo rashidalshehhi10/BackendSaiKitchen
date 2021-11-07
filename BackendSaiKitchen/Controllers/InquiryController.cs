@@ -992,7 +992,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public void CheckNotifyScheduleDate()
         {
-            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == 1);
+            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
 
             List<int?> roletypeId = new List<int?>
             {
