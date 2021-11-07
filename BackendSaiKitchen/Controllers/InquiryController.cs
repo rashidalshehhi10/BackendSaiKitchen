@@ -385,7 +385,7 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int? draw,[FromForm] int? start,[FromForm] int? length,[FromForm(Name = "columns[0][search][value]")] int? inquiryId,[FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int? draw,[FromForm] int? start,[FromForm] int? length,[FromForm(Name = "columns[0][search][value]")] int? inquiryId,[FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress, [FromForm(Name = "columns[25][search][value]")] int HandledBy)
         {
             if (draw == null)
             {
@@ -542,6 +542,13 @@ namespace SaiKitchenBackend.Controllers
                 var _experssion = Expression.Equal(_property, constant);
                 expression = Expression.And(expression, _experssion);
             }
+            if (HandledBy != null)
+            {
+                var _property = Expression.Property(parameterExprission, "ManagedBy");
+                constant = Expression.Constant(HandledBy, typeof(int?));
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
             var lambda = Expression.Lambda<Func<Inquiry, bool>>(expression, parameterExprission);
             
             
@@ -558,7 +565,10 @@ namespace SaiKitchenBackend.Controllers
                             .InquiryStartDate), //Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
                     MeasurementAssignTo =
                         x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
-                            .UserName, //x.MeasurementAssignedToNavigation.UserName,
+                            .UserName,
+                    MeasurementAssignToId = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
+                            .UserId,
+                    //x.MeasurementAssignedToNavigation.UserName,
                     InquiryComment = x.InquiryComment, //x.Comments,
                     //WorkScopeId = x.WorkscopeId,
                     //WorkScopeName = x.Workscope.WorkScopeName,
@@ -566,7 +576,10 @@ namespace SaiKitchenBackend.Controllers
                         x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate, // x.DesignScheduleDate,
                     DesignAssignTo =
                         x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
-                            .UserName, // x.DesignAssignedToNavigation.UserName,
+                            .UserName,
+                    DesignAssignToId =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
+                            .UserId,// x.DesignAssignedToNavigation.UserName,
                     Status = x.InquiryStatusId,
                     IsMeasurementProvidedByCustomer =
                         x.IsMeasurementProvidedByCustomer == true
