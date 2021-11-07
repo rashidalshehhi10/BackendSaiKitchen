@@ -95,6 +95,7 @@ namespace BackendSaiKitchen.Controllers
                 unit.IsActive = false;
                 unitOfMeasurementRepository.Update(unit);
                 response.data = "Unit Of Measurement Deleted";
+                context.SaveChanges();
             }
             else
             {
