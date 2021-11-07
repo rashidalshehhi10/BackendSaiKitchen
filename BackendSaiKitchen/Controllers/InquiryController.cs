@@ -622,7 +622,10 @@ namespace SaiKitchenBackend.Controllers
                         .Count(y => y.IsDeleted == false), //x.Measurements.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
-                        x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                        x.InquiryId,
+                    ManagedBy = x.ManagedByNavigation.UserName,
+                    ManagedById =x.ManagedByNavigation.UserId,
+                    //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
                         .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()

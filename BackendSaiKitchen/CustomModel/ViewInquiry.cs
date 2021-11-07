@@ -52,6 +52,8 @@ namespace BackendSaiKitchen.CustomModel
         public string CommentAddedOn { get; set; }
         public string MeasurementAddedOn { get; set; }
         public string DesignAddedOn { get; set; }
+        public string ManagedBy{ get; set; }
+        public int ManagedById { get; set; }
 
         public string QuotationAddedOn { get; set; }
         public List<Payment> payments { get; set; }
