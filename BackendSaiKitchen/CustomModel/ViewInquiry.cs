@@ -16,7 +16,7 @@ namespace BackendSaiKitchen.CustomModel
         public string? IsDesignProvidedByCustomer { get; set; }
         public string MeasurementScheduleDate { get; set; }
         public string MeasurementAssignTo { get; set; }
-        public int MeasurementAssignToId { get; set; }
+        public int? MeasurementAssignToId { get; set; }
         public string InquiryComment { get; set; }
 
         //public int? WorkScopeId { get; set; }
@@ -25,7 +25,7 @@ namespace BackendSaiKitchen.CustomModel
         public int? QuestionaireType { get; set; }
         public string DesignScheduleDate { get; set; }
         public string DesignAssignTo { get; set; }
-        public int DesignAssignToId { get; set; }
+        public int? DesignAssignToId { get; set; }
         public int? CustomerId { get; set; }
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
@@ -53,7 +53,7 @@ namespace BackendSaiKitchen.CustomModel
         public string MeasurementAddedOn { get; set; }
         public string DesignAddedOn { get; set; }
         public string ManagedBy{ get; set; }
-        public int ManagedById { get; set; }
+        public int? ManagedById { get; set; }
 
         public string QuotationAddedOn { get; set; }
         public List<Payment> payments { get; set; }

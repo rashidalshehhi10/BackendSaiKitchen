@@ -385,7 +385,7 @@ namespace SaiKitchenBackend.Controllers
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int? draw,[FromForm] int? start,[FromForm] int? length,[FromForm(Name = "columns[0][search][value]")] int? inquiryId,[FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress, [FromForm(Name = "columns[25][search][value]")] int HandledBy)
+        public async Task<object> GetPagingInquiriesOfBranch(int branchId,[FromForm] int? draw,[FromForm] int? start,[FromForm] int? length,[FromForm(Name = "columns[0][search][value]")] int? inquiryId,[FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress, [FromForm(Name = "columns[25][search][value]")] int? HandledBy)
         {
             if (draw == null)
             {
@@ -566,8 +566,8 @@ namespace SaiKitchenBackend.Controllers
                     MeasurementAssignTo =
                         x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
                             .UserName,
-                    MeasurementAssignToId = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
-                            .UserId,
+                    MeasurementAssignToId = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo
+                           ,
                     //x.MeasurementAssignedToNavigation.UserName,
                     InquiryComment = x.InquiryComment, //x.Comments,
                     //WorkScopeId = x.WorkscopeId,
@@ -578,8 +578,10 @@ namespace SaiKitchenBackend.Controllers
                         x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
                             .UserName,
                     DesignAssignToId =
-                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
-                            .UserId,// x.DesignAssignedToNavigation.UserName,
+                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo,
+                    ManagedBy = x.ManagedByNavigation.UserName,
+                    ManagedById = x.ManagedBy,
+                    // x.DesignAssignedToNavigation.UserName,
                     Status = x.InquiryStatusId,
                     IsMeasurementProvidedByCustomer =
                         x.IsMeasurementProvidedByCustomer == true
@@ -622,10 +624,7 @@ namespace SaiKitchenBackend.Controllers
                         .Count(y => y.IsDeleted == false), //x.Measurements.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
-                        x.InquiryId,
-                    ManagedBy = x.ManagedByNavigation.UserName,
-                    ManagedById =x.ManagedByNavigation.UserId,
-                    //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                        x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
                     WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
                         .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
