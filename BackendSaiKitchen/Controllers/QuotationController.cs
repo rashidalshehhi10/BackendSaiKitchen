@@ -1441,10 +1441,12 @@ namespace BackendSaiKitchen.Controllers
                 foreach (Quotation quotation in inquiry.Quotations)
                 {
                     quotationId = quotation.QuotationId;
+                    quotation.IsPaid = quotation.IsPaid == null ? true : quotation.IsPaid;
                     quotation.AdvancePayment = (bool)quotation.IsPaid ? order.AdvancePayment : "0";
                     quotation.IsInstallment = order.IsInstallment;
                     quotation.NoOfInstallment = order.NoOfInstallment;
                     quotation.AfterDelivery = order.AfterDelivery;
+                    quotation.BeforeInstallation = order.BeforeInstallation;
                     quotation.QuotationStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
                     if ((bool)quotation.IsPaid)
                     {
