@@ -4,6 +4,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
+using System;
 using System.Linq;
 
 namespace BackendSaiKitchen.Controllers
@@ -26,12 +27,12 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Customer).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderAuditPending;
-                Helper.Helper.Each(inquiry.InquiryWorkscopes,
-                    x => { x.InquiryStatusId = (int)inquiryStatus.jobOrderAuditPending; });
                 foreach (JobOrder joborder in inquiry.JobOrders)
-                { 
-                   // inquiry.InquiryStatusId = Helper.Helper.GetDateFromString(order.installationStartDate)
+                {
+                    
+                    inquiry.InquiryStatusId = Helper.Helper.ConvertToDateTime(order.installationStartDate).Date == Helper.Helper.ConvertToDateTime(joborder.JobOrderExpectedDeadline).Date 
+                        ? (int)inquiryStatus.jobOrderInProgress : (int)inquiryStatus.jobOrderAuditPending;
+                    Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = inquiry.InquiryStatusId);
                     JobOrderDetail jobOrderDetail = new JobOrderDetail
                     {
                         MaterialRequestDate = order.materialRequestDate,
