@@ -80,7 +80,7 @@ namespace BackendSaiKitchen.Controllers
                                     Name = inworkscope.Workscope.WorkScopeName + " Measurement",
                                     Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
                                                   " measurement of Inquiry Code: IN" + inquiry.BranchId + "" +
-                                                  inquiry.CustomerId + "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName,
+                                                  inquiry.CustomerId + "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName+")",
                                     Date = inworkscope.MeasurementScheduleDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.Measurement
@@ -95,7 +95,7 @@ namespace BackendSaiKitchen.Controllers
                                     Name = inworkscope.Workscope.WorkScopeName + " Design",
                                     Description = "You are assigned for " + inworkscope.Workscope.WorkScopeName +
                                                   " Design of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                                  "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName,
+                                                  "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")",
                                     Date = inworkscope.DesignScheduleDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.Design
@@ -116,7 +116,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Shop Drawing Completion Date",
                                     Description = "Shop Drawing Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName +" at " + jobdetail.ShopDrawingCompletionDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.ShopDrawingCompletionDate,
                                     Date = jobdetail.ShopDrawingCompletionDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
@@ -127,7 +127,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Production Completion Date",
                                     Description = "Production Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName + " at " + jobdetail.ProductionCompletionDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.ProductionCompletionDate,
                                     Date = jobdetail.ProductionCompletionDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
@@ -138,7 +138,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Wooden Work Completion Date",
                                     Description = "Wooden Work Completion Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName + " at " + jobdetail.WoodenWorkCompletionDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.WoodenWorkCompletionDate,
                                     Date = jobdetail.WoodenWorkCompletionDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
@@ -149,7 +149,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Material Delivery Final Date",
                                     Description = "Material Delivery Final Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName + " at " + jobdetail.MaterialDeliveryFinalDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.MaterialDeliveryFinalDate,
                                     Date = jobdetail.MaterialDeliveryFinalDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
@@ -160,7 +160,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Counter top Fixing Date",
                                     Description = "Counter top Fixing Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName + " at " + jobdetail.CountertopFixingDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.CountertopFixingDate,
                                     Date = jobdetail.CountertopFixingDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
@@ -171,7 +171,7 @@ namespace BackendSaiKitchen.Controllers
                                     Id = job.JobOrderId,
                                     Name = "Installation Start Date",
                                     Description = "Installation Start Date of Inquiry Code: IN" + inquiry.BranchId + "" + inquiry.CustomerId +
-                                              "" + inquiry.InquiryId + " For Customer " + inquiry.Customer.CustomerName + " at " + jobdetail.InstallationStartDate,
+                                              "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.InstallationStartDate,
                                     Date = jobdetail.InstallationStartDate,
                                     OnClickURL = "",
                                     EventTypeId = (int)eventType.JobOrder
