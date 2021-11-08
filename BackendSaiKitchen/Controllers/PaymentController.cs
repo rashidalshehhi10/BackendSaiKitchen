@@ -753,6 +753,7 @@ namespace BackendSaiKitchen.Controllers
 
             payment.TermsAndConditionsDetail.RemoveAll(x =>
                     x.IsInstallmentTerms != _quotation.Quotation.IsInstallment);
+            
 
             if (_quotation.Quotation.IsInstallment == true)
             {
@@ -804,27 +805,38 @@ namespace BackendSaiKitchen.Controllers
                     {
                         if (j == -1)
                         {
-                            x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]",
+                            if (_quotation.Quotation.NoOfInstallment >= 1)
+                            {
+                                x.TermsAndConditionsDetail = x.TermsAndConditionsDetail.Replace("[AdvancePayment]",
                                 _quotation.Quotation.Payments.FirstOrDefault(y =>
                             y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
-                            y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%");
-                            j++;
+                            y.IsDeleted == false)?.PaymentAmountinPercentage?.ToString() + "% ");
+                                j++;
+                            }
+
                         }
                         else
                         {
+                            var c = _quotation.Quotation.AdvancePayment == "0" ? j + 1 : j;
+                            
                             x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
-                                .Replace("[noofInstallment]", j  + "")
+                                .Replace("[noofInstallment]", c  + "")
                                 .Replace("[installmentPercentage]",
-                                    _quotation.Quotation.Payments.ToList()[j].PaymentAmountinPercentage + "%")
+                                    _quotation.Quotation.Payments.OrderBy(x => x.PaymentId).ToList()[j].PaymentAmountinPercentage + "%")
                                 .Replace("[installmentDate]",
-                                    _quotation.Quotation.Payments.ToList()[j].PaymentExpectedDate + "");
+                                    _quotation.Quotation.Payments.OrderBy(x => x.PaymentId).ToList()[j].PaymentExpectedDate + "");
                         }
-
                         j++;
+
+
                     }
                 }
             });
-            //deletedTermsAndConditions.ForEach(x => payment.TermsAndConditionsDetail.Remove(x));
+            deletedTermsAndConditions.ForEach(x => payment.TermsAndConditionsDetail.Remove(x));
+            if (_quotation.Quotation.AdvancePayment == "0")
+            {
+                payment.TermsAndConditionsDetail.RemoveAll(x => x.TermsAndConditionsDetail.Contains("Advance"));
+            }
 
             if (payment != null)
             {
