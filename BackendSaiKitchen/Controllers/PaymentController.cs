@@ -808,22 +808,23 @@ namespace BackendSaiKitchen.Controllers
                                 _quotation.Quotation.Payments.FirstOrDefault(y =>
                             y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
                             y.IsDeleted == false).PaymentAmountinPercentage.ToString() + "%");
+                            j++;
                         }
                         else
                         {
                             x.TermsAndConditionsDetail = x.TermsAndConditionsDetail
-                                .Replace("[noofInstallment]", j + 1 + "")
+                                .Replace("[noofInstallment]", j  + "")
                                 .Replace("[installmentPercentage]",
-                                    _quotation.PaymentAmountinPercentage + "%")
+                                    _quotation.Quotation.Payments.ToList()[j].PaymentAmountinPercentage + "%")
                                 .Replace("[installmentDate]",
-                                    _quotation.PaymentExpectedDate + "");
+                                    _quotation.Quotation.Payments.ToList()[j].PaymentExpectedDate + "");
                         }
 
                         j++;
                     }
                 }
             });
-            deletedTermsAndConditions.ForEach(x => payment.TermsAndConditionsDetail.Remove(x));
+            //deletedTermsAndConditions.ForEach(x => payment.TermsAndConditionsDetail.Remove(x));
 
             if (payment != null)
             {

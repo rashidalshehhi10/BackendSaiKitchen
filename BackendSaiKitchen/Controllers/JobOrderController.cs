@@ -30,7 +30,8 @@ namespace BackendSaiKitchen.Controllers
                 Helper.Helper.Each(inquiry.InquiryWorkscopes,
                     x => { x.InquiryStatusId = (int)inquiryStatus.jobOrderAuditPending; });
                 foreach (JobOrder joborder in inquiry.JobOrders)
-                {
+                { 
+                   // inquiry.InquiryStatusId = Helper.Helper.GetDateFromString(order.installationStartDate)
                     JobOrderDetail jobOrderDetail = new JobOrderDetail
                     {
                         MaterialRequestDate = order.materialRequestDate,
