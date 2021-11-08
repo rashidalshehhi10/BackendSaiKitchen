@@ -1007,7 +1007,8 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public void CheckNotifyScheduleDate()
         {
-            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            IQueryable<Inquiry> inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false));
 
             List<int?> roletypeId = new List<int?>
             {
@@ -1015,128 +1016,118 @@ namespace SaiKitchenBackend.Controllers
             };
             foreach (Inquiry inquiry in inquiries)
             {
-                IQueryable<InquiryWorkscope> inquiryWorkscopes = inquiryWorkscopeRepository.FindByCondition(x =>
-                    x.InquiryId == inquiry.InquiryId && x.IsActive == true && x.IsDeleted == false);
-
-                foreach (InquiryWorkscope inquiryWorkscope in inquiryWorkscopes)
+                var inquiryWorkscope = inquiry.InquiryWorkscopes.FirstOrDefault();
+                if (inquiryWorkscope.InquiryStatusId is (int)inquiryStatus.measurementInProgress or (int)inquiryStatus.measurementRejected)
                 {
-                    Measurement measurement = measurementRepository.FindByCondition(m =>
-                        m.InquiryWorkscopeId == inquiryWorkscope.InquiryWorkscopeId && m.IsActive == true &&
-                        m.IsDeleted == false).FirstOrDefault();
+                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
+                             Helper.ConvertToDateTime(Helper.GetDateTime())
+                                 ? (int)inquiryStatus.measurementdelayed
+                                 : (int)inquiryStatus.measurementInProgress);
 
-                    if (inquiryWorkscope.InquiryStatusId is (int)inquiryStatus.measurementInProgress or (int)inquiryStatus.measurementRejected)
-                    {
-                        inquiryWorkscope.InquiryStatusId =
-                            Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
-                            Helper.ConvertToDateTime(Helper.GetDateTime())
-                                ? (int)inquiryStatus.measurementdelayed
-                                : (int)inquiryStatus.measurementInProgress;
-
-                        if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
-                        {
-                            var user = userRepository.FindByCondition(x =>
-                        x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
-                        x.IsActive == true && x.IsDeleted == false).Select(y => new
-                        {
-                            Name = y.UserName
-                        }).FirstOrDefault();
-                            sendNotificationToHead(
-                                user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
-                                null,
-                                null,
-                                roletypeId, inquiry.BranchId,
-                                (int)notificationCategory.Measurement);
-
-                            sendNotificationToOneUser(
-                                user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
-                                null,
-                                (int)inquiry.ManagedBy,(int)inquiry.BranchId,
-                                (int)notificationCategory.Measurement);
-                        }
-                    }
-                    else if (inquiryWorkscope.InquiryStatusId is (int)inquiryStatus.designPending or (int)inquiryStatus.designRevisionRequested)
-                    {
-                        inquiryWorkscope.InquiryStatusId =
-                            Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) <
-                            Helper.ConvertToDateTime(Helper.GetDateTime())
-                                ? (int)inquiryStatus.designDelayed
-                                : (int)inquiryStatus.designPending;
-                        if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
-                        {
-                            var user = userRepository.FindByCondition(x =>
-                        x.UserId == inquiryWorkscope.DesignAssignedTo &&
-                        x.IsActive == true && x.IsDeleted == false).Select(y => new
-                        {
-                            Name = y.UserName
-                        }).FirstOrDefault();
-                            sendNotificationToHead(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId, true,
-                                null,
-                                null,
-                                roletypeId, (int)inquiry.BranchId,
-                                (int)notificationCategory.Design);
-
-                            sendNotificationToOneUser(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                                false, null, null,
-                                (int)inquiry.ManagedBy, (int)inquiry.BranchId,
-                                (int)notificationCategory.Design);
-                        }
-                    }
-                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
                     {
                         var user = userRepository.FindByCondition(x =>
-                        x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
-                        x.IsActive == true && x.IsDeleted == false).Select(y => new
-                        {
-                            Name = y.UserName
-                        }).FirstOrDefault();
-
-                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected;
-
+                    x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
+                    x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
                         sendNotificationToHead(
-                            user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
+                            user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
                             null,
                             null,
                             roletypeId, inquiry.BranchId,
                             (int)notificationCategory.Measurement);
 
                         sendNotificationToOneUser(
-                            user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
+                            user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
                             null,
-                            (int)inquiryWorkscope.MeasurementAssignedTo,(int)inquiry.BranchId,
+                            (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Measurement);
                     }
-                    else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                }
+                else if (inquiryWorkscope.InquiryStatusId is (int)inquiryStatus.designPending or (int)inquiryStatus.designRevisionRequested)
+                {
+                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
+                         Helper.ConvertToDateTime(Helper.GetDateTime())
+                             ? (int)inquiryStatus.designDelayed
+                             : (int)inquiryStatus.designPending);
+                    if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                     {
                         var user = userRepository.FindByCondition(x =>
-                        x.UserId == inquiryWorkscope.DesignAssignedTo &&
-                        x.IsActive == true && x.IsDeleted == false).Select(y => new
-                        {
-                            Name = y.UserName
-                        }).FirstOrDefault();
-                        inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
-
-                        sendNotificationToHead(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId,
-                            true,
+                    x.UserId == inquiryWorkscope.DesignAssignedTo &&
+                    x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                        sendNotificationToHead(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId, true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
 
-                        sendNotificationToOneUser(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
-                                                    "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        sendNotificationToOneUser(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                             false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
                     }
-                    //inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
+                else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending)
+                {
+                    var user = userRepository.FindByCondition(x =>
+                    x.UserId == inquiryWorkscope.MeasurementAssignedTo &&
+                    x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+
+                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected);
+
+                    sendNotificationToHead(
+                        user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
+                        null,
+                        null,
+                        roletypeId, inquiry.BranchId,
+                        (int)notificationCategory.Measurement);
+
+                    sendNotificationToOneUser(
+                        user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
+                        null,
+                        (int)inquiryWorkscope.MeasurementAssignedTo, (int)inquiry.BranchId,
+                        (int)notificationCategory.Measurement);
+                }
+                else if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designAssigneePending)
+                {
+                    var user = userRepository.FindByCondition(x =>
+                    x.UserId == inquiryWorkscope.DesignAssignedTo &&
+                    x.IsActive == true && x.IsDeleted == false).Select(y => new
+                    {
+                        Name = y.UserName
+                    }).FirstOrDefault();
+                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected);
+
+                    sendNotificationToHead(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        true,
+                        null,
+                        null,
+                        roletypeId, (int)inquiry.BranchId,
+                        (int)notificationCategory.Design);
+
+                    sendNotificationToOneUser(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                                                "" + inquiry.CustomerId + "" + inquiry.InquiryId,
+                        false, null, null,
+                        (int)inquiry.ManagedBy, (int)inquiry.BranchId,
+                        (int)notificationCategory.Design);
+                }
+                    //inquiryWorkscopeRepository.Update(inquiryWorkscope);
+                
 
                 if (inquiry.InquiryStatusId == (int)inquiryStatus.quotationPending)
                 {
