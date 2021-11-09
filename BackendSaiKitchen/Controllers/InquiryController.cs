@@ -635,6 +635,7 @@ namespace SaiKitchenBackend.Controllers
                     MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
                     QuotationAddedOn = x.QuotationAddedOn,
+                    QuotationScheduleDate = x.QuotationScheduleDate,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName,
                     payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).ToList()
                 }).OrderByDescending(x => x.InquiryId).Skip((int)start).Take((int)length)
