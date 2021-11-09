@@ -13,7 +13,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllApplianceAccessoryType()
         {
-            response.data = applianceAccessoryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = applianceAccessoryTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             return response;
         }
     }
