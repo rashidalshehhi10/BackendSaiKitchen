@@ -1,6 +1,7 @@
 ﻿using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,9 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllApplianceAccessory()
         {
-            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.UnitOfMeasurement).Include(x => x.ApplianceAccessoryType).Include(x => x.Brand).ToList();
+                
             if (applianceAccessory != null)
             {
                 response.data = applianceAccessory;
@@ -62,7 +65,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetApplianceAccessoryById(int applianceAccessoryId)
         {
-            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.UnitOfMeasurement).Include(x => x.ApplianceAccessoryType).Include(x => x.Brand).FirstOrDefault();
             if (applianceAccessory != null)
             {
                 response.data = applianceAccessory;
