@@ -47,7 +47,20 @@ namespace BackendSaiKitchen.Controllers
         public object GetAllApplianceAccessory()
         {
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.UnitOfMeasurement).Include(x => x.ApplianceAccessoryType).Include(x => x.Brand).ToList();
+               .Select(x => new
+               {
+                   ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
+                   ApplianceAccessoryId = x.ApplianceAccessoryId,
+                   ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
+                   ApplianceAccessoryName = x.ApplianceAccessoryName,
+                   ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
+                   ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
+                   ApplianceAccessoryTypeName = x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
+                   BrandId = x.BrandId,
+                   BrandName = x.Brand.BrandName,
+                   UnitOfMeasurementId = x.UnitOfMeasurementId,
+                   UnitOfMeasurementName = x.UnitOfMeasurement.UnitOfMeasurementName,
+               }).ToList();
                 
             if (applianceAccessory != null)
             {
@@ -66,7 +79,21 @@ namespace BackendSaiKitchen.Controllers
         public object GetApplianceAccessoryById(int applianceAccessoryId)
         {
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.UnitOfMeasurement).Include(x => x.ApplianceAccessoryType).Include(x => x.Brand).FirstOrDefault();
+                .Select(x => new 
+                {
+                    ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
+                    ApplianceAccessoryId= x.ApplianceAccessoryId,
+                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
+                    ApplianceAccessoryName = x.ApplianceAccessoryName,
+                    ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
+                    ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
+                    ApplianceAccessoryTypeName =x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
+                    BrandId = x.BrandId,
+                    BrandName = x.Brand.BrandName,
+                    UnitOfMeasurementId = x.UnitOfMeasurementId,
+                    UnitOfMeasurementName = x.UnitOfMeasurement.UnitOfMeasurementName,
+
+                }).FirstOrDefault();
             if (applianceAccessory != null)
             {
                 response.data = applianceAccessory;
@@ -118,6 +145,7 @@ namespace BackendSaiKitchen.Controllers
                 accessory.IsActive = false;
                 applianceAccessoryRepository.Update(accessory);
                 response.data = "Appliance And Accessory Deleted";
+                context.SaveChanges();
             }
             else
             {
