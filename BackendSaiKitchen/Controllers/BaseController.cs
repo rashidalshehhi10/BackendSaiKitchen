@@ -61,6 +61,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<ApplianceAccessory> applianceAccessoryRepository;
         public Repository<UnitOfMeasurement> unitOfMeasurementRepository;
         public Repository<JobOrder> jobOrderRepository;
+        public Repository<ApplianceAccessoryType> applianceAccessoryTypeRepository;
 
         public BaseController()
         {
@@ -95,6 +96,7 @@ namespace SaiKitchenBackend.Controllers
             applianceAccessoryRepository = new Repository<ApplianceAccessory>(context);
             unitOfMeasurementRepository = new Repository<UnitOfMeasurement>(context);
             jobOrderRepository = new Repository<JobOrder>(context);
+            applianceAccessoryTypeRepository = new Repository<ApplianceAccessoryType>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }
