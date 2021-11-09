@@ -117,6 +117,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.ApplianceAccesoryDescription).HasMaxLength(500);
 
+                entity.Property(e => e.ApplianceAccessoryImgUrl).HasColumnName("ApplianceAccessoryImgURL");
+
                 entity.Property(e => e.ApplianceAccessoryName).HasMaxLength(500);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
