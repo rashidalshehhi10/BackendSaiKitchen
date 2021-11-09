@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
+                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
                 _accessory.CreatedBy = Constants.userId;
                 _accessory.CreatedDate = Helper.Helper.GetDateTime();
                 _accessory.IsActive = true;
@@ -88,6 +89,7 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
+                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
                 _accessory.UpdatedBy = Constants.userId;
                 _accessory.UpdatedDate = Helper.Helper.GetDateTime();
                 applianceAccessoryRepository.Update(_accessory);
