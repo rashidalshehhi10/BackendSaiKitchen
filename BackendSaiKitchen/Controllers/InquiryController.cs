@@ -1034,7 +1034,7 @@ namespace SaiKitchenBackend.Controllers
                         Name = y.UserName
                     }).FirstOrDefault();
                         sendNotificationToHead(
-                            user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                            user.Name + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
                             null,
                             null,
@@ -1042,7 +1042,7 @@ namespace SaiKitchenBackend.Controllers
                             (int)notificationCategory.Measurement);
 
                         sendNotificationToOneUser(
-                            user + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                            user.Name + Constants.MeasurementDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
                             null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
@@ -1063,14 +1063,14 @@ namespace SaiKitchenBackend.Controllers
                     {
                         Name = y.UserName
                     }).FirstOrDefault();
-                        sendNotificationToHead(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        sendNotificationToHead(user.Name + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.Design);
 
-                        sendNotificationToOneUser(user + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        sendNotificationToOneUser(user.Name + Constants.DesignDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                             false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
@@ -1089,7 +1089,7 @@ namespace SaiKitchenBackend.Controllers
                     Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected);
 
                     sendNotificationToHead(
-                        user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        user.Name + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
                         null,
                         null,
@@ -1097,7 +1097,7 @@ namespace SaiKitchenBackend.Controllers
                         (int)notificationCategory.Measurement);
 
                     sendNotificationToOneUser(
-                        user + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        user.Name + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null,
                         null,
                         (int)inquiryWorkscope.MeasurementAssignedTo, (int)inquiry.BranchId,
@@ -1113,7 +1113,7 @@ namespace SaiKitchenBackend.Controllers
                     }).FirstOrDefault();
                     Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected);
 
-                    sendNotificationToHead(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                    sendNotificationToHead(user.Name + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                         true,
                         null,
@@ -1121,7 +1121,7 @@ namespace SaiKitchenBackend.Controllers
                         roletypeId, (int)inquiry.BranchId,
                         (int)notificationCategory.Design);
 
-                    sendNotificationToOneUser(user + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                    sendNotificationToOneUser(user.Name + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                         false, null, null,
                         (int)inquiry.ManagedBy, (int)inquiry.BranchId,
@@ -1148,14 +1148,14 @@ namespace SaiKitchenBackend.Controllers
                         }).FirstOrDefault();
                         Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationDelayed);
                         Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationDelayed);
-                        sendNotificationToHead(user + Constants.QuotationDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        sendNotificationToHead(user.Name + Constants.QuotationDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                     "" + inquiry.CustomerId + "" + inquiry.InquiryId, true,
                             null,
                             null,
                             roletypeId, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
 
-                        sendNotificationToOneUser(user + Constants.QuotationDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
+                        sendNotificationToOneUser(user.Name + Constants.QuotationDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                     "" + inquiry.CustomerId + "" + inquiry.InquiryId, false, null, null,
                             (int)inquiry.ManagedBy, (int)inquiry.BranchId,
                             (int)notificationCategory.Quotation);
