@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.Helper;
+﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -140,7 +141,7 @@ namespace BackendSaiKitchen.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public object UpdateApplianceAccessoryById(ApplianceAccessory accessory)
+        public object UpdateApplianceAccessoryById(ApplianceAccessoryCustom accessory)
         {
             var _accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == accessory.ApplianceAccessoryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (accessory != null)
