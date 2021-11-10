@@ -114,18 +114,17 @@ namespace BackendSaiKitchen.Controllers
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.BrandId == brandId && x.IsActive == true && x.IsDeleted == false)
                 .Select(x => new
                 {
-                    ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
+                    BrandId = x.BrandId,
+                    BrandName = x.Brand.BrandName,
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
-                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
+                    ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                     ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
                     ApplianceAccessoryTypeName = x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
-                    BrandId = x.BrandId,
-                    BrandName = x.Brand.BrandName,
+                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
                     UnitOfMeasurementId = x.UnitOfMeasurementId,
                     UnitOfMeasurementName = x.UnitOfMeasurement.UnitOfMeasurementName,
-
                 }).ToList();
             if (applianceAccessory != null)
             {
