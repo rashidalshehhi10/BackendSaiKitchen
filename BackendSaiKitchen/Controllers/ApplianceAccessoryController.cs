@@ -107,6 +107,30 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetItemByBrandId(int brandId)
+        {
+            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.BrandId == brandId && x.IsActive == true && x.IsDeleted == false)
+                .Select(x => new
+                {
+                    ApplianceAccessoryId = x.ApplianceAccessoryId,
+                    ApplianceAccessoryName = x.ApplianceAccessoryName,
+                }).ToList();
+            if (applianceAccessory != null)
+            {
+                response.data = applianceAccessory;
+
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Appliance And Accessory Not Found";
+            }
+            return response;
+        }
+
         [HttpPost]
         [Route("[action]")]
         public object GetApplianceAccessoryByBrandId(int brandId)
