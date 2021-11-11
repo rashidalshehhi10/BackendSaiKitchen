@@ -110,9 +110,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GetItemByBrandId(int brandId)
+        public object GetItemByBrandId(AccessoryCustom custom)
         {
-            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.BrandId == brandId && x.IsActive == true && x.IsDeleted == false)
+            var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.BrandId == custom.brandId && x.ApplianceAccessoryTypeId == custom.TypeId && x.IsActive == true && x.IsDeleted == false)
                 .Select(x => new
                 {
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
@@ -175,7 +175,7 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
+                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl == string.Empty ? _accessory.ApplianceAccessoryImgUrl : accessory.ApplianceAccessoryImgUrl;
                 _accessory.UpdatedBy = Constants.userId;
                 _accessory.UpdatedDate = Helper.Helper.GetDateTime();
                 applianceAccessoryRepository.Update(_accessory);

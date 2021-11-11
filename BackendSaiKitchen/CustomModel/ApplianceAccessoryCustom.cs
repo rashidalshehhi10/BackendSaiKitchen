@@ -17,4 +17,10 @@ namespace BackendSaiKitchen.CustomModel
         public string ApplianceAccessoryImgUrl { get; set; }
 
     }
+
+    public class AccessoryCustom
+    {
+        public int brandId { get; set; }
+        public int TypeId { get; set; }
+    }
 }
