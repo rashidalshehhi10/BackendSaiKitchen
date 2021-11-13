@@ -292,7 +292,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
-
+                inquiry.InquiryEndDate = Helper.Helper.GetDateTime();
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
                     x.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
