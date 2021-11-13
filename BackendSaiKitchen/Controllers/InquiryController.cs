@@ -845,6 +845,32 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetInquiryStatusForInquiries()
+        {
+            var status = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                inquiryStatusName = x.InquiryStatus.InquiryStatusName,
+                inquiryStatusId = x.InquiryStatusId
+            }).Distinct();
+            response.data = status;
+            return response;
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public object GetManagedByForInquiries()
+        {
+            var ManagedBy = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                ManagedByName = x.ManagedByNavigation.UserName,
+                ManagedById = x.ManagedBy
+            }).Distinct();
+            response.data = ManagedBy;
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
         public object ChangeInquiryManagedBy(ChangeManaged change)
         {
             Inquiry inquiry = inquiryRepository
