@@ -211,7 +211,8 @@ namespace BackendSaiKitchen.Controllers
                         InquiryAddedBy = x.ManagedByNavigation.UserName,
                         InquiryAddedById = x.ManagedBy,
                         NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
-                        InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId
+                        InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
+                        InquiryComment =x.InquiryComment,
                     }).ToList();
             if (inquiries != null)
             {
