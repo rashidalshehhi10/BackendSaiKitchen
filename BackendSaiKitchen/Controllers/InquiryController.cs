@@ -845,9 +845,9 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GetInquiryStatusForInquiries()
+        public object GetInquiryStatusForInquiries(int branchId)
         {
-            var status = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var status = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 inquiryStatusName = x.InquiryStatus.InquiryStatusName,
                 inquiryStatusId = x.InquiryStatusId
@@ -857,9 +857,9 @@ namespace SaiKitchenBackend.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public object GetManagedByForInquiries()
+        public object GetManagedByForInquiries(int branchId)
         {
-            var ManagedBy = inquiryRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var ManagedBy = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new
             {
                 ManagedByName = x.ManagedByNavigation.UserName,
                 ManagedById = x.ManagedBy
