@@ -441,7 +441,8 @@ namespace SaiKitchenBackend.Controllers
                     _property = Expression.PropertyOrField(_property, item);
                 }
                 constant = Expression.Constant(customerName);
-                var _experssion = Expression.Equal(_property, constant);
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion = Expression.Call(_property, method, constant);
                 expression = Expression.And(expression, _experssion);
             }
             if (workscopeNames != null)
@@ -512,7 +513,7 @@ namespace SaiKitchenBackend.Controllers
             //if (customerCode != null)
             //{
             //    Expression _property = parameterExprission;
-            //    foreach (var item in "Customer.CustomerCode".Split('.'))
+            //    foreach (var item in "Customer.CustomerId".Split('.'))
             //    {
             //        _property = Expression.PropertyOrField(_property, item);
             //    }
