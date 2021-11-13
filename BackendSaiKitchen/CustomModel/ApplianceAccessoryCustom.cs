@@ -8,6 +8,7 @@ namespace BackendSaiKitchen.CustomModel
     public class ApplianceAccessoryCustom
     {
         public int ApplianceAccessoryId { get; set; }
+        public string SKUCode { get; set; }
         public string ApplianceAccessoryName { get; set; }
         public string ApplianceAccesoryDescription { get; set; }
         public double ApplianceAccessoryPrice { get; set; }

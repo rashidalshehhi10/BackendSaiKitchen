@@ -123,6 +123,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.Skucode)
+                    .HasMaxLength(500)
+                    .HasColumnName("SKUCode");
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.ApplianceAccessoryType)

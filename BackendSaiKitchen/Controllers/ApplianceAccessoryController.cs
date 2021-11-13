@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.Controllers
             if (accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
+                _accessory.Skucode = accessory.Skucode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
@@ -50,8 +51,9 @@ namespace BackendSaiKitchen.Controllers
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                .Select(x => new
                {
-                   ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
                    ApplianceAccessoryId = x.ApplianceAccessoryId,
+                   SKUCode = x.Skucode,
+                   ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
                    ApplianceAccessoryName = x.ApplianceAccessoryName,
                    ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
@@ -82,8 +84,9 @@ namespace BackendSaiKitchen.Controllers
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
                 .Select(x => new 
                 {
+                    ApplianceAccessoryId = x.ApplianceAccessoryId,
+                    SKUCode = x.Skucode,
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                    ApplianceAccessoryId= x.ApplianceAccessoryId,
                     ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
@@ -141,6 +144,7 @@ namespace BackendSaiKitchen.Controllers
                     BrandId = x.BrandId,
                     BrandName = x.Brand.BrandName,
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
+                    SKUCode = x.Skucode,
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
@@ -170,6 +174,7 @@ namespace BackendSaiKitchen.Controllers
             if (accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
+                _accessory.Skucode = accessory.SKUCode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;

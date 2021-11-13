@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public string Skucode { get; set; }
 
         public virtual ApplianceAccessoryType ApplianceAccessoryType { get; set; }
         public virtual Brand Brand { get; set; }
