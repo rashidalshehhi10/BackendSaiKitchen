@@ -180,9 +180,14 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl == string.Empty ? _accessory.ApplianceAccessoryImgUrl : accessory.ApplianceAccessoryImgUrl;
                 _accessory.UpdatedBy = Constants.userId;
                 _accessory.UpdatedDate = Helper.Helper.GetDateTime();
+                if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
+                {
+                    _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
+                }
+                
+               
                 applianceAccessoryRepository.Update(_accessory);
                 context.SaveChanges();
                 response.data = "Appliance And Accessory Updated Successfully ";
