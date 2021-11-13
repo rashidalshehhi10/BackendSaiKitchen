@@ -67,6 +67,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int inquiryId { get; set; }
         public string Reason { get; set; }
+        public string base64f3d { get; set; }
     }
 
     public class Install

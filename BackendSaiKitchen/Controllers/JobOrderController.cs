@@ -81,10 +81,10 @@ namespace BackendSaiKitchen.Controllers
                 Helper.Helper.Each(inquiry.InquiryWorkscopes,
                     x => { x.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected; });
                 inquiry.InquiryComment = job.Reason;
-                //Helper.Helper.Each(inquiry.JobOrders, x =>
-                //{
-                //    x.IsActive = false;
-                //});
+                Helper.Helper.Each(inquiry.JobOrders, x =>
+                {
+                    x.DetailedDesignFile = job.base64f3d;
+                });
                 response.data = "JobOrder Factory Rejected";
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
