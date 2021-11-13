@@ -510,17 +510,19 @@ namespace SaiKitchenBackend.Controllers
                     Expression.Property(parameterExprission, "InquiryWorkScopes"), _lambda);
                 expression = Expression.And(expression, body);
             }
-            //if (customerCode != null)
-            //{
-            //    Expression _property = parameterExprission;
-            //    foreach (var item in "Customer.CustomerId".Split('.'))
-            //    {
-            //        _property = Expression.PropertyOrField(_property, item);
-            //    }
-            //    constant = Expression.Constant(customerCode);
-            //    var _experssion = Expression.Equal(_property, constant);
-            //    expression = Expression.And(expression, _experssion);
-            //}
+            if (customerCode != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "Customer.CustomerId".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                string BranchId = branchId.ToString();
+                int id = int.Parse(customerCode.Substring(BranchId.Length + 2));
+                constant = Expression.Constant(id,typeof(int));
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
             if (customerContact != null)
             {
                 Expression _property = parameterExprission;
