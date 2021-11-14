@@ -1617,6 +1617,22 @@ namespace SaiKitchenBackend.Controllers
                 }
                 foreach (var job in inquiry.JobOrders)
                 {
+                    if (files.DetailedDesignFile != null && files.DetailedDesignFile != string.Empty)
+                    {
+                        try
+                        {
+                            if (job.DetailedDesignFile != null && job.DetailedDesignFile != string.Empty)
+                            {
+                                await Helper.DeleteFile(job.DetailedDesignFile);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                        job.DetailedDesignFile = files.DetailedDesignFile;
+                        response.data += files.DetailedDesignFile + " Added to Detailed Design File in Job Order \n";
+                    }
                     if (files.MatrialSheet != null && files.MatrialSheet != string.Empty)
                     {
                         try
