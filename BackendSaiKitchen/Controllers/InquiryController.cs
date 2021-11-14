@@ -1581,36 +1581,37 @@ namespace SaiKitchenBackend.Controllers
                                 {
                                     Sentry.SentrySdk.CaptureMessage(e.Message);
                                 }
-                                foreach (string fileUrl in files.Quotation)
-                                {
-
-
-                                    if (fileUrl != null)
-                                    {
-                                        quotation.Files.Add(new BackendSaiKitchen.Models.File
-                                        {
-                                            FileUrl = fileUrl,
-                                            FileName = fileUrl.Split('.')[0],
-                                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                            IsImage = fileUrl.Split('.').Length > 1,
-                                            IsActive = true,
-                                            IsDeleted = false,
-                                            UpdatedBy = Constants.userId,
-                                            UpdatedDate = Helper.GetDateTime(),
-                                            CreatedBy = Constants.userId,
-                                            CreatedDate = Helper.GetDateTime(),
-
-                                        });
-                                        response.data += fileUrl + " Added to Quotation \n";
-                                    }
-                                    else
-                                    {
-                                        response.isError = true;
-                                        response.errorMessage = Constants.wrongFileUpload;
-                                    }
-
-                                }
+                                
                             }
+                        }
+                        foreach (string fileUrl in files.Quotation)
+                        {
+
+
+                            if (fileUrl != null)
+                            {
+                                quotation.Files.Add(new BackendSaiKitchen.Models.File
+                                {
+                                    FileUrl = fileUrl,
+                                    FileName = fileUrl.Split('.')[0],
+                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                    IsImage = fileUrl.Split('.').Length > 1,
+                                    IsActive = true,
+                                    IsDeleted = false,
+                                    UpdatedBy = Constants.userId,
+                                    UpdatedDate = Helper.GetDateTime(),
+                                    CreatedBy = Constants.userId,
+                                    CreatedDate = Helper.GetDateTime(),
+
+                                });
+                                response.data += fileUrl + " Added to Quotation \n";
+                            }
+                            else
+                            {
+                                response.isError = true;
+                                response.errorMessage = Constants.wrongFileUpload;
+                            }
+
                         }
                     }
                 }
@@ -1620,7 +1621,10 @@ namespace SaiKitchenBackend.Controllers
                     {
                         try
                         {
-                            await Helper.DeleteFile(job.MaterialSheetFileUrl);
+                            if (job.MaterialSheetFileUrl != null && job.MaterialSheetFileUrl != string.Empty)
+                            {
+                                await Helper.DeleteFile(job.MaterialSheetFileUrl);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -1633,7 +1637,10 @@ namespace SaiKitchenBackend.Controllers
                     {
                         try
                         {
-                            await Helper.DeleteFile(job.MepdrawingFileUrl);
+                            if (job.MepdrawingFileUrl != null && job.MepdrawingFileUrl != string.Empty)
+                            {
+                                await Helper.DeleteFile(job.MepdrawingFileUrl);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -1646,7 +1653,10 @@ namespace SaiKitchenBackend.Controllers
                     {
                         try
                         {
-                            await Helper.DeleteFile(job.JobOrderChecklistFileUrl);
+                            if (job.JobOrderChecklistFileUrl != null && job.JobOrderChecklistFileUrl != string.Empty)
+                            {
+                                await Helper.DeleteFile(job.JobOrderChecklistFileUrl);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -1659,7 +1669,10 @@ namespace SaiKitchenBackend.Controllers
                     {
                         try
                         {
-                            await Helper.DeleteFile(job.DataSheetApplianceFileUrl);
+                            if (job.DataSheetApplianceFileUrl != null && job.DataSheetApplianceFileUrl != string.Empty)
+                            {
+                                await Helper.DeleteFile(job.DataSheetApplianceFileUrl);
+                            }
                         }
                         catch (Exception e)
                         {

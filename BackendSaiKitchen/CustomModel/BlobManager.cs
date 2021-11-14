@@ -107,7 +107,18 @@ namespace BackendSaiKitchen.CustomModel
         {
             BlobContainerClient blobcontainer = _blobServiceClient.GetBlobContainerClient("files");
             BlobClient blobclient = blobcontainer.GetBlobClient(FileName);
-            await blobclient.DeleteAsync();
+            if (blobclient != null)
+            {
+                try
+                {
+                    await blobclient.DeleteAsync();
+                }
+                catch (Exception e)
+                {
+                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                }
+            }
+            
         }
     }
 }
