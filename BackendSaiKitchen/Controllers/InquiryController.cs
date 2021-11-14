@@ -1445,109 +1445,220 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
 
-                foreach (var inworscope in inquiry.InquiryWorkscopes)
+                if ((files.Measurement != null && files.Measurement.Any()) || (files.Desgin != null && files.Desgin.Any()))
                 {
-                    if (files.Measurement != null && files.Measurement.Any())
+                    foreach (var inworscope in inquiry.InquiryWorkscopes)
                     {
-                        foreach (var measurement in inworscope.Measurements)
+                        if (files.Measurement != null && files.Measurement.Any())
                         {
-                            foreach (var file in measurement.Files)
+                            foreach (var measurement in inworscope.Measurements)
                             {
-                                file.IsActive = false;
-                                try
+                                foreach (var file in measurement.Files)
                                 {
-                                    await Helper.DeleteFile(file.FileUrl);
-                                }
-                                catch (Exception e)
-                                {
-                                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                                }
-                            }
-                            foreach (string fileUrl in files.Measurement)
-                            {
-
-
-                                if (fileUrl != null)
-                                {
-                                    measurement.Files.Add(new BackendSaiKitchen.Models.File
+                                    file.IsActive = false;
+                                    try
                                     {
-                                        FileUrl = fileUrl,
-                                        FileName = fileUrl.Split('.')[0],
-                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                        IsImage = fileUrl.Split('.').Length > 1,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                        UpdatedBy = Constants.userId,
-                                        UpdatedDate = Helper.GetDateTime(),
-                                        CreatedBy = Constants.userId,
-                                        CreatedDate = Helper.GetDateTime(),
-
-                                    });
+                                        await Helper.DeleteFile(file.FileUrl);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                                    }
                                 }
-                                else
+                                foreach (string fileUrl in files.Measurement)
                                 {
-                                    response.isError = true;
-                                    response.errorMessage = Constants.wrongFileUpload;
-                                }
 
+
+                                    if (fileUrl != null)
+                                    {
+                                        measurement.Files.Add(new BackendSaiKitchen.Models.File
+                                        {
+                                            FileUrl = fileUrl,
+                                            FileName = fileUrl.Split('.')[0],
+                                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                            IsImage = fileUrl.Split('.').Length > 1,
+                                            IsActive = true,
+                                            IsDeleted = false,
+                                            UpdatedBy = Constants.userId,
+                                            UpdatedDate = Helper.GetDateTime(),
+                                            CreatedBy = Constants.userId,
+                                            CreatedDate = Helper.GetDateTime(),
+
+                                        });
+                                    }
+                                    else
+                                    {
+                                        response.isError = true;
+                                        response.errorMessage = Constants.wrongFileUpload;
+                                    }
+
+                                }
                             }
                         }
-                    }
-                    if (files.Desgin != null && files.Desgin.Any())
-                    {
-                        foreach (var design in inworscope.Designs)
+                        if (files.Desgin != null && files.Desgin.Any())
                         {
-                            foreach (var file in design.Files)
+                            foreach (var design in inworscope.Designs)
                             {
-                                file.IsActive = false;
-                                try
+                                foreach (var file in design.Files)
                                 {
-                                    await Helper.DeleteFile(file.FileUrl);
-                                }
-                                catch (Exception e)
-                                {
-                                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                                }
-                            }
-                            foreach (string fileUrl in files.Desgin)
-                            {
-
-
-                                if (fileUrl != null)
-                                {
-                                    design.Files.Add(new BackendSaiKitchen.Models.File
+                                    file.IsActive = false;
+                                    try
                                     {
-                                        FileUrl = fileUrl,
-                                        FileName = fileUrl.Split('.')[0],
-                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                        IsImage = fileUrl.Split('.').Length > 1,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                        UpdatedBy = Constants.userId,
-                                        UpdatedDate = Helper.GetDateTime(),
-                                        CreatedBy = Constants.userId,
-                                        CreatedDate = Helper.GetDateTime(),
-
-                                    });
+                                        await Helper.DeleteFile(file.FileUrl);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                                    }
                                 }
-                                else
+                                foreach (string fileUrl in files.Desgin)
                                 {
-                                    response.isError = true;
-                                    response.errorMessage = Constants.wrongFileUpload;
-                                }
 
+
+                                    if (fileUrl != null)
+                                    {
+                                        design.Files.Add(new BackendSaiKitchen.Models.File
+                                        {
+                                            FileUrl = fileUrl,
+                                            FileName = fileUrl.Split('.')[0],
+                                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                            IsImage = fileUrl.Split('.').Length > 1,
+                                            IsActive = true,
+                                            IsDeleted = false,
+                                            UpdatedBy = Constants.userId,
+                                            UpdatedDate = Helper.GetDateTime(),
+                                            CreatedBy = Constants.userId,
+                                            CreatedDate = Helper.GetDateTime(),
+
+                                        });
+                                    }
+                                    else
+                                    {
+                                        response.isError = true;
+                                        response.errorMessage = Constants.wrongFileUpload;
+                                    }
+
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
-                foreach (var quotation in inquiry.Quotations)
+                if ((files.Quotation != null && files.Quotation.Any())||(files.CalculationSheetFile != null && files.CalculationSheetFile != string.Empty))
                 {
+                    foreach (var quotation in inquiry.Quotations)
+                    {
+                        if (files.CalculationSheetFile != null && files.CalculationSheetFile != string.Empty)
+                        {
+                            try
+                            {
+                                await Helper.DeleteFile(quotation.CalculationSheetFile);
+                            }
+                            catch (Exception e)
+                            {
+                                Sentry.SentrySdk.CaptureMessage(e.Message);
+                            }
+                        }
+                        if (files.Quotation != null && files.Quotation.Any())
+                        {
+                            foreach (var file in quotation.Files)
+                            {
+                                file.IsActive = false;
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                                foreach (string fileUrl in files.Quotation)
+                                {
 
+
+                                    if (fileUrl != null)
+                                    {
+                                        quotation.Files.Add(new BackendSaiKitchen.Models.File
+                                        {
+                                            FileUrl = fileUrl,
+                                            FileName = fileUrl.Split('.')[0],
+                                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                            IsImage = fileUrl.Split('.').Length > 1,
+                                            IsActive = true,
+                                            IsDeleted = false,
+                                            UpdatedBy = Constants.userId,
+                                            UpdatedDate = Helper.GetDateTime(),
+                                            CreatedBy = Constants.userId,
+                                            CreatedDate = Helper.GetDateTime(),
+
+                                        });
+                                    }
+                                    else
+                                    {
+                                        response.isError = true;
+                                        response.errorMessage = Constants.wrongFileUpload;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach (var job in inquiry.JobOrders)
+                {
+                    if (files.MatrialSheet != null && files.MatrialSheet != string.Empty)
+                    {
+                        try
+                        {
+                            await Helper.DeleteFile(job.MaterialSheetFileUrl);
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                        job.MaterialSheetFileUrl = files.MatrialSheet;
+                    }
+                    else if (files.MEPDrawing != null && files.MEPDrawing != string.Empty)
+                    {
+                        try
+                        {
+                            await Helper.DeleteFile(job.MepdrawingFileUrl);
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                        job.MepdrawingFileUrl = files.MEPDrawing;
+                    }
+                    else if (files.JobOrderChecklist != null && files.JobOrderChecklist != string.Empty)
+                    {
+                        try
+                        {
+                            await Helper.DeleteFile(job.JobOrderChecklistFileUrl);
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                        job.JobOrderChecklistFileUrl = files.JobOrderChecklist;
+                    }
+                    else if (files.DataSheetAppliance != null && files.DataSheetAppliance != string.Empty)
+                    {
+                        try
+                        {
+                            await Helper.DeleteFile(job.DataSheetApplianceFileUrl);
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                        job.DataSheetApplianceFileUrl = files.DataSheetAppliance;
+                    }
                 }
                 
 

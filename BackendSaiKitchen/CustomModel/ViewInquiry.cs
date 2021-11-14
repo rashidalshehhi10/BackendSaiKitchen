@@ -85,10 +85,11 @@ namespace BackendSaiKitchen.CustomModel
         public string MatrialSheet { get; set; }
         public string DataSheetAppliance { get; set; }
         public string DetailedDesignFile { get; set; }
-        //public string AdvancePayment { get; set; }
-        //public string BeforeInstalltionPayment { get; set; }
-        //public string AfterDelieveryPayment { get; set; }
-        //public string InstallmentPayment { get; set; }
+        public string JobOrderChecklist { get; set; }
+        public string AdvancePayment { get; set; }
+        public string BeforeInstalltionPayment { get; set; }
+        public string AfterDelieveryPayment { get; set; }
+        public string InstallmentPayment { get; set; }
 
     }
 
