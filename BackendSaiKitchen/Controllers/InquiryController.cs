@@ -1449,7 +1449,7 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-
+                response.data = "";
                 if ((files.Measurement != null && files.Measurement.Any()) || (files.Desgin != null && files.Desgin.Any()))
                 {
                     foreach (var inworscope in inquiry.InquiryWorkscopes)
@@ -1490,6 +1490,7 @@ namespace SaiKitchenBackend.Controllers
                                             CreatedDate = Helper.GetDateTime(),
 
                                         });
+                                        response.data += fileUrl + " Added to Measurement \n";
                                     }
                                     else
                                     {
@@ -1536,6 +1537,7 @@ namespace SaiKitchenBackend.Controllers
                                             CreatedDate = Helper.GetDateTime(),
 
                                         });
+                                        response.data += fileUrl + "Added to Design \n";
                                     }
                                     else
                                     {
@@ -1549,7 +1551,7 @@ namespace SaiKitchenBackend.Controllers
 
                     }
                 }
-                if ((files.Quotation != null && files.Quotation.Any())||(files.CalculationSheetFile != null && files.CalculationSheetFile != string.Empty))
+                if ((files.Quotation != null && files.Quotation.Any()) || (files.CalculationSheetFile != null && files.CalculationSheetFile != string.Empty))
                 {
                     foreach (var quotation in inquiry.Quotations)
                     {
@@ -1563,6 +1565,8 @@ namespace SaiKitchenBackend.Controllers
                             {
                                 Sentry.SentrySdk.CaptureMessage(e.Message);
                             }
+                            quotation.CalculationSheetFile = files.CalculationSheetFile;
+                            response.data += files.CalculationSheetFile + " Added to Calculation Sheet File in Quotation \n";
                         }
                         if (files.Quotation != null && files.Quotation.Any())
                         {
@@ -1597,6 +1601,7 @@ namespace SaiKitchenBackend.Controllers
                                             CreatedDate = Helper.GetDateTime(),
 
                                         });
+                                        response.data += fileUrl + " Added to Quotation \n";
                                     }
                                     else
                                     {
@@ -1622,8 +1627,9 @@ namespace SaiKitchenBackend.Controllers
                             Sentry.SentrySdk.CaptureMessage(e.Message);
                         }
                         job.MaterialSheetFileUrl = files.MatrialSheet;
+                        response.data += files.MatrialSheet + " Added to Material Sheet File in Job Order \n";
                     }
-                    else if (files.MEPDrawing != null && files.MEPDrawing != string.Empty)
+                    if (files.MEPDrawing != null && files.MEPDrawing != string.Empty)
                     {
                         try
                         {
@@ -1634,8 +1640,9 @@ namespace SaiKitchenBackend.Controllers
                             Sentry.SentrySdk.CaptureMessage(e.Message);
                         }
                         job.MepdrawingFileUrl = files.MEPDrawing;
+                        response.data += files.MEPDrawing + " Added to Mepdrawing File in Job Order \n";
                     }
-                    else if (files.JobOrderChecklist != null && files.JobOrderChecklist != string.Empty)
+                    if (files.JobOrderChecklist != null && files.JobOrderChecklist != string.Empty)
                     {
                         try
                         {
@@ -1646,8 +1653,9 @@ namespace SaiKitchenBackend.Controllers
                             Sentry.SentrySdk.CaptureMessage(e.Message);
                         }
                         job.JobOrderChecklistFileUrl = files.JobOrderChecklist;
+                        response.data += files.JobOrderChecklist + " Added to Job Order Checklist File in Job Order \n";
                     }
-                    else if (files.DataSheetAppliance != null && files.DataSheetAppliance != string.Empty)
+                    if (files.DataSheetAppliance != null && files.DataSheetAppliance != string.Empty)
                     {
                         try
                         {
@@ -1658,10 +1666,199 @@ namespace SaiKitchenBackend.Controllers
                             Sentry.SentrySdk.CaptureMessage(e.Message);
                         }
                         job.DataSheetApplianceFileUrl = files.DataSheetAppliance;
+                        response.data += files.DataSheetAppliance + " Added to Data Sheet Appliance File in Job Order \n";
                     }
                 }
-                
+                foreach (var payment in inquiry.Payments)
+                {
+                    if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
+                    {
+                        if (files.AdvancePayment != null && files.AdvancePayment.Any())
+                        {
+                            foreach (var file in payment.Files)
+                            {
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                                file.IsActive = false;
+                            }
+                            foreach (string fileUrl in files.AdvancePayment)
+                            {
 
+
+                                if (fileUrl != null)
+                                {
+                                    payment.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                    response.data += fileUrl + " Added to Advance Payment in Payments \n";
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+
+                            }
+                        }
+                    } 
+                    if (payment.PaymentTypeId == (int)paymenttype.BeforeInstallation)
+                    {
+                        if (files.BeforeInstalltionPayment != null && files.BeforeInstalltionPayment.Any())
+                        {
+                            foreach (var file in payment.Files)
+                            {
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                                file.IsActive = false;
+                            }
+                            foreach (string fileUrl in files.BeforeInstalltionPayment)
+                            {
+                                if (fileUrl != null)
+                                {
+                                    payment.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                    response.data += fileUrl + " Added to Before Installation Payment in Payments \n";
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+                            }
+                        }
+                    }
+                    if (payment.PaymentTypeId == (int)paymenttype.AfterDelivery)
+                    {
+                        if (files.AfterDelieveryPayment != null && files.AfterDelieveryPayment.Any())
+                        {
+                            foreach (var file in payment.Files)
+                            {
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                                file.IsActive = false;
+                            }
+                            foreach (string fileUrl in files.AfterDelieveryPayment)
+                            {
+
+
+                                if (fileUrl != null)
+                                {
+                                    payment.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                    response.data += fileUrl + " Added to After Delievery Payment in Payments \n";
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+
+                            }
+                        }
+                    }
+                    if (payment.PaymentTypeId == (int)paymenttype.Installment)
+                    {
+                        if (files.InstallmentPayment != null && files.InstallmentPayment.Any())
+                        {
+                            foreach (var file in payment.Files)
+                            {
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                                file.IsActive = false;
+                            }
+                            foreach (string fileUrl in files.InstallmentPayment)
+                            {
+
+
+                                if (fileUrl != null)
+                                {
+                                    payment.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                    response.data += fileUrl + " Added to Installment Payment in Payments \n";
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
             }
             else
             {
