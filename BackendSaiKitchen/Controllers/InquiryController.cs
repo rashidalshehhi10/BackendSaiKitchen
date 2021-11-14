@@ -1437,7 +1437,128 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> EditFiles(EditFiles files)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == files.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Measurements.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
 
+                foreach (var inworscope in inquiry.InquiryWorkscopes)
+                {
+                    if (files.Measurement != null && files.Measurement.Any())
+                    {
+                        foreach (var measurement in inworscope.Measurements)
+                        {
+                            foreach (var file in measurement.Files)
+                            {
+                                file.IsActive = false;
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                            }
+                            foreach (string fileUrl in files.Measurement)
+                            {
+
+
+                                if (fileUrl != null)
+                                {
+                                    measurement.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+
+                            }
+                        }
+                    }
+                    if (files.Desgin != null && files.Desgin.Any())
+                    {
+                        foreach (var design in inworscope.Designs)
+                        {
+                            foreach (var file in design.Files)
+                            {
+                                file.IsActive = false;
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                            }
+                            foreach (string fileUrl in files.Desgin)
+                            {
+
+
+                                if (fileUrl != null)
+                                {
+                                    design.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+                foreach (var quotation in inquiry.Quotations)
+                {
+
+                }
+                
+
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
+            }
+            return response;
+        }
 
         [HttpPost]
         [Route("[action]")]
