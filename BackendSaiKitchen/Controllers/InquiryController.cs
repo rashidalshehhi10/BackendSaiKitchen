@@ -1809,53 +1809,53 @@ namespace SaiKitchenBackend.Controllers
                             }
                         }
                     }
-                    if (payment.PaymentTypeId == (int)paymenttype.Installment)
-                    {
-                        if (files.InstallmentPayment != null && files.InstallmentPayment.Any())
-                        {
-                            foreach (var file in payment.Files)
-                            {
-                                try
-                                {
-                                    await Helper.DeleteFile(file.FileUrl);
-                                }
-                                catch (Exception e)
-                                {
-                                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                                }
-                                file.IsActive = false;
-                            }
-                            foreach (string fileUrl in files.InstallmentPayment)
-                            {
+                    //if (payment.PaymentTypeId == (int)paymenttype.Installment)
+                    //{
+                    //    if (files.InstallmentPayment != null && files.InstallmentPayment.Any())
+                    //    {
+                    //        foreach (var file in payment.Files)
+                    //        {
+                    //            try
+                    //            {
+                    //                await Helper.DeleteFile(file.FileUrl);
+                    //            }
+                    //            catch (Exception e)
+                    //            {
+                    //                Sentry.SentrySdk.CaptureMessage(e.Message);
+                    //            }
+                    //            file.IsActive = false;
+                    //        }
+                    //        foreach (string fileUrl in files.InstallmentPayment)
+                    //        {
 
 
-                                if (fileUrl != null)
-                                {
-                                    payment.Files.Add(new BackendSaiKitchen.Models.File
-                                    {
-                                        FileUrl = fileUrl,
-                                        FileName = fileUrl.Split('.')[0],
-                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                        IsImage = fileUrl.Split('.').Length > 1,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                        UpdatedBy = Constants.userId,
-                                        UpdatedDate = Helper.GetDateTime(),
-                                        CreatedBy = Constants.userId,
-                                        CreatedDate = Helper.GetDateTime(),
+                    //            if (fileUrl != null)
+                    //            {
+                    //                payment.Files.Add(new BackendSaiKitchen.Models.File
+                    //                {
+                    //                    FileUrl = fileUrl,
+                    //                    FileName = fileUrl.Split('.')[0],
+                    //                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                    //                    IsImage = fileUrl.Split('.').Length > 1,
+                    //                    IsActive = true,
+                    //                    IsDeleted = false,
+                    //                    UpdatedBy = Constants.userId,
+                    //                    UpdatedDate = Helper.GetDateTime(),
+                    //                    CreatedBy = Constants.userId,
+                    //                    CreatedDate = Helper.GetDateTime(),
 
-                                    });
-                                    response.data += fileUrl + " Added to Installment Payment in Payments \n";
-                                }
-                                else
-                                {
-                                    response.isError = true;
-                                    response.errorMessage = Constants.wrongFileUpload;
-                                }
+                    //                });
+                    //                response.data += fileUrl + " Added to Installment Payment in Payments \n";
+                    //            }
+                    //            else
+                    //            {
+                    //                response.isError = true;
+                    //                response.errorMessage = Constants.wrongFileUpload;
+                    //            }
 
-                            }
-                        }
-                    }
+                    //        }
+                    //    }
+                    //}
                 }
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
