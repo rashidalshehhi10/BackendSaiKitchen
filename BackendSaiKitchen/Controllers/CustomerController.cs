@@ -84,7 +84,6 @@ namespace SaiKitchenBackend.Controllers
                     ContactStatusId = x.ContactStatusId,
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId,
-                    AddedOn = x.
                 });
         }
 
