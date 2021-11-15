@@ -622,7 +622,9 @@ namespace SaiKitchenBackend.Controllers
                     CustomerWhatsapp = x.Customer.CustomerWhatsapp, //x.Inquiry.Customer.CustomerWhatsapp,
                     BranchId = x.BranchId, //x.Inquiry.BranchId,
                     InquiryAddedBy = x.ManagedByNavigation.UserName, //x.Inquiry.AddedByNavigation.UserName,
-                    InquiryAddedById = x.ManagedBy, // x.Inquiry.AddedBy,
+                    InquiryAddedById = x.ManagedBy,
+                    InquiryAddedOn = x.CreatedDate,
+                    // x.Inquiry.AddedBy,
                     NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements
                         .Count(y => y.IsDeleted == false), //x.Measurements.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode =

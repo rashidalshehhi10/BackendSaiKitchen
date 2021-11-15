@@ -44,6 +44,7 @@ namespace BackendSaiKitchen.CustomModel
         public string? InquiryAddedBy { get; set; }
         public string? MeasurementFee { get; set; }
         public int? InquiryAddedById { get; set; }
+        public string InquiryAddedOn { get; set; }
         public object Actions { get; set; }
         public int? NoOfRevision { get; set; }
         public string QuotationScheduleDate { get; set; }
