@@ -83,7 +83,8 @@ namespace SaiKitchenBackend.Controllers
                     WayofContactId = x.WayofContactId,
                     ContactStatusId = x.ContactStatusId,
                     CustomerAddress = x.CustomerAddress,
-                    CustomerNationalId = x.CustomerNationalId
+                    CustomerNationalId = x.CustomerNationalId,
+                    AddedOn = x.
                 });
         }
 
@@ -120,7 +121,8 @@ namespace SaiKitchenBackend.Controllers
                         ContactStatus = x.ContactStatus.ContactStatusName,
                         CustomerAddress = x.CustomerAddress,
                         CustomerNationalId = x.CustomerNationalId,
-                        TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
+                        TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString(),
+                        AddedOn = x.CreatedDate,
                     }).ToList();
             customers.AddRange(customerRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
