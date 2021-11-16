@@ -217,6 +217,16 @@
         ExtraCharges = 7
     }
 
+    public enum newsletterFrequency
+    {
+        OneTime = 1,
+        Daily = 2,
+        Weekly = 3,
+        BiWeekly = 4,
+        Monthly = 5,
+        Annually = 6
+    }
+
     public enum paymentMode
     {
         Cash = 1,

@@ -19,6 +19,7 @@ namespace BackendSaiKitchen.Models
             InquiryWorkscopeMeasurementAssignedToNavigations = new HashSet<InquiryWorkscope>();
             MeasurementMeasurementApprovedByNavigations = new HashSet<Measurement>();
             MeasurementMeasurementTakenByNavigations = new HashSet<Measurement>();
+            Newsletters = new HashSet<Newsletter>();
             Notifications = new HashSet<Notification>();
             UserRoles = new HashSet<UserRole>();
         }
@@ -50,6 +51,7 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopeMeasurementAssignedToNavigations { get; set; }
         public virtual ICollection<Measurement> MeasurementMeasurementApprovedByNavigations { get; set; }
         public virtual ICollection<Measurement> MeasurementMeasurementTakenByNavigations { get; set; }
+        public virtual ICollection<Newsletter> Newsletters { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

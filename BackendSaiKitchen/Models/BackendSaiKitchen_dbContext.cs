@@ -44,6 +44,9 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Measurement> Measurements { get; set; }
         public virtual DbSet<MeasurementDetail> MeasurementDetails { get; set; }
         public virtual DbSet<MeasurementDetailInfo> MeasurementDetailInfos { get; set; }
+        public virtual DbSet<Newsletter> Newsletters { get; set; }
+        public virtual DbSet<NewsletterFrequency> NewsletterFrequencies { get; set; }
+        public virtual DbSet<NewsletterType> NewsletterTypes { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
@@ -822,6 +825,60 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.MeasurementDetailInfos)
                     .HasForeignKey(d => d.MeasurementDetailId)
                     .HasConstraintName("FK_MeasurementDetailInfo_MeasurementDetail");
+            });
+
+            modelBuilder.Entity<Newsletter>(entity =>
+            {
+                entity.ToTable("Newsletter");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.NewsletterAttachmentUrl).HasColumnName("NewsletterAttachmentURL");
+
+                entity.Property(e => e.NewsletterSendingDate).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.AddedByNavigation)
+                    .WithMany(p => p.Newsletters)
+                    .HasForeignKey(d => d.AddedBy)
+                    .HasConstraintName("FK_NewsLetter_User");
+
+                entity.HasOne(d => d.NewsletterFrequency)
+                    .WithMany(p => p.Newsletters)
+                    .HasForeignKey(d => d.NewsletterFrequencyId)
+                    .HasConstraintName("FK_NewsLetter_NewsletterFrequency");
+
+                entity.HasOne(d => d.NewsletterType)
+                    .WithMany(p => p.Newsletters)
+                    .HasForeignKey(d => d.NewsletterTypeId)
+                    .HasConstraintName("FK_NewsLetter_NewsletterType");
+            });
+
+            modelBuilder.Entity<NewsletterFrequency>(entity =>
+            {
+                entity.ToTable("NewsletterFrequency");
+
+                entity.Property(e => e.NewsletterFrequencyId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.NewsletterFrequencyDescription).HasMaxLength(500);
+
+                entity.Property(e => e.NewsletterFrequencyName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<NewsletterType>(entity =>
+            {
+                entity.ToTable("NewsletterType");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.NewsletterTypeName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Notification>(entity =>

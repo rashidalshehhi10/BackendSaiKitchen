@@ -8,6 +8,7 @@ namespace BackendSaiKitchen.Models
     public partial class ApplianceAccessory
     {
         public int ApplianceAccessoryId { get; set; }
+        public string Skucode { get; set; }
         public string ApplianceAccessoryName { get; set; }
         public string ApplianceAccesoryDescription { get; set; }
         public int? ApplianceAccessoryTypeId { get; set; }
@@ -21,7 +22,6 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
-        public string Skucode { get; set; }
 
         public virtual ApplianceAccessoryType ApplianceAccessoryType { get; set; }
         public virtual Brand Brand { get; set; }
