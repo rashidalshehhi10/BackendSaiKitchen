@@ -16,7 +16,16 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllNewsletter()
         {
-            var newsletterTypes = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
+            var newsletterTypes = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                newsletterId = x.NewsletterId,
+                newsletterHeading = x.NewsletterHeading,
+                newsletterBody = x.NewsletterBody,
+                newsletterAttachmentUrl = x.NewsletterAttachmentUrl,
+                newsletterTypeId = x.NewsletterTypeId,
+                newsletterTypeName = x.NewsletterType.NewsletterTypeName,
+                newsletterSendingDate = x.NewsletterSendingDate,
+            });
             response.data = newsletterTypes;
             return response;
         }
@@ -25,10 +34,19 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetNewsletterById(int newsletterId)
         {
-            var newsletterType = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterId == newsletterId);
-            if (newsletterType != null)
+            var newsletter = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterId == newsletterId).Select(x => new
             {
-                response.data = newsletterType;
+                newsletterId = x.NewsletterId,
+                newsletterHeading = x.NewsletterHeading,
+                newsletterBody = x.NewsletterBody,
+                newsletterAttachmentUrl = x.NewsletterAttachmentUrl,
+                newsletterTypeId = x.NewsletterTypeId,
+                newsletterTypeName = x.NewsletterType.NewsletterTypeName,
+                newsletterSendingDate = x.NewsletterSendingDate,
+            }).FirstOrDefault();
+            if (newsletter != null)
+            {
+                response.data = newsletter;
             }
             else
             {
@@ -123,7 +141,7 @@ namespace BackendSaiKitchen.Controllers
             Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == active.NewsletterId && x.IsDeleted == false).FirstOrDefault();
             if (_new != null)
             {
-                _new.IsActive = active.Isactive;
+                _new.IsActive = active.isactive;
                 _new.UpdatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
                 newsletterRepository.Update(_new);

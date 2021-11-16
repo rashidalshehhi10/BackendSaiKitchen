@@ -21,7 +21,7 @@ namespace BackendSaiKitchen.CustomModel
     public class Isactive
     {
         public int NewsletterId { get; set; }
-        public bool Isactive { get; set; }
+        public bool isactive { get; set; }
     }
     public class NewsletterTypeCustom
     {
