@@ -17,6 +17,12 @@ namespace BackendSaiKitchen.CustomModel
         public string NewsletterBody { get; set; }
         public string NewsletterAttachmentUrl { get; set; }
     }
+
+    public class Isactive
+    {
+        public int NewsletterId { get; set; }
+        public bool Isactive { get; set; }
+    }
     public class NewsletterTypeCustom
     {
         public int NewsletterTypeId { get; set; }

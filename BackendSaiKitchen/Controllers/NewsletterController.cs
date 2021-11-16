@@ -14,7 +14,7 @@ namespace BackendSaiKitchen.Controllers
     {
         [HttpPost]
         [Route("[action]")]
-        public object GetAllNewsletterType()
+        public object GetAllNewsletter()
         {
             var newsletterTypes = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false);
             response.data = newsletterTypes;
@@ -23,7 +23,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GetNewsletterTypeById(int newsletterId)
+        public object GetNewsletterById(int newsletterId)
         {
             var newsletterType = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterTypeId == newsletterId);
             if (newsletterType != null)
@@ -102,6 +102,28 @@ namespace BackendSaiKitchen.Controllers
             if (_new != null)
             {
                 _new.IsActive = false;
+                _new.UpdatedBy = Constants.userId;
+                _new.CreatedDate = Helper.Helper.GetDateTime();
+                newsletterRepository.Update(_new);
+                response.data = _new;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "new Letter Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object IsactiveNewsletter(Isactive active)
+        {
+            Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == active.NewsletterId && x.IsDeleted == false).FirstOrDefault();
+            if (_new != null)
+            {
+                _new.IsActive = active.Isactive;
                 _new.UpdatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
                 newsletterRepository.Update(_new);
