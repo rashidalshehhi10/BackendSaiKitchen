@@ -16,7 +16,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllNewsletter()
         {
-            var newsletterTypes = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var newsletterTypes = newsletterRepository.FindByCondition(x => x.IsDeleted == false).Select(x => new
             {
                 newsletterId = x.NewsletterId,
                 newsletterHeading = x.NewsletterHeading,
@@ -27,6 +27,7 @@ namespace BackendSaiKitchen.Controllers
                 newsletterSendingDate = x.NewsletterSendingDate,
                 newsletterFrequencyId = x.NewsletterFrequencyId,
                 newsletterFrequencyName = x.NewsletterFrequency.NewsletterFrequencyName,
+                Isactive = x.IsActive
             });
             response.data = newsletterTypes;
             return response;
@@ -36,7 +37,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetNewsletterById(int newsletterId)
         {
-            var newsletter = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterId == newsletterId).Select(x => new
+            var newsletter = newsletterRepository.FindByCondition(x => x.IsDeleted == false && x.NewsletterId == newsletterId).Select(x => new
             {
                 newsletterId = x.NewsletterId,
                 newsletterHeading = x.NewsletterHeading,
@@ -47,6 +48,7 @@ namespace BackendSaiKitchen.Controllers
                 newsletterSendingDate = x.NewsletterSendingDate,
                 newsletterFrequencyId = x.NewsletterFrequencyId,
                 newsletterFrequencyName = x.NewsletterFrequency.NewsletterFrequencyName,
+                Isactive = x.IsActive
             }).FirstOrDefault();
             if (newsletter != null)
             {
@@ -74,7 +76,7 @@ namespace BackendSaiKitchen.Controllers
                 _new.NewsletterSendingDate = newsletter.NewsletterSendingDate;
                 _new.NewsletterTypeId = newsletter.NewsletterTypeId;
                 _new.AddedBy = newsletter.AddedBy;
-                _new.IsActive = true;
+                _new.IsActive = newsletter.isactive;
                 _new.IsDeleted = false;
                 _new.CreatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
@@ -94,7 +96,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object UpdateNewsletter(NewsletterCustom newsletter)
         {
-            Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == newsletter.NewsletterId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == newsletter.NewsletterId && x.IsDeleted == false).FirstOrDefault();
             if (_new != null)
             {
                 _new.NewsletterAttachmentUrl = newsletter.NewsletterAttachmentUrl;
@@ -104,6 +106,7 @@ namespace BackendSaiKitchen.Controllers
                 _new.NewsletterSendingDate = newsletter.NewsletterSendingDate;
                 _new.NewsletterTypeId = newsletter.NewsletterTypeId;
                 _new.AddedBy = newsletter.AddedBy;
+                _new.IsActive = newsletter.isactive;
                 _new.UpdatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
                 newsletterRepository.Update(_new);
@@ -122,10 +125,11 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object DeleteNewsletter(int NewsletterId)
         {
-            Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == NewsletterId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            Newsletter _new = newsletterRepository.FindByCondition(x => x.NewsletterId == NewsletterId && x.IsDeleted == false).FirstOrDefault();
             if (_new != null)
             {
                 _new.IsActive = false;
+                _new.IsDeleted = true;
                 _new.UpdatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
                 newsletterRepository.Update(_new);

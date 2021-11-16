@@ -17,6 +17,7 @@ namespace BackendSaiKitchen.CustomModel
         public string NewsletterBody { get; set; }
         public string NewsletterAttachmentUrl { get; set; }
         public int AddedBy { get; set; }
+        public bool isactive { get; set; }
     }
 
     public class Isactive
