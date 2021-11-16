@@ -25,7 +25,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetNewsletterById(int newsletterId)
         {
-            var newsletterType = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterTypeId == newsletterId);
+            var newsletterType = newsletterRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.NewsletterId == newsletterId);
             if (newsletterType != null)
             {
                 response.data = newsletterType;
