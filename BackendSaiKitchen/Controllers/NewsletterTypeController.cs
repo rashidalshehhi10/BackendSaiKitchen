@@ -50,7 +50,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object CreateNewsletterType(NewsletterCustom type)
+        public object CreateNewsletterType(NewsletterTypeCustom type)
         {
             NewsletterType _type = new NewsletterType();
             if (type != null)
@@ -68,22 +68,20 @@ namespace BackendSaiKitchen.Controllers
             else
             {
                 response.isError = true;
-                response.errorMessage = "Please ente the data correctly";
+                response.errorMessage = "Please enter the data correctly";
             }
             return response;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public object UpdateNewsletterType(NewsletterCustom type)
+        public object UpdateNewsletterType(NewsletterTypeCustom type)
         {
             NewsletterType _type = newsletterTypeRepository.FindByCondition(x => x.NewsletterTypeId == type.NewsletterTypeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (_type != null)
             {
                 _type.NewsletterTypeName = type.NewsletterTypeName;
                 _type.NewsletterTypeDescription = type.NewsletterTypeDescription;
-                _type.IsActive = true;
-                _type.IsDeleted = false;
                 _type.UpdatedBy = Constants.userId;
                 _type.UpdatedDate = Helper.Helper.GetDateTime();
                 newsletterTypeRepository.Update(_type);
