@@ -521,10 +521,15 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
                     x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
             {
+                foreach (JobOrder jobOrder in inquiry.JobOrders)
+                {
+                    jobOrder.JobOrderApprovalRequestDate = Helper.Helper.GetDateTime();
+                }
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
                 inquiry.InquiryComment = approve.Reason;
 
@@ -606,6 +611,7 @@ namespace BackendSaiKitchen.Controllers
                     joborder.IsSpecialApprovalRequired = approve.IsSpecialApprovalRequired;
                     joborder.CommercialCheckListCompletionDate = Helper.Helper.GetDateTime();
                     joborder.CommercialCheckListDoneBy = approve.userId;
+                    joborder.JobOrderApprovalRequestDate = approve.IsSpecialApprovalRequired ? "" : Helper.Helper.GetDateTime();
                 }
 
                 if (approve.IsSpecialApprovalRequired)

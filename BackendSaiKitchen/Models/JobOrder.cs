@@ -54,6 +54,7 @@ namespace BackendSaiKitchen.Models
         public int? TechnicalCheckListDoneBy { get; set; }
         public string CommercialCheckListCompletionDate { get; set; }
         public int? CommercialCheckListDoneBy { get; set; }
+        public string JobOrderApprovalRequestDate { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }

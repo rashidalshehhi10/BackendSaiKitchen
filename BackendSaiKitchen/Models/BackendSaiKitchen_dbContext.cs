@@ -580,6 +580,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.IsSpecialApprovalRequired).HasColumnName("Is SpecialApprovalRequired");
 
+                entity.Property(e => e.JobOrderApprovalRequestDate).HasMaxLength(50);
+
                 entity.Property(e => e.JobOrderChecklistFileUrl).HasColumnName("JobOrderChecklistFileURL");
 
                 entity.Property(e => e.JobOrderDelayReason).HasMaxLength(500);
