@@ -25,6 +25,8 @@ namespace BackendSaiKitchen.Controllers
                 newsletterTypeId = x.NewsletterTypeId,
                 newsletterTypeName = x.NewsletterType.NewsletterTypeName,
                 newsletterSendingDate = x.NewsletterSendingDate,
+                newsletterFrequencyId = x.NewsletterFrequencyId,
+                newsletterFrequencyName = x.NewsletterFrequency.NewsletterFrequencyName,
             });
             response.data = newsletterTypes;
             return response;
@@ -43,6 +45,8 @@ namespace BackendSaiKitchen.Controllers
                 newsletterTypeId = x.NewsletterTypeId,
                 newsletterTypeName = x.NewsletterType.NewsletterTypeName,
                 newsletterSendingDate = x.NewsletterSendingDate,
+                newsletterFrequencyId = x.NewsletterFrequencyId,
+                newsletterFrequencyName = x.NewsletterFrequency.NewsletterFrequencyName,
             }).FirstOrDefault();
             if (newsletter != null)
             {
@@ -69,6 +73,7 @@ namespace BackendSaiKitchen.Controllers
                 _new.NewsletterHeading = newsletter.NewsletterHeading;
                 _new.NewsletterSendingDate = newsletter.NewsletterSendingDate;
                 _new.NewsletterTypeId = newsletter.NewsletterTypeId;
+                _new.AddedBy = newsletter.AddedBy;
                 _new.IsActive = true;
                 _new.IsDeleted = false;
                 _new.CreatedBy = Constants.userId;
@@ -98,6 +103,7 @@ namespace BackendSaiKitchen.Controllers
                 _new.NewsletterHeading = newsletter.NewsletterHeading;
                 _new.NewsletterSendingDate = newsletter.NewsletterSendingDate;
                 _new.NewsletterTypeId = newsletter.NewsletterTypeId;
+                _new.AddedBy = newsletter.AddedBy;
                 _new.UpdatedBy = Constants.userId;
                 _new.CreatedDate = Helper.Helper.GetDateTime();
                 newsletterRepository.Update(_new);
