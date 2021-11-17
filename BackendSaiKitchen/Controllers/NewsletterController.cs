@@ -45,7 +45,10 @@ namespace BackendSaiKitchen.Controllers
             {
                 if (email.Emailto != string.Empty && email.Emailto != null)
                 {
-                    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(newsletter.NewsletterAttachmentUrl)));
+                    if (newsletter.NewsletterAttachmentUrl != string.Empty && newsletter.NewsletterAttachmentUrl != null)
+                    {
+                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(newsletter.NewsletterAttachmentUrl)));
+                    }
                     try
                     {
                         await mailService.SendEmailAsync(new MailRequest
