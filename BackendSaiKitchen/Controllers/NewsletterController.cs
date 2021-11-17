@@ -14,6 +14,11 @@ namespace BackendSaiKitchen.Controllers
 {
     public class NewsletterController : BaseController
     {
+        public NewsletterController(IBlobManager blobManager)
+        {
+            Helper.Helper.blobManager = blobManager;
+        }
+
         [HttpPost]
         [Route("[action]")]
         public object GetAllNewsletter()
@@ -45,12 +50,12 @@ namespace BackendSaiKitchen.Controllers
             {
                 if (email.Emailto != string.Empty && email.Emailto != null)
                 {
-                    if (newsletter.NewsletterAttachmentUrl != string.Empty && newsletter.NewsletterAttachmentUrl != null)
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(newsletter.NewsletterAttachmentUrl)));
-                    }
                     try
                     {
+                        if (newsletter.NewsletterAttachmentUrl != string.Empty && newsletter.NewsletterAttachmentUrl != null)
+                        {
+                            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(newsletter.NewsletterAttachmentUrl)));
+                        }
                         await mailService.SendEmailAsync(new MailRequest
                         {
                             Subject = newsletter.NewsletterHeading,
