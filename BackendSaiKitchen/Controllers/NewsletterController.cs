@@ -1,7 +1,9 @@
 ﻿using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
@@ -30,6 +32,49 @@ namespace BackendSaiKitchen.Controllers
                 Isactive = x.IsActive
             });
             response.data = newsletterTypes;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> SendEmail(SendEmail email)
+        {
+            List<IFormFile> files = new List<IFormFile>();
+            var newsletter = newsletterRepository.FindByCondition(x => x.IsDeleted == false && x.NewsletterId == email.NewsletterId).FirstOrDefault();
+            if (newsletter != null)
+            {
+                if (email.Emailto != string.Empty && email.Emailto != null)
+                {
+                    files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(newsletter.NewsletterAttachmentUrl)));
+                    try
+                    {
+                        await mailService.SendEmailAsync(new MailRequest
+                        {
+                            Subject = newsletter.NewsletterHeading,
+                            ToEmail = email.Emailto,
+                            Body = newsletter.NewsletterBody,
+                            Attachments = files
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+                    response.data = newsletter;
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "enter the email ";
+                }
+                
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "newsletter not found";
+            }
+
             return response;
         }
 

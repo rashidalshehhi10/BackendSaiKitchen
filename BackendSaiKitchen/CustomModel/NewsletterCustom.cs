@@ -20,6 +20,12 @@ namespace BackendSaiKitchen.CustomModel
         public bool isactive { get; set; }
     }
 
+    public class SendEmail
+    {
+        public int NewsletterId { get; set; }
+        public string Emailto { get; set; }
+    }
+
     public class Isactive
     {
         public int NewsletterId { get; set; }
