@@ -21,13 +21,13 @@ namespace BackendSaiKitchen.Controllers
             if (accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
-                _accessory.Skucode = accessory.Skucode;
+                //_accessory.Skucode = accessory.Skucode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-                _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
+                //_accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
                 _accessory.CreatedBy = Constants.userId;
                 _accessory.CreatedDate = Helper.Helper.GetDateTime();
                 _accessory.IsActive = true;
@@ -52,9 +52,12 @@ namespace BackendSaiKitchen.Controllers
                .Select(x => new
                {
                    ApplianceAccessoryId = x.ApplianceAccessoryId,
-                   SKUCode = x.Skucode,
+                   SKUCode = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Skucode).ToList(),
+                   ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
+                   ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
+                   ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
                    ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                   ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
+                   ApplianceAccessoryImgUrl = x.ItemColors.FirstOrDefault().ImageUrl,
                    ApplianceAccessoryName = x.ApplianceAccessoryName,
                    ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                    ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
@@ -85,13 +88,16 @@ namespace BackendSaiKitchen.Controllers
                 .Select(x => new 
                 {
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
-                    SKUCode = x.Skucode,
+                    SKUCode = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Skucode).ToList(),
+                    ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
+                    ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
+                    ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
+                    ApplianceAccessoryImgUrl = x.ItemColors.FirstOrDefault().ImageUrl,
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                     ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
-                    ApplianceAccessoryTypeName =x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
+                    ApplianceAccessoryTypeName = x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
                     BrandId = x.BrandId,
                     BrandName = x.Brand.BrandName,
                     UnitOfMeasurementId = x.UnitOfMeasurementId,
@@ -141,16 +147,19 @@ namespace BackendSaiKitchen.Controllers
             var applianceAccessory = applianceAccessoryRepository.FindByCondition(x => x.BrandId == brandId && x.IsActive == true && x.IsDeleted == false)
                 .Select(x => new
                 {
-                    BrandId = x.BrandId,
-                    BrandName = x.Brand.BrandName,
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
-                    SKUCode = x.Skucode,
-                    ApplianceAccessoryName = x.ApplianceAccessoryName,
+                    SKUCode = x.ItemColors.FirstOrDefault().Skucode,
+                    ColorName = x.ItemColors.FirstOrDefault().Color,
+                    ColorId = x.ItemColors.FirstOrDefault().ColorId,
+                    ItemColorId = x.ItemColors.FirstOrDefault().ItemColorId,
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
+                    ApplianceAccessoryImgUrl = x.ItemColors.FirstOrDefault().ImageUrl,
+                    ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                     ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
                     ApplianceAccessoryTypeName = x.ApplianceAccessoryType.ApplianceAccessoryTypeName,
-                    ApplianceAccessoryImgUrl = x.ApplianceAccessoryImgUrl,
+                    BrandId = x.BrandId,
+                    BrandName = x.Brand.BrandName,
                     UnitOfMeasurementId = x.UnitOfMeasurementId,
                     UnitOfMeasurementName = x.UnitOfMeasurement.UnitOfMeasurementName,
                 }).ToList();
@@ -170,11 +179,12 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object UpdateApplianceAccessoryById(ApplianceAccessoryCustom accessory)
         {
-            var _accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == accessory.ApplianceAccessoryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (accessory != null)
+            var _accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == accessory.ApplianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (_accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
-                _accessory.Skucode = accessory.SKUCode;
+                //_accessory.Skucode = accessory.SKUCode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
@@ -182,10 +192,15 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
                 _accessory.UpdatedBy = Constants.userId;
                 _accessory.UpdatedDate = Helper.Helper.GetDateTime();
-                if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
-                {
-                    _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
-                }
+                //foreach (var color in _accessory.ItemColors)
+                //{
+                //    color.Skucode = accessory.SKUCode;
+                //    color.
+                //}
+                //if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
+                //{
+                //    _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
+                //}
                 
                
                 applianceAccessoryRepository.Update(_accessory);
