@@ -18,16 +18,15 @@ namespace BackendSaiKitchen.Controllers
         public object CreateApplianceAccessory(ApplianceAccessory accessory)
         {
             ApplianceAccessory _accessory = new ApplianceAccessory();
+            ItemColor itemColor = new ItemColor();
             if (accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
-                //_accessory.Skucode = accessory.Skucode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
                 _accessory.BrandId = accessory.BrandId;
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-                //_accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
                 _accessory.CreatedBy = Constants.userId;
                 _accessory.CreatedDate = Helper.Helper.GetDateTime();
                 _accessory.IsActive = true;
