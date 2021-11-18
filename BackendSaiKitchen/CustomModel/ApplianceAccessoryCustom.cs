@@ -16,6 +16,8 @@ namespace BackendSaiKitchen.CustomModel
         public int BrandId { get; set; }
         public int UnitOfMeasurementId { get; set; }
         public string ApplianceAccessoryImgUrl { get; set; }
+        public int colorId { get; set; }
+        public int itemcolorId { get; set; }
 
     }
 

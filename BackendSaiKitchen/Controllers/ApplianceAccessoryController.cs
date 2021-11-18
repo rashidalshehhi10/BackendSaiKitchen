@@ -52,12 +52,19 @@ namespace BackendSaiKitchen.Controllers
                .Select(x => new
                {
                    ApplianceAccessoryId = x.ApplianceAccessoryId,
-                   SKUCode = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Skucode).ToList(),
-                   ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
-                   ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
-                   ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
+                   itemcolor = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => new
+                   {
+                       itemColorId = x.ItemColorId,
+                       SKUCode = x.Skucode,
+                       colorId = x.ColorId,
+                       colorName = x.Color.ColorName,
+                       ImgUrl = x.ImageUrl,
+                   }).ToList(),
+                   //ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
+                   //ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
+                   //ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
                    ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                   ApplianceAccessoryImgUrl = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ImageUrl).ToList(),
+                   //ApplianceAccessoryImgUrl = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ImageUrl).ToList(),
                    ApplianceAccessoryName = x.ApplianceAccessoryName,
                    ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                    ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
@@ -88,12 +95,19 @@ namespace BackendSaiKitchen.Controllers
                 .Select(x => new 
                 {
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
-                    SKUCode = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Skucode).ToList(),
-                    ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
-                    ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
-                    ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
+                    itemcolor = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => new
+                    {
+                        itemColorId = x.ItemColorId,
+                        SKUCode = x.Skucode,
+                        colorId = x.ColorId,
+                        colorName = x.Color.ColorName,
+                        ImgUrl = x.ImageUrl,
+                    }).ToList(),
+                    //ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
+                    //ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
+                    //ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                    ApplianceAccessoryImgUrl = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ImageUrl).ToList(),
+                    //ApplianceAccessoryImgUrl = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ImageUrl).ToList(),
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                     ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
@@ -148,12 +162,19 @@ namespace BackendSaiKitchen.Controllers
                 .Select(x => new
                 {
                     ApplianceAccessoryId = x.ApplianceAccessoryId,
-                    SKUCode = x.ItemColors.FirstOrDefault().Skucode,
-                    ColorName = x.ItemColors.FirstOrDefault().Color,
-                    ColorId = x.ItemColors.FirstOrDefault().ColorId,
-                    ItemColorId = x.ItemColors.FirstOrDefault().ItemColorId,
+                    itemcolor = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => new
+                    {
+                        itemColorId = x.ItemColorId,
+                        SKUCode = x.Skucode,
+                        colorId = x.ColorId,
+                        colorName = x.Color.ColorName,
+                        ImgUrl = x.ImageUrl,
+                    }).ToList(),
+                    //ColorName = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.Color.ColorName).ToList(),
+                    //ColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ColorId).ToList(),
+                    //ItemColorId = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ItemColorId).ToList(),
                     ApplianceAccesoryDescription = x.ApplianceAccesoryDescription,
-                    ApplianceAccessoryImgUrl = x.ItemColors.FirstOrDefault().ImageUrl,
+                    //ApplianceAccessoryImgUrl = x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.ItemId).Select(x => x.ImageUrl).ToList(),
                     ApplianceAccessoryName = x.ApplianceAccessoryName,
                     ApplianceAccessoryPrice = x.ApplianceAccessoryPrice,
                     ApplianceAccessoryTypeId = x.ApplianceAccessoryTypeId,
@@ -180,11 +201,11 @@ namespace BackendSaiKitchen.Controllers
         public object UpdateApplianceAccessoryById(ApplianceAccessoryCustom accessory)
         {
             var _accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == accessory.ApplianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Color).FirstOrDefault();
             if (_accessory != null)
             {
                 _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
-                //_accessory.Skucode = accessory.SKUCode;
                 _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
                 _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
                 _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
@@ -192,17 +213,19 @@ namespace BackendSaiKitchen.Controllers
                 _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
                 _accessory.UpdatedBy = Constants.userId;
                 _accessory.UpdatedDate = Helper.Helper.GetDateTime();
-                //foreach (var color in _accessory.ItemColors)
-                //{
-                //    color.Skucode = accessory.SKUCode;
-                //    color.
-                //}
-                //if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
-                //{
-                //    _accessory.ApplianceAccessoryImgUrl = accessory.ApplianceAccessoryImgUrl;
-                //}
-                
-               
+                foreach (var color in _accessory.ItemColors.Where(x => x.ItemColorId == accessory.itemcolorId))
+                {
+                    color.Skucode = accessory.SKUCode;
+                    color.ColorId = accessory.colorId;
+                    if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
+                    {
+                        color.ImageUrl = accessory.ApplianceAccessoryImgUrl;
+                    }
+                    
+                }
+
+
+
                 applianceAccessoryRepository.Update(_accessory);
                 context.SaveChanges();
                 response.data = "Appliance And Accessory Updated Successfully ";
