@@ -27,6 +27,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Building> Buildings { get; set; }
         public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
+        public virtual DbSet<Color> Colors { get; set; }
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
@@ -37,6 +38,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Inquiry> Inquiries { get; set; }
         public virtual DbSet<InquiryStatus> InquiryStatuses { get; set; }
         public virtual DbSet<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual DbSet<ItemColor> ItemColors { get; set; }
         public virtual DbSet<JobOrder> JobOrders { get; set; }
         public virtual DbSet<JobOrderDetail> JobOrderDetails { get; set; }
         public virtual DbSet<KitchenDesignInfo> KitchenDesignInfos { get; set; }
@@ -120,15 +122,9 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.ApplianceAccesoryDescription).HasMaxLength(500);
 
-                entity.Property(e => e.ApplianceAccessoryImgUrl).HasColumnName("ApplianceAccessoryImgURL");
-
                 entity.Property(e => e.ApplianceAccessoryName).HasMaxLength(500);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
-
-                entity.Property(e => e.Skucode)
-                    .HasMaxLength(500)
-                    .HasColumnName("SKUCode");
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
@@ -225,6 +221,11 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.ApplianceAccessoryType)
+                    .WithMany(p => p.Brands)
+                    .HasForeignKey(d => d.ApplianceAccessoryTypeId)
+                    .HasConstraintName("FK_Brand_ApplianceAccessoryType");
             });
 
             modelBuilder.Entity<Building>(entity =>
@@ -269,6 +270,15 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.CalendarEvents)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_CalendarEvent_User");
+            });
+
+            modelBuilder.Entity<Color>(entity =>
+            {
+                entity.ToTable("Color");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ContactStatus>(entity =>
@@ -566,6 +576,27 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.InquiryWorkscopes)
                     .HasForeignKey(d => d.WorkscopeId)
                     .HasConstraintName("FK_InquiryMeasurement_WorkScope");
+            });
+
+            modelBuilder.Entity<ItemColor>(entity =>
+            {
+                entity.ToTable("ItemColor");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.Skucode).HasColumnName("SKUCode");
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Color)
+                    .WithMany(p => p.ItemColors)
+                    .HasForeignKey(d => d.ColorId)
+                    .HasConstraintName("FK_ItemColor_Color");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.ItemColors)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FK_ItemColor_ApplianceAccessory");
             });
 
             modelBuilder.Entity<JobOrder>(entity =>

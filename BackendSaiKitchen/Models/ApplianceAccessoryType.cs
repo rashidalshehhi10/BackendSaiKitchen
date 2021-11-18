@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public ApplianceAccessoryType()
         {
             ApplianceAccessories = new HashSet<ApplianceAccessory>();
+            Brands = new HashSet<Brand>();
         }
 
         public int ApplianceAccessoryTypeId { get; set; }
@@ -23,5 +24,6 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual ICollection<ApplianceAccessory> ApplianceAccessories { get; set; }
+        public virtual ICollection<Brand> Brands { get; set; }
     }
 }

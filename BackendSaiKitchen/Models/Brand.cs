@@ -15,6 +15,7 @@ namespace BackendSaiKitchen.Models
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public string BrandDescription { get; set; }
+        public int? ApplianceAccessoryTypeId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -22,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
+        public virtual ApplianceAccessoryType ApplianceAccessoryType { get; set; }
         public virtual ICollection<ApplianceAccessory> ApplianceAccessories { get; set; }
     }
 }
