@@ -200,57 +200,17 @@ namespace BackendSaiKitchen.Controllers
             }
             return response;
         }
-        //[HttpPost]
-        //[Route("[action]")]
-        //public object UpdateApplianceAccessoryById(ApplianceAccessoryCustom accessory)
-        //{
-        //    var _accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == accessory.ApplianceAccessoryId && x.IsActive == true && x.IsDeleted == false)
-        //        .Include(x => x.ItemColors.Where(x => x.IsActive == true && x.IsDeleted == false))
-        //        .ThenInclude(x => x.Color).FirstOrDefault();
-        //    if (_accessory != null)
-        //    {
-        //        _accessory.ApplianceAccessoryName = accessory.ApplianceAccessoryName;
-        //        _accessory.ApplianceAccesoryDescription = accessory.ApplianceAccesoryDescription;
-        //        _accessory.ApplianceAccessoryPrice = accessory.ApplianceAccessoryPrice;
-        //        _accessory.ApplianceAccessoryTypeId = accessory.ApplianceAccessoryTypeId;
-        //        _accessory.BrandId = accessory.BrandId;
-        //        _accessory.UnitOfMeasurementId = accessory.UnitOfMeasurementId;
-        //        _accessory.UpdatedBy = Constants.userId;
-        //        _accessory.UpdatedDate = Helper.Helper.GetDateTime();
-        //        foreach (var color in _accessory.ItemColors.Where(x => x.ItemColorId == accessory.itemcolorId))
-        //        {
-        //            color.Skucode = accessory.SKUCode;
-        //            color.ColorId = accessory.colorId;
-        //            if (accessory.ApplianceAccessoryImgUrl != string.Empty && accessory.ApplianceAccessoryImgUrl != null)
-        //            {
-        //                color.ImageUrl = accessory.ApplianceAccessoryImgUrl;
-        //            }
-                    
-        //        }
-
-
-
-        //        applianceAccessoryRepository.Update(_accessory);
-        //        context.SaveChanges();
-        //        response.data = "Appliance And Accessory Updated Successfully ";
-        //    }
-        //    else
-        //    {
-        //        response.isError = true;
-        //        response.errorMessage = "Appliance And Accessory Not Found";
-        //    }
-        //    return response;
-        //}
-
+       
         [HttpPost]
         [Route("[action]")]
-        public object DeleteApplianceAccessory(int applianceAccessoryId)
+        public object DeleteApplianceAccessory(int itemcolorId)
         {
-            var accessory = applianceAccessoryRepository.FindByCondition(x => x.ApplianceAccessoryId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
-            if (accessory != null)
+            var _item = itemColorRepository.FindByCondition(x => x.ItemColorId == itemcolorId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Item).FirstOrDefault();
+            if (_item != null)
             {
-                accessory.IsActive = false;
-                applianceAccessoryRepository.Update(accessory);
+                _item.IsActive = false;
+                _item.Item.IsActive = false;
+                itemColorRepository.Update(_item);
                 response.data = "Appliance And Accessory Deleted";
                 context.SaveChanges();
             }
