@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.Helper;
+﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
@@ -74,7 +75,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object CreateColor(Color color)
+        public object CreateColor(CustomColor color)
         {
             if (color != null)
             {
@@ -83,9 +84,9 @@ namespace BackendSaiKitchen.Controllers
                 _color.IsDeleted = false;
                 _color.CreatedBy = Constants.userId;
                 _color.CreatedDate = Helper.Helper.GetDateTime();
-                _color.ColorName = color.ColorName;
-                _color.ColorCode = color.ColorCode;
-                _color.ColorDescription = color.ColorDescription;
+                _color.ColorName = color.colorName;
+                _color.ColorCode = color.colorCode;
+                _color.ColorDescription = color.colorDescription;
                 colorRepository.Create(_color);
                 context.SaveChanges();
                 response.data = _color;
@@ -100,9 +101,9 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object UpdateColor(Color color)
+        public object UpdateColor(CustomColor color)
         {
-            var _color = colorRepository.FindByCondition(x => x.ColorId == color.ColorId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var _color = colorRepository.FindByCondition(x => x.ColorId == color.colorId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (_color != null)
             {
                 
@@ -110,9 +111,9 @@ namespace BackendSaiKitchen.Controllers
                 _color.IsDeleted = false;
                 _color.UpdatedBy = Constants.userId;
                 _color.UpdatedDate = Helper.Helper.GetDateTime();
-                _color.ColorName = color.ColorName;
-                _color.ColorCode = color.ColorCode;
-                _color.ColorDescription = color.ColorDescription;
+                _color.ColorName = color.colorName;
+                _color.ColorCode = color.colorCode;
+                _color.ColorDescription = color.colorDescription;
                 colorRepository.Update(_color);
                 context.SaveChanges();
                 response.data = _color;

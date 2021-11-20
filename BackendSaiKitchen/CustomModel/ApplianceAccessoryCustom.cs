@@ -7,7 +7,6 @@ namespace BackendSaiKitchen.CustomModel
 {
     public class ApplianceAccessoryCustom
     {
-        public int ApplianceAccessoryId { get; set; }
         public string SKUCode { get; set; }
         public string ApplianceAccessoryName { get; set; }
         public string ApplianceAccesoryDescription { get; set; }
@@ -24,5 +23,14 @@ namespace BackendSaiKitchen.CustomModel
     {
         public int brandId { get; set; }
         public int TypeId { get; set; }
+    }
+
+    public class CustomColor
+    {
+        public int colorId { get; set; }
+        public string colorName { get; set; }
+        public string colorCode { get; set; }
+        public string colorDescription { get; set; }
+
     }
 }
