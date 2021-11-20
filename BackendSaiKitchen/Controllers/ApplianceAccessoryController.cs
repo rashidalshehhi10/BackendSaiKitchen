@@ -203,9 +203,9 @@ namespace BackendSaiKitchen.Controllers
        
         [HttpPost]
         [Route("[action]")]
-        public object DeleteApplianceAccessory(int itemcolorId)
+        public object DeleteApplianceAccessory(int applianceAccessoryId)
         {
-            var _item = itemColorRepository.FindByCondition(x => x.ItemColorId == itemcolorId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Item).FirstOrDefault();
+            var _item = itemColorRepository.FindByCondition(x => x.ItemId == applianceAccessoryId && x.IsActive == true && x.IsDeleted == false).Include(x => x.Item).FirstOrDefault();
             if (_item != null)
             {
                 _item.IsActive = false;
