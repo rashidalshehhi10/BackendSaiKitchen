@@ -60,7 +60,7 @@ namespace BackendSaiKitchen.Controllers
                 _itemColor.CreatedBy = Constants.userId;
                 _itemColor.CreatedDate = Helper.Helper.GetDateTime();
                 _itemColor.IsActive = true;
-                _item.IsDeleted = false;
+                _itemColor.IsDeleted = false;
                 _itemColor.Item = _accessory;
                 itemColorRepository.Create(_itemColor);
                 context.SaveChanges();
