@@ -12,6 +12,7 @@ namespace BackendSaiKitchen.CustomModel
             set;
         } // "QTN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId +""+quotation.QuotationId;
 
+        public int inquiryId { get; set; }
         public string CreatedDate { get; set; }
         public string ValidDate { get; set; }
         public string Description { get; set; }

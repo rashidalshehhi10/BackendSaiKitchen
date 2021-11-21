@@ -46,19 +46,20 @@ namespace BackendSaiKitchen.Controllers
                 ?.InquiryId;
             if (inquiryIdq != null || inquiryId != null)
             {
-                if (inquiryId != null)
+                if (inquiryIdq != null)
                 {
-                    inquiryIdq = inquiryId;
+                    inquiryId = inquiryIdq;
                 }
                 List<int> q = inquiryWorkscopeRepository
-                    .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryIdq)
+                    .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId)
                     .OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
                 List<TermsAndCondition> terms = termsAndConditionsRepository
                     .FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
                 ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x =>
-                        x.InquiryId == inquiryIdq && x.IsActive == true && x.IsDeleted == false)
+                        x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
                     .Select(x => new ViewQuotation
                     {
+                        inquiryId = x.InquiryId,
                         InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
                             .OrderBy(y => y.QuotationId).LastOrDefault(y => y.IsActive == true && y.IsDeleted == false)
                             .QuotationId,
