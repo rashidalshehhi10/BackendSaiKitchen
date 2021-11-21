@@ -51,7 +51,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiryIdq = inquiryId;
                 }
                 List<int> q = inquiryWorkscopeRepository
-                    .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId)
+                    .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryIdq)
                     .OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
                 List<TermsAndCondition> terms = termsAndConditionsRepository
                     .FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
@@ -861,12 +861,55 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        //[HttpPost]
-        //[Route("[action]")]
-        //public object AddPaymentBeforeQuotation(beforeQuotation before)
-        //{
+        [HttpPost]
+        [Route("[action]")]
+        public object AddPaymentBeforeQuotation(beforeQuotation before)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == before.inquiryId)
+                .Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                Payment payment = new Payment();
 
-        //}
+                foreach (string fileUrl in before.files)
+                {
+                    //var fileUrl = await Helper.Helper.UploadFile(file);
+                    if (fileUrl != null)
+                    {
+                        payment.Files.Add(new File
+                        {
+                            FileUrl = fileUrl,
+                            FileName = fileUrl.Split('.')[0],
+                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                            IsImage = fileUrl.Split('.').Length > 1,
+                            IsActive = true,
+                            IsDeleted = false,
+                            UpdatedBy = Constants.userId,
+                            UpdatedDate = Helper.Helper.GetDateTime(),
+                            CreatedBy = Constants.userId,
+                            CreatedDate = Helper.Helper.GetDateTime()
+                        });
+
+                    }
+                }
+                payment.IsActive = true;
+                payment.IsDeleted = false;
+                payment.CreatedBy = Constants.userId;
+                payment.CreatedDate = Helper.Helper.GetDateTime();
+                payment.PaymentAmount =(decimal)before.amount;
+                payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
+                inquiry.Payments.Add(payment);
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+                response.data = payment;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
+            }
+            return response;
+        }
 
     }
 }
