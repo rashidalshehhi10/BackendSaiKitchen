@@ -40,6 +40,7 @@ namespace BackendSaiKitchen.CustomModel
         public List<string> Files { get; set; }
         public string TotalAmount { get; set; }
         public string QuotationScheduleDate { get; set; }
+        public bool IsQuotation { get; set; }
     }
 
     public class InvoiceDetail

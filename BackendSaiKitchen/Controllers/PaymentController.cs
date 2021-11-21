@@ -33,20 +33,30 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetQuotationDetailsFromCode(string code)
         {
-            int? inquiryId = quotationRepository.FindByCondition(x =>
+            int? inquiryIdq = quotationRepository.FindByCondition(x =>
                     (x.QuotationCode == code || x.Inquiry.InquiryCode == code) && x.IsActive == true &&
-                    x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.contractApproved)
+                    x.IsDeleted == false /*&& x.QuotationStatusId == (int)inquiryStatus.contractApproved*/)
                 ?.FirstOrDefault()
                 ?.InquiryId;
-            if (inquiryId != null)
+
+            int? inquiryId = inquiryRepository.FindByCondition(x =>
+                    (x.InquiryCode == code) && x.IsActive == true &&
+                    x.IsDeleted == false /*&& x.QuotationStatusId == (int)inquiryStatus.contractApproved*/)
+                ?.FirstOrDefault()
+                ?.InquiryId;
+            if (inquiryIdq != null || inquiryId != null)
             {
+                if (inquiryId != null)
+                {
+                    inquiryIdq = inquiryId;
+                }
                 List<int> q = inquiryWorkscopeRepository
                     .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == inquiryId)
                     .OrderBy(x => x.WorkscopeId).GroupBy(x => x.WorkscopeId).Select(x => x.Count()).ToList();
                 List<TermsAndCondition> terms = termsAndConditionsRepository
                     .FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
                 ViewQuotation viewQuotation = inquiryRepository.FindByCondition(x =>
-                        x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                        x.InquiryId == inquiryIdq && x.IsActive == true && x.IsDeleted == false)
                     .Select(x => new ViewQuotation
                     {
                         InvoiceNo = "QTN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId + "" + x.Quotations
@@ -104,7 +114,8 @@ namespace BackendSaiKitchen.Controllers
                             .Where(x => x.IsActive == true && x.IsDeleted == false).OrderBy(x => x.WorkscopeId)
                             .Select(x => x.Workscope.WorkScopeName).ToList(),
                         TotalAmount = x.Quotations.OrderBy(y => y.QuotationId)
-                            .LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount
+                            .LastOrDefault(y => y.IsActive == true && y.IsDeleted == false).TotalAmount,
+                        IsQuotation = x.Quotations.Any() ? true : false
                     }).FirstOrDefault();
                 if (viewQuotation != null)
                 {
