@@ -20,6 +20,14 @@ namespace BackendSaiKitchen.CustomModel
         public List<byte[]> base64 { get; set; }
     }
 
+    public class beforeQuotation
+    {
+        public int inquiryId { get; set; }
+        public int paymentModeId { get; set; }
+        public List<string> files { get; set; }
+        public double amount { get; set; }
+    }
+
      public class addPayment
     {
         public int paymentId { get; set; }
