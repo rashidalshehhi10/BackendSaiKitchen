@@ -897,7 +897,8 @@ namespace BackendSaiKitchen.Controllers
                 payment.IsDeleted = false;
                 payment.CreatedBy = Constants.userId;
                 payment.CreatedDate = Helper.Helper.GetDateTime();
-                payment.PaymentAmount =(decimal)before.amount;
+                payment.PaymentName = "Before Quotation";
+                payment.PaymentAmount = (decimal)before.amount * 100;
                 payment.PaymentStatusId = (int)paymentstatus.PaymentApproved;
                 inquiry.Payments.Add(payment);
                 inquiryRepository.Update(inquiry);

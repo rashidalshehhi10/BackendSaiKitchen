@@ -1451,9 +1451,14 @@ namespace BackendSaiKitchen.Controllers
                     quotation.QuotationStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
                     if ((bool)quotation.IsPaid)
                     {
+                        decimal DeductTotal = decimal.Parse(quotation.TotalAmount);
+                        foreach (var pay in inquiry.Payments)
+                        {
+                            DeductTotal = DeductTotal - ((decimal)pay.PaymentAmount / 100);
+                        }
                         decimal percent = 0;
-                        decimal amountwithoutAdvance = decimal.Parse(quotation.TotalAmount) -
-                                                   decimal.Parse(quotation.TotalAmount) / 100 *
+                        decimal amountwithoutAdvance = DeductTotal -
+                                                   DeductTotal / 100 *
                                                    decimal.Parse(quotation.AdvancePayment);
                         quotation.Payments.Add(new Payment
                         {
@@ -1463,7 +1468,7 @@ namespace BackendSaiKitchen.Controllers
                             PaymentStatusId = (int)paymentstatus.PaymentCreated,
                             PaymentTypeId = (int)paymenttype.AdvancePayment,
                             PaymentDetail = "Advance Payment of " + order.inquiryId,
-                            PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                            PaymentAmount = decimal.Truncate(DeductTotal / 100 *
                                                              decimal.Parse(order.AdvancePayment) * 100),
                             PaymentExpectedDate = quotation.QuotationValidityDate,
                             IsActive = true,
@@ -1515,7 +1520,7 @@ namespace BackendSaiKitchen.Controllers
                                 PaymentStatusId = (int)paymentstatus.PaymentCreated,
                                 PaymentTypeId = (int)paymenttype.BeforeInstallation,
                                 PaymentDetail = "Before Installation of " + order.inquiryId,
-                                PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                                PaymentAmount = decimal.Truncate(DeductTotal / 100 *
                                                                  decimal.Parse(order.BeforeInstallation) * 100),
                                 PaymentExpectedDate = "",
                                 IsActive = true,
@@ -1536,7 +1541,7 @@ namespace BackendSaiKitchen.Controllers
                                 PaymentStatusId = (int)paymentstatus.PaymentCreated,
                                 PaymentTypeId = (int)paymenttype.AfterDelivery,
                                 PaymentDetail = "After Delivery of " + order.inquiryId,
-                                PaymentAmount = decimal.Truncate(decimal.Parse(quotation.TotalAmount) / 100 *
+                                PaymentAmount = decimal.Truncate(DeductTotal / 100 *
                                                                  decimal.Parse(order.AfterDelivery) * 100),
                                 PaymentExpectedDate = "",
                                 IsActive = true,
