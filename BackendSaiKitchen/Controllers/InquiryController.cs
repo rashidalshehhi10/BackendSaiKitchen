@@ -2217,7 +2217,7 @@ namespace SaiKitchenBackend.Controllers
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
                     MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
-                    QuotationAddedOn = x.QuotationAddedOn
+                    QuotationAddedOn = x.QuotationAddedOn,
                 }).OrderByDescending(x => x.InquiryId);
             tableResponse.data = inquiries;
             tableResponse.recordsTotal = inquiries.Count();
