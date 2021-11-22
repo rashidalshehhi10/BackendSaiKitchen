@@ -37,6 +37,8 @@ namespace BackendSaiKitchen.Models
         public string PromoDiscount { get; set; }
         public bool? IsMeasurementPromo { get; set; }
         public bool? IsEscalationRequested { get; set; }
+        public string EscalationRequestedDate { get; set; }
+        public int? EscalationRequestedBy { get; set; }
         public int? InquiryStatusId { get; set; }
         public int? ManagedBy { get; set; }
         public bool? IsActive { get; set; }
@@ -49,6 +51,7 @@ namespace BackendSaiKitchen.Models
         public virtual Branch Branch { get; set; }
         public virtual Building Building { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual User EscalationRequestedByNavigation { get; set; }
         public virtual InquiryStatus InquiryStatus { get; set; }
         public virtual User ManagedByNavigation { get; set; }
         public virtual Promo Promo { get; set; }

@@ -459,6 +459,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.EscalationRequestedDate).HasMaxLength(50);
+
                 entity.Property(e => e.InquiryCode).HasMaxLength(4000);
 
                 entity.Property(e => e.InquiryComment).HasMaxLength(500);
@@ -499,6 +501,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Inquiries)
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("FK_Inquiry_Customer");
+
+                entity.HasOne(d => d.EscalationRequestedByNavigation)
+                    .WithMany(p => p.InquiryEscalationRequestedByNavigations)
+                    .HasForeignKey(d => d.EscalationRequestedBy)
+                    .HasConstraintName("FK_Inquiry_User2");
 
                 entity.HasOne(d => d.InquiryStatus)
                     .WithMany(p => p.Inquiries)

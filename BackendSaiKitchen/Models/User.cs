@@ -13,6 +13,7 @@ namespace BackendSaiKitchen.Models
             Customers = new HashSet<Customer>();
             DesignDesignApprovedByNavigations = new HashSet<Design>();
             DesignDesignTakenByNavigations = new HashSet<Design>();
+            InquiryEscalationRequestedByNavigations = new HashSet<Inquiry>();
             InquiryManagedByNavigations = new HashSet<Inquiry>();
             InquiryQuotationAssignToNavigations = new HashSet<Inquiry>();
             InquiryWorkscopeDesignAssignedToNavigations = new HashSet<InquiryWorkscope>();
@@ -45,6 +46,7 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Design> DesignDesignApprovedByNavigations { get; set; }
         public virtual ICollection<Design> DesignDesignTakenByNavigations { get; set; }
+        public virtual ICollection<Inquiry> InquiryEscalationRequestedByNavigations { get; set; }
         public virtual ICollection<Inquiry> InquiryManagedByNavigations { get; set; }
         public virtual ICollection<Inquiry> InquiryQuotationAssignToNavigations { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopeDesignAssignedToNavigations { get; set; }

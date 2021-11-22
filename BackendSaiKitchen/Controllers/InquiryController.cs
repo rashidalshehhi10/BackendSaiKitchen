@@ -654,6 +654,27 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object EscalationRequest(ChangeManaged change)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == change.inquiryId && x.EscalationRequestedBy == change.Id && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (inquiry != null)
+            {
+                inquiry.EscalationRequestedDate = Helper.GetDateTime();
+                inquiry.IsEscalationRequested = true;
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<object> GetInquiriesOfBranchPage(int branchId,int page)
         {
             //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
