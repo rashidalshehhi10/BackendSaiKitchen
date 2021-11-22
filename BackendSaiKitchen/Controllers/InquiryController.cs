@@ -656,11 +656,12 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object EscalationRequest(ChangeManaged change)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == change.inquiryId && x.EscalationRequestedBy == change.Id && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == change.inquiryId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.EscalationRequestedDate = Helper.GetDateTime();
                 inquiry.IsEscalationRequested = true;
+                inquiry.EscalationRequestedBy = change.Id;
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = inquiry;
