@@ -177,6 +177,11 @@ namespace BackendSaiKitchen.Controllers
                         var file = await Helper.Helper.GetFile(FileName);
                         response.data = file;
                     }
+                    else
+                    {
+                        response.isError = true;
+                        response.errorMessage = "Can't Download the Video";
+                    }
                 }
                 catch (Exception ex)
                 {
