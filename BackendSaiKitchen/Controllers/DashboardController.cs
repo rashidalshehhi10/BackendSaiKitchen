@@ -83,7 +83,7 @@ namespace BackendSaiKitchen.Controllers
                                                   inquiry.CustomerId + "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName+")",
                                     Date = inworkscope.MeasurementScheduleDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.Measurement
+                                    EventTypeId = (int)eventType.MeasurementAssign
                                 });
                             }
 
@@ -98,7 +98,7 @@ namespace BackendSaiKitchen.Controllers
                                                   "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")",
                                     Date = inworkscope.DesignScheduleDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.Design
+                                    EventTypeId = (int)eventType.DesignAssign
                                 });
                             }
                         }
@@ -119,7 +119,7 @@ namespace BackendSaiKitchen.Controllers
                                               "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.ShopDrawingCompletionDate,
                                     Date = jobdetail.ShopDrawingCompletionDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.JobOrder
+                                    EventTypeId = (int)eventType.ShopDrawing
                                 });
 
                                 dashborad.calendar.Add(new Calendar
@@ -130,7 +130,7 @@ namespace BackendSaiKitchen.Controllers
                                               "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.ProductionCompletionDate,
                                     Date = jobdetail.ProductionCompletionDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.JobOrder
+                                    EventTypeId = (int)eventType.Production
                                 });
 
                                 dashborad.calendar.Add(new Calendar
@@ -141,7 +141,7 @@ namespace BackendSaiKitchen.Controllers
                                               "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.WoodenWorkCompletionDate,
                                     Date = jobdetail.WoodenWorkCompletionDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.JobOrder
+                                    EventTypeId = (int)eventType.WoodenWork
                                 });
 
                                 dashborad.calendar.Add(new Calendar
@@ -163,7 +163,7 @@ namespace BackendSaiKitchen.Controllers
                                               "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.CountertopFixingDate,
                                     Date = jobdetail.CountertopFixingDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.JobOrder
+                                    EventTypeId = (int)eventType.CounterTopFixing
                                 });
 
                                 dashborad.calendar.Add(new Calendar
@@ -174,7 +174,7 @@ namespace BackendSaiKitchen.Controllers
                                               "" + inquiry.InquiryId + " (" + inquiry.Customer.CustomerName + ")" + " at " + jobdetail.InstallationStartDate,
                                     Date = jobdetail.InstallationStartDate,
                                     OnClickURL = "",
-                                    EventTypeId = (int)eventType.JobOrder
+                                    EventTypeId = (int)eventType.Installation
                                 });
                             }
                         }

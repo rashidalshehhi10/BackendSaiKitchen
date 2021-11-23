@@ -68,7 +68,14 @@
         Installation = 9,
         Delivery = 10,
         Promo = 11,
-        Other = 12
+        Other = 12,
+        MeasurementAssign = 13,
+        DesignAssign = 14,
+        ShopDrawing = 15,
+        Production = 16,
+        WoodenWork = 17,
+        CounterTopFixing = 18,
+
     }
 
     public enum permission
