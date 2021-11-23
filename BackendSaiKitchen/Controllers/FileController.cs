@@ -169,10 +169,14 @@ namespace BackendSaiKitchen.Controllers
         {
             if (FileName != null)
             {
+                long s;
                 try
                 {
-                    var file = await Helper.Helper.GetFile(FileName);
-                    response.data = file;
+                    if (!long.TryParse(FileName, out s))
+                    {
+                        var file = await Helper.Helper.GetFile(FileName);
+                        response.data = file;
+                    }
                 }
                 catch (Exception ex)
                 {
