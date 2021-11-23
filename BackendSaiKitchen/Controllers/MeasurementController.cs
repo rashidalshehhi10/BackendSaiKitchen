@@ -261,12 +261,12 @@ namespace BackendSaiKitchen.Controllers
         }
 
 
-        [AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageMeasurement, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public async Task<object> AddUpdateMeasurmentfiles(CustomMeasFiles customMeasFiles)
         {
-            if (customMeasFiles.base64img != null || customMeasFiles.base64img.Count > 0)
+            if (customMeasFiles.base64img is { Count: > 0 })
             {
                 try
                 {
