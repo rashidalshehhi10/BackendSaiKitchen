@@ -340,6 +340,8 @@ namespace BackendSaiKitchen.Controllers
                         InquiryEndDate = Helper.Helper.GetDateFromString(x.InquiryEndDate),
                         BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
                         IsEscalationRequested = x.IsEscalationRequested,
+                        EscalationRequestedBy = x.EscalationRequestedBy,
+                        EscalationRequestedOn = x.EscalationRequestedDate,
                         CustomerId = x.CustomerId,
                         CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
                         CustomerName = x.Customer.CustomerName,
