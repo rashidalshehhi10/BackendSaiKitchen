@@ -351,6 +351,12 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object AddCustomer(Customer customer)
         {
+            if (customer.ContactStatusId == (int)contactStatus.NeedToContact && string.IsNullOrEmpty(customer.CustomerNextMeetingDate))
+            {
+                response.isError = true;
+                response.errorMessage = "Please mention next Follow-up Date";
+                return response;
+            }
             if (customer.CustomerId == 0)
             {
                 customer.BranchId = Constants.branchId;
