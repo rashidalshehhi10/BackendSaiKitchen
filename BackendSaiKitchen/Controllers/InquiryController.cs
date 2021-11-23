@@ -346,9 +346,9 @@ namespace SaiKitchenBackend.Controllers
                 InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                                    //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
                 CommentAddedOn = x.InquiryCommentsAddedOn,
                 DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -630,9 +630,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -743,9 +743,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -832,9 +832,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
@@ -2149,8 +2149,8 @@ namespace SaiKitchenBackend.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     BranchId = x.BranchId,
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false)
                         .Count(),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
@@ -2208,8 +2208,8 @@ namespace SaiKitchenBackend.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     BranchId = x.BranchId,
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false)
                         .Count(),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
@@ -2410,9 +2410,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
@@ -2512,9 +2512,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
@@ -2573,8 +2573,8 @@ namespace SaiKitchenBackend.Controllers
                     CustomerEmail = x.Customer.CustomerEmail,
                     BranchId = x.BranchId,
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements.Where(y => y.IsDeleted == false)
                         .Count(),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
@@ -2689,9 +2689,9 @@ namespace SaiKitchenBackend.Controllers
                     InquiryCode =
                         "IN" + x.BranchId + "" + x.CustomerId + "" +
                         x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.Workscope.WorkScopeName)
-                        .ToList(), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),

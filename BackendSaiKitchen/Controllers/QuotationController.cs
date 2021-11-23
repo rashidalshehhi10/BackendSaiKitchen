@@ -132,8 +132,8 @@ namespace BackendSaiKitchen.Controllers
                     InquiryAddedById = x.ManagedBy,
                     NoOfRevision = x.Quotations.Where(y => y.IsDeleted == false).Count(),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
@@ -195,8 +195,8 @@ namespace BackendSaiKitchen.Controllers
                     NoOfRevision = x.Quotations.Count(y => y.IsDeleted == false),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     QuotationScheduleDate = x.QuotationScheduleDate,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
@@ -252,8 +252,8 @@ namespace BackendSaiKitchen.Controllers
                     NoOfRevision = x.Quotations.Count(y => y.IsDeleted == false),
                     InquiryCode = "IN" + x.BranchId + "" + x.CustomerId + "" + x.InquiryId,
                     QuotationScheduleDate = x.QuotationScheduleDate,
-                    WorkscopeNames = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.Workscope.WorkScopeName).ToList(),
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName).ToList()),
                     CommentAddedOn = x.InquiryCommentsAddedOn,
                     DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.DesignAddedOn).FirstOrDefault(),
