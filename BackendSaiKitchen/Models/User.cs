@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public User()
         {
             CalendarEvents = new HashSet<CalendarEvent>();
+            Comments = new HashSet<Comment>();
             Customers = new HashSet<Customer>();
             DesignDesignApprovedByNavigations = new HashSet<Design>();
             DesignDesignTakenByNavigations = new HashSet<Design>();
@@ -43,6 +44,7 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Design> DesignDesignApprovedByNavigations { get; set; }
         public virtual ICollection<Design> DesignDesignTakenByNavigations { get; set; }

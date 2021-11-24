@@ -330,7 +330,9 @@ namespace SaiKitchenBackend.Controllers
                         Helper.GetDateFromString(x
                             .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                 BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
-                IsEscalationRequested = x.IsEscalationRequested, //x.Inquiry.IsEscalationRequested,
+                IsEscalationRequested = x.IsEscalationRequested,
+                EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
+                EscalationRequestedOn = x.EscalationRequestedDate,//x.Inquiry.IsEscalationRequested,
                 CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
                 CustomerCode =
                         "CS" + x.BranchId + "" + x.CustomerId, //"CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
@@ -362,26 +364,6 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-
-        [HttpPost]
-        [Route("[action]")]
-        public object test ()
-        {
-            var type = typeof(Inquiry);
-            var parameterExprission = Expression.Parameter(typeof(Inquiry), "Inquiry");
-            var constant = Expression.Constant(120);
-            var property = Expression.Property(parameterExprission, "InquiryId");
-            var expression = Expression.Equal(property, constant);
-            var property2 = Expression.Property(parameterExprission, "BranchId");
-            int s = 1;
-            constant = Expression.Constant(s,typeof(int?));
-            var experssion2 = Expression.Equal(property2, constant);
-            expression = Expression.And(expression, experssion2);
-            var lambda = Expression.Lambda<Func<Inquiry, bool>>(expression, parameterExprission);
-            var inquiry = inquiryRepository.FindByCondition(lambda);
-            response.data = inquiry;
-            return response;
-        }
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
@@ -612,7 +594,9 @@ namespace SaiKitchenBackend.Controllers
                         Helper.GetDateFromString(x
                             .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
-                    IsEscalationRequested = x.IsEscalationRequested, //x.Inquiry.IsEscalationRequested,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    EscalationRequestedOn = x.EscalationRequestedDate,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,//x.Inquiry.IsEscalationRequested,
                     CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
                     CustomerCode =
                         "CS" + x.BranchId + "" + x.CustomerId, //"CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
@@ -2142,7 +2126,7 @@ namespace SaiKitchenBackend.Controllers
                     InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,
                     CustomerId = x.CustomerId,
                     CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
@@ -2203,7 +2187,7 @@ namespace SaiKitchenBackend.Controllers
                     InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,
                     CustomerId = x.CustomerId,
                     CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
@@ -2400,7 +2384,7 @@ namespace SaiKitchenBackend.Controllers
                             .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,
                     CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
                     CustomerCode =
@@ -2504,7 +2488,7 @@ namespace SaiKitchenBackend.Controllers
                             .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,//x.Inquiry.IsEscalationRequested,
                     CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
                     CustomerCode =
@@ -2574,7 +2558,7 @@ namespace SaiKitchenBackend.Controllers
                     InquiryEndDate = Helper.GetDateFromString(x.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,
                     CustomerId = x.CustomerId,
                     CustomerCode = "CS" + x.BranchId + "" + x.CustomerId,
@@ -2685,7 +2669,7 @@ namespace SaiKitchenBackend.Controllers
                             .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
                     BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
                     IsEscalationRequested = x.IsEscalationRequested,
-                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedDate,//x.Inquiry.IsEscalationRequested,
                     CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
                     CustomerCode =

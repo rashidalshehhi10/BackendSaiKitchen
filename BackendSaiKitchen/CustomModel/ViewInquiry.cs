@@ -41,7 +41,7 @@ namespace BackendSaiKitchen.CustomModel
         public string IsOccupied { get; set; }
         public int? BranchId { get; set; }
         public bool? IsEscalationRequested { get; set; }
-        public int? EscalationRequestedBy { get; set; }
+        public string EscalationRequestedBy { get; set; }
         public string EscalationRequestedOn { get; set; }
         public string? InquiryAddedBy { get; set; }
         public string? MeasurementFee { get; set; }

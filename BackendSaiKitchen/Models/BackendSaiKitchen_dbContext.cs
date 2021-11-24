@@ -28,6 +28,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Building> Buildings { get; set; }
         public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
         public virtual DbSet<Color> Colors { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
@@ -279,6 +280,32 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("Comment");
+
+                entity.Property(e => e.CommentAddedon).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.CommentAddedByNavigation)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.CommentAddedBy)
+                    .HasConstraintName("FK_Comment_User");
+
+                entity.HasOne(d => d.Inquiry)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.InquiryId)
+                    .HasConstraintName("FK_Comment_Inquiry");
+
+                entity.HasOne(d => d.InquiryStatus)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.InquiryStatusId)
+                    .HasConstraintName("FK_Comment_InquiryStatus");
             });
 
             modelBuilder.Entity<ContactStatus>(entity =>
