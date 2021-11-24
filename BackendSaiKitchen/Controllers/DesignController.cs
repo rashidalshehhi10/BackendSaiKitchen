@@ -38,7 +38,8 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested ||
                      x.InquiryStatusId == (int)inquiryStatus.designRejected))
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.Customer).FirstOrDefault();
+                .Include(x => x.Customer)
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (designCustomModel.base64f3d != null && designCustomModel.base64f3d.Count > 0)
             {
                 Design design;
@@ -105,6 +106,19 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.designWaitingForApproval;
+                inquiry.InquiryComment = designCustomModel.comment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = designCustomModel.comment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -233,12 +247,26 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer).Include(x =>
                     x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.designRevisionRequested;
                 inquiry.InquiryComment = updateInquiryStatus.DesignComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateInquiryStatus.DesignComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRevisionRequested;
@@ -327,12 +355,23 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationSchedulePending;
                 inquiry.InquiryComment = updateInquiryStatus.DesignComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail ="Customer Comment ("+inquiry.Customer.CustomerName+") "+ updateInquiryStatus.DesignComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                });
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationSchedulePending;
@@ -387,12 +426,24 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == updateInquiryStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.Customer)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
                 inquiry.InquiryComment = updateInquiryStatus.DesignComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateInquiryStatus.DesignComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                });
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designRejectedByCustomer;
@@ -511,12 +562,25 @@ namespace BackendSaiKitchen.Controllers
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == updateInquiry.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;
                 inquiry.InquiryComment = updateInquiry.DesignComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateInquiry.DesignComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected;

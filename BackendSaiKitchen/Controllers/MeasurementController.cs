@@ -218,7 +218,9 @@ namespace BackendSaiKitchen.Controllers
             Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == updateMeasurementStatus.Id && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.Measurements.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.Customer).FirstOrDefault();
+                .Include(x => x.Customer)
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -235,6 +237,18 @@ namespace BackendSaiKitchen.Controllers
                     inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
                 inquiry.InquiryComment = updateMeasurementStatus.MeasurementComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateMeasurementStatus.MeasurementComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                 inquiryRepository.Update(inquiry);
 
@@ -454,7 +468,9 @@ namespace BackendSaiKitchen.Controllers
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(y => y.InquiryId == updateInquiryWorkscope.Id && y.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && y.IsActive == true && y.IsDeleted == false)
                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-               .Include(x => x.Customer).FirstOrDefault();
+               .Include(x => x.Customer)
+               .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted ==false))
+               .FirstOrDefault();
             if (inquiry != null)
             {
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
@@ -466,6 +482,19 @@ namespace BackendSaiKitchen.Controllers
 
                 }
                 inquiry.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeRejected;
+                inquiry.InquiryComment = updateInquiryWorkscope.MeasurementComment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateInquiryWorkscope.MeasurementComment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
                 inquiryRepository.Update(inquiry);

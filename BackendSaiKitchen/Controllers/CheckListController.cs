@@ -535,6 +535,7 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
@@ -585,6 +586,7 @@ namespace BackendSaiKitchen.Controllers
                     x.InquiryId == Reject.inquiryId && x.IsActive == true && x.IsDeleted == false &&
                     x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
@@ -637,7 +639,9 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || 
                      x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
-                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .FirstOrDefault();
 
             if (inquiry != null)
             {
@@ -717,6 +721,7 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected ||
                      x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
@@ -770,6 +775,7 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.checklistPending ||
                      x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected))
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
@@ -801,6 +807,18 @@ namespace BackendSaiKitchen.Controllers
                             }
 
                             inquiry.InquiryComment = reason.reason;
+                            inquiry.Comments.Add(new Comment
+                            {
+                                CommentAddedBy = Constants.userId,
+                                CommentAddedon = Helper.Helper.GetDateTime(),
+                                CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                                CommentDetail = reason.reason,
+                                InquiryStatusId = inquiry.InquiryStatusId,
+                                IsActive = true,
+                                IsDeleted = false,
+                                CreatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                            });
                             break;
 
                         default:

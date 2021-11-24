@@ -369,109 +369,6 @@ namespace BackendSaiKitchen.Controllers
 
                     inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForApproval;
                     inquiry.QuotationAssignTo = Constants.userId;
-                    //decimal percent = 0;
-                    //var amountwithoutAdvance = decimal.Parse(customQuotation.TotalAmount) - ((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment));
-                    //quotation.Payments.Add(new Payment()
-                    //{
-                    //    PaymentAmountinPercentage = decimal.Parse(customQuotation.AdvancePayment),
-                    //    InquiryId = customQuotation.InquiryId,
-                    //    PaymentName = "Advance Payment",
-                    //    PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                    //    PaymentTypeId = (int)paymenttype.AdvancePayment,
-                    //    PaymentDetail = "Advance Payment of " + customQuotation.InquiryId,
-                    //    PaymentAmount = Decimal.Truncate((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AdvancePayment) * 100),
-                    //    PaymentExpectedDate = customQuotation.QuotationValidityDate,
-                    //    IsActive = true,
-                    //    IsDeleted = false,
-                    //    CreatedDate = Helper.Helper.GetDateTime(),
-                    //    CreatedBy = Constants.userId,
-                    //    UpdatedBy = Constants.userId,
-                    //    UpdatedDate = Helper.Helper.GetDateTime(),
-
-                    //});
-                    //if (customQuotation.IsInstallment == true)
-                    //{
-
-                    //    for (int i = 0; i < customQuotation.Payments.Count; i++)
-                    //    {
-                    //        var pay = customQuotation.Payments[i];
-                    //        percent += (decimal)pay.PaymentAmountinPercentage;
-                    //        if (customQuotation.Payments.Count - 1 == i)
-                    //        {
-                    //            pay.PaymentAmountinPercentage += ((100 - decimal.Parse(customQuotation.AdvancePayment)) - percent);
-                    //        }
-
-                    //        var paymentAmount = ((amountwithoutAdvance / 100) * pay.PaymentAmountinPercentage) * 100;
-                    //        quotation.Payments.Add(new Payment()
-                    //        {
-                    //            PaymentAmountinPercentage = pay.PaymentAmountinPercentage,
-                    //            InquiryId = customQuotation.InquiryId,
-                    //            PaymentName = "Installment# " + (i + 1),
-                    //            PaymentStatusId = (int)paymentstatus.InstallmentCreated,
-                    //            PaymentTypeId = (int)paymenttype.Installment,
-                    //            PaymentDetail = "Installment of " + customQuotation.InquiryId,
-                    //            PaymentAmount = Decimal.Truncate((decimal)paymentAmount),
-                    //            PaymentExpectedDate = pay.PaymentExpectedDate,
-                    //            IsActive = true,
-                    //            IsDeleted = false,
-                    //            CreatedDate = Helper.Helper.GetDateTime(),
-                    //            CreatedBy = Constants.userId,
-                    //            UpdatedBy = Constants.userId,
-                    //            UpdatedDate = Helper.Helper.GetDateTime(),
-
-                    //        });
-                    //        //Helper.Helper.AddPayment(paymentAmount);
-
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    quotation.Payments.Add(new Payment()
-                    //    {
-                    //        PaymentAmountinPercentage = decimal.Parse(customQuotation.BeforeInstallation),
-                    //        InquiryId = customQuotation.InquiryId,
-                    //        PaymentName = "Before Installation",
-                    //        PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                    //        PaymentTypeId = (int)paymenttype.BeforeInstallation,
-                    //        PaymentDetail = "Before Installation of " + customQuotation.InquiryId,
-                    //        PaymentAmount = Decimal.Truncate(((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.BeforeInstallation)) * 100),
-                    //        PaymentExpectedDate = "",
-                    //        IsActive = true,
-                    //        IsDeleted = false,
-                    //        CreatedDate = Helper.Helper.GetDateTime(),
-                    //        CreatedBy = Constants.userId,
-                    //        UpdatedBy = Constants.userId,
-                    //        UpdatedDate = Helper.Helper.GetDateTime(),
-
-                    //    });
-                    //    customQuotation.AfterDelivery = (100 - (decimal.Parse(customQuotation.BeforeInstallation) + decimal.Parse(customQuotation.AdvancePayment))).ToString();
-                    //    quotation.Payments.Add(new Payment()
-                    //    {
-                    //        PaymentAmountinPercentage = decimal.Parse(customQuotation.AfterDelivery),
-                    //        InquiryId = customQuotation.InquiryId,
-                    //        PaymentName = "After Delivery",
-                    //        PaymentStatusId = (int)paymentstatus.PaymentCreated,
-                    //        PaymentTypeId = (int)paymenttype.AfterDelivery,
-                    //        PaymentDetail = "After Delivery of " + customQuotation.InquiryId,
-                    //        PaymentAmount = Decimal.Truncate(((decimal.Parse(customQuotation.TotalAmount) / 100) * decimal.Parse(customQuotation.AfterDelivery)) * 100),
-                    //        PaymentExpectedDate = "",
-                    //        IsActive = true,
-                    //        IsDeleted = false,
-                    //        CreatedDate = Helper.Helper.GetDateTime(),
-                    //        CreatedBy = Constants.userId,
-                    //        UpdatedBy = Constants.userId,
-                    //        UpdatedDate = Helper.Helper.GetDateTime(),
-
-                    //    });
-                    //}
-                    //foreach (var payment in quotation.Payments)
-                    //{
-                    //    if (payment.PaymentAmount == 0)
-                    //    {
-                    //        payment.IsActive = false;
-                    //    }
-                    //}
-
                     inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
                     inquiry.QuotationAddedOn = Helper.Helper.GetDateTime();
                     inquiry.Quotations.Add(quotation);
@@ -614,6 +511,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Inquiry)
                 .ThenInclude(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Inquiry).ThenInclude(x => x.Customer)
+                .Include(x => x.Inquiry).ThenInclude(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (quotation != null)
             {
@@ -633,6 +531,18 @@ namespace BackendSaiKitchen.Controllers
                     quotation.CalculationSheetFile = _quotation.CalculationSheetFile;
                     quotation.ProposalReferenceNumber = _quotation.ProposalReferenceNumber;
                     quotation.Description = _quotation.Description;
+                    quotation.Inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus),quotation.Inquiry.InquiryStatusId),
+                        CommentDetail = _quotation.Description,
+                        InquiryStatusId =quotation.Inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
                     quotation.TotalAmount = _quotation.TotalAmount;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     quotation.AdvancePayment = _quotation.AdvancePayment;
@@ -707,6 +617,18 @@ namespace BackendSaiKitchen.Controllers
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
                 inquiry.InquiryComment = comment.comment;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = comment.comment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -1117,12 +1039,23 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.Payments.Where(y =>
                     y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer)
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                // inquiry.InquiryComment = updateQuotation.reason;
+                inquiry.InquiryComment = updateQuotation.reason;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail ="Customer Comment ("+inquiry.Customer.CustomerName+") " +updateQuotation.reason,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                });
 
                 foreach (InquiryWorkscope workscope in inquiry.InquiryWorkscopes)
                 {
@@ -1202,11 +1135,25 @@ namespace BackendSaiKitchen.Controllers
                     y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y =>
                     y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                inquiry.InquiryComment = updateQuotation.reason;
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = updateQuotation.reason,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 Helper.Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationRejected);
 
                 foreach (Payment payment in inquiry.Payments)
