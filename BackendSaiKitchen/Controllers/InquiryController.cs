@@ -155,7 +155,16 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetAllCommentByInquiryId(int inquiryId)
         {
-            var comments = commentRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).ToList();
+            var comments = commentRepository.FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                CommentId = x.CommentId,
+                CommentName = x.CommentName,
+                CommentDetail = x.CommentDetail,
+                CommentAddedBy = x.CommentAddedByNavigation.UserName,
+                InquiryStatusId = x.InquiryStatusId,
+                InquiryStatus = x.InquiryStatus.InquiryStatusName,
+                CommentAddedon = x.CommentAddedon,
+            }).OrderByDescending(x => x.CommentAddedon).ToList();
             response.data = comments;
             return response;
         }
