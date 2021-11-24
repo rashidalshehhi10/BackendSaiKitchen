@@ -1210,7 +1210,7 @@ namespace SaiKitchenBackend.Controllers
         public object GetinquiryDetailsById(int inquiryId)
         {
             Inquiry inquiry = inquiryRepository
-                .FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .FindByCondition(x => x.InquiryId == inquiryId && x.IsDeleted == false)
                 .Include(x => x.InquiryStatus)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
