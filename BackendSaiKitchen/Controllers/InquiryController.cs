@@ -364,6 +364,277 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<object> EscalatedInquiries(int branchId, [FromForm] int? draw, [FromForm] int? start, [FromForm] int? length, [FromForm(Name = "columns[0][search][value]")] int? inquiryId, [FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress, [FromForm(Name = "columns[25][search][value]")] int? HandledBy)
+        {
+            if (draw == null)
+            {
+                draw = 20;
+            }
+            if (length == null)
+            {
+                length = 10;
+            }
+            if (start == null)
+            {
+                start = 0;
+            }
+            var type = typeof(Inquiry);
+            var parameterExprission = Expression.Parameter(typeof(Inquiry), "x");
+            var constant = Expression.Constant(false, typeof(bool?));
+            var property = Expression.Property(parameterExprission, "IsActive");
+            var expression = Expression.Equal(property, constant);
+            var property2 = Expression.Property(parameterExprission, "IsDeleted");
+            constant = Expression.Constant(false, typeof(bool?));
+            var experssion2 = Expression.Equal(property2, constant);
+            expression = Expression.And(expression, experssion2);
+            var property3 = Expression.Property(parameterExprission, "BranchId");
+            constant = Expression.Constant(branchId, typeof(int?));
+            var experssion3 = Expression.Equal(property3, constant);
+            expression = Expression.And(expression, experssion3);
+            if (inquiryId != null)
+            {
+                var _property = Expression.Property(parameterExprission, "InquiryId");
+                constant = Expression.Constant(inquiryId);
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (inquiryCode != null)
+            {
+                var _property = Expression.Property(parameterExprission, "InquiryCode");
+                constant = Expression.Constant(inquiryCode);
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (status != null)
+            {
+                var _property = Expression.Property(parameterExprission, "InquiryStatusId");
+                constant = Expression.Constant(status, typeof(int?));
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (customerName != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "Customer.CustomerName".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                constant = Expression.Constant(customerName);
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion = Expression.Call(_property, method, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (workscopeNames != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "WorkScope.WorkScopeName".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                constant = Expression.Constant(workscopeNames);
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (measurementScheduleDate != null)
+            {
+                var _parameter = Expression.Parameter(typeof(InquiryWorkscope), "y");
+                Expression _property = Expression.Property(_parameter, "MeasurementScheduleDate");
+                constant = Expression.Constant(measurementScheduleDate);
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion = Expression.Call(_property, method, constant);
+                var _lambda = Expression.Lambda<Func<InquiryWorkscope, bool>>(_experssion, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(InquiryWorkscope) },
+                    Expression.Property(parameterExprission, "InquiryWorkScopes"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            if (measurementAssignTo != null)
+            {
+                var _parameter = Expression.Parameter(typeof(InquiryWorkscope), "y");
+                Expression _property = Expression.Property(_parameter, "MeasurementAssignedTo");
+                constant = Expression.Constant(measurementAssignTo, typeof(int?));
+                var _experssion = Expression.Equal(_property, constant);
+                var _lambda = Expression.Lambda<Func<InquiryWorkscope, bool>>(_experssion, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(InquiryWorkscope) },
+                    Expression.Property(parameterExprission, "InquiryWorkScopes"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            if (designScheduleDate != null)
+            {
+                var _parameter = Expression.Parameter(typeof(InquiryWorkscope), "y");
+                Expression _property = Expression.Property(_parameter, "DesignScheduleDate");
+                constant = Expression.Constant(designScheduleDate);
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion = Expression.Call(_property, method, constant);
+                var _lambda = Expression.Lambda<Func<InquiryWorkscope, bool>>(_experssion, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(InquiryWorkscope) },
+                    Expression.Property(parameterExprission, "InquiryWorkScopes"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            if (designAssignTo != null)
+            {
+                var _parameter = Expression.Parameter(typeof(InquiryWorkscope), "y");
+                Expression _property = Expression.Property(_parameter, "DesignAssignedTo");
+                constant = Expression.Constant(designAssignTo, typeof(int?));
+                var _experssion = Expression.Equal(_property, constant);
+                var _lambda = Expression.Lambda<Func<InquiryWorkscope, bool>>(_experssion, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(InquiryWorkscope) },
+                    Expression.Property(parameterExprission, "InquiryWorkScopes"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            if (customerCode != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "Customer.CustomerId".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                string BranchId = branchId.ToString();
+                int id = int.Parse(customerCode.Substring(BranchId.Length + 2));
+                constant = Expression.Constant(id, typeof(int));
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (customerContact != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "Customer.CustomerContact".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                constant = Expression.Constant(customerContact);
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (buildingAddress != null)
+            {
+                Expression _property = parameterExprission;
+                foreach (var item in "Building.BuildingAddress".Split('.'))
+                {
+                    _property = Expression.PropertyOrField(_property, item);
+                }
+                constant = Expression.Constant(buildingAddress);
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            if (HandledBy != null)
+            {
+                var _property = Expression.Property(parameterExprission, "ManagedBy");
+                constant = Expression.Constant(HandledBy, typeof(int?));
+                var _experssion = Expression.Equal(_property, constant);
+                expression = Expression.And(expression, _experssion);
+            }
+            var lambda = Expression.Lambda<Func<Inquiry, bool>>(expression, parameterExprission);
+
+
+            //var inquiries = inquiryWorkscopeRepository.FindByCondition(x => x.Inquiry.BranchId == branchId && x.Inquiry.IsActive == true && x.Inquiry.IsDeleted == false && x.IsActive == true && x.IsDeleted == false)
+            var inquiries = await inquiryRepository
+                .FindByCondition(lambda)
+                .Select(x => new ViewInquiryDetail
+                {
+                    // InquiryWorkscopeId = x.InquiryWorkscopeId,
+                    InquiryId = x.InquiryId,
+                    InquiryDescription = x.InquiryDescription, //x.Inquiry.InquiryDescription,
+                    InquiryStartDate =
+                        Helper.GetDateFromString(x
+                            .InquiryStartDate), //Helper.GetDateFromString(x.Inquiry.InquiryStartDate),
+                    MeasurementAssignTo =
+                        x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedToNavigation
+                            .UserName,
+                    MeasurementAssignToId = x.InquiryWorkscopes.FirstOrDefault().MeasurementAssignedTo
+                           ,
+                    //x.MeasurementAssignedToNavigation.UserName,
+                    InquiryComment = x.InquiryComment, //x.Comments,
+                    //WorkScopeId = x.WorkscopeId,
+                    //WorkScopeName = x.Workscope.WorkScopeName,
+                    DesignScheduleDate =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignScheduleDate, // x.DesignScheduleDate,
+                    DesignAssignTo =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedToNavigation
+                            .UserName,
+                    DesignAssignToId =
+                        x.InquiryWorkscopes.FirstOrDefault().DesignAssignedTo,
+                    ManagedBy = x.ManagedByNavigation.UserName,
+                    ManagedById = x.ManagedBy,
+                    // x.DesignAssignedToNavigation.UserName,
+                    Status = x.InquiryStatusId,
+                    IsMeasurementProvidedByCustomer =
+                        x.IsMeasurementProvidedByCustomer == true
+                            ? "yes"
+                            : "No", // x.Inquiry.IsMeasurementProvidedByCustomer == true ? "Yes" : "No",
+                    IsDesignProvidedByCustomer =
+                        x.IsDesignProvidedByCustomer == true
+                            ? "Yes"
+                            : "No", // x.Inquiry.IsDesignProvidedByCustomer == true ? "Yes" : "No",
+                    MeasurementScheduleDate =
+                        x.InquiryWorkscopes.FirstOrDefault().MeasurementScheduleDate, // x.MeasurementScheduleDate,
+                    BuildingAddress = x.Building.BuildingAddress, //x.Inquiry.Building.BuildingAddress,
+                    BuildingMakaniMap = x.Building.BuildingMakaniMap, //x.Inquiry.Building.BuildingMakaniMap,
+                    BuildingCondition = x.Building.BuildingCondition, // x.Inquiry.Building.BuildingCondition,
+                    BuildingFloor = x.Building.BuildingFloor, //x.Inquiry.Building.BuildingFloor,
+                    BuildingReconstruction =
+                        (bool)x.Building.BuildingReconstruction
+                            ? "Yes"
+                            : "No", //(bool)x.Inquiry.Building.BuildingReconstruction ? "Yes" : "No",
+                    IsOccupied =
+                        (bool)x.Building.IsOccupied
+                            ? "Yes"
+                            : "No", //(bool)x.Inquiry.Building.IsOccupied ? "Yes" : "No",
+                    InquiryEndDate =
+                        Helper.GetDateFromString(x
+                            .InquiryEndDate), //Helper.GetDateFromString(x.Inquiry.InquiryEndDate),
+                    BuildingTypeOfUnit = x.Building.BuildingTypeOfUnit, // x.Inquiry.Building.BuildingTypeOfUnit,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    EscalationRequestedOn = x.EscalationRequestedDate,
+                    EscalationRequestedBy = x.EscalationRequestedByNavigation.UserName,//x.Inquiry.IsEscalationRequested,
+                    CustomerId = x.CustomerId, // x.Inquiry.CustomerId,
+                    CustomerCode =
+                        "CS" + x.BranchId + "" + x.CustomerId, //"CS" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId,
+                    CustomerName = x.Customer.CustomerName, // x.Inquiry.Customer.CustomerName,
+                    CustomerEmail = x.Customer.CustomerEmail, //x.Inquiry.Customer.CustomerEmail,
+                    CustomerContact = x.Customer.CustomerContact, //x.Inquiry.Customer.CustomerContact,
+                    CustomerWhatsapp = x.Customer.CustomerWhatsapp, //x.Inquiry.Customer.CustomerWhatsapp,
+                    BranchId = x.BranchId, //x.Inquiry.BranchId,
+                    InquiryAddedBy = x.ManagedByNavigation.UserName, //x.Inquiry.AddedByNavigation.UserName,
+                    InquiryAddedById = x.ManagedBy,
+                    InquiryAddedOn = x.CreatedDate,
+                    // x.Inquiry.AddedBy,
+                    NoOfRevision = x.InquiryWorkscopes.FirstOrDefault().Measurements
+                        .Count(y => y.IsDeleted == false), //x.Measurements.Where(y => y.IsDeleted == false).Count(),
+                    InquiryCode =
+                        "IN" + x.BranchId + "" + x.CustomerId + "" +
+                        x.InquiryId, //"IN" + x.Inquiry.BranchId + "" + x.Inquiry.CustomerId + "" + x.InquiryId,
+                    WorkscopeNames = string.Join(',', x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName)
+                        .ToList()), // x.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.Workscope.WorkScopeName).ToList()
+                    //InquiryWorkscopes =x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false).ToList()
+                    CommentAddedOn = x.InquiryCommentsAddedOn,
+                    DesignAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.DesignAddedOn).FirstOrDefault(),
+                    MeasurementAddedOn = x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.MeasurementAddedOn).FirstOrDefault(),
+                    QuotationAddedOn = x.QuotationAddedOn,
+                    QuotationScheduleDate = x.QuotationScheduleDate,
+                    FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName,
+                    payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).ToList()
+                }).OrderByDescending(x => x.InquiryId).Skip((int)start).Take((int)length)
+                .ToListAsync();
+            tableResponse.data = inquiries;
+            tableResponse.recordsTotal = inquiryRepository
+                .FindByCondition(lambda).Count();
+            tableResponse.recordsFiltered = tableResponse.recordsTotal;
+            return tableResponse;
+        }
+
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
