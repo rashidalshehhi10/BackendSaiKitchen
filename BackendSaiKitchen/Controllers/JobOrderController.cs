@@ -82,19 +82,23 @@ namespace BackendSaiKitchen.Controllers
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes,
                     x => { x.InquiryStatusId = (int)inquiryStatus.jobOrderFactoryRejected; });
-                inquiry.InquiryComment = job.Reason;
-                inquiry.Comments.Add(new Comment
+                if (job.Reason != string.Empty || job.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = job.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = job.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = job.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 Helper.Helper.Each(inquiry.JobOrders, x =>
                 {
                     x.DetailedDesignFile = job.base64f3d;
@@ -271,20 +275,23 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
-                inquiry.InquiryComment = approve.Reason;
-                inquiry.Comments.Add(new Comment
+                if (approve.Reason != string.Empty || approve.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = approve.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
-
+                    inquiry.InquiryComment = approve.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = approve.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderInProgress;
@@ -319,19 +326,23 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderAuditRejected;
-                inquiry.InquiryComment = Reject.Reason;
-                inquiry.Comments.Add(new Comment
+                if (Reject.Reason != string.Empty || Reject.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = Reject.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = Reject.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = Reject.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderAuditRejected;

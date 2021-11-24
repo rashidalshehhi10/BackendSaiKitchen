@@ -179,23 +179,32 @@ namespace SaiKitchenBackend.Controllers
                 .FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryComment = comment.comment;
-                inquiry.InquiryCommentsAddedOn = Helper.GetDateTime();
-                inquiry.Comments.Add(new Comment
+                if (comment.comment != string.Empty || comment.comment != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = comment.comment,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
-                inquiryRepository.Update(inquiry);
-                context.SaveChanges();
-                response.data = "Comment Added Successfully";
+                    inquiry.InquiryComment = comment.comment;
+                    inquiry.InquiryCommentsAddedOn = Helper.GetDateTime();
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = comment.comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                    inquiryRepository.Update(inquiry);
+                    context.SaveChanges();
+                    response.data = "Comment Added Successfully";
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "Comment Cannot Be null Or Empty";
+                }
+                
             }
             else
             {

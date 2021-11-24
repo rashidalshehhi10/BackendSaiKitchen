@@ -309,19 +309,23 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
-                inquiry.InquiryComment = approve.Comment;
-                inquiry.Comments.Add(new Comment
+                if (approve.Comment != string.Empty || approve.Comment != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = approve.Comment,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = approve.Comment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = approve.Comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 foreach (JobOrder joborder in inquiry.JobOrders)
                 {
                     joborder.Comments = approve.Comment;
@@ -545,19 +549,23 @@ namespace BackendSaiKitchen.Controllers
                     jobOrder.JobOrderApprovalRequestDate = Helper.Helper.GetDateTime();
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
-                inquiry.InquiryComment = approve.Reason;
-                inquiry.Comments.Add(new Comment
+                if (approve.Reason != string.Empty || approve.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = approve.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = approve.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = approve.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
@@ -592,19 +600,23 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalRejected;
-                inquiry.InquiryComment = Reject.Reason;
-                inquiry.Comments.Add(new Comment
+                if (Reject.Reason != string.Empty || Reject.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = Reject.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = Reject.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = Reject.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.specialApprovalRejected;
@@ -656,19 +668,23 @@ namespace BackendSaiKitchen.Controllers
                 if (approve.IsSpecialApprovalRequired)
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
-                    inquiry.InquiryComment = approve.Reason;
-                    inquiry.Comments.Add(new Comment
+                    if (approve.Reason != string.Empty || approve.Reason != null)
                     {
-                        CommentAddedBy = Constants.userId,
-                        CommentAddedon = Helper.Helper.GetDateTime(),
-                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                        CommentDetail = approve.Reason,
-                        InquiryStatusId = inquiry.InquiryStatusId,
-                        IsActive = true,
-                        IsDeleted = false,
-                        CreatedDate = Helper.Helper.GetDateTime(),
-                        CreatedBy = Constants.userId,
-                    });
+                        inquiry.InquiryComment = approve.Reason;
+                        inquiry.Comments.Add(new Comment
+                        {
+                            CommentAddedBy = Constants.userId,
+                            CommentAddedon = Helper.Helper.GetDateTime(),
+                            CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                            CommentDetail = approve.Reason,
+                            InquiryStatusId = inquiry.InquiryStatusId,
+                            IsActive = true,
+                            IsDeleted = false,
+                            CreatedDate = Helper.Helper.GetDateTime(),
+                            CreatedBy = Constants.userId,
+                        });
+                    }
+                    
                     foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                     {
                         inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
@@ -727,19 +743,23 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
-                inquiry.InquiryComment = Reject.Reason;
-                inquiry.Comments.Add(new Comment
+                if (Reject.Reason != string.Empty || Reject.Reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = Reject.Reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = Reject.Reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = Reject.Reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    }); 
+                }
+                
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.commercialChecklistRejected;
@@ -805,20 +825,23 @@ namespace BackendSaiKitchen.Controllers
                             {
                                 inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
                             }
-
-                            inquiry.InquiryComment = reason.reason;
-                            inquiry.Comments.Add(new Comment
+                            if (reason.reason != string.Empty || reason.reason != null)
                             {
-                                CommentAddedBy = Constants.userId,
-                                CommentAddedon = Helper.Helper.GetDateTime(),
-                                CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                                CommentDetail = reason.reason,
-                                InquiryStatusId = inquiry.InquiryStatusId,
-                                IsActive = true,
-                                IsDeleted = false,
-                                CreatedDate = Helper.Helper.GetDateTime(),
-                                CreatedBy = Constants.userId,
-                            });
+                                inquiry.InquiryComment = reason.reason;
+                                inquiry.Comments.Add(new Comment
+                                {
+                                    CommentAddedBy = Constants.userId,
+                                    CommentAddedon = Helper.Helper.GetDateTime(),
+                                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                                    CommentDetail = reason.reason,
+                                    InquiryStatusId = inquiry.InquiryStatusId,
+                                    IsActive = true,
+                                    IsDeleted = false,
+                                    CreatedDate = Helper.Helper.GetDateTime(),
+                                    CreatedBy = Constants.userId,
+                                });
+                            }
+                            
                             break;
 
                         default:

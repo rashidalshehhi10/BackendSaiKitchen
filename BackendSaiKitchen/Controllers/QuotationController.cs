@@ -530,19 +530,23 @@ namespace BackendSaiKitchen.Controllers
                     quotation.Amount = _quotation.Amount;
                     quotation.CalculationSheetFile = _quotation.CalculationSheetFile;
                     quotation.ProposalReferenceNumber = _quotation.ProposalReferenceNumber;
-                    quotation.Description = _quotation.Description;
-                    quotation.Inquiry.Comments.Add(new Comment
+                    if (_quotation.Description != string.Empty || _quotation.Description != null)
                     {
-                        CommentAddedBy = Constants.userId,
-                        CommentAddedon = Helper.Helper.GetDateTime(),
-                        CommentName = Enum.GetName(typeof(inquiryStatus),quotation.Inquiry.InquiryStatusId),
-                        CommentDetail = _quotation.Description,
-                        InquiryStatusId =quotation.Inquiry.InquiryStatusId,
-                        IsActive = true,
-                        IsDeleted = false,
-                        CreatedDate = Helper.Helper.GetDateTime(),
-                        CreatedBy = Constants.userId,
-                    });
+                        quotation.Description = _quotation.Description;
+                        quotation.Inquiry.Comments.Add(new Comment
+                        {
+                            CommentAddedBy = Constants.userId,
+                            CommentAddedon = Helper.Helper.GetDateTime(),
+                            CommentName = Enum.GetName(typeof(inquiryStatus), quotation.Inquiry.InquiryStatusId),
+                            CommentDetail = _quotation.Description,
+                            InquiryStatusId = quotation.Inquiry.InquiryStatusId,
+                            IsActive = true,
+                            IsDeleted = false,
+                            CreatedDate = Helper.Helper.GetDateTime(),
+                            CreatedBy = Constants.userId,
+                        });
+                    }
+                    
                     quotation.TotalAmount = _quotation.TotalAmount;
                     quotation.QuotationStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
                     quotation.AdvancePayment = _quotation.AdvancePayment;
@@ -616,19 +620,23 @@ namespace BackendSaiKitchen.Controllers
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested);
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested;
-                inquiry.InquiryComment = comment.comment;
-                inquiry.Comments.Add(new Comment
+                if (comment.comment != string.Empty || comment.comment != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = comment.comment,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = comment.comment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = comment.comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -1045,21 +1053,26 @@ namespace BackendSaiKitchen.Controllers
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractInProgress;
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
-                inquiry.InquiryComment = updateQuotation.reason;
-                inquiry.Comments.Add(new Comment
+                if (updateQuotation.reason != string.Empty || updateQuotation.reason != null)
                 {
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail ="Customer Comment ("+inquiry.Customer.CustomerName+") " +updateQuotation.reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                });
+                    inquiry.InquiryComment = updateQuotation.reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = "Customer Comment (" + inquiry.Customer.CustomerName + ") " + updateQuotation.reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                    });
+                }
+                
 
                 foreach (InquiryWorkscope workscope in inquiry.InquiryWorkscopes)
                 {
                     workscope.InquiryStatusId = (int)inquiryStatus.contractInProgress;
+                    workscope.FeedbackReaction = updateQuotation.FeedBackReactionId;
                 }
 
                 foreach (Quotation quotation in inquiry.Quotations)
@@ -1141,19 +1154,21 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.quotationRejected;
-                inquiry.InquiryComment = updateQuotation.reason;
-                inquiry.Comments.Add(new Comment
+                if (updateQuotation.reason != string.Empty || updateQuotation.reason != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = updateQuotation.reason,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = updateQuotation.reason;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = updateQuotation.reason,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                    });
+                }
+                
                 Helper.Helper.Each(inquiry.Quotations, x => x.QuotationStatusId = (int)inquiryStatus.quotationRejected);
 
                 foreach (Payment payment in inquiry.Payments)
@@ -1165,6 +1180,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationRejected;
+                    inquiryWorkscope.FeedbackReaction = updateQuotation.FeedBackReactionId;
                 }
 
                 foreach (Quotation quotation in inquiry.Quotations)
@@ -1615,6 +1631,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (InquiryWorkscope workscope in inquiry.InquiryWorkscopes)
                 {
                     workscope.InquiryStatusId = ispaid ? (int)inquiryStatus.contractApproved : (int)inquiryStatus.checklistPending;
+                    workscope.FeedbackReaction = approve.FeedBackReactionId;
                     foreach (Design design in workscope.Designs)
                     {
                         foreach (File file in design.Files)
@@ -1731,6 +1748,7 @@ namespace BackendSaiKitchen.Controllers
                 foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.contractRejected;
+                    inquiryWorkscope.FeedbackReaction = reject.FeedBackReactionId;
                 }
 
                 foreach (Quotation quotation in inquiry.Quotations)

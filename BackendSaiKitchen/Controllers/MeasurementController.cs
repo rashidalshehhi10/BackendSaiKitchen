@@ -236,19 +236,23 @@ namespace BackendSaiKitchen.Controllers
                     });
                     inquiryWorkscopeRepository.Update(inquiryWorkscope);
                 }
-                inquiry.InquiryComment = updateMeasurementStatus.MeasurementComment;
-                inquiry.Comments.Add(new Comment
+                if (updateMeasurementStatus.MeasurementComment != string.Empty || updateMeasurementStatus.MeasurementComment != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = updateMeasurementStatus.MeasurementComment,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = updateMeasurementStatus.MeasurementComment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = updateMeasurementStatus.MeasurementComment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 inquiry.InquiryStatusId = (int)inquiryStatus.measurementRejected;
                 inquiryRepository.Update(inquiry);
 
@@ -482,19 +486,23 @@ namespace BackendSaiKitchen.Controllers
 
                 }
                 inquiry.InquiryStatusId = (int?)inquiryStatus.measurementAssigneeRejected;
-                inquiry.InquiryComment = updateInquiryWorkscope.MeasurementComment;
-                inquiry.Comments.Add(new Comment
+                if (updateInquiryWorkscope.MeasurementComment != string.Empty || updateInquiryWorkscope.MeasurementComment != null)
                 {
-                    CommentAddedBy = Constants.userId,
-                    CommentAddedon = Helper.Helper.GetDateTime(),
-                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
-                    CommentDetail = updateInquiryWorkscope.MeasurementComment,
-                    InquiryStatusId = inquiry.InquiryStatusId,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedDate = Helper.Helper.GetDateTime(),
-                    CreatedBy = Constants.userId,
-                });
+                    inquiry.InquiryComment = updateInquiryWorkscope.MeasurementComment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = updateInquiryWorkscope.MeasurementComment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+                
                 inquiry.InquiryCode = "IN" + inquiry.BranchId + "" + inquiry.CustomerId + "" + inquiry.InquiryId;
 
                 inquiryRepository.Update(inquiry);
