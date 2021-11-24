@@ -2206,6 +2206,7 @@ namespace SaiKitchenBackend.Controllers
             var JobOrderAudit = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending && (x.BranchId == branchId || x.JobOrders.Any(y => y.IsActive == true && y.IsDeleted == false && y.FactoryId == branchId))).Count();
             var Numbers = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId).Select(x => new
             {
+                DeletedInquiries = x.Inquiries.Count(x => x.IsActive == false && x.IsDeleted == false),
                 inquiriesCount = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false),
                 customers =Customers,
                 measurementAssinee = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.measurementAssigneePending && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.MeasurementAssignedTo == Constants.userId)),
