@@ -158,11 +158,24 @@ namespace SaiKitchenBackend.Controllers
         {
             Inquiry inquiry = inquiryRepository
                 .FindByCondition(x => x.InquiryId == comment.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
                 inquiry.InquiryComment = comment.comment;
                 inquiry.InquiryCommentsAddedOn = Helper.GetDateTime();
+                inquiry.Comments.Add(new Comment
+                {
+                    CommentAddedBy = Constants.userId,
+                    CommentAddedon = Helper.GetDateTime(),
+                    CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                    CommentDetail = comment.comment,
+                    InquiryStatusId = inquiry.InquiryStatusId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = Helper.GetDateTime(),
+                    CreatedBy = Constants.userId,
+                });
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
                 response.data = "Comment Added Successfully";
@@ -222,7 +235,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Delete)]
+      //  [AuthFilter((int)permission.ManageInquiry, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
         public object DeleteWorkscopefromInquiry(WorkscopeInquiry workscopeInquiry)
@@ -238,12 +251,12 @@ namespace SaiKitchenBackend.Controllers
                 .Where(x => x.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId).FirstOrDefault();
             if (inquiryworkscope != null)
             {
-                inquiryworkscope.IsActive = true;
+                inquiryworkscope.IsActive = false;
                 IEnumerable<InquiryWorkscope> _inquiryworkscope =
                     inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false);
                 if (_inquiryworkscope.Count() == 0)
                 {
-                    inquiry.IsActive = true;
+                    inquiry.IsActive = false;
                 }
 
                 inquiryRepository.Update(inquiry);
