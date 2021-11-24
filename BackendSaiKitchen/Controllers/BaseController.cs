@@ -67,6 +67,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<NewsletterFrequency> newsletterFrequencyRepository;
         public Repository<ItemColor> itemColorRepository;
         public Repository<Color> colorRepository;
+        public Repository<Comment> commentRepository;
 
         public BaseController()
         {
@@ -107,6 +108,7 @@ namespace SaiKitchenBackend.Controllers
             newsletterFrequencyRepository = new Repository<NewsletterFrequency>(context);
             itemColorRepository = new Repository<ItemColor>(context);
             colorRepository = new Repository<Color>(context);
+            commentRepository = new Repository<Comment>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }
