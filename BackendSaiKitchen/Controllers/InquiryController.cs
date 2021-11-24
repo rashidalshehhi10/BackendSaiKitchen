@@ -1249,6 +1249,34 @@ namespace SaiKitchenBackend.Controllers
         public object GetinquiryDetailsById(int inquiryId)
         {
             Inquiry inquiry = inquiryRepository
+                .FindByCondition(x => x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryStatus)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Measurements.Where(z => z.IsActive == true && z.IsDeleted == false))
+                .ThenInclude(m => m.Files.Where(f => f.IsActive == true && f.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Building).Include(x => x.Customer)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(y => y.Workscope)
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .FirstOrDefault();
+
+            return InquiryDetail(inquiry);
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetEscalatedinquiryDetailsById(int inquiryId)
+        {
+            Inquiry inquiry = inquiryRepository
                 .FindByCondition(x => x.InquiryId == inquiryId && x.IsDeleted == false)
                 .Include(x => x.InquiryStatus)
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
