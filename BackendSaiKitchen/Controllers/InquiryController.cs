@@ -238,12 +238,12 @@ namespace SaiKitchenBackend.Controllers
                 .Where(x => x.InquiryWorkscopeId == workscopeInquiry.inquiryWorkscopeId).FirstOrDefault();
             if (inquiryworkscope != null)
             {
-                inquiryworkscope.IsDeleted = true;
+                inquiryworkscope.IsActive = true;
                 IEnumerable<InquiryWorkscope> _inquiryworkscope =
                     inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false);
                 if (_inquiryworkscope.Count() == 0)
                 {
-                    inquiry.IsDeleted = true;
+                    inquiry.IsActive = true;
                 }
 
                 inquiryRepository.Update(inquiry);
