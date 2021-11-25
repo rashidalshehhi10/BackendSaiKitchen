@@ -2954,13 +2954,13 @@ namespace SaiKitchenBackend.Controllers
         [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
-        public object GetApprovalDesignOfBranch(int branchId)
+        public object GetApprovalDesignOfBranch(int branchId,int userId)
         {
             IOrderedQueryable<ViewInquiryDetail> inquiries = inquiryRepository.FindByCondition(x =>
                     x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false &&
                     (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval ||
                      x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer) &&
-                    x.ManagedBy == Constants.userId)
+                    x.ManagedBy ==userId)
                 .Select(x => new ViewInquiryDetail
                 {
                     // InquiryWorkscopeId = x.InquiryWorkscopeId,
