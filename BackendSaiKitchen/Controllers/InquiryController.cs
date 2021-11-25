@@ -2952,7 +2952,7 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
-        [AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageDesign, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetApprovalDesignOfBranch(int branchId,int userId)
