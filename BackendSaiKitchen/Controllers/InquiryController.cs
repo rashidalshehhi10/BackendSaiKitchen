@@ -161,9 +161,10 @@ namespace SaiKitchenBackend.Controllers
                 CommentName = x.CommentName,
                 CommentDetail = x.CommentDetail,
                 CommentAddedBy = x.CommentAddedByNavigation.UserName,
+                CommentAddedon = x.CommentAddedon,
                 InquiryStatusId = x.InquiryStatusId,
                 InquiryStatus = x.InquiryStatus.InquiryStatusName,
-                CommentAddedon = x.CommentAddedon,
+                CreatedDate = x.CreatedDate,
             }).OrderByDescending(x => x.CommentAddedon).ToList();
             response.data = comments;
             return response;
