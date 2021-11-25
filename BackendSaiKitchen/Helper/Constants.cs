@@ -174,7 +174,10 @@
         jobOrderAuditRejected = 65,
         specialApprovalPending = 66,
         specialApprovalRejected = 67,
-        jobOrderFactoryDelayed = 68
+        jobOrderFactoryDelayed = 68,
+        jobOrderProcurementDelayed = 69,
+        jobOrderCustomerRequestReschedule = 70,
+        jobOrderDesignTeamDelay = 71,
     }
 
     public enum roleType
