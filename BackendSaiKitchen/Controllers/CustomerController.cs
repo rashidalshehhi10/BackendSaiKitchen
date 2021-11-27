@@ -122,7 +122,7 @@ namespace SaiKitchenBackend.Controllers
                         CustomerNationalId = x.CustomerNationalId,
                         TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString(),
                         AddedOn = x.CreatedDate,
-                    }).ToList();
+                    }).OrderByDescending(i => i.CustomerId).ToList();
             customers.AddRange(customerRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
                 .Include(x => x.Inquiries)
@@ -143,7 +143,7 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId,
                     TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
-                }).ToList());
+                }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = customers.Count;
             int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
             int? needToContact = customers.Where(x =>
