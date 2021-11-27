@@ -241,10 +241,10 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
-                inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                inquiry.InquiryStatusId = order.status;
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x =>
                 {
-                    x.InquiryStatusId = (int)inquiryStatus.jobOrderDelayed;
+                    x.InquiryStatusId = order.status;
                 });
                 foreach (Models.JobOrder joborder in inquiry.JobOrders)
                 {
