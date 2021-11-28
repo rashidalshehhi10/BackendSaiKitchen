@@ -162,6 +162,19 @@ namespace SaiKitchenBackend.Controllers
             return customers;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public object GetCustomerbyUser()
+        {
+            var Customers = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                User = x.UserName,
+                Customers = x.Customers.Count(),
+            }).ToList();
+            response.data = Customers;
+            return response;
+        }
+
         [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
