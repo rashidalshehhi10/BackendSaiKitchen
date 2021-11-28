@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -90,11 +91,48 @@ namespace SaiKitchenBackend.Controllers
         //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
-        public object GetCustomerOfBranch(int branchId)
+        public object GetCustomerOfBranch(int userId)
         {
-            System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(x =>
-                    x.IsActive == true && x.IsDeleted == false && x.BranchId == branchId && x.Branch.IsActive == true &&
-                    x.Branch.IsDeleted == false)
+            var type = typeof(Customer);
+            var parameterExprission = Expression.Parameter(typeof(Customer), "x");
+            var constant = Expression.Constant(true, typeof(bool?));
+            var property = Expression.Property(parameterExprission, "IsActive");
+            var expression = Expression.Equal(property, constant);
+            var property2 = Expression.Property(parameterExprission, "IsDeleted");
+            constant = Expression.Constant(false, typeof(bool?));
+            var experssion2 = Expression.Equal(property2, constant);
+            expression = Expression.And(expression, experssion2);
+            var property3 = Expression.Property(parameterExprission, "BranchId");
+            constant = Expression.Constant(Constants.branchId, typeof(int?));
+            var experssion3 = Expression.Equal(property3, constant);
+            expression = Expression.And(expression, experssion3);
+            Expression _property = parameterExprission;
+            foreach (var item in "Branch.IsActive".Split('.'))
+            {
+                _property = Expression.PropertyOrField(_property, item);
+            }
+            constant = Expression.Constant(true,typeof(bool?));
+            var _experssion = Expression.Equal(_property, constant);
+            expression = Expression.And(expression, _experssion);
+
+            Expression __property = parameterExprission;
+            foreach (var item in "Branch.IsDeleted".Split('.'))
+            {
+                __property = Expression.PropertyOrField(__property, item);
+            }
+            constant = Expression.Constant(false, typeof(bool?));
+            var __experssion = Expression.Equal(__property, constant);
+            expression = Expression.And(expression, __experssion);
+            if (userId != 0 && userId != null)
+            {
+                var property1 = Expression.Property(parameterExprission, "UserId");
+                constant = Expression.Constant(userId,typeof(int?));
+                var experssion1 = Expression.Equal(property1, constant);
+                expression = Expression.And(expression, experssion1);
+            }
+            var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
+
+            System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(lambda)
                 .Include(x => x.Inquiries)
                 .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x =>
