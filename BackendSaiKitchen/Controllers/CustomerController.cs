@@ -166,7 +166,7 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object GetCustomerbyUser()
         {
-            var Customers = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var Customers = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == Constants.branchId)).Select(x => new
             {
                 User = x.UserName,
                 Customers = x.Customers.Count(),
