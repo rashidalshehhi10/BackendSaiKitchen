@@ -169,7 +169,7 @@ namespace SaiKitchenBackend.Controllers
             var Customers = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == Constants.branchId)).Select(x => new
             {
                 User = x.UserName,
-                Customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false).Count(),
+                Customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Count(),
             }).ToList();
             response.data = Customers;
             return response;
