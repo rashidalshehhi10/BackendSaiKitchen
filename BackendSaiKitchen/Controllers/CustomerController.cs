@@ -162,6 +162,9 @@ namespace SaiKitchenBackend.Controllers
                         AddedOn = x.CreatedDate,
                         CustomerAssignedTo = x.CustomerAssignedTo,
                         CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                        CustomerAssignedBy = x.CustomerAssignedBy,
+                        CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                        CustomerAssignedDate = x.CustomerAssignedDate,
                     }).OrderByDescending(i => i.CustomerId).ToList();
             customers.AddRange(customerRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
@@ -184,6 +187,9 @@ namespace SaiKitchenBackend.Controllers
                     CustomerNationalId = x.CustomerNationalId,
                     CustomerAssignedTo = x.CustomerAssignedTo,
                     CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                    CustomerAssignedBy = x.CustomerAssignedBy,
+                    CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                    CustomerAssignedDate = x.CustomerAssignedDate,
                     TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = customers.Count;
@@ -251,6 +257,9 @@ namespace SaiKitchenBackend.Controllers
                         CustomerNationalId = x.CustomerNationalId,
                         CustomerAssignedTo = x.CustomerAssignedTo,
                         CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                        CustomerAssignedBy = x.CustomerAssignedBy,
+                        CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                        CustomerAssignedDate = x.CustomerAssignedDate,
                     }).FirstOrDefault();
             }
             catch (Exception)
@@ -279,6 +288,9 @@ namespace SaiKitchenBackend.Controllers
                         CustomerNationalId = x.CustomerNationalId,
                         CustomerAssignedTo = x.CustomerAssignedTo,
                         CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                        CustomerAssignedBy = x.CustomerAssignedBy,
+                        CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                        CustomerAssignedDate = x.CustomerAssignedDate,
                     }).FirstOrDefault();
             }
 

@@ -37,6 +37,9 @@
         public string AddedOn { get; set; }
         public string CustomerAssignedToName { get; set; }
         public int? CustomerAssignedTo { get; set; }
+        public string CustomerAssignedByName { get; set; }
+        public int? CustomerAssignedBy { get; set; }
+        public string CustomerAssignedDate { get; set; }
 
 
 
