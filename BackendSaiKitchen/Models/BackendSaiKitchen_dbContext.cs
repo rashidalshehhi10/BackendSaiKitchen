@@ -327,6 +327,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
+                entity.Property(e => e.CustomerAssignedDate).HasMaxLength(500);
+
                 entity.Property(e => e.CustomerContact).HasMaxLength(50);
 
                 entity.Property(e => e.CustomerEmail).HasMaxLength(50);
@@ -349,8 +351,18 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.ContactStatusId)
                     .HasConstraintName("FK_Customer_ContactStatus");
 
+                entity.HasOne(d => d.CustomerAssignedByNavigation)
+                    .WithMany(p => p.CustomerCustomerAssignedByNavigations)
+                    .HasForeignKey(d => d.CustomerAssignedBy)
+                    .HasConstraintName("FK_Customer_User2");
+
+                entity.HasOne(d => d.CustomerAssignedToNavigation)
+                    .WithMany(p => p.CustomerCustomerAssignedToNavigations)
+                    .HasForeignKey(d => d.CustomerAssignedTo)
+                    .HasConstraintName("FK_Customer_User1");
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Customers)
+                    .WithMany(p => p.CustomerUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Customer_User");
 

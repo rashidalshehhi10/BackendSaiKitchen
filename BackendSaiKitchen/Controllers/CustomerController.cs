@@ -208,7 +208,7 @@ namespace SaiKitchenBackend.Controllers
             {
                 UserId = x.UserId,
                 User = x.UserName,
-                Customers = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Count(),
+                Customers = x.CustomerUsers.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Count(),
             }).ToList();
             response.data = Customers;
             return response;
@@ -417,6 +417,8 @@ namespace SaiKitchenBackend.Controllers
                     x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (oldCustomer == null)
                 {
+                    customer.CustomerAssignedBy = Constants.userId;
+                    customer.CustomerAssignedDate = Helper.GetDateTime(); 
                     customerRepository.Create(customer);
                     context.SaveChanges();
                     //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
@@ -432,6 +434,8 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
+                customer.CustomerAssignedBy = Constants.userId;
+                customer.CustomerAssignedDate = Helper.GetDateTime();
                 customerRepository.Update(customer);
                 context.SaveChanges();
                 //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });

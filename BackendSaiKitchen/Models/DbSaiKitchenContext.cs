@@ -210,7 +210,7 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_Customer_ContactStatus");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Customers)
+                    .WithMany(p => p.CustomerUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Customer_User");
 

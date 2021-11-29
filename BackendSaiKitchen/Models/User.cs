@@ -11,7 +11,9 @@ namespace BackendSaiKitchen.Models
         {
             CalendarEvents = new HashSet<CalendarEvent>();
             Comments = new HashSet<Comment>();
-            Customers = new HashSet<Customer>();
+            CustomerCustomerAssignedByNavigations = new HashSet<Customer>();
+            CustomerCustomerAssignedToNavigations = new HashSet<Customer>();
+            CustomerUsers = new HashSet<Customer>();
             DesignDesignApprovedByNavigations = new HashSet<Design>();
             DesignDesignTakenByNavigations = new HashSet<Design>();
             InquiryEscalationRequestedByNavigations = new HashSet<Inquiry>();
@@ -45,7 +47,9 @@ namespace BackendSaiKitchen.Models
 
         public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<Customer> CustomerCustomerAssignedByNavigations { get; set; }
+        public virtual ICollection<Customer> CustomerCustomerAssignedToNavigations { get; set; }
+        public virtual ICollection<Customer> CustomerUsers { get; set; }
         public virtual ICollection<Design> DesignDesignApprovedByNavigations { get; set; }
         public virtual ICollection<Design> DesignDesignTakenByNavigations { get; set; }
         public virtual ICollection<Inquiry> InquiryEscalationRequestedByNavigations { get; set; }

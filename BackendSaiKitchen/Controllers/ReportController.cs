@@ -173,13 +173,13 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.Workscope).Include(x =>
                     x.InquiryManagedByNavigations.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(y => y.Customer)
-                .Include(x => x.Customers.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+                .Include(x => x.CustomerUsers.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
             if (user != null)
             {
                 UserReport userReport = new UserReport
                 {
                     reviews = new List<Review>(),
-                    CustomerCount = user.Customers.Count(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate))
+                    CustomerCount = user.CustomerUsers.Count(x => DateTime.Parse(x.CreatedDate) >= DateTime.Parse(req.StartDate))
                 };
                 foreach (Models.Inquiry inquiry in user.InquiryManagedByNavigations)
                 {

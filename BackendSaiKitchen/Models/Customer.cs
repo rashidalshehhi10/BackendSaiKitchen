@@ -36,9 +36,14 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
         public string CustomerWhatsapp { get; set; }
+        public int? CustomerAssignedTo { get; set; }
+        public string CustomerAssignedDate { get; set; }
+        public int? CustomerAssignedBy { get; set; }
 
         public virtual Branch Branch { get; set; }
         public virtual ContactStatus ContactStatus { get; set; }
+        public virtual User CustomerAssignedByNavigation { get; set; }
+        public virtual User CustomerAssignedToNavigation { get; set; }
         public virtual User User { get; set; }
         public virtual WayOfContact WayofContact { get; set; }
         public virtual ICollection<CustomerBranch> CustomerBranches { get; set; }
