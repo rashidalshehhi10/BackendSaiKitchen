@@ -276,7 +276,9 @@ namespace SaiKitchenBackend.Controllers
                         WayofContactId = x.WayofContactId,
                         ContactStatusId = x.ContactStatusId,
                         CustomerAddress = x.CustomerAddress,
-                        CustomerNationalId = x.CustomerNationalId
+                        CustomerNationalId = x.CustomerNationalId,
+                        CustomerAssignedTo = x.CustomerAssignedTo,
+                        CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
                     }).FirstOrDefault();
             }
 
