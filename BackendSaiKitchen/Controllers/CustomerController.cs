@@ -439,7 +439,15 @@ namespace SaiKitchenBackend.Controllers
                 {
                     customer.CustomerAssignedBy = Constants.userId;
                     customer.CustomerAssignedDate = Helper.GetDateTime();
-                    sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+                    try
+                    {
+                        sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(ex.Message);
+                    }
                     customerRepository.Create(customer);
                     context.SaveChanges();
                     //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
@@ -457,7 +465,15 @@ namespace SaiKitchenBackend.Controllers
             {
                 customer.CustomerAssignedBy = Constants.userId;
                 customer.CustomerAssignedDate = Helper.GetDateTime();
-                sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+                try
+                {
+                    sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+
+                }
+                catch (Exception ex)
+                {
+                    Sentry.SentrySdk.CaptureMessage(ex.Message);
+                }
                 customerRepository.Update(customer);
                 context.SaveChanges();
                 //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
