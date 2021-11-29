@@ -160,6 +160,8 @@ namespace SaiKitchenBackend.Controllers
                         CustomerNationalId = x.CustomerNationalId,
                         TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString(),
                         AddedOn = x.CreatedDate,
+                        CustomerAssignedTo = x.CustomerAssignedTo,
+                        CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
                     }).OrderByDescending(i => i.CustomerId).ToList();
             customers.AddRange(customerRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
@@ -180,6 +182,8 @@ namespace SaiKitchenBackend.Controllers
                     ContactStatus = x.ContactStatus.ContactStatusName,
                     CustomerAddress = x.CustomerAddress,
                     CustomerNationalId = x.CustomerNationalId,
+                    CustomerAssignedTo = x.CustomerAssignedTo,
+                    CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
                     TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = customers.Count;
@@ -244,7 +248,9 @@ namespace SaiKitchenBackend.Controllers
                         WayofContactId = x.WayofContactId,
                         ContactStatusId = x.ContactStatusId,
                         CustomerAddress = x.CustomerAddress,
-                        CustomerNationalId = x.CustomerNationalId
+                        CustomerNationalId = x.CustomerNationalId,
+                        CustomerAssignedTo = x.CustomerAssignedTo,
+                        CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
                     }).FirstOrDefault();
             }
             catch (Exception)

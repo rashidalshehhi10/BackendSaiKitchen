@@ -35,6 +35,9 @@
         public int? CustomerWithoutInquiry { get; set; }
         public string? TotalNoOfInquiries { get; set; }
         public string AddedOn { get; set; }
+        public string CustomerAssignedToName { get; set; }
+        public int? CustomerAssignedTo { get; set; }
+
 
 
         public int UserId { get; set; }
