@@ -438,7 +438,8 @@ namespace SaiKitchenBackend.Controllers
                 if (oldCustomer == null)
                 {
                     customer.CustomerAssignedBy = Constants.userId;
-                    customer.CustomerAssignedDate = Helper.GetDateTime(); 
+                    customer.CustomerAssignedDate = Helper.GetDateTime();
+                    sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserEmail + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
                     customerRepository.Create(customer);
                     context.SaveChanges();
                     //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
@@ -456,6 +457,7 @@ namespace SaiKitchenBackend.Controllers
             {
                 customer.CustomerAssignedBy = Constants.userId;
                 customer.CustomerAssignedDate = Helper.GetDateTime();
+                sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserEmail + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
                 customerRepository.Update(customer);
                 context.SaveChanges();
                 //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
