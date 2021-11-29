@@ -49,6 +49,15 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public object GetAuthUser()
+        {
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.IsActive == true && y.IsDeleted == false && y.BranchId == Constants.branchId && y.Branch.IsActive == true && y.Branch.IsDeleted == false && y.BranchRole.IsActive == true && y.BranchRole.IsDeleted == false && y.BranchRole.PermissionRoles.Any(z => z.PermissionLevelId >= (int)permissionLevel.Create) && y.BranchRole.PermissionRoles.Any(z => z.PermissionId ==(int)permission.ManageCustomer))).ToList();
+            response.data = users;
+            return response;
+        }
+
         [AuthFilter((int)permission.ManageUsers, (int)permissionLevel.Read)]
         [HttpGet]
         [Route("[action]")]
