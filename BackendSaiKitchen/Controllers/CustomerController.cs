@@ -299,7 +299,7 @@ namespace SaiKitchenBackend.Controllers
             int? owner = 0;
             int? instagram = 0;
             int? otner = 0;
-            var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId)
+            var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null)
             {
@@ -312,17 +312,17 @@ namespace SaiKitchenBackend.Controllers
                         Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
                 customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
-                direct = customerss.Where(x => x.WayofContactId == 1).Count();
-                 google = customerss.Where(x => x.WayofContactId == 2).Count();
-                 facebook = customerss.Where(x => x.WayofContactId == 3).Count();
-                 linkedin = customerss.Where(x => x.WayofContactId == 4).Count();
-                 twitter = customerss.Where(x => x.WayofContactId == 5).Count();
-                 friends = customerss.Where(x => x.WayofContactId == 6).Count();
-                 website = customerss.Where(x => x.WayofContactId == 7).Count();
-                 mobile = customerss.Where(x => x.WayofContactId == 8).Count();
-                 owner = customerss.Where(x => x.WayofContactId == 9).Count();
-                 instagram = customerss.Where(x => x.WayofContactId == 10).Count();
-                 otner = customerss.Where(x => x.WayofContactId == 11).Count();
+                direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
+                 google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
+                 facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
+                 linkedin = customerss.Where(x => x.WayofContactId == 4 && x.UserId == userId).Count();
+                 twitter = customerss.Where(x => x.WayofContactId == 5 && x.UserId == userId).Count();
+                 friends = customerss.Where(x => x.WayofContactId == 6 && x.UserId == userId).Count();
+                 website = customerss.Where(x => x.WayofContactId == 7 && x.UserId == userId).Count();
+                 mobile = customerss.Where(x => x.WayofContactId == 8 && x.UserId == userId).Count();
+                 owner = customerss.Where(x => x.WayofContactId == 9 && x.UserId == userId).Count();
+                 instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
+                 otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
             }
             else
             {
