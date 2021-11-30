@@ -304,7 +304,7 @@ namespace SaiKitchenBackend.Controllers
             int? otner = 0;
             if (userId != 0 && userId != null)
             {
-                var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.UserId == userId).ToList();
+                var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId).ToList();
                  direct = customerss.Where(x => x.WayofContactId == 1).Count();
                  google = customerss.Where(x => x.WayofContactId == 2).Count();
                  facebook = customerss.Where(x => x.WayofContactId == 3).Count();
