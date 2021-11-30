@@ -91,7 +91,7 @@ namespace SaiKitchenBackend.Controllers
         //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
-        public object GetCustomerOfBranch(int userId)
+        public object GetCustomerOfBranch(int userId, int filter)
         {
             var type = typeof(Customer);
             var parameterExprission = Expression.Parameter(typeof(Customer), "x");
@@ -129,6 +129,97 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant(userId,typeof(int?));
                 var experssion1 = Expression.Equal(property1, constant);
                 expression = Expression.And(expression, experssion1);
+            }
+            if (filter == 2)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant(contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(_experssion2, experssion1);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
+            }
+            else if (filter == 3)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant(contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+            }
+            else if (filter == 4)
+            {
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(_experssion2, experssion1);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter >= 5)
+            {
+
+                var _property1 = Expression.Property(parameterExprission, "WayOfContactId");
+                switch (filter)
+                {
+                    case 5:
+                        constant = Expression.Constant(1, typeof(int?));
+                        break;
+                    case 6:
+                        constant = Expression.Constant(2, typeof(int?));
+                        break;
+                    case 7:
+                        constant = Expression.Constant(3, typeof(int?));
+                        break;
+                    case 8:
+                        constant = Expression.Constant(4, typeof(int?));
+                        break;
+                    case 9:
+                        constant = Expression.Constant(5, typeof(int?));
+                        break;
+                    case 10:
+                        constant = Expression.Constant(6, typeof(int?));
+                        break;
+                    case 11:
+                        constant = Expression.Constant(7, typeof(int?));
+                        break;
+                    case 12:
+                        constant = Expression.Constant(8, typeof(int?));
+                        break;
+                    case 13:
+                        constant = Expression.Constant(9, typeof(int?));
+                        break;
+                    case 14:
+                        constant = Expression.Constant(10, typeof(int?));
+                        break;
+                    default :
+                        constant = Expression.Constant(11, typeof(int?));
+                        break;
+                }
+
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
             }
             var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
 
@@ -199,6 +290,17 @@ namespace SaiKitchenBackend.Controllers
                 (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                     Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
             int? customerWithoutInquiry = customers.Where(x => x.TotalNoOfInquiries == "No Inquiries").Count();
+            int? direct = customers.Where(x => x.WayofContactId == 1).Count();
+            int? google = customers.Where(x => x.WayofContactId == 2).Count();
+            int? facebook = customers.Where(x => x.WayofContactId == 3).Count();
+            int? linkedin = customers.Where(x => x.WayofContactId == 4).Count();
+            int? twitter = customers.Where(x => x.WayofContactId == 5).Count();
+            int? friends = customers.Where(x => x.WayofContactId == 6).Count();
+            int? website = customers.Where(x => x.WayofContactId == 7).Count();
+            int? mobile = customers.Where(x => x.WayofContactId == 8).Count();
+            int? owner = customers.Where(x => x.WayofContactId == 9).Count();
+            int? instagram = customers.Where(x => x.WayofContactId == 10).Count();
+            int? otner = customers.Where(x => x.WayofContactId == 11).Count();
 
             customers.ForEach(x =>
             {
@@ -206,6 +308,17 @@ namespace SaiKitchenBackend.Controllers
                 x.ContactedCustomers = contacted;
                 x.NeedToContactCustomers = needToContact;
                 x.CustomerWithoutInquiry = customerWithoutInquiry;
+                x.Direct = direct;
+                x.Google = google;
+                x.FaceBook = facebook;
+                x.Linkedin = linkedin;
+                x.Twitter = twitter;
+                x.Friends = friends;
+                x.Website = website;
+                x.MobileApp = mobile;
+                x.OwnerReference = owner;
+                x.Instagram = instagram;
+                x.Other = otner;
             });
             return customers;
         }

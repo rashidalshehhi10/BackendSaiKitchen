@@ -33,6 +33,17 @@
         public int? ContactedCustomers { get; set; }
         public int? NeedToContactCustomers { get; set; }
         public int? CustomerWithoutInquiry { get; set; }
+        public int? Direct { get; set; }
+        public int? Google { get; set; }
+        public int? FaceBook { get; set; }
+        public int? Linkedin { get; set; }
+        public int? Twitter { get; set; }
+        public int? Friends { get; set; }
+        public int? Website { get; set; }
+        public int? MobileApp { get; set; }
+        public int? OwnerReference { get; set; }
+        public int? Instagram { get; set; }
+        public int? Other { get; set; }
         public string? TotalNoOfInquiries { get; set; }
         public string AddedOn { get; set; }
         public string CustomerAssignedToName { get; set; }
