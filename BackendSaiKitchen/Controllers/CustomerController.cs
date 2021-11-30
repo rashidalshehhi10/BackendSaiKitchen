@@ -289,7 +289,7 @@ namespace SaiKitchenBackend.Controllers
                 x.ContactStatusId == 2 &&
                 (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                     Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
-            int? customerWithoutInquiry = customers.Where(x => x.TotalNoOfInquiries == "No Inquiries").Count();
+            int? customerWithoutInquiry = customers.Where(x =>x.ContactStatusId == 1 && x.TotalNoOfInquiries == "No Inquiries").Count();
             int? direct = customers.Where(x => x.WayofContactId == 1).Count();
             int? google = customers.Where(x => x.WayofContactId == 2).Count();
             int? facebook = customers.Where(x => x.WayofContactId == 3).Count();
