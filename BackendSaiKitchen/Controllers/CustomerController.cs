@@ -334,17 +334,17 @@ namespace SaiKitchenBackend.Controllers
                         Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
                 customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
-                direct = customers.Where(x => x.WayofContactId == 1).Count();
-                google = customers.Where(x => x.WayofContactId == 2).Count();
-                facebook = customers.Where(x => x.WayofContactId == 3).Count();
-                linkedin = customers.Where(x => x.WayofContactId == 4).Count();
-                twitter = customers.Where(x => x.WayofContactId == 5).Count();
-                friends = customers.Where(x => x.WayofContactId == 6).Count();
-                website = customers.Where(x => x.WayofContactId == 7).Count();
-                mobile = customers.Where(x => x.WayofContactId == 8).Count();
-                owner = customers.Where(x => x.WayofContactId == 9).Count();
-                instagram = customers.Where(x => x.WayofContactId == 10).Count();
-                otner = customers.Where(x => x.WayofContactId == 11).Count();
+                direct = customerss.Where(x => x.WayofContactId == 1).Count();
+                google = customerss.Where(x => x.WayofContactId == 2).Count();
+                facebook = customerss.Where(x => x.WayofContactId == 3).Count();
+                linkedin = customerss.Where(x => x.WayofContactId == 4).Count();
+                twitter = customerss.Where(x => x.WayofContactId == 5).Count();
+                friends = customerss.Where(x => x.WayofContactId == 6).Count();
+                website = customerss.Where(x => x.WayofContactId == 7).Count();
+                mobile = customerss.Where(x => x.WayofContactId == 8).Count();
+                owner = customerss.Where(x => x.WayofContactId == 9).Count();
+                instagram = customerss.Where(x => x.WayofContactId == 10).Count();
+                otner = customerss.Where(x => x.WayofContactId == 11).Count();
             }
             
 
