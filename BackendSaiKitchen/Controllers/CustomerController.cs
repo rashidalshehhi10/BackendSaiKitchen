@@ -455,7 +455,8 @@ namespace SaiKitchenBackend.Controllers
                     CustomerNotes = customer.CustomerNotes,
                     CustomerEmail = customer.CustomerEmail,
                     WayofContactId = customer.WayofContactId,
-                    ContactStatusId = customer.ContactStatusId
+                    ContactStatusId = customer.ContactStatusId,
+                    CreatedDate = Helper.GetDateTime(),
                 });
 
                 if (customer.CustomerEmail != null)
@@ -552,6 +553,8 @@ namespace SaiKitchenBackend.Controllers
                 {
                     customer.CustomerAssignedBy = Constants.userId;
                     customer.CustomerAssignedDate = Helper.GetDateTime();
+                    customer.CreatedDate = Helper.GetDateTime();
+                    customer.CreatedBy = Constants.userId;
                     try
                     {
                         sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
@@ -578,6 +581,8 @@ namespace SaiKitchenBackend.Controllers
             {
                 customer.CustomerAssignedBy = Constants.userId;
                 customer.CustomerAssignedDate = Helper.GetDateTime();
+                customer.UpdatedDate = Helper.GetDateTime();
+                customer.UpdatedBy = Constants.userId;
                 try
                 {
                     sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
