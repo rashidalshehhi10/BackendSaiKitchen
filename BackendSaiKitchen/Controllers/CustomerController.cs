@@ -555,9 +555,10 @@ namespace SaiKitchenBackend.Controllers
                     customer.CustomerAssignedDate = Helper.GetDateTime();
                     customer.CreatedDate = Helper.GetDateTime();
                     customer.CreatedBy = Constants.userId;
+                    string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
                     try
                     {
-                        sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+                        sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + user + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
 
                     }
                     catch (Exception ex)
@@ -583,9 +584,10 @@ namespace SaiKitchenBackend.Controllers
                 customer.CustomerAssignedDate = Helper.GetDateTime();
                 customer.UpdatedDate = Helper.GetDateTime();
                 customer.UpdatedBy = Constants.userId;
+                string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
                 try
                 {
-                    sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + customer.CustomerAssignedByNavigation.UserName + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
+                    sendNotificationToOneUser("You are assigned to manage (" + customer.CustomerName + ") By (" + user + ")", false, null, null, (int)customer.CustomerAssignedTo, Constants.branchId, (int)notificationCategory.Other);
 
                 }
                 catch (Exception ex)
