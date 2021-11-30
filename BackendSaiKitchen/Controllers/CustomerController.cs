@@ -304,14 +304,14 @@ namespace SaiKitchenBackend.Controllers
             if (userId != 0 && userId != null)
             {
                 
-                total = customerss.Count;
-                contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
+                total = customerss.Where(x => x.UserId == userId).Count();
+                contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
                 needToContact = customerss.Where(x =>
                     x.ContactStatusId == 2 &&
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
-                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
-                customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false && x.UserId == userId).Count();
+                customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
                  google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
                  facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
