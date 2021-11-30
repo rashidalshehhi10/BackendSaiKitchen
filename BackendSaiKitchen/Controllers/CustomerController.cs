@@ -299,10 +299,11 @@ namespace SaiKitchenBackend.Controllers
             int? owner = 0;
             int? instagram = 0;
             int? otner = 0;
+            var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId)
+                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null)
             {
-                var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId)
-                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
+                
                 total = customerss.Count;
                 contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
                 needToContact = customerss.Where(x =>
@@ -325,14 +326,14 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                total = customers.Count;
-                contacted = customers.Where(x => x.ContactStatusId == 1).Count();
-                needToContact = customers.Where(x =>
+                total = customerss.Count;
+                contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
+                needToContact = customerss.Where(x =>
                     x.ContactStatusId == 2 &&
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                         Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
-                customerWithoutInquiry = customers.Where(x => x.ContactStatusId == 1 && x.TotalNoOfInquiries == "No Inquiries").Count();
-                customerWithInquiry = customers.Where(x => x.TotalNoOfInquiries != "No Inquiries").Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
+                customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
                 direct = customers.Where(x => x.WayofContactId == 1).Count();
                 google = customers.Where(x => x.WayofContactId == 2).Count();
                 facebook = customers.Where(x => x.WayofContactId == 3).Count();
