@@ -283,14 +283,11 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAssignedDate = x.CustomerAssignedDate,
                     TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
                 }).OrderByDescending(i => i.CustomerId).ToList());
-            int? total = customers.Count;
-            int? contacted = customers.Where(x => x.ContactStatusId == 1).Count();
-            int? needToContact = customers.Where(x =>
-                x.ContactStatusId == 2 &&
-                (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                    Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
-            int? customerWithoutInquiry = customers.Where(x =>x.ContactStatusId == 1 && x.TotalNoOfInquiries == "No Inquiries").Count();
-            int? customerWithInquiry = customers.Where(x => x.TotalNoOfInquiries != "No Inquiries").Count();
+            int? total = 0;
+            int? contacted = 0;
+            int? needToContact = 0;
+            int? customerWithoutInquiry = 0;
+            int? customerWithInquiry = 0;
             int? direct = 0;
             int? google = 0;
             int? facebook = 0;
@@ -304,8 +301,17 @@ namespace SaiKitchenBackend.Controllers
             int? otner = 0;
             if (userId != 0 && userId != null)
             {
-                var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId).ToList();
-                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
+                var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false && x.UserId == userId)
+                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
+                total = customerss.Count;
+                contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
+                needToContact = customerss.Where(x =>
+                    x.ContactStatusId == 2 &&
+                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
+                customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
+                direct = customerss.Where(x => x.WayofContactId == 1).Count();
                  google = customerss.Where(x => x.WayofContactId == 2).Count();
                  facebook = customerss.Where(x => x.WayofContactId == 3).Count();
                  linkedin = customerss.Where(x => x.WayofContactId == 4).Count();
@@ -319,6 +325,14 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
+                total = customers.Count;
+                contacted = customers.Where(x => x.ContactStatusId == 1).Count();
+                needToContact = customers.Where(x =>
+                    x.ContactStatusId == 2 &&
+                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
+                customerWithoutInquiry = customers.Where(x => x.ContactStatusId == 1 && x.TotalNoOfInquiries == "No Inquiries").Count();
+                customerWithInquiry = customers.Where(x => x.TotalNoOfInquiries != "No Inquiries").Count();
                 direct = customers.Where(x => x.WayofContactId == 1).Count();
                 google = customers.Where(x => x.WayofContactId == 2).Count();
                 facebook = customers.Where(x => x.WayofContactId == 3).Count();
