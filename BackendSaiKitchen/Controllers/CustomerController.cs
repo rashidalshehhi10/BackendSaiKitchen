@@ -290,6 +290,7 @@ namespace SaiKitchenBackend.Controllers
                 (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                     Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
             int? customerWithoutInquiry = customers.Where(x =>x.ContactStatusId == 1 && x.TotalNoOfInquiries == "No Inquiries").Count();
+            int? customerWithInquiry = customers.Where(x => x.TotalNoOfInquiries != "No Inquiries").Count();
             int? direct = 0;
             int? google = 0;
             int? facebook = 0;
@@ -301,7 +302,7 @@ namespace SaiKitchenBackend.Controllers
             int? owner = 0;
             int? instagram = 0;
             int? otner = 0;
-            if (userId != 0)
+            if (userId != 0 && userId != null)
             {
                 var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.UserId == userId).ToList();
                  direct = customerss.Where(x => x.WayofContactId == 1).Count();
