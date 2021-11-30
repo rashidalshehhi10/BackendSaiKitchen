@@ -365,6 +365,7 @@ namespace SaiKitchenBackend.Controllers
                 x.OwnerReference = owner;
                 x.Instagram = instagram;
                 x.Other = otner;
+                x.CustomerWithInquiry = customerWithInquiry;
             });
             return customers;
         }
