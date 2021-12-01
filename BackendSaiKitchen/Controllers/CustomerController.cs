@@ -5,6 +5,7 @@ using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -380,6 +381,31 @@ namespace SaiKitchenBackend.Controllers
                 User = x.UserName,
                 Customers = x.CustomerUsers.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Count(),
             }).ToList();
+            response.data = Customers;
+            return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public object GetCustomerbyAssigned()
+        {
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == Constants.branchId)).Select(x => new
+            {
+                UserId = x.UserId,
+                User = x.UserName,
+            }).ToList();
+            List<object> Customers = new List<object>();
+            foreach (var user in users)
+            {
+                var customer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.CustomerAssignedTo == user.UserId).Count();
+                Customers.Add(new
+                {
+                    UserId = user.UserId,
+                    User = user.User,
+                    customers = customer
+                });
+            }
+
             response.data = Customers;
             return response;
         }
