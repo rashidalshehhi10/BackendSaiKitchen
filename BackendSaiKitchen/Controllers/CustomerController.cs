@@ -126,10 +126,21 @@ namespace SaiKitchenBackend.Controllers
             expression = Expression.And(expression, __experssion);
             if (userId != 0 && userId != null)
             {
-                var property1 = Expression.Property(parameterExprission, "UserId");
-                constant = Expression.Constant(userId,typeof(int?));
-                var experssion1 = Expression.Equal(property1, constant);
-                expression = Expression.And(expression, experssion1);
+                if (filter == 12)
+                {
+                    var property1 = Expression.Property(parameterExprission, "CustomerAssignedTo");
+                    constant = Expression.Constant(userId, typeof(int?));
+                    var experssion1 = Expression.Equal(property1, constant);
+                    expression = Expression.And(expression, experssion1);
+                }
+                else
+                {
+                    var property1 = Expression.Property(parameterExprission, "UserId");
+                    constant = Expression.Constant(userId, typeof(int?));
+                    var experssion1 = Expression.Equal(property1, constant);
+                    expression = Expression.And(expression, experssion1);
+                }
+                
             }
             if (filter == 2)
             {
@@ -304,26 +315,51 @@ namespace SaiKitchenBackend.Controllers
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null)
             {
+                if (filter == 12)
+                {
+                    total = customerss.Where(x => x.CustomerAssignedTo == userId).Count();
+                    contacted = customerss.Where(x => x.ContactStatusId == 1 && x.CustomerAssignedTo == userId).Count();
+                    needToContact = customerss.Where(x =>
+                        x.ContactStatusId == 2 &&
+                        (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.CustomerAssignedTo == userId).Count();
+                    customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false && x.CustomerAssignedTo == userId).Count();
+                    customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.CustomerAssignedTo == userId).Count();
+                    direct = customerss.Where(x => x.WayofContactId == 1 && x.CustomerAssignedTo == userId).Count();
+                    google = customerss.Where(x => x.WayofContactId == 2 && x.CustomerAssignedTo == userId).Count();
+                    facebook = customerss.Where(x => x.WayofContactId == 3 && x.CustomerAssignedTo == userId).Count();
+                    linkedin = customerss.Where(x => x.WayofContactId == 4 && x.CustomerAssignedTo == userId).Count();
+                    twitter = customerss.Where(x => x.WayofContactId == 5 && x.CustomerAssignedTo == userId).Count();
+                    friends = customerss.Where(x => x.WayofContactId == 6 && x.CustomerAssignedTo == userId).Count();
+                    website = customerss.Where(x => x.WayofContactId == 7 && x.CustomerAssignedTo == userId).Count();
+                    mobile = customerss.Where(x => x.WayofContactId == 8 && x.CustomerAssignedTo == userId).Count();
+                    owner = customerss.Where(x => x.WayofContactId == 9 && x.CustomerAssignedTo == userId).Count();
+                    instagram = customerss.Where(x => x.WayofContactId == 10 && x.CustomerAssignedTo == userId).Count();
+                    otner = customerss.Where(x => x.WayofContactId == 11 && x.CustomerAssignedTo == userId).Count();
+                }
+                else
+                {
+                    total = customerss.Where(x => x.UserId == userId).Count();
+                    contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
+                    needToContact = customerss.Where(x =>
+                        x.ContactStatusId == 2 &&
+                        (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
+                    customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false && x.UserId == userId).Count();
+                    customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
+                    direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
+                    google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
+                    facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
+                    linkedin = customerss.Where(x => x.WayofContactId == 4 && x.UserId == userId).Count();
+                    twitter = customerss.Where(x => x.WayofContactId == 5 && x.UserId == userId).Count();
+                    friends = customerss.Where(x => x.WayofContactId == 6 && x.UserId == userId).Count();
+                    website = customerss.Where(x => x.WayofContactId == 7 && x.UserId == userId).Count();
+                    mobile = customerss.Where(x => x.WayofContactId == 8 && x.UserId == userId).Count();
+                    owner = customerss.Where(x => x.WayofContactId == 9 && x.UserId == userId).Count();
+                    instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
+                    otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
+                }
                 
-                total = customerss.Where(x => x.UserId == userId).Count();
-                contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
-                needToContact = customerss.Where(x =>
-                    x.ContactStatusId == 2 &&
-                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
-                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false && x.UserId == userId).Count();
-                customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
-                direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
-                 google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
-                 facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
-                 linkedin = customerss.Where(x => x.WayofContactId == 4 && x.UserId == userId).Count();
-                 twitter = customerss.Where(x => x.WayofContactId == 5 && x.UserId == userId).Count();
-                 friends = customerss.Where(x => x.WayofContactId == 6 && x.UserId == userId).Count();
-                 website = customerss.Where(x => x.WayofContactId == 7 && x.UserId == userId).Count();
-                 mobile = customerss.Where(x => x.WayofContactId == 8 && x.UserId == userId).Count();
-                 owner = customerss.Where(x => x.WayofContactId == 9 && x.UserId == userId).Count();
-                 instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
-                 otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
             }
             else
             {
