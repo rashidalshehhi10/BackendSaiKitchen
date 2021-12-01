@@ -126,7 +126,7 @@ namespace SaiKitchenBackend.Controllers
             expression = Expression.And(expression, __experssion);
             if (userId != 0 && userId != null)
             {
-                if (filter == 12)
+                if (filter == 16)
                 {
                     var property1 = Expression.Property(parameterExprission, "CustomerAssignedTo");
                     constant = Expression.Constant(userId, typeof(int?));
@@ -189,7 +189,7 @@ namespace SaiKitchenBackend.Controllers
                     Expression.Property(parameterExprission, "Inquiries"), _lambda);
                 expression = Expression.And(expression, body);
             }
-            else if (filter >= 5 && filter != 12)
+            else if (filter >= 5 && filter != 16)
             {
 
                 var _property1 = Expression.Property(parameterExprission, "WayOfContactId");
@@ -313,7 +313,7 @@ namespace SaiKitchenBackend.Controllers
             int? otner = 0;
             var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
-            if (userId != 0 && userId != null && filter != 12)
+            if (userId != 0 && userId != null && filter != 16)
             {
                     total = customerss.Where(x => x.UserId == userId).Count();
                     contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
