@@ -189,7 +189,7 @@ namespace SaiKitchenBackend.Controllers
                     Expression.Property(parameterExprission, "Inquiries"), _lambda);
                 expression = Expression.And(expression, body);
             }
-            else if (filter >= 5)
+            else if (filter >= 5 && filter != 12)
             {
 
                 var _property1 = Expression.Property(parameterExprission, "WayOfContactId");
