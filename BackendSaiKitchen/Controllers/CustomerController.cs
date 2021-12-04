@@ -155,7 +155,7 @@ namespace SaiKitchenBackend.Controllers
                 var _property2 = Expression.Property(_parameter, "IsDeleted");
                 constant = Expression.Constant(false, typeof(bool?));
                 var _experssion2 = Expression.Equal(_property2, constant);
-                experssion1 = Expression.And(_experssion2, experssion1);
+                experssion1 = Expression.And(experssion1, _experssion2);
                 var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
                 var body = Expression.Call(typeof(Enumerable),
                     nameof(Enumerable.Any),
@@ -171,6 +171,22 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
             }
             else if (filter == 4)
             {
@@ -261,7 +277,7 @@ namespace SaiKitchenBackend.Controllers
                         ContactStatus = x.ContactStatus.ContactStatusName,
                         CustomerAddress = x.CustomerAddress,
                         CustomerNationalId = x.CustomerNationalId,
-                        TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString(),
+                        TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                         AddedOn = x.CreatedDate,
                         CustomerAssignedTo = x.CustomerAssignedTo,
                         CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
@@ -293,7 +309,7 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAssignedBy = x.CustomerAssignedBy,
                     CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
                     CustomerAssignedDate = x.CustomerAssignedDate,
-                    TotalNoOfInquiries = x.Inquiries.Count == 0 ? "No Inquiries" : x.Inquiries.Count.ToString()
+                    TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = 0;
             int? contacted = 0;
@@ -320,8 +336,8 @@ namespace SaiKitchenBackend.Controllers
                     needToContact = customerss.Where(x =>
                         x.ContactStatusId == 2 &&
                         (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
-                    customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false && x.UserId == userId).Count();
+                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) && x.UserId == userId).Count();
+                    customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
                     customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
                     direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
                     google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
@@ -342,8 +358,8 @@ namespace SaiKitchenBackend.Controllers
                 needToContact = customerss.Where(x =>
                     x.ContactStatusId == 2 &&
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
-                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any() == false).Count();
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false)).Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
                 customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
                 google = customerss.Where(x => x.WayofContactId == 2).Count();
