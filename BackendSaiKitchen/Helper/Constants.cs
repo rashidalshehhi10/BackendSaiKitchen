@@ -52,7 +52,8 @@
     public enum contactStatus
     {
         Contacted = 1,
-        NeedToContact = 2
+        NeedToContact = 2,
+        NeedToFollowUp = 3,
     }
 
     public enum eventType
