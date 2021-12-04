@@ -336,7 +336,7 @@ namespace SaiKitchenBackend.Controllers
                     needToContact = customerss.Where(x =>
                         x.ContactStatusId == 2 &&
                         (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) && x.UserId == userId).Count();
+                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
                     customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
                     customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
                     direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
@@ -358,7 +358,7 @@ namespace SaiKitchenBackend.Controllers
                 needToContact = customerss.Where(x =>
                     x.ContactStatusId == 2 &&
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false)).Count();
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
                 customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
