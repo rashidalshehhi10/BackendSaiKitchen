@@ -720,6 +720,15 @@ namespace SaiKitchenBackend.Controllers
             return tableResponse;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public object GetInquiriesByCustomerId(int customerId)
+        {
+            var inquiries = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == customerId).ToList();
+            response.data = inquiries;
+            return response;
+        }
+
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
