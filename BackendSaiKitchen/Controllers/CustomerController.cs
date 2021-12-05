@@ -679,7 +679,7 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                var oldCustomer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == customer.CustomerId).FirstOrDefault();
+                Customer oldCustomer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == customer.CustomerId).FirstOrDefault();
                 oldCustomer.CustomerName = customer.CustomerName;
                 oldCustomer.CustomerContact = customer.CustomerContact;
                 oldCustomer.CustomerEmail = customer.CustomerEmail;
@@ -691,7 +691,6 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
                 oldCustomer.ContactStatusId = customer.ContactStatusId;
                 oldCustomer.WayofContactId = customer.WayofContactId;
-                oldCustomer.BranchId = customer.BranchId;
                 oldCustomer.UserId = customer.UserId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
                 oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
@@ -709,7 +708,7 @@ namespace SaiKitchenBackend.Controllers
                 {
                     Sentry.SentrySdk.CaptureMessage(ex.Message);
                 }
-                customerRepository.Update(customer);
+                customerRepository.Update(oldCustomer);
                 context.SaveChanges();
                 //await mailService.SendWelcomeEmailAsync(new PasswordRequest() { ToEmail = user.UserEmail, UserName = user.UserName, Link = Constants.CRMBaseUrl + "/setpassword.html?userId=" + Helper.EnryptString(user.UserId.ToString()) });
                 //await SendWelcomeMail(new WelcomeRequest() { ToEmail = user.UserEmail, UserName = user.UserName });
