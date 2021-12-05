@@ -116,7 +116,9 @@ namespace BackendSaiKitchen.CustomModel
     public class AddComment
     {
         public int inquiryId { get; set; }
+        public int contactStatusId { get; set; }
         public string comment { get; set; }
+        public string Date { get; set; }
     }
 
     public class ChangeManaged

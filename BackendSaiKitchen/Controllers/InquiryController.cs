@@ -404,6 +404,51 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+
+        [HttpPost]
+        [Route("[action]")]
+        public object NeedToFollowUpComment(AddComment comment)
+        {
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == comment.inquiryId).Include(x => x.Customer).FirstOrDefault();
+            if (inquiry != null)
+            {
+                if (comment.comment != string.Empty || comment.comment != null)
+                {
+                    inquiry.Customer.ContactStatusId = comment.contactStatusId;
+                    inquiry.Customer.CustomerNextMeetingDate = comment.Date;
+                    inquiry.Customer.CustomerNotes = comment.comment;
+                    inquiry.InquiryComment = comment.comment;
+                    inquiry.InquiryCommentsAddedOn = Helper.GetDateTime();
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = comment.comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                    inquiryRepository.Update(inquiry);
+                    context.SaveChanges();
+                    response.data = "Comment Added Successfully";
+                }
+                else
+                {
+                    response.isError = true;
+                    response.errorMessage = "Please Enter The Comment";
+                }
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "inquiry Not Found";
+            }
+            
+            return response;
+        }
         [HttpPost]
         [Route("[action]")]
         public async Task<object> EscalatedInquiries(int branchId, [FromForm] int? draw, [FromForm] int? start, [FromForm] int? length, [FromForm(Name = "columns[0][search][value]")] int? inquiryId, [FromForm(Name = "columns[1][search][value]")] string inquiryCode, [FromForm(Name = "columns[2][search][value]")] int? status, [FromForm(Name = "columns[3][search][value]")] string customerName, [FromForm(Name = "columns[4][search][value]")] string workscopeNames, [FromForm(Name = "columns[6][search][value]")] string measurementScheduleDate, [FromForm(Name = "columns[7][search][value]")] int? measurementAssignTo, [FromForm(Name = "columns[8][search][value]")] string? designScheduleDate, [FromForm(Name = "columns[9][search][value]")] int? designAssignTo, [FromForm(Name = "columns[12][search][value]")] string customerCode, [FromForm(Name = "columns[13][search][value]")] string customerContact, [FromForm(Name = "columns[15][search][value]")] string buildingAddress, [FromForm(Name = "columns[25][search][value]")] int? HandledBy)
