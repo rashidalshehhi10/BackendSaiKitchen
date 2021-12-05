@@ -62,6 +62,7 @@ namespace BackendSaiKitchen.CustomModel
         public int ContactStatusId { get; set; }
         public string ContactStatus { get; set; }
 
+
         public string QuotationAddedOn { get; set; }
         public List<Payment> payments { get; set; }
         //public List<InquiryWorkscope> InquiryWorkscopes { get; set; }

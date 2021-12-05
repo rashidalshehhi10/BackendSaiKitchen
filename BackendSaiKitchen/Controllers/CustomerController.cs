@@ -631,7 +631,7 @@ namespace SaiKitchenBackend.Controllers
         }
 
 
-        [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
+        //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
         public object AddCustomer(Customer customer)
@@ -679,10 +679,26 @@ namespace SaiKitchenBackend.Controllers
             }
             else
             {
-                customer.CustomerAssignedBy = Constants.userId;
-                customer.CustomerAssignedDate = Helper.GetDateTime();
-                customer.UpdatedDate = Helper.GetDateTime();
-                customer.UpdatedBy = Constants.userId;
+                var oldCustomer = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CustomerId == customer.CustomerId).FirstOrDefault();
+                oldCustomer.CustomerName = customer.CustomerName;
+                oldCustomer.CustomerContact = customer.CustomerContact;
+                oldCustomer.CustomerEmail = customer.CustomerEmail;
+                oldCustomer.CustomerCity = customer.CustomerCity;
+                oldCustomer.CustomerNotes = customer.CustomerNotes;
+                oldCustomer.CustomerCountry = customer.CustomerCountry;
+                oldCustomer.CustomerNationality = customer.CustomerNationality;
+                oldCustomer.CustomerNationalId = customer.CustomerNationalId;
+                oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
+                oldCustomer.ContactStatusId = customer.ContactStatusId;
+                oldCustomer.WayofContactId = customer.WayofContactId;
+                oldCustomer.BranchId = customer.BranchId;
+                oldCustomer.UserId = customer.UserId;
+                oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
+                oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
+                oldCustomer.CustomerAssignedBy = Constants.userId;
+                oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
+                oldCustomer.UpdatedDate = Helper.GetDateTime();
+                oldCustomer.UpdatedBy = Constants.userId;
                 string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
                 try
                 {
