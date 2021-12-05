@@ -982,7 +982,11 @@ namespace SaiKitchenBackend.Controllers
                     QuotationAddedOn = x.QuotationAddedOn,
                     QuotationScheduleDate = x.QuotationScheduleDate,
                     FactorName = x.JobOrders.FirstOrDefault().Factory.BranchName,
-                    payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).ToList()
+                    payments = x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.IsAmountRecieved != true && (x.PaymentStatusId != (int)paymentstatus.InstallmentApproved || x.PaymentStatusId != (int)paymentstatus.PaymentApproved) && x.PaymentModeId == (int)paymentMode.Cheque).ToList(),
+                    NextMeetingDate = x.Customer.CustomerNextMeetingDate,
+                    CustomerNotes = x.Customer.CustomerNotes,
+                    ContactStatusId =(int)x.Customer.ContactStatusId,
+                    ContactStatus = x.Customer.ContactStatus.ContactStatusName,
                 }).OrderByDescending(x => x.InquiryId).Skip((int)start).Take((int)length)
                 .ToListAsync();
             tableResponse.data = inquiries;

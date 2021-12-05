@@ -57,6 +57,10 @@ namespace BackendSaiKitchen.CustomModel
         public string DesignAddedOn { get; set; }
         public string ManagedBy{ get; set; }
         public int? ManagedById { get; set; }
+        public string NextMeetingDate { get; set; }
+        public string CustomerNotes { get; set; }
+        public int ContactStatusId { get; set; }
+        public string ContactStatus { get; set; }
 
         public string QuotationAddedOn { get; set; }
         public List<Payment> payments { get; set; }
