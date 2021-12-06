@@ -171,25 +171,31 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
-                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
-                Expression property1 = Expression.Property(_parameter, "IsActive");
-                constant = Expression.Constant(true, typeof(bool?));
-                var experssion1 = Expression.Equal(property1, constant);
-                var _property2 = Expression.Property(_parameter, "IsDeleted");
-                constant = Expression.Constant(false, typeof(bool?));
-                var _experssion2 = Expression.Equal(_property2, constant);
-                experssion1 = Expression.And(experssion1, _experssion2);
-                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
-                var body = Expression.Call(typeof(Enumerable),
-                    nameof(Enumerable.Any),
-                    new Type[] { typeof(Inquiry) },
-                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
-                constant = Expression.Constant(false, typeof(bool));
-                var ex = Expression.Equal(body, constant);
-                expression = Expression.And(expression, ex);
+                //var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                //Expression property1 = Expression.Property(_parameter, "IsActive");
+                //constant = Expression.Constant(true, typeof(bool?));
+                //var experssion1 = Expression.Equal(property1, constant);
+                //var _property2 = Expression.Property(_parameter, "IsDeleted");
+                //constant = Expression.Constant(false, typeof(bool?));
+                //var _experssion2 = Expression.Equal(_property2, constant);
+                //experssion1 = Expression.And(experssion1, _experssion2);
+                //var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                //var body = Expression.Call(typeof(Enumerable),
+                //    nameof(Enumerable.Any),
+                //    new Type[] { typeof(Inquiry) },
+                //    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                //constant = Expression.Constant(false, typeof(bool));
+                //var ex = Expression.Equal(body, constant);
+                //expression = Expression.And(expression, ex);
             }
             else if (filter == 4)
             {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+
                 var _parameter = Expression.Parameter(typeof(Inquiry), "y");
                 Expression property1 = Expression.Property(_parameter, "IsActive");
                 constant = Expression.Constant(true, typeof(bool?));
@@ -204,6 +210,14 @@ namespace SaiKitchenBackend.Controllers
                     new Type[] { typeof(Inquiry) },
                     Expression.Property(parameterExprission, "Inquiries"), _lambda);
                 expression = Expression.And(expression, body);
+            }
+            else if(filter == 17)
+            {
+
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
             }
             else if (filter >= 5 && filter != 16)
             {
