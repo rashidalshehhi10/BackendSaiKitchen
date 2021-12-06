@@ -341,29 +341,31 @@ namespace SaiKitchenBackend.Controllers
             int? owner = 0;
             int? instagram = 0;
             int? otner = 0;
+            int? needTofollow = 0;
             var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null && filter != 16)
             {
-                    total = customerss.Where(x => x.UserId == userId).Count();
-                    contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
-                    needToContact = customerss.Where(x =>
-                        x.ContactStatusId == 2 &&
-                        (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
-                    customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
-                    customerWithInquiry = customerss.Where(x => x.Inquiries.Any() && x.UserId == userId).Count();
-                    direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
-                    google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
-                    facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
-                    linkedin = customerss.Where(x => x.WayofContactId == 4 && x.UserId == userId).Count();
-                    twitter = customerss.Where(x => x.WayofContactId == 5 && x.UserId == userId).Count();
-                    friends = customerss.Where(x => x.WayofContactId == 6 && x.UserId == userId).Count();
-                    website = customerss.Where(x => x.WayofContactId == 7 && x.UserId == userId).Count();
-                    mobile = customerss.Where(x => x.WayofContactId == 8 && x.UserId == userId).Count();
-                    owner = customerss.Where(x => x.WayofContactId == 9 && x.UserId == userId).Count();
-                    instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
-                    otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
+                total = customerss.Where(x => x.UserId == userId).Count();
+                contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
+                needToContact = customerss.Where(x =>
+                    x.ContactStatusId == 2 &&
+                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
+                customerWithInquiry = customerss.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
+                google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
+                facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
+                linkedin = customerss.Where(x => x.WayofContactId == 4 && x.UserId == userId).Count();
+                twitter = customerss.Where(x => x.WayofContactId == 5 && x.UserId == userId).Count();
+                friends = customerss.Where(x => x.WayofContactId == 6 && x.UserId == userId).Count();
+                website = customerss.Where(x => x.WayofContactId == 7 && x.UserId == userId).Count();
+                mobile = customerss.Where(x => x.WayofContactId == 8 && x.UserId == userId).Count();
+                owner = customerss.Where(x => x.WayofContactId == 9 && x.UserId == userId).Count();
+                instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
+                otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
+                needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.UserId == userId).Count();
             }
             else
             {
@@ -372,7 +374,7 @@ namespace SaiKitchenBackend.Controllers
                 needToContact = customerss.Where(x =>
                     x.ContactStatusId == 2 &&
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
                 customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
@@ -386,6 +388,7 @@ namespace SaiKitchenBackend.Controllers
                 owner = customerss.Where(x => x.WayofContactId == 9).Count();
                 instagram = customerss.Where(x => x.WayofContactId == 10).Count();
                 otner = customerss.Where(x => x.WayofContactId == 11).Count();
+                needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count();
             }
             
 
@@ -407,6 +410,7 @@ namespace SaiKitchenBackend.Controllers
                 x.Instagram = instagram;
                 x.Other = otner;
                 x.CustomerWithInquiry = customerWithInquiry;
+                x.NeedToFollowUp = needTofollow;
             });
             return customers;
         }
