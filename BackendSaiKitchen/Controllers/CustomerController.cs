@@ -353,7 +353,7 @@ namespace SaiKitchenBackend.Controllers
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                         Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
-                customerWithInquiry = customerss.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                customerWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
                 google = customerss.Where(x => x.WayofContactId == 2 && x.UserId == userId).Count();
                 facebook = customerss.Where(x => x.WayofContactId == 3 && x.UserId == userId).Count();
@@ -376,7 +376,7 @@ namespace SaiKitchenBackend.Controllers
                     (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
                         Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
-                customerWithInquiry = customerss.Where(x => x.Inquiries.Any()).Count();
+                customerWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any()).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
                 google = customerss.Where(x => x.WayofContactId == 2).Count();
                 facebook = customerss.Where(x => x.WayofContactId == 3).Count();
