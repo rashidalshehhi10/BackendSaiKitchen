@@ -349,9 +349,10 @@ namespace SaiKitchenBackend.Controllers
                 total = customerss.Where(x => x.UserId == userId).Count();
                 contacted = customerss.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
                 needToContact = customerss.Where(x =>
-                    x.ContactStatusId == 2 &&
-                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) && x.UserId == userId).Count();
+                    x.ContactStatusId == 2
+                    //&& (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                    //    Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null) 
+                        && x.UserId == userId).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
                 customerWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1 && x.UserId == userId).Count();
@@ -372,9 +373,9 @@ namespace SaiKitchenBackend.Controllers
                 total = customerss.Count;
                 contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
                 needToContact = customerss.Where(x =>
-                    x.ContactStatusId == 2 &&
-                    (Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
-                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)).Count();
+                    x.ContactStatusId == 2
+                    /*(Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                        Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)*/).Count();
                 customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
                 customerWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any()).Count();
                 direct = customerss.Where(x => x.WayofContactId == 1).Count();
