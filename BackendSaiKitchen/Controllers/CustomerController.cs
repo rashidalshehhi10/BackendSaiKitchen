@@ -673,6 +673,7 @@ namespace SaiKitchenBackend.Controllers
                     {
                         customer.CustomerAssignedBy = Constants.userId;
                         customer.CustomerAssignedDate = Helper.GetDateTime();
+                        customer.UserId = customer.CustomerAssignedTo;
                     }
                     customer.CreatedDate = Helper.GetDateTime();
                     customer.CreatedBy = Constants.userId;
@@ -713,13 +714,13 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
                 oldCustomer.ContactStatusId = customer.ContactStatusId;
                 oldCustomer.WayofContactId = customer.WayofContactId;
-                oldCustomer.UserId = customer.UserId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
                 if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
                 {
                     oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
                     oldCustomer.CustomerAssignedBy = Constants.userId;
                     oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
+                    oldCustomer.UserId = customer.UserId;
                 }
                 oldCustomer.UpdatedDate = Helper.GetDateTime();
                 oldCustomer.UpdatedBy = Constants.userId;
