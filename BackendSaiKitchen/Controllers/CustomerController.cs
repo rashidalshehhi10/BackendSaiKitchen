@@ -669,8 +669,11 @@ namespace SaiKitchenBackend.Controllers
                     x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
                 if (oldCustomer == null)
                 {
-                    customer.CustomerAssignedBy = Constants.userId;
-                    customer.CustomerAssignedDate = Helper.GetDateTime();
+                    if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
+                    {
+                        customer.CustomerAssignedBy = Constants.userId;
+                        customer.CustomerAssignedDate = Helper.GetDateTime();
+                    }
                     customer.CreatedDate = Helper.GetDateTime();
                     customer.CreatedBy = Constants.userId;
                     string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
@@ -712,9 +715,12 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.WayofContactId = customer.WayofContactId;
                 oldCustomer.UserId = customer.UserId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
-                oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
-                oldCustomer.CustomerAssignedBy = Constants.userId;
-                oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
+                if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
+                {
+                    oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
+                    oldCustomer.CustomerAssignedBy = Constants.userId;
+                    oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
+                }
                 oldCustomer.UpdatedDate = Helper.GetDateTime();
                 oldCustomer.UpdatedBy = Constants.userId;
                 string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
