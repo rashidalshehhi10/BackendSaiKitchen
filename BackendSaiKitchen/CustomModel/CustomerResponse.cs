@@ -33,6 +33,7 @@
         public int? ContactedCustomers { get; set; }
         public int? NeedToContactCustomers { get; set; }
         public int? NeedToFollowUp { get; set; }
+        public int? NotResponding { get; set; }
         public int? CustomerWithoutInquiry { get; set; }
         public int? CustomerWithInquiry { get; set; }
         public int? Direct { get; set; }

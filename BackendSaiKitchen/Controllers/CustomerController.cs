@@ -219,6 +219,14 @@ namespace SaiKitchenBackend.Controllers
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
             }
+            else if (filter == 18)
+            {
+
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NotResponing, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+            }
             else if (filter >= 5 && filter != 16)
             {
 
@@ -342,6 +350,7 @@ namespace SaiKitchenBackend.Controllers
             int? instagram = 0;
             int? otner = 0;
             int? needTofollow = 0;
+            int? notResponding = 0;
             var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null && filter != 16)
@@ -367,6 +376,7 @@ namespace SaiKitchenBackend.Controllers
                 instagram = customerss.Where(x => x.WayofContactId == 10 && x.UserId == userId).Count();
                 otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.UserId == userId).Count();
+                notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId).Count();
             }
             else
             {
@@ -390,6 +400,7 @@ namespace SaiKitchenBackend.Controllers
                 instagram = customerss.Where(x => x.WayofContactId == 10).Count();
                 otner = customerss.Where(x => x.WayofContactId == 11).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count();
+                notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing).Count();
             }
             
 
@@ -412,6 +423,7 @@ namespace SaiKitchenBackend.Controllers
                 x.Other = otner;
                 x.CustomerWithInquiry = customerWithInquiry;
                 x.NeedToFollowUp = needTofollow;
+                x.NotResponding = notResponding;
             });
             return customers;
         }

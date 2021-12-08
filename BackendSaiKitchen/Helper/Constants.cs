@@ -54,6 +54,7 @@
         Contacted = 1,
         NeedToContact = 2,
         NeedToFollowUp = 3,
+        NotResponing = 4,
     }
 
     public enum eventType
