@@ -183,7 +183,7 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 var customers = customerRepository.FindByCondition(x =>
-                    x.UserId == user.UserId && x.ContactStatusId == (int)contactStatus.NeedToContact &&
+                    x.UserId == user.UserId &&
                     x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null &&
                     x.CustomerNextMeetingDate != "").Select(x => new
                     { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate });
@@ -193,7 +193,7 @@ namespace BackendSaiKitchen.Controllers
                     {
                         Id = customer.CustomerId,
                         Name = "Meeting with " + customer.CustomerName,
-                        Description = "You have to Follow-up with " + customer.CustomerName + " at " +
+                        Description = "You have to Follow-up with (" + customer.CustomerName + ") at " +
                                       customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact,
                         Date = customer.CustomerNextMeetingDate,
                         OnClickURL = "",
