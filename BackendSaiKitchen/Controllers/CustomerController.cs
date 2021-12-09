@@ -96,13 +96,13 @@ namespace SaiKitchenBackend.Controllers
         {
             var type = typeof(Customer);
             var parameterExprission = Expression.Parameter(typeof(Customer), "x");
-            var constant = Expression.Constant(true, typeof(bool?));
-            var property = Expression.Property(parameterExprission, "IsActive");
+            var constant = Expression.Constant(false, typeof(bool?));
+            var property = Expression.Property(parameterExprission, "IsDeleted");
             var expression = Expression.Equal(property, constant);
-            var property2 = Expression.Property(parameterExprission, "IsDeleted");
-            constant = Expression.Constant(false, typeof(bool?));
-            var experssion2 = Expression.Equal(property2, constant);
-            expression = Expression.And(expression, experssion2);
+            //var property2 = Expression.Property(parameterExprission, "IsDeleted");
+            //constant = Expression.Constant(false, typeof(bool?));
+            //var experssion2 = Expression.Equal(property2, constant);
+            //expression = Expression.And(expression, experssion2);
             var property3 = Expression.Property(parameterExprission, "BranchId");
             constant = Expression.Constant(Constants.branchId, typeof(int?));
             var experssion3 = Expression.Equal(property3, constant);
@@ -292,9 +292,11 @@ namespace SaiKitchenBackend.Controllers
                         CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
                         CustomerAssignedDate = x.CustomerAssignedDate,
                         EscalationRequestedBy = x.EscalationRequestedBy,
+                        EscalationRequestedByName = x.EscalationRequestedByNavigation.UserName,
                         EscalationRequestedOn = x.EscalationRequestedOn,
                         IsEscalationRequested = x.IsEscalationRequested,
                         EscalatedBy = x.EscalatedBy,
+                        EscalatedByName = x.EscalatedByNavigation.UserName,
                         EscalatedOn = x.EscalatedOn,
                         
                     }).OrderByDescending(i => i.CustomerId).ToList();
@@ -323,9 +325,11 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
                     CustomerAssignedDate = x.CustomerAssignedDate,
                     EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedByName = x.EscalationRequestedByNavigation.UserName,
                     EscalationRequestedOn = x.EscalationRequestedOn,
                     IsEscalationRequested = x.IsEscalationRequested,
                     EscalatedBy = x.EscalatedBy,
+                    EscalatedByName = x.EscalatedByNavigation.UserName,
                     EscalatedOn = x.EscalatedOn,
                     TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                 }).OrderByDescending(i => i.CustomerId).ToList());

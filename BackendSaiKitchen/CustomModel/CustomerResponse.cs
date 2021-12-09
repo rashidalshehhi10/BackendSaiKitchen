@@ -56,8 +56,10 @@
         public string CustomerAssignedDate { get; set; }
         public bool? IsEscalationRequested { get; set; }
         public int? EscalationRequestedBy { get; set; }
+        public string EscalationRequestedByName { get; set; }
         public string EscalationRequestedOn { get; set; }
         public int? EscalatedBy { get; set; }
+        public string EscalatedByName { get; set; }
         public string EscalatedOn { get; set; }
 
 
