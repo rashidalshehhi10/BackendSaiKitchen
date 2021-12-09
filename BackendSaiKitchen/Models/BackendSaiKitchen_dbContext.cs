@@ -339,6 +339,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CustomerWhatsapp).HasMaxLength(50);
 
+                entity.Property(e => e.EscalatedOn).HasMaxLength(50);
+
+                entity.Property(e => e.EscalationRequestedOn).HasMaxLength(500);
+
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
                 entity.HasOne(d => d.Branch)
@@ -360,6 +364,16 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.CustomerCustomerAssignedToNavigations)
                     .HasForeignKey(d => d.CustomerAssignedTo)
                     .HasConstraintName("FK_Customer_User1");
+
+                entity.HasOne(d => d.EscalatedByNavigation)
+                    .WithMany(p => p.CustomerEscalatedByNavigations)
+                    .HasForeignKey(d => d.EscalatedBy)
+                    .HasConstraintName("FK_Customer_User4");
+
+                entity.HasOne(d => d.EscalationRequestedByNavigation)
+                    .WithMany(p => p.CustomerEscalationRequestedByNavigations)
+                    .HasForeignKey(d => d.EscalationRequestedBy)
+                    .HasConstraintName("FK_Customer_User3");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CustomerUsers)

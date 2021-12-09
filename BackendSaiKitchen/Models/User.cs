@@ -13,6 +13,8 @@ namespace BackendSaiKitchen.Models
             Comments = new HashSet<Comment>();
             CustomerCustomerAssignedByNavigations = new HashSet<Customer>();
             CustomerCustomerAssignedToNavigations = new HashSet<Customer>();
+            CustomerEscalatedByNavigations = new HashSet<Customer>();
+            CustomerEscalationRequestedByNavigations = new HashSet<Customer>();
             CustomerUsers = new HashSet<Customer>();
             DesignDesignApprovedByNavigations = new HashSet<Design>();
             DesignDesignTakenByNavigations = new HashSet<Design>();
@@ -37,6 +39,7 @@ namespace BackendSaiKitchen.Models
         public string UserProfileImageUrl { get; set; }
         public string UserFcmtoken { get; set; }
         public string LastSeen { get; set; }
+        public int? LastSeenCustomerId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public bool? IsOnline { get; set; }
@@ -49,6 +52,8 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Customer> CustomerCustomerAssignedByNavigations { get; set; }
         public virtual ICollection<Customer> CustomerCustomerAssignedToNavigations { get; set; }
+        public virtual ICollection<Customer> CustomerEscalatedByNavigations { get; set; }
+        public virtual ICollection<Customer> CustomerEscalationRequestedByNavigations { get; set; }
         public virtual ICollection<Customer> CustomerUsers { get; set; }
         public virtual ICollection<Design> DesignDesignApprovedByNavigations { get; set; }
         public virtual ICollection<Design> DesignDesignTakenByNavigations { get; set; }

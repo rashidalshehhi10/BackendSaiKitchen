@@ -30,6 +30,10 @@ namespace BackendSaiKitchen.Models
         public int? UserId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsEscalationRequested { get; set; }
+        public int? EscalationRequestedBy { get; set; }
+        public string EscalationRequestedOn { get; set; }
+        public int? EscalatedBy { get; set; }
+        public string EscalatedOn { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
         public string CreatedDate { get; set; }
@@ -44,6 +48,8 @@ namespace BackendSaiKitchen.Models
         public virtual ContactStatus ContactStatus { get; set; }
         public virtual User CustomerAssignedByNavigation { get; set; }
         public virtual User CustomerAssignedToNavigation { get; set; }
+        public virtual User EscalatedByNavigation { get; set; }
+        public virtual User EscalationRequestedByNavigation { get; set; }
         public virtual User User { get; set; }
         public virtual WayOfContact WayofContact { get; set; }
         public virtual ICollection<CustomerBranch> CustomerBranches { get; set; }

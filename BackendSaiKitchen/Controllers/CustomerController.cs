@@ -799,6 +799,51 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object CustomerEscalationRequest(int customerId)
+        {
+            var customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.IsEscalationRequested = true;
+                customer.EscalationRequestedBy = Constants.userId;
+                customer.EscalationRequestedOn = Helper.GetDateTime();
+                customerRepository.Update(customer);
+                context.SaveChanges();
+                response.data = customer;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Customer Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object CustomerEscalationApprove(int customerId)
+        {
+            var customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.IsActive = false;
+                customer.EscalatedBy = Constants.userId;
+                customer.EscalatedOn = Helper.GetDateTime();
+                customerRepository.Update(customer);
+                context.SaveChanges();
+                response.data = customer;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Customer Not Found";
+            }
+            return response;
+        }
+
+
         [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Delete)]
         [HttpPost]
         [Route("[action]")]
