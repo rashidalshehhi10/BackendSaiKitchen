@@ -171,22 +171,7 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
-                //var _parameter = Expression.Parameter(typeof(Inquiry), "y");
-                //Expression property1 = Expression.Property(_parameter, "IsActive");
-                //constant = Expression.Constant(true, typeof(bool?));
-                //var experssion1 = Expression.Equal(property1, constant);
-                //var _property2 = Expression.Property(_parameter, "IsDeleted");
-                //constant = Expression.Constant(false, typeof(bool?));
-                //var _experssion2 = Expression.Equal(_property2, constant);
-                //experssion1 = Expression.And(experssion1, _experssion2);
-                //var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
-                //var body = Expression.Call(typeof(Enumerable),
-                //    nameof(Enumerable.Any),
-                //    new Type[] { typeof(Inquiry) },
-                //    Expression.Property(parameterExprission, "Inquiries"), _lambda);
-                //constant = Expression.Constant(false, typeof(bool));
-                //var ex = Expression.Equal(body, constant);
-                //expression = Expression.And(expression, ex);
+
             }
             else if (filter == 4)
             {
@@ -306,6 +291,12 @@ namespace SaiKitchenBackend.Controllers
                         CustomerAssignedBy = x.CustomerAssignedBy,
                         CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
                         CustomerAssignedDate = x.CustomerAssignedDate,
+                        EscalationRequestedBy = x.EscalationRequestedBy,
+                        EscalationRequestedOn = x.EscalationRequestedOn,
+                        IsEscalationRequested = x.IsEscalationRequested,
+                        EscalatedBy = x.EscalatedBy,
+                        EscalatedOn = x.EscalatedOn,
+                        
                     }).OrderByDescending(i => i.CustomerId).ToList();
             customers.AddRange(customerRepository
                 .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
@@ -331,6 +322,11 @@ namespace SaiKitchenBackend.Controllers
                     CustomerAssignedBy = x.CustomerAssignedBy,
                     CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
                     CustomerAssignedDate = x.CustomerAssignedDate,
+                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedOn = x.EscalationRequestedOn,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    EscalatedBy = x.EscalatedBy,
+                    EscalatedOn = x.EscalatedOn,
                     TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = 0;
@@ -843,6 +839,170 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object CustomerEscalationReject(int customerId)
+        {
+            var customer = customerRepository.FindByCondition(x => x.CustomerId == customerId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (customer != null)
+            {
+                customer.IsEscalationRequested = false;
+                customerRepository.Update(customer);
+                context.SaveChanges();
+                response.data = customer;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Customer Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetEscalatedCustomerOfBranch(int userId, int filter)
+        {
+            System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(x => x.IsActive == false && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+                .Include(x => x.Inquiries)
+                .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x =>
+                    new CustomerResponse
+                    {
+                        CustomerId = x.CustomerId,
+                        CustomerName = x.CustomerName,
+                        CustomerContact = x.CustomerContact,
+                        CustomerEmail = x.CustomerEmail,
+                        Code = "CS" + x.Branch.BranchId + "" + x.CustomerId,
+                        BranchId = x.Branch.BranchId,
+                        BranchName = x.Branch.BranchName,
+                        UserId = x.User.UserId,
+                        UserName = x.User.UserName,
+                        CustomerCity = x.CustomerCity,
+                        CustomerCountry = x.CustomerCountry,
+                        CustomerNationality = x.CustomerNationality,
+                        CustomerNotes = x.CustomerNotes,
+                        CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                        WayofContactId = x.WayofContactId,
+                        WayofContact = x.WayofContact.WayOfContactName,
+                        ContactStatusId = x.ContactStatusId,
+                        ContactStatus = x.ContactStatus.ContactStatusName,
+                        CustomerAddress = x.CustomerAddress,
+                        CustomerNationalId = x.CustomerNationalId,
+                        TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
+                        AddedOn = x.CreatedDate,
+                        CustomerAssignedTo = x.CustomerAssignedTo,
+                        CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                        CustomerAssignedBy = x.CustomerAssignedBy,
+                        CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                        CustomerAssignedDate = x.CustomerAssignedDate,
+                        EscalationRequestedBy = x.EscalationRequestedBy,
+                        EscalationRequestedOn = x.EscalationRequestedOn,
+                        IsEscalationRequested = x.IsEscalationRequested,
+                        EscalatedBy = x.EscalatedBy,
+                        EscalatedOn = x.EscalatedOn,
+                    }).OrderByDescending(i => i.CustomerId).ToList();
+            customers.AddRange(customerRepository
+                .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
+                .Include(x => x.Inquiries)
+                .Select(x => new CustomerResponse
+                {
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    CustomerContact = x.CustomerContact,
+                    CustomerEmail = x.CustomerEmail,
+                    CustomerCity = x.CustomerCity,
+                    CustomerCountry = x.CustomerCountry,
+                    CustomerNationality = x.CustomerNationality,
+                    CustomerNotes = x.CustomerNotes,
+                    CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                    WayofContactId = x.WayofContactId,
+                    ContactStatusId = x.ContactStatusId,
+                    ContactStatus = x.ContactStatus.ContactStatusName,
+                    CustomerAddress = x.CustomerAddress,
+                    CustomerNationalId = x.CustomerNationalId,
+                    CustomerAssignedTo = x.CustomerAssignedTo,
+                    CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                    CustomerAssignedBy = x.CustomerAssignedBy,
+                    CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                    CustomerAssignedDate = x.CustomerAssignedDate,
+                    EscalationRequestedBy = x.EscalationRequestedBy,
+                    EscalationRequestedOn = x.EscalationRequestedOn,
+                    IsEscalationRequested = x.IsEscalationRequested,
+                    EscalatedBy = x.EscalatedBy,
+                    EscalatedOn = x.EscalatedOn,
+                    TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
+                }).OrderByDescending(i => i.CustomerId).ToList());
+            int? total = 0;
+            int? contacted = 0;
+            int? needToContact = 0;
+            int? customerWithoutInquiry = 0;
+            int? customerWithInquiry = 0;
+            int? direct = 0;
+            int? google = 0;
+            int? facebook = 0;
+            int? linkedin = 0;
+            int? twitter = 0;
+            int? friends = 0;
+            int? website = 0;
+            int? mobile = 0;
+            int? owner = 0;
+            int? instagram = 0;
+            int? otner = 0;
+            int? needTofollow = 0;
+            int? notResponding = 0;
+
+            var customerss = customerRepository.FindByCondition(x => x.IsActive == false && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+                    .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
+            if (customerss != null)
+            {
+                total = customerss.Count;
+                contacted = customerss.Where(x => x.ContactStatusId == 1).Count();
+                needToContact = customerss.Where(x =>
+                    x.ContactStatusId == 2
+                        /*(Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <=
+                            Helper.ConvertToDateTime(Helper.GetDateTime()) || x.CustomerNextMeetingDate == null)*/).Count();
+                customerWithoutInquiry = customerss.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count();
+                customerWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any()).Count();
+                direct = customerss.Where(x => x.WayofContactId == 1).Count();
+                google = customerss.Where(x => x.WayofContactId == 2).Count();
+                facebook = customerss.Where(x => x.WayofContactId == 3).Count();
+                linkedin = customerss.Where(x => x.WayofContactId == 4).Count();
+                twitter = customerss.Where(x => x.WayofContactId == 5).Count();
+                friends = customerss.Where(x => x.WayofContactId == 6).Count();
+                website = customerss.Where(x => x.WayofContactId == 7).Count();
+                mobile = customerss.Where(x => x.WayofContactId == 8).Count();
+                owner = customerss.Where(x => x.WayofContactId == 9).Count();
+                instagram = customerss.Where(x => x.WayofContactId == 10).Count();
+                otner = customerss.Where(x => x.WayofContactId == 11).Count();
+                needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count();
+                notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing).Count();
+            }
+
+
+            customers.ForEach(x =>
+            {
+                x.TotalCustomers = total;
+                x.ContactedCustomers = contacted;
+                x.NeedToContactCustomers = needToContact;
+                x.CustomerWithoutInquiry = customerWithoutInquiry;
+                x.Direct = direct;
+                x.Google = google;
+                x.FaceBook = facebook;
+                x.Linkedin = linkedin;
+                x.Twitter = twitter;
+                x.Friends = friends;
+                x.Website = website;
+                x.MobileApp = mobile;
+                x.OwnerReference = owner;
+                x.Instagram = instagram;
+                x.Other = otner;
+                x.CustomerWithInquiry = customerWithInquiry;
+                x.NeedToFollowUp = needTofollow;
+                x.NotResponding = notResponding;
+            });
+            return customers;
+        }
 
         [AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Delete)]
         [HttpPost]
