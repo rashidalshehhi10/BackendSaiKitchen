@@ -53,6 +53,12 @@ namespace BackendSaiKitchen.Controllers
                         TotalJoborder = x.Inquiries.Where(x =>
                             x.IsActive == true && x.IsDeleted == false &&
                             x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated).Count(),
+                        ContactedWithInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.Contacted && 
+                        x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false)).Count(),
+                        ContactedWithoutinquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.Contacted &&
+                        x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count(),
+                        NeedToFollowUp = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count(),
+                        NotResponding = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NotResponing).Count(),
                         TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count()
                     }).FirstOrDefault();
 

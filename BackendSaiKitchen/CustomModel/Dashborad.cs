@@ -14,6 +14,10 @@ namespace BackendSaiKitchen.CustomModel
         public int QuotationRejected { get; set; }
         public int TotalJoborder { get; set; }
         public int InquiryIncomplete { get; set; }
+        public int ContactedWithoutinquiry { get; set; }
+        public int ContactedWithInquiry { get; set; }
+        public int NeedToFollowUp { get; set; }
+        public int NotResponding { get; set; }
         public List<Calendar> calendar { get; set; }
     }
 
