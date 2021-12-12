@@ -733,7 +733,7 @@ namespace SaiKitchenBackend.Controllers
                     oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
                     oldCustomer.CustomerAssignedBy = Constants.userId;
                     oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
-                    oldCustomer.UserId = customer.UserId;
+                    oldCustomer.UserId = oldCustomer.CustomerAssignedTo;
                 }
                 oldCustomer.UpdatedDate = Helper.GetDateTime();
                 oldCustomer.UpdatedBy = Constants.userId;
