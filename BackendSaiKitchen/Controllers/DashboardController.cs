@@ -46,13 +46,34 @@ namespace BackendSaiKitchen.Controllers
                              (int)inquiryStatus.quotationWaitingForCustomerApproval)).Count(),
                         QuotationAccepted = x.Inquiries.Where(x =>
                             x.IsActive == true && x.IsDeleted == false &&
-                            x.InquiryStatusId == (int)inquiryStatus.quotationAccepted).Count(),
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted).Count(),
                         QuotationRejected = x.Inquiries.Where(x =>
                             x.IsActive == true && x.IsDeleted == false &&
-                            x.InquiryStatusId == (int)inquiryStatus.quotationRejected).Count(),
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress).Count(),
                         TotalJoborder = x.Inquiries.Where(x =>
-                            x.IsActive == true && x.IsDeleted == false &&
-                            x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated).Count(),
+                            x.IsActive == true && x.IsDeleted == false && (
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderApproved ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditPending ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderCompleted ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderConfirmationPending ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderCreated ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderCustomerRequestReschedule ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayed ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderDelayRequested ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderDesignTeamDelay ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryDelayed ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesDelayed ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderFilesPending ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderProcurementDelayed ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderReadyForInstallation ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderRejected ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleApproved ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRejected ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderRescheduleRequested ||
+                            x.InquiryStatusId == (int)inquiryStatus.jobOrderWaitingForApproval)).Count(),
                         ContactedWithInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.Contacted && 
                         x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false)).Count(),
                         ContactedWithoutinquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.Contacted &&
