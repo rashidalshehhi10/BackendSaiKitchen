@@ -421,10 +421,10 @@ namespace SaiKitchenBackend.Controllers
                 otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.UserId == userId).Count();
                 notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId).Count();
-                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
-                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
-                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
-                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
+                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date && x.UserId == userId).Count();
+                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
+                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date && x.UserId == userId).Count();
+                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
             }
             else
             {
@@ -449,10 +449,10 @@ namespace SaiKitchenBackend.Controllers
                 otner = customerss.Where(x => x.WayofContactId == 11).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count();
                 notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing).Count();
-                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && (x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime()))).Count();
-                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
-                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
-                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
+                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && (x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDateTime()).Date)).Count();
+                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
+                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
+                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
             }
             
 
@@ -483,11 +483,12 @@ namespace SaiKitchenBackend.Controllers
             });
             if (filter == 19 || filter == 21)
             {
-                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime())).OrderByDescending(i => i.CustomerId).ToList();
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate())).OrderByDescending(i => i.CustomerId).ToList();
+
             }
             else if (filter == 20 || filter == 22)
             {
-                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime())).OrderByDescending(i => i.CustomerId).ToList();
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDate())).OrderByDescending(i => i.CustomerId).ToList();
             }
             return customers;
         }
@@ -751,6 +752,11 @@ namespace SaiKitchenBackend.Controllers
                         customer.CustomerAssignedDate = Helper.GetDateTime();
                         customer.UserId = customer.CustomerAssignedTo;
                     }
+                    if (Helper.ConvertToDateTime(customer.CustomerNextMeetingDate)> Helper.ConvertToDateTime(Helper.GetDateTime()) 
+                        && customer.ContactStatusId == (int)contactStatus.Contacted)
+                    {
+                        customer.ContactStatusId = (int)contactStatus.NeedToFollowUp;
+                    }
                     customer.CreatedDate = Helper.GetDateTime();
                     customer.CreatedBy = Constants.userId;
                     string user = userRepository.FindByCondition(x => x.UserId == customer.CustomerAssignedBy).Select(x => x.UserName).FirstOrDefault();
@@ -798,6 +804,11 @@ namespace SaiKitchenBackend.Controllers
                     oldCustomer.CustomerAssignedBy = Constants.userId;
                     oldCustomer.CustomerAssignedDate = Helper.GetDateTime();
                     oldCustomer.UserId = oldCustomer.CustomerAssignedTo;
+                }
+                if (Helper.ConvertToDateTime(customer.CustomerNextMeetingDate) > Helper.ConvertToDateTime(Helper.GetDateTime())
+                        && customer.ContactStatusId == (int)contactStatus.Contacted)
+                {
+                    oldCustomer.ContactStatusId = (int)contactStatus.NeedToFollowUp;
                 }
                 oldCustomer.UpdatedDate = Helper.GetDateTime();
                 oldCustomer.UpdatedBy = Constants.userId;
