@@ -219,11 +219,6 @@ namespace SaiKitchenBackend.Controllers
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
 
-                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
-                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
-                //expression = Expression.And(expression, _experssion2);
-
                 var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
                 constant = Expression.Constant(Helper.GetDate(), typeof(string));
                 MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
@@ -236,17 +231,6 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
-
-                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
-                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
-                //expression = Expression.And(expression, _experssion2);
-
-                //var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDate(), typeof(string));
-                //MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                //var _experssion3 = Expression.Call(_property3, method, constant);
-                //expression = Expression.And(expression, _experssion3);
             }
             else if (filter == 21)
             {
@@ -254,11 +238,6 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
-
-                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
-                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
-                //expression = Expression.And(expression, _experssion2);
 
                 var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
                 constant = Expression.Constant(Helper.GetDate(), typeof(string));
@@ -272,17 +251,6 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
-
-                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
-                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
-                //expression = Expression.And(expression, _experssion2);
-
-                //var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
-                //constant = Expression.Constant(Helper.GetDate(), typeof(string));
-                //MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                //var _experssion3 = Expression.Call(_property3, method, constant);
-                //expression = Expression.And(expression, _experssion3);
             }
             else if (filter >= 5 && filter != 16)
             {
@@ -513,6 +481,14 @@ namespace SaiKitchenBackend.Controllers
                 x.NeedToContactToday = needToContactToday;
                 x.NeedToContactDelay = needToContactDelay;
             });
+            if (filter == 19 || filter == 21)
+            {
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate) >= Helper.ConvertToDateTime(Helper.GetDateTime())).OrderByDescending(i => i.CustomerId).ToList();
+            }
+            else if (filter == 20 || filter == 22)
+            {
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate) < Helper.ConvertToDateTime(Helper.GetDateTime())).OrderByDescending(i => i.CustomerId).ToList();
+            }
             return customers;
         }
 
