@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -198,7 +199,6 @@ namespace SaiKitchenBackend.Controllers
             }
             else if(filter == 17)
             {
-
                 var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
@@ -211,6 +211,78 @@ namespace SaiKitchenBackend.Controllers
                 constant = Expression.Constant((int)contactStatus.NotResponing, typeof(int?));
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
+            }
+            else if(filter == 19)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
+                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
+                //expression = Expression.And(expression, _experssion2);
+
+                var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                constant = Expression.Constant(Helper.GetDate(), typeof(string));
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion3 = Expression.Call(_property3,method, constant);
+                expression = Expression.And(expression, _experssion3);
+            }
+            else if (filter == 20)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
+                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
+                //expression = Expression.And(expression, _experssion2);
+
+                //var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDate(), typeof(string));
+                //MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                //var _experssion3 = Expression.Call(_property3, method, constant);
+                //expression = Expression.And(expression, _experssion3);
+            }
+            else if (filter == 21)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
+                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
+                //expression = Expression.And(expression, _experssion2);
+
+                var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                constant = Expression.Constant(Helper.GetDate(), typeof(string));
+                MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                var _experssion3 = Expression.Call(_property3, method, constant);
+                expression = Expression.And(expression, _experssion3);
+            }
+            else if (filter == 22)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                //var _property2 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDateTime(), typeof(string));
+                //var _experssion2 = Expression.LessThanOrEqual( _property2, constant);
+                //expression = Expression.And(expression, _experssion2);
+
+                //var _property3 = Expression.Property(parameterExprission, "CustomerNextMeetingDate");
+                //constant = Expression.Constant(Helper.GetDate(), typeof(string));
+                //MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                //var _experssion3 = Expression.Call(_property3, method, constant);
+                //expression = Expression.And(expression, _experssion3);
             }
             else if (filter >= 5 && filter != 16)
             {
@@ -351,6 +423,10 @@ namespace SaiKitchenBackend.Controllers
             int? otner = 0;
             int? needTofollow = 0;
             int? notResponding = 0;
+            int? needToContactToday = 0;
+            int? needToContactDelay = 0;
+            int? needToFollowUpToday = 0;
+            int? needToFollowUpDelay = 0;
             var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null && filter != 16)
@@ -377,6 +453,10 @@ namespace SaiKitchenBackend.Controllers
                 otner = customerss.Where(x => x.WayofContactId == 11 && x.UserId == userId).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.UserId == userId).Count();
                 notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId).Count();
+                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <= Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
+                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) > Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
+                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <= Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
+                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) > Helper.ConvertToDateTime(Helper.GetDateTime()) && x.UserId == userId).Count();
             }
             else
             {
@@ -401,6 +481,10 @@ namespace SaiKitchenBackend.Controllers
                 otner = customerss.Where(x => x.WayofContactId == 11).Count();
                 needTofollow = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count();
                 notResponding = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing).Count();
+                needToContactToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <= Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
+                needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) > Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
+                needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) <= Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
+                needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate) > Helper.ConvertToDateTime(Helper.GetDateTime())).Count();
             }
             
 
@@ -424,6 +508,10 @@ namespace SaiKitchenBackend.Controllers
                 x.CustomerWithInquiry = customerWithInquiry;
                 x.NeedToFollowUp = needTofollow;
                 x.NotResponding = notResponding;
+                x.NeedToFollowUpToday = needToFollowUpToday;
+                x.NeedToFollowUpDelay = needToFollowUpDelay;
+                x.NeedToContactToday = needToContactToday;
+                x.NeedToContactDelay = needToContactDelay;
             });
             return customers;
         }
