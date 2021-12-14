@@ -533,6 +533,7 @@ namespace BackendSaiKitchen.Controllers
                     if (_quotation.Description != string.Empty || _quotation.Description != null)
                     {
                         quotation.Description = _quotation.Description;
+                        quotation.Inquiry.InquiryComment = _quotation.Description;
                         quotation.Inquiry.Comments.Add(new Comment
                         {
                             CommentAddedBy = Constants.userId,
@@ -614,7 +615,7 @@ namespace BackendSaiKitchen.Controllers
                 .FindByCondition(i =>
                     i.IsActive == true && i.IsDeleted == false && i.InquiryId == comment.inquiryId &&
                     i.InquiryWorkscopes.Count > 0).Include(x => x.InquiryWorkscopes.Where(y =>
-                    y.IsActive == true && y.IsDeleted == false )).FirstOrDefault();
+                    y.IsActive == true && y.IsDeleted == false )).Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.quotationRevisionRequested);
@@ -1784,6 +1785,107 @@ namespace BackendSaiKitchen.Controllers
             {
                 response.isError = true;
                 response.errorMessage = "Inquiry Doesn't Exist";
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RejectContract(ContractReject reject)
+        {
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == reject.inquiryId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y =>
+                    y.PaymentTypeId != (int)paymenttype.Measurement && y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                inquiry.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+
+                if (reject.Comment != string.Empty || reject.Comment != null)
+                {
+                    inquiry.InquiryComment = reject.Comment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CreatedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = reject.Comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                    });
+                }
+
+                foreach (Payment payment in inquiry.Payments)
+                {
+                    payment.IsActive = false;
+                }
+
+                foreach (InquiryWorkscope inquiryWorkscope in inquiry.InquiryWorkscopes)
+                {
+                    inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.quotationWaitingForCustomerApproval;
+                }
+
+                inquiryRepository.Update(inquiry);
+                response.data = inquiry;
+                context.SaveChanges();
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Doesn't Exist";
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RejectQuotation(ContractReject comment)
+        {
+            Inquiry inquiry = inquiryRepository
+                .FindByCondition(i =>
+                    i.IsActive == true && i.IsDeleted == false && i.InquiryId == comment.inquiryId &&
+                    i.InquiryWorkscopes.Count > 0)
+                .Include(x => x.InquiryWorkscopes.Where(y =>
+                    y.IsActive == true && y.IsDeleted == false)).Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false))
+                    .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+            if (inquiry != null)
+            {
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval);
+                Helper.Helper.Each(inquiry.Quotations, x => x.IsActive = false);
+
+                inquiry.InquiryStatusId = (int)inquiryStatus.designWaitingForCustomerApproval;
+                if (comment.Comment != string.Empty || comment.Comment != null)
+                {
+                    inquiry.InquiryComment = comment.Comment;
+                    inquiry.Comments.Add(new Comment
+                    {
+                        CommentAddedBy = Constants.userId,
+                        CommentAddedon = Helper.Helper.GetDateTime(),
+                        CommentName = Enum.GetName(typeof(inquiryStatus), inquiry.InquiryStatusId),
+                        CommentDetail = comment.Comment,
+                        InquiryStatusId = inquiry.InquiryStatusId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                        CreatedBy = Constants.userId,
+                    });
+                }
+
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+            }
+            else
+            {
+                response.errorMessage = "Inquiry does not exsit";
+                response.isError = true;
             }
 
             return response;
