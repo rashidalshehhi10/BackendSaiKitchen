@@ -1552,6 +1552,7 @@ namespace SaiKitchenBackend.Controllers
                              Helper.ConvertToDateTime(Helper.GetDateTime())
                                  ? (int)inquiryStatus.measurementdelayed
                                  : (int)inquiryStatus.measurementInProgress);
+                    inquiry.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
 
                     if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.measurementdelayed)
                     {
@@ -1579,10 +1580,11 @@ namespace SaiKitchenBackend.Controllers
                 }
                 else if (inquiryWorkscope.InquiryStatusId is (int)inquiryStatus.designPending or (int)inquiryStatus.designRevisionRequested)
                 {
-                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.MeasurementScheduleDate) <
+                    Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = Helper.ConvertToDateTime(inquiryWorkscope.DesignScheduleDate) <
                          Helper.ConvertToDateTime(Helper.GetDateTime())
                              ? (int)inquiryStatus.designDelayed
                              : (int)inquiryStatus.designPending);
+                    inquiry.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
                     if (inquiryWorkscope.InquiryStatusId == (int)inquiryStatus.designDelayed)
                     {
                         var user = userRepository.FindByCondition(x =>
@@ -1616,6 +1618,7 @@ namespace SaiKitchenBackend.Controllers
 
                     Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.measurementAssigneeRejected);
 
+                    inquiry.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
                     sendNotificationToHead(
                         user.Name + Constants.MeasurementAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId, false,
@@ -1641,6 +1644,7 @@ namespace SaiKitchenBackend.Controllers
                     }).FirstOrDefault();
                     Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.designAssigneeRejected);
 
+                    inquiry.InquiryStatusId = inquiryWorkscope.InquiryStatusId;
                     sendNotificationToHead(user.Name + Constants.DesignAssigneeDelayed + " of Inquiry Code: IN" + inquiry.BranchId +
                                                 "" + inquiry.CustomerId + "" + inquiry.InquiryId,
                         true,
