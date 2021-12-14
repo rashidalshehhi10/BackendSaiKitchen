@@ -347,9 +347,7 @@ namespace SaiKitchenBackend.Controllers
             var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
 
             System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(lambda)
-                .Include(x => x.Inquiries)
-                .Include(x => x.Branch).Where(x => x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.User).Where(x => x.IsActive == true && x.IsDeleted == false).Select(x =>
+                .Select(x =>
                     new CustomerResponse
                     {
                         CustomerId = x.CustomerId,
@@ -505,6 +503,7 @@ namespace SaiKitchenBackend.Controllers
                 needToContactDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
                 needToFollowUpToday = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
                 needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date).Count();
+                //{x => ((((((x.IsDeleted == False) And (x.BranchId == 1)) And (x.Branch.IsActive == True)) And (x.Branch.IsDeleted == False)) And (x.ContactStatusId == 3)) And x.Inquiries.Any(y => ((y.IsDeleted == False) And (y.IsActive == True))))}
                 needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
                 needToFollowUpWithOutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
             }
@@ -516,7 +515,7 @@ namespace SaiKitchenBackend.Controllers
                 x.ContactedCustomers = contacted;
                 x.NeedToContactCustomers = needToContact;
                 x.CustomerWithoutInquiry = customerWithoutInquiry;
-                x.Direct = direct;
+                x.Direct = direct; 
                 x.Google = google;
                 x.FaceBook = facebook;
                 x.Linkedin = linkedin;
