@@ -253,7 +253,7 @@ namespace SaiKitchenBackend.Controllers
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
             }
-            if (filter == 23)
+            if (filter == 24)
             {
                 var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
@@ -277,7 +277,7 @@ namespace SaiKitchenBackend.Controllers
                 var ex = Expression.Equal(body, constant);
                 expression = Expression.And(expression, ex);
             }
-            else if (filter == 24)
+            else if (filter == 23)
             {
                 var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
