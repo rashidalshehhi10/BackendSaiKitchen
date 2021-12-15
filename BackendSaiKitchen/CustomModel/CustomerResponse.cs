@@ -40,6 +40,8 @@
         public int? NeedToFollowUpDelay { get; set; }
         public int? NeedToFollowUpWithInquiry { get; set; }
         public int? NeedToFollowUpWithOutInquiry { get; set; }
+        public int? NotRespondingWithInquiry { get; set; }
+        public int? NotRespondingWithoutInquiry { get; set; }
         public int? CustomerWithoutInquiry { get; set; }
         public int? CustomerWithInquiry { get; set; }
         public int? Direct { get; set; }

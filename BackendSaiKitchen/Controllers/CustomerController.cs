@@ -253,7 +253,7 @@ namespace SaiKitchenBackend.Controllers
                 var _experssion1 = Expression.Equal(_property1, constant);
                 expression = Expression.And(expression, _experssion1);
             }
-            if (filter == 24)
+            else if (filter == 24)
             {
                 var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
                 constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
@@ -299,6 +299,53 @@ namespace SaiKitchenBackend.Controllers
                     new Type[] { typeof(Inquiry) },
                     Expression.Property(parameterExprission, "Inquiries"), _lambda);
                 expression = Expression.And(expression, body);
+            }
+            else if (filter == 25)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NotResponing, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(_experssion2, experssion1);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter == 26)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NotResponing, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
             }
             else if (filter >= 5 && filter <= 15)
             {
@@ -443,6 +490,8 @@ namespace SaiKitchenBackend.Controllers
             int? needToFollowUpDelay = 0;
             int? needToFollowUpWithInquiry = 0;
             int? needToFollowUpWithOutInquiry = 0;
+            int? notRespondingWithinquiry = 0;
+            int? notRespondingWithoutInquiry = 0;
             var customerss = customerRepository.FindByCondition(x => x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null && filter != 16)
@@ -475,6 +524,8 @@ namespace SaiKitchenBackend.Controllers
                 needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
                 needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
                 needToFollowUpWithOutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
+                notRespondingWithinquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                notRespondingWithoutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
             }
             else
             {
@@ -506,6 +557,8 @@ namespace SaiKitchenBackend.Controllers
                 //{x => ((((((x.IsDeleted == False) And (x.BranchId == 1)) And (x.Branch.IsActive == True)) And (x.Branch.IsDeleted == False)) And (x.ContactStatusId == 3)) And x.Inquiries.Any(y => ((y.IsDeleted == False) And (y.IsActive == True))))}
                 needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
                 needToFollowUpWithOutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
+                needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
+                notRespondingWithoutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
             }
             
 
@@ -534,7 +587,9 @@ namespace SaiKitchenBackend.Controllers
                 x.NeedToContactToday = needToContactToday;
                 x.NeedToContactDelay = needToContactDelay;
                 x.NeedToFollowUpWithInquiry = needToFollowUpWithInquiry;
-                x.NeedToFollowUpWithOutInquiry = needToFollowUpWithOutInquiry; 
+                x.NeedToFollowUpWithOutInquiry = needToFollowUpWithOutInquiry;
+                x.NotRespondingWithInquiry = notRespondingWithinquiry;
+                x.NotRespondingWithoutInquiry = notRespondingWithoutInquiry;
             });
             if (filter == 19 || filter == 21)
             {
