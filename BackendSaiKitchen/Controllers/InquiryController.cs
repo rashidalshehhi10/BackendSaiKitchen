@@ -822,6 +822,29 @@ namespace SaiKitchenBackend.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public object GetinquiriesByuser()
+        {
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(x => x.BranchId == Constants.branchId)).Select(x => new
+            {
+                UserId = x.UserId,
+                User = x.UserName,
+            }).ToList();
+            List<object> inquiries = new List<object>();
+            foreach (var user in users)
+            {
+                var count = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.ManagedBy == user.UserId).Count();
+                inquiries.Add(new
+                {
+                    UserId = user.UserId,
+                    User = user.User,
+                    inquiriesCount = count
+                });
+            }
+            response.data = inquiries;
+            return response;
+        }
         //draw and start and length
         [HttpPost]
         [Route("[action]")]
