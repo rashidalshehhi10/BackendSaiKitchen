@@ -100,10 +100,10 @@ namespace SaiKitchenBackend.Controllers
             var constant = Expression.Constant(false, typeof(bool?));
             var property = Expression.Property(parameterExprission, "IsDeleted");
             var expression = Expression.Equal(property, constant);
-            //var property2 = Expression.Property(parameterExprission, "IsDeleted");
-            //constant = Expression.Constant(false, typeof(bool?));
-            //var experssion2 = Expression.Equal(property2, constant);
-            //expression = Expression.And(expression, experssion2);
+            var property2 = Expression.Property(parameterExprission, "IsActive");
+            constant = Expression.Constant(true, typeof(bool?));
+            var experssion2 = Expression.Equal(property2, constant);
+            expression = Expression.And(expression, experssion2);
             var property3 = Expression.Property(parameterExprission, "BranchId");
             constant = Expression.Constant(Constants.branchId, typeof(int?));
             var experssion3 = Expression.Equal(property3, constant);
@@ -492,7 +492,7 @@ namespace SaiKitchenBackend.Controllers
             int? needToFollowUpWithOutInquiry = 0;
             int? notRespondingWithinquiry = 0;
             int? notRespondingWithoutInquiry = 0;
-            var customerss = customerRepository.FindByCondition(x => x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
+            var customerss = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)
                     .Include(x => x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false)).ToList();
             if (userId != 0 && userId != null && filter != 16)
             {
