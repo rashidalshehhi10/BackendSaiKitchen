@@ -524,7 +524,7 @@ namespace SaiKitchenBackend.Controllers
                 needToFollowUpDelay = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
                 needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
                 needToFollowUpWithOutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
-                notRespondingWithinquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                notRespondingWithinquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId && x.Inquiries.Any()).Count();
                 notRespondingWithoutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
             }
             else
@@ -559,6 +559,7 @@ namespace SaiKitchenBackend.Controllers
                 needToFollowUpWithOutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
                 needToFollowUpWithInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
                 notRespondingWithoutInquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
+                notRespondingWithinquiry = customerss.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
             }
             
 
