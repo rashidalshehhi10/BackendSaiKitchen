@@ -202,21 +202,11 @@ namespace BackendSaiKitchen.Controllers
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Test(String Vid)
+        public async Task<object> Test(string sendto , string type , string message)
         {
-            try
-            {
-                response.data = Helper.Helper.GetVimeoVideoDownloadURL(Vid);
+            response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
 
-            }
-            catch (Exception e)
-            {
-                response.isError = true;
-                response.errorMessage = e.Message;
-
-            }
-            return Ok();
-            
+            return response;
         }
     }
 }

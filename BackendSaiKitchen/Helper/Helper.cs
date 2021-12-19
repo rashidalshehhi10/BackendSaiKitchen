@@ -18,6 +18,7 @@ using VimeoDotNet.Net;
 using VimeoDotNet.Models;
 using static BackendSaiKitchen.CustomModel.VimeoCustomModel;
 using VimeoDotNet.Authorization;
+using System.Net.Http;
 
 namespace BackendSaiKitchen.Helper
 {
@@ -559,6 +560,36 @@ namespace BackendSaiKitchen.Helper
             //    }
             //doc.Write(sw);
             //}
+        }
+
+        public static async Task<string> SendWhatsappMessage(string sendto,string type , string message)
+        {
+            try
+            {
+                HttpClient client = new HttpClient();
+
+                var values = new Dictionary<string, string>
+            {
+                {"number",sendto },
+                {"type",type },
+                {"message",message },
+                {"instance_id","61BF25EA462D1" },
+                {"access_token","a27e1f9ca2347bb766f332b8863ebe9f" }
+            };
+
+                var content = new FormUrlEncodedContent(values);
+
+                var response = await client.PostAsync("https://www.socialmediapartner.net/api/send.php", content);
+
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                return responseString;
+            }
+            catch (Exception e)
+            {
+                Sentry.SentrySdk.CaptureMessage(e.Message);
+            }
+            
         }
     }
 }
