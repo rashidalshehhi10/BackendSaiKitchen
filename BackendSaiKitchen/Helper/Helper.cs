@@ -588,6 +588,7 @@ namespace BackendSaiKitchen.Helper
             catch (Exception e)
             {
                 Sentry.SentrySdk.CaptureMessage(e.Message);
+                return e.Message;
             }
             
         }
