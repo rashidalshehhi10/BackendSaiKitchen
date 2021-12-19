@@ -1389,14 +1389,31 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GetinquiryStatusByBranch()
+        public object GetinquiryStatusByBranch(int ManagedBy)
         {
             List<InquiryStatus> inquiryStatus = inquiryStatusRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .ToList();
             List<object> list = new List<object>();
             foreach (InquiryStatus status in inquiryStatus)
             {
-                var inquiry = branchRepository
+                if (ManagedBy != 0)
+                {
+                    var inquiry = branchRepository
+                    .FindByCondition(
+                        x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x =>
+                        new
+                        {
+                            inquiryCount = x.Inquiries.Where(y =>
+                                y.IsActive == true && y.IsDeleted == false &&
+                                y.InquiryStatusId == status.InquiryStatusId && y.ManagedBy == ManagedBy).Count(),
+                            inquiryStatusId = status.InquiryStatusId,
+                            inquiryStatusName = status.InquiryStatusName
+                        });
+                    list.Add(inquiry);
+                }
+                else
+                {
+                    var inquiry = branchRepository
                     .FindByCondition(
                         x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x =>
                         new
@@ -1407,7 +1424,9 @@ namespace SaiKitchenBackend.Controllers
                             inquiryStatusId = status.InquiryStatusId,
                             inquiryStatusName = status.InquiryStatusName
                         });
-                list.Add(inquiry);
+                    list.Add(inquiry);
+                }
+                
             }
             var inquiries = branchRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Select(x => new
             {
