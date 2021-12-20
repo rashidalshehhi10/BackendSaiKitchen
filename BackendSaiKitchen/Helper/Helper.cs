@@ -567,19 +567,19 @@ namespace BackendSaiKitchen.Helper
             try
             {
                 HttpClient client = new HttpClient();
-
+                
                 var values = new Dictionary<string, string>
             {
                 {"number",sendto },
                 {"type",type },
                 {"message",message },
-                {"instance_id","61BF25EA462D1" },
-                {"access_token","a27e1f9ca2347bb766f332b8863ebe9f" }
+                {"instance_id",Constants.WhatsappInstanceId },
+                {"access_token",Constants.WhatsappAccessToken }
             };
 
                 var content = new FormUrlEncodedContent(values);
 
-                var response = await client.PostAsync("https://www.socialmediapartner.net/api/send.php", content);
+                var response = await client.PostAsync("https://socialmediapartner.net/api/send.php?number="+ sendto + "&type="+type+"&message="+ message + "&instance_id="+ Constants.WhatsappInstanceId + "&access_token="+ Constants.WhatsappAccessToken , content);
 
                 var responseString = await response.Content.ReadAsStringAsync();
 

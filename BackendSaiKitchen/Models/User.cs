@@ -47,6 +47,7 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public bool? IsNotificationEnabled { get; set; }
 
         public virtual ICollection<CalendarEvent> CalendarEvents { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

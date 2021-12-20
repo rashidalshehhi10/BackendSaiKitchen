@@ -14,6 +14,7 @@ using Sentry.AspNetCore;
 using Serilog.Context;
 using Stripe;
 using System;
+using MySql.Data.MySqlClient;
 
 namespace BackendSaiKitchen
 {
@@ -66,6 +67,7 @@ namespace BackendSaiKitchen
             });
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:DBMediaConnectionString"]));
 
 
             services.AddScoped(x =>

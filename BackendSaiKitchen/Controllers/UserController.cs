@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace SaiKitchenBackend.Controllers
 {
@@ -442,6 +443,26 @@ namespace SaiKitchenBackend.Controllers
             response.data = userList.ToList();
 
             return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<object> MySqlDBConnection()
+        {
+            using var connection = new MySqlConnection("Server=147.182.217.248;Database=db_social;User Id=sameeradmin;Password=eW3Tn$wC42;");
+            await connection.OpenAsync();
+
+            using var command = new MySqlCommand("SELECT * FROM sp_whatsapp_sessions;", connection);
+            using var reader = await command.ExecuteReaderAsync();
+            object value = null;
+            while (await reader.ReadAsync())
+            {
+                 value = reader.GetValue(0);
+                // do something with 'value'
+               
+            }
+
+            return value;
         }
     }
 }

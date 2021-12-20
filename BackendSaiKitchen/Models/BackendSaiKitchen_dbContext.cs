@@ -36,6 +36,75 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<EventType> EventTypes { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<File> Files { get; set; }
+        public virtual DbSet<FineAuthority> FineAuthorities { get; set; }
+        public virtual DbSet<FineAuthorityObject> FineAuthorityObjects { get; set; }
+        public virtual DbSet<FineBackupExcludeEntity> FineBackupExcludeEntities { get; set; }
+        public virtual DbSet<FineBackupNode> FineBackupNodes { get; set; }
+        public virtual DbSet<FineBaseMessage> FineBaseMessages { get; set; }
+        public virtual DbSet<FineBaseOutput> FineBaseOutputs { get; set; }
+        public virtual DbSet<FineBlockIp> FineBlockIps { get; set; }
+        public virtual DbSet<FineConfClassname> FineConfClassnames { get; set; }
+        public virtual DbSet<FineConfEntity> FineConfEntities { get; set; }
+        public virtual DbSet<FineConfXmlentity> FineConfXmlentities { get; set; }
+        public virtual DbSet<FineCustomRole> FineCustomRoles { get; set; }
+        public virtual DbSet<FineDepRole> FineDepRoles { get; set; }
+        public virtual DbSet<FineDepartment> FineDepartments { get; set; }
+        public virtual DbSet<FineExtraProperty> FineExtraProperties { get; set; }
+        public virtual DbSet<FineFavoriteEntry> FineFavoriteEntries { get; set; }
+        public virtual DbSet<FineHomepageExpand> FineHomepageExpands { get; set; }
+        public virtual DbSet<FineInternational> FineInternationals { get; set; }
+        public virtual DbSet<FineLabel> FineLabels { get; set; }
+        public virtual DbSet<FineLabelIndex> FineLabelIndices { get; set; }
+        public virtual DbSet<FineLastLogin> FineLastLogins { get; set; }
+        public virtual DbSet<FineLoginLock> FineLoginLocks { get; set; }
+        public virtual DbSet<FineMobileDevice> FineMobileDevices { get; set; }
+        public virtual DbSet<FineMobilePushMessage> FineMobilePushMessages { get; set; }
+        public virtual DbSet<FineOutputClass> FineOutputClasses { get; set; }
+        public virtual DbSet<FineOutputClientNotice> FineOutputClientNotices { get; set; }
+        public virtual DbSet<FineOutputEmail> FineOutputEmails { get; set; }
+        public virtual DbSet<FineOutputFtp> FineOutputFtps { get; set; }
+        public virtual DbSet<FineOutputMount> FineOutputMounts { get; set; }
+        public virtual DbSet<FineOutputPlatformMsg> FineOutputPlatformMsgs { get; set; }
+        public virtual DbSet<FineOutputPrint> FineOutputPrints { get; set; }
+        public virtual DbSet<FineOutputSftp> FineOutputSftps { get; set; }
+        public virtual DbSet<FineOutputSm> FineOutputSms { get; set; }
+        public virtual DbSet<FineParamTemplate> FineParamTemplates { get; set; }
+        public virtual DbSet<FinePost> FinePosts { get; set; }
+        public virtual DbSet<FinePrintOffset> FinePrintOffsets { get; set; }
+        public virtual DbSet<FinePrintOffsetIpRelate> FinePrintOffsetIpRelates { get; set; }
+        public virtual DbSet<FineProcessExpand> FineProcessExpands { get; set; }
+        public virtual DbSet<FineProcessMessage> FineProcessMessages { get; set; }
+        public virtual DbSet<FineRemoteDesignAuth> FineRemoteDesignAuths { get; set; }
+        public virtual DbSet<FineReportExpand> FineReportExpands { get; set; }
+        public virtual DbSet<FineScheduleOutput> FineScheduleOutputs { get; set; }
+        public virtual DbSet<FineScheduleRecord> FineScheduleRecords { get; set; }
+        public virtual DbSet<FineScheduleTask> FineScheduleTasks { get; set; }
+        public virtual DbSet<FineScheduleTaskLog> FineScheduleTaskLogs { get; set; }
+        public virtual DbSet<FineScheduleTaskParam> FineScheduleTaskParams { get; set; }
+        public virtual DbSet<FineSoftDatum> FineSoftData { get; set; }
+        public virtual DbSet<FineSwiftColIdxConf> FineSwiftColIdxConfs { get; set; }
+        public virtual DbSet<FineSwiftConfigEntity> FineSwiftConfigEntities { get; set; }
+        public virtual DbSet<FineSwiftDaysRecord> FineSwiftDaysRecords { get; set; }
+        public virtual DbSet<FineSwiftFilekey> FineSwiftFilekeys { get; set; }
+        public virtual DbSet<FineSwiftMetadatum> FineSwiftMetadata { get; set; }
+        public virtual DbSet<FineSwiftSegLocation> FineSwiftSegLocations { get; set; }
+        public virtual DbSet<FineSwiftSegment> FineSwiftSegments { get; set; }
+        public virtual DbSet<FineSwiftServiceInfo> FineSwiftServiceInfos { get; set; }
+        public virtual DbSet<FineSwiftTabIdxConf> FineSwiftTabIdxConfs { get; set; }
+        public virtual DbSet<FineSwiftTablePath> FineSwiftTablePaths { get; set; }
+        public virtual DbSet<FineSystemMessage> FineSystemMessages { get; set; }
+        public virtual DbSet<FineTenant> FineTenants { get; set; }
+        public virtual DbSet<FineUsageDatum> FineUsageData { get; set; }
+        public virtual DbSet<FineUser> FineUsers { get; set; }
+        public virtual DbSet<FineUserRoleMiddle> FineUserRoleMiddles { get; set; }
+        public virtual DbSet<FineVc> FineVcs { get; set; }
+        public virtual DbSet<FineWorkflow> FineWorkflows { get; set; }
+        public virtual DbSet<FineWorkflowLog> FineWorkflowLogs { get; set; }
+        public virtual DbSet<FineWorkflowNode> FineWorkflowNodes { get; set; }
+        public virtual DbSet<FineWorkflowStashDatum> FineWorkflowStashData { get; set; }
+        public virtual DbSet<FineWorkflowTask> FineWorkflowTasks { get; set; }
+        public virtual DbSet<FineWorkflowTaskImpl> FineWorkflowTaskImpls { get; set; }
+        public virtual DbSet<FineWriteStash> FineWriteStashes { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
         public virtual DbSet<InquiryStatus> InquiryStatuses { get; set; }
         public virtual DbSet<InquiryWorkscope> InquiryWorkscopes { get; set; }
@@ -60,6 +129,17 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
+        public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; }
+        public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; }
+        public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; }
+        public virtual DbSet<QrtzFiredTrigger> QrtzFiredTriggers { get; set; }
+        public virtual DbSet<QrtzJobDetail> QrtzJobDetails { get; set; }
+        public virtual DbSet<QrtzLock> QrtzLocks { get; set; }
+        public virtual DbSet<QrtzPausedTriggerGrp> QrtzPausedTriggerGrps { get; set; }
+        public virtual DbSet<QrtzSchedulerState> QrtzSchedulerStates { get; set; }
+        public virtual DbSet<QrtzSimpleTrigger> QrtzSimpleTriggers { get; set; }
+        public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; }
+        public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
@@ -504,6 +584,2230 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.QuotationId)
                     .HasConstraintName("FK_File_Quotation");
+            });
+
+            modelBuilder.Entity<FineAuthority>(entity =>
+            {
+                entity.ToTable("fine_authority", "db_owner");
+
+                entity.HasIndex(e => new { e.RoleId, e.RoleType, e.AuthorityEntityId, e.AuthorityEntityType, e.Authority, e.AuthorityType, e.TenantId }, "UK1tsntnb9o3bajn025123mdv6n")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Authority).HasColumnName("authority");
+
+                entity.Property(e => e.AuthorityEntityId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("authorityEntityId");
+
+                entity.Property(e => e.AuthorityEntityType).HasColumnName("authorityEntityType");
+
+                entity.Property(e => e.AuthorityType).HasColumnName("authorityType");
+
+                entity.Property(e => e.RoleId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("roleId");
+
+                entity.Property(e => e.RoleType).HasColumnName("roleType");
+
+                entity.Property(e => e.TenantId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+            });
+
+            modelBuilder.Entity<FineAuthorityObject>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_aut__69528B0DC4EE532D");
+
+                entity.ToTable("fine_authority_object", "db_owner");
+
+                entity.HasIndex(e => e.ParentId, "IDX5mjcl597oenehothib9qcqll0");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.CoverId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("coverId");
+
+                entity.Property(e => e.Description)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.DeviceType).HasColumnName("deviceType");
+
+                entity.Property(e => e.DisplayName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("displayName");
+
+                entity.Property(e => e.ExpandId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("expandId");
+
+                entity.Property(e => e.ExpandType).HasColumnName("expandType");
+
+                entity.Property(e => e.FullPath)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("fullPath");
+
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("icon");
+
+                entity.Property(e => e.MobileIcon)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("mobileIcon");
+
+                entity.Property(e => e.ParentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("parentId");
+
+                entity.Property(e => e.Path)
+                    .IsUnicode(false)
+                    .HasColumnName("path");
+
+                entity.Property(e => e.SortIndex).HasColumnName("sortIndex");
+            });
+
+            modelBuilder.Entity<FineBackupExcludeEntity>(entity =>
+            {
+                entity.ToTable("fine_backup_exclude_entity", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Value)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("value");
+            });
+
+            modelBuilder.Entity<FineBackupNode>(entity =>
+            {
+                entity.ToTable("fine_backup_node", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.BackupEndTime).HasColumnName("backupEndTime");
+
+                entity.Property(e => e.BackupModule)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("backupModule");
+
+                entity.Property(e => e.BackupName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("backupName");
+
+                entity.Property(e => e.BackupSize).HasColumnName("backupSize");
+
+                entity.Property(e => e.BackupTime).HasColumnName("backupTime");
+
+                entity.Property(e => e.Detail)
+                    .IsUnicode(false)
+                    .HasColumnName("detail");
+
+                entity.Property(e => e.SavePath)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("savePath");
+
+                entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("type");
+            });
+
+            modelBuilder.Entity<FineBaseMessage>(entity =>
+            {
+                entity.ToTable("fine_base_message", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
+
+                entity.Property(e => e.Datetime).HasColumnName("datetime");
+
+                entity.Property(e => e.Message)
+                    .IsUnicode(false)
+                    .HasColumnName("message");
+
+                entity.Property(e => e.Readed).HasColumnName("readed");
+
+                entity.Property(e => e.Toasted).HasColumnName("toasted");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+
+                entity.Property(e => e.Url)
+                    .IsUnicode(false)
+                    .HasColumnName("url");
+
+                entity.Property(e => e.UrlType).HasColumnName("urlType");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<FineBaseOutput>(entity =>
+            {
+                entity.ToTable("fine_base_output", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ActionName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("actionName");
+
+                entity.Property(e => e.ExecuteByUser).HasColumnName("executeByUser");
+
+                entity.Property(e => e.OutputId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("outputId");
+
+                entity.Property(e => e.ResultUrl)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("resultURL");
+
+                entity.Property(e => e.RunType).HasColumnName("runType");
+            });
+
+            modelBuilder.Entity<FineBlockIp>(entity =>
+            {
+                entity.ToTable("fine_block_ip", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
+
+                entity.Property(e => e.Ip)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("ip");
+
+                entity.Property(e => e.RejectedVisits).HasColumnName("rejectedVisits");
+            });
+
+            modelBuilder.Entity<FineConfClassname>(entity =>
+            {
+                entity.ToTable("fine_conf_classname", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ClassName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("className");
+            });
+
+            modelBuilder.Entity<FineConfEntity>(entity =>
+            {
+                entity.ToTable("fine_conf_entity", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Value)
+                    .IsUnicode(false)
+                    .HasColumnName("value");
+            });
+
+            modelBuilder.Entity<FineConfXmlentity>(entity =>
+            {
+                entity.ToTable("fine_conf_xmlentity", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Value).HasColumnName("value");
+            });
+
+            modelBuilder.Entity<FineCustomRole>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_cus__69528B0DB19C2D39");
+
+                entity.ToTable("fine_custom_role", "db_owner");
+
+                entity.HasIndex(e => e.Alias, "IDX8j76wg0qwjp47arr0ebdrnpir");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.Alias)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("alias");
+
+                entity.Property(e => e.CreationType).HasColumnName("creationType");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Enable).HasColumnName("enable");
+
+                entity.Property(e => e.LastOperationType).HasColumnName("lastOperationType");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<FineDepRole>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_dep__69528B0D37BD7114");
+
+                entity.ToTable("fine_dep_role", "db_owner");
+
+                entity.HasIndex(e => new { e.DepartmentId, e.PostId, e.TenantId }, "UKcoywjvt5e0xfyijblktkppk8a")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.CreationType).HasColumnName("creationType");
+
+                entity.Property(e => e.DepartmentId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("departmentId");
+
+                entity.Property(e => e.FullPath)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("fullPath");
+
+                entity.Property(e => e.LastOperationType).HasColumnName("lastOperationType");
+
+                entity.Property(e => e.PostId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("postId");
+            });
+
+            modelBuilder.Entity<FineDepartment>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_dep__69528B0DB3EC25BF");
+
+                entity.ToTable("fine_department", "db_owner");
+
+                entity.HasIndex(e => e.Alias, "IDX168i0npv0xbhrx2m6e0a7psde");
+
+                entity.HasIndex(e => e.ParentId, "IDX24umvif3uqbghqi2vrbet1b9x");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.Alias)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("alias");
+
+                entity.Property(e => e.CreationType).HasColumnName("creationType");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Enable).HasColumnName("enable");
+
+                entity.Property(e => e.FullPath)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("fullPath");
+
+                entity.Property(e => e.LastOperationType).HasColumnName("lastOperationType");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.ParentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("parentId");
+            });
+
+            modelBuilder.Entity<FineExtraProperty>(entity =>
+            {
+                entity.ToTable("fine_extra_property", "db_owner");
+
+                entity.HasIndex(e => new { e.RelatedId, e.Type, e.Name }, "UKfuxlugi6j4kgugdms45dj5bbv")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.RelatedId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("relatedId");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+
+                entity.Property(e => e.Value)
+                    .IsUnicode(false)
+                    .HasColumnName("value");
+            });
+
+            modelBuilder.Entity<FineFavoriteEntry>(entity =>
+            {
+                entity.ToTable("fine_favorite_entry", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.EntryId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("entryId");
+
+                entity.Property(e => e.Time).HasColumnName("time");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<FineHomepageExpand>(entity =>
+            {
+                entity.ToTable("fine_homepage_expand", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.AndroidPadHomePage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("androidPadHomePage");
+
+                entity.Property(e => e.AndroidPhoneHomePage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("androidPhoneHomePage");
+
+                entity.Property(e => e.IPadHomePage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("iPadHomePage");
+
+                entity.Property(e => e.IPhoneHomePage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("iPhoneHomePage");
+
+                entity.Property(e => e.PcHomePage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("pcHomePage");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+            });
+
+            modelBuilder.Entity<FineInternational>(entity =>
+            {
+                entity.ToTable("fine_international", "db_owner");
+
+                entity.HasIndex(e => e.Language, "IDXbngrhvl1j6sxn5nvl5r1kqptn");
+
+                entity.HasIndex(e => e.I18nKey, "IDXnvn0kpgsb7pn809px6jlbaend");
+
+                entity.HasIndex(e => new { e.I18nKey, e.Language }, "UKrkdhiekxlpiq8jcjmul4d42v")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1000)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.I18nKey)
+                    .HasMaxLength(255)
+                    .HasColumnName("i18nKey");
+
+                entity.Property(e => e.I18nValue)
+                    .HasMaxLength(1000)
+                    .HasColumnName("i18nValue");
+
+                entity.Property(e => e.Language)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("language");
+            });
+
+            modelBuilder.Entity<FineLabel>(entity =>
+            {
+                entity.ToTable("fine_label", "db_owner");
+
+                entity.HasIndex(e => new { e.LabelName, e.RelatedType }, "UK8p617fevaacro56m5bsuldppl")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.LabelName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("labelName");
+
+                entity.Property(e => e.RelatedType).HasColumnName("relatedType");
+            });
+
+            modelBuilder.Entity<FineLabelIndex>(entity =>
+            {
+                entity.ToTable("fine_label_index", "db_owner");
+
+                entity.HasIndex(e => new { e.LabelId, e.RelatedId }, "UKgoornoptbrpar9say768gues0")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.LabelId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("labelId");
+
+                entity.Property(e => e.RelatedId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("relatedId");
+            });
+
+            modelBuilder.Entity<FineLastLogin>(entity =>
+            {
+                entity.ToTable("fine_last_login", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.City)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("city");
+
+                entity.Property(e => e.Ip)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("ip");
+
+                entity.Property(e => e.Time).HasColumnName("time");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<FineLoginLock>(entity =>
+            {
+                entity.ToTable("fine_login_lock", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ErrorTime).HasColumnName("errorTime");
+
+                entity.Property(e => e.LockObject)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("lockObject");
+
+                entity.Property(e => e.LockObjectValue)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("lockObjectValue");
+
+                entity.Property(e => e.LockTime).HasColumnName("lockTime");
+
+                entity.Property(e => e.Locked).HasColumnName("locked");
+
+                entity.Property(e => e.UnlockTime).HasColumnName("unlockTime");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<FineMobileDevice>(entity =>
+            {
+                entity.ToTable("fine_mobile_device", "db_owner");
+
+                entity.HasIndex(e => new { e.Username, e.MacAddress }, "UKnueghd2ow0ntb4efvtyyufs2r")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreateDate).HasColumnName("createDate");
+
+                entity.Property(e => e.DeviceName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("deviceName");
+
+                entity.Property(e => e.MacAddress)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("macAddress");
+
+                entity.Property(e => e.Passed).HasColumnName("passed");
+
+                entity.Property(e => e.UpdateDate).HasColumnName("updateDate");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<FineMobilePushMessage>(entity =>
+            {
+                entity.ToTable("fine_mobile_push_message", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.GroupId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("groupId");
+
+                entity.Property(e => e.MediaId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("mediaId");
+
+                entity.Property(e => e.MsgType).HasColumnName("msgType");
+
+                entity.Property(e => e.Terminal).HasColumnName("terminal");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("title");
+            });
+
+            modelBuilder.Entity<FineOutputClass>(entity =>
+            {
+                entity.ToTable("fine_output_class", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ClassName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("className");
+            });
+
+            modelBuilder.Entity<FineOutputClientNotice>(entity =>
+            {
+                entity.ToTable("fine_output_client_notice", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Addressee)
+                    .IsUnicode(false)
+                    .HasColumnName("addressee");
+
+                entity.Property(e => e.Content)
+                    .IsUnicode(false)
+                    .HasColumnName("content");
+
+                entity.Property(e => e.CustomizeLink)
+                    .IsUnicode(false)
+                    .HasColumnName("customizeLink");
+
+                entity.Property(e => e.LinkOpenType).HasColumnName("linkOpenType");
+
+                entity.Property(e => e.MediaId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("mediaId");
+
+                entity.Property(e => e.Subject)
+                    .IsUnicode(false)
+                    .HasColumnName("subject");
+
+                entity.Property(e => e.Terminal).HasColumnName("terminal");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+            });
+
+            modelBuilder.Entity<FineOutputEmail>(entity =>
+            {
+                entity.ToTable("fine_output_email", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.AddLink).HasColumnName("addLink");
+
+                entity.Property(e => e.BccAddress)
+                    .IsUnicode(false)
+                    .HasColumnName("bccAddress");
+
+                entity.Property(e => e.BodyContent)
+                    .IsUnicode(false)
+                    .HasColumnName("bodyContent");
+
+                entity.Property(e => e.CcAddress)
+                    .IsUnicode(false)
+                    .HasColumnName("ccAddress");
+
+                entity.Property(e => e.CustomAddress)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("customAddress");
+
+                entity.Property(e => e.CustomBccAddress)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("customBccAddress");
+
+                entity.Property(e => e.CustomCcAddress)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("customCcAddress");
+
+                entity.Property(e => e.PreviewAttach).HasColumnName("previewAttach");
+
+                entity.Property(e => e.PreviewWidget).HasColumnName("previewWidget");
+
+                entity.Property(e => e.Subject)
+                    .IsUnicode(false)
+                    .HasColumnName("subject");
+
+                entity.Property(e => e.UseAttach).HasColumnName("useAttach");
+            });
+
+            modelBuilder.Entity<FineOutputFtp>(entity =>
+            {
+                entity.ToTable("fine_output_ftp", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.FtpMode)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("ftpMode");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("password");
+
+                entity.Property(e => e.Port)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("port");
+
+                entity.Property(e => e.SavePath)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("savePath");
+
+                entity.Property(e => e.ServerAddress)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("serverAddress");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<FineOutputMount>(entity =>
+            {
+                entity.ToTable("fine_output_mount", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.FolderEntryId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("folderEntryID");
+
+                entity.Property(e => e.FolderEntryName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("folderEntryName");
+
+                entity.Property(e => e.FolderEntryStr)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("folderEntryStr");
+            });
+
+            modelBuilder.Entity<FineOutputPlatformMsg>(entity =>
+            {
+                entity.ToTable("fine_output_platform_msg", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Content)
+                    .IsUnicode(false)
+                    .HasColumnName("content");
+
+                entity.Property(e => e.LinkOpenType).HasColumnName("linkOpenType");
+
+                entity.Property(e => e.Subject)
+                    .IsUnicode(false)
+                    .HasColumnName("subject");
+            });
+
+            modelBuilder.Entity<FineOutputPrint>(entity =>
+            {
+                entity.ToTable("fine_output_print", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.PrinterName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("printerName");
+            });
+
+            modelBuilder.Entity<FineOutputSftp>(entity =>
+            {
+                entity.ToTable("fine_output_sftp", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("password");
+
+                entity.Property(e => e.Port)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("port");
+
+                entity.Property(e => e.PrivateKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("privateKey");
+
+                entity.Property(e => e.SavePath)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("savePath");
+
+                entity.Property(e => e.ServerAddress)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("serverAddress");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<FineOutputSm>(entity =>
+            {
+                entity.ToTable("fine_output_sms", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.SmsParam)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("smsParam");
+
+                entity.Property(e => e.TemplateId).HasColumnName("templateID");
+            });
+
+            modelBuilder.Entity<FineParamTemplate>(entity =>
+            {
+                entity.ToTable("fine_param_template", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Templateid)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("templateid");
+
+                entity.Property(e => e.Tpgroup)
+                    .IsUnicode(false)
+                    .HasColumnName("tpgroup");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+            });
+
+            modelBuilder.Entity<FinePost>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_pos__69528B0D96ACA94D");
+
+                entity.ToTable("fine_post", "db_owner");
+
+                entity.HasIndex(e => e.Alias, "IDX1nbisecalp694watgjcqti6sk");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.Alias)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("alias");
+
+                entity.Property(e => e.CreationType).HasColumnName("creationType");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Enable).HasColumnName("enable");
+
+                entity.Property(e => e.LastOperationType).HasColumnName("lastOperationType");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<FinePrintOffset>(entity =>
+            {
+                entity.ToTable("fine_print_offset", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CptName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("cptName");
+
+                entity.Property(e => e.Ip)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("ip");
+
+                entity.Property(e => e.OffsetX)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("offsetX");
+
+                entity.Property(e => e.OffsetY)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("offsetY");
+
+                entity.Property(e => e.Sign)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("sign");
+            });
+
+            modelBuilder.Entity<FinePrintOffsetIpRelate>(entity =>
+            {
+                entity.ToTable("fine_print_offset_ip_relate", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ChildIp)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("childIP");
+
+                entity.Property(e => e.MotherId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("motherID");
+            });
+
+            modelBuilder.Entity<FineProcessExpand>(entity =>
+            {
+                entity.ToTable("fine_process_expand", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ProcessType).HasColumnName("processType");
+            });
+
+            modelBuilder.Entity<FineProcessMessage>(entity =>
+            {
+                entity.ToTable("fine_process_message", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.AllTaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("allTaskId");
+
+                entity.Property(e => e.DeadLine).HasColumnName("deadLine");
+
+                entity.Property(e => e.Processed).HasColumnName("processed");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+            });
+
+            modelBuilder.Entity<FineRemoteDesignAuth>(entity =>
+            {
+                entity.ToTable("fine_remote_design_auth", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Path)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("path");
+
+                entity.Property(e => e.PathType).HasColumnName("pathType");
+
+                entity.Property(e => e.RoleType)
+                    .HasColumnName("roleType")
+                    .HasDefaultValueSql("((3))");
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userName");
+            });
+
+            modelBuilder.Entity<FineReportExpand>(entity =>
+            {
+                entity.ToTable("fine_report_expand", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ShowType).HasColumnName("showType");
+
+                entity.Property(e => e.TransmitParameters)
+                    .IsUnicode(false)
+                    .HasColumnName("transmitParameters");
+            });
+
+            modelBuilder.Entity<FineScheduleOutput>(entity =>
+            {
+                entity.ToTable("fine_schedule_output", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.BaseName)
+                    .IsUnicode(false)
+                    .HasColumnName("baseName");
+
+                entity.Property(e => e.CreateAttachByUsername).HasColumnName("createAttachByUsername");
+
+                entity.Property(e => e.Formats)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("formats");
+            });
+
+            modelBuilder.Entity<FineScheduleRecord>(entity =>
+            {
+                entity.ToTable("fine_schedule_record", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Creator)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("creator");
+
+                entity.Property(e => e.DetailMessage)
+                    .IsUnicode(false)
+                    .HasColumnName("detailMessage");
+
+                entity.Property(e => e.FilePath)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("filePath");
+
+                entity.Property(e => e.LogMessage)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("logMessage");
+
+                entity.Property(e => e.LogTime).HasColumnName("logTime");
+
+                entity.Property(e => e.LogType).HasColumnName("logType");
+
+                entity.Property(e => e.NextFireTime).HasColumnName("nextFireTime");
+
+                entity.Property(e => e.RunType).HasColumnName("runType");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+
+                entity.Property(e => e.TaskName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskName");
+            });
+
+            modelBuilder.Entity<FineScheduleTask>(entity =>
+            {
+                entity.ToTable("fine_schedule_task", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.BackupFilePath)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("backupFilePath");
+
+                entity.Property(e => e.ConditionParameter)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("conditionParameter");
+
+                entity.Property(e => e.Creator)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("creator");
+
+                entity.Property(e => e.Editable).HasColumnName("editable");
+
+                entity.Property(e => e.FileClearCount).HasColumnName("fileClearCount");
+
+                entity.Property(e => e.NextFireTime).HasColumnName("nextFireTime");
+
+                entity.Property(e => e.OutputStr)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("outputStr");
+
+                entity.Property(e => e.PreFireTime).HasColumnName("preFireTime");
+
+                entity.Property(e => e.RepeatTime).HasColumnName("repeatTime");
+
+                entity.Property(e => e.RepeatTimes).HasColumnName("repeatTimes");
+
+                entity.Property(e => e.ScheduleOutput)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("scheduleOutput");
+
+                entity.Property(e => e.SendBackupFile).HasColumnName("sendBackupFile");
+
+                entity.Property(e => e.ShowType).HasColumnName("showType");
+
+                entity.Property(e => e.TaskCondition)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("taskCondition");
+
+                entity.Property(e => e.TaskDescription)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("taskDescription");
+
+                entity.Property(e => e.TaskName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskName");
+
+                entity.Property(e => e.TaskParameter)
+                    .IsUnicode(false)
+                    .HasColumnName("taskParameter");
+
+                entity.Property(e => e.TaskState).HasColumnName("taskState");
+
+                entity.Property(e => e.TaskType).HasColumnName("taskType");
+
+                entity.Property(e => e.TemplatePath)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("templatePath");
+
+                entity.Property(e => e.TriggerGroup)
+                    .IsUnicode(false)
+                    .HasColumnName("triggerGroup");
+
+                entity.Property(e => e.UserGroup)
+                    .IsUnicode(false)
+                    .HasColumnName("userGroup");
+            });
+
+            modelBuilder.Entity<FineScheduleTaskLog>(entity =>
+            {
+                entity.ToTable("fine_schedule_task_log", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.LogTime).HasColumnName("logTime");
+
+                entity.Property(e => e.LogType).HasColumnName("logType");
+
+                entity.Property(e => e.TaskId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+
+                entity.Property(e => e.TaskLog)
+                    .IsUnicode(false)
+                    .HasColumnName("taskLog");
+
+                entity.Property(e => e.TaskName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskName");
+            });
+
+            modelBuilder.Entity<FineScheduleTaskParam>(entity =>
+            {
+                entity.ToTable("fine_schedule_task_param", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Param)
+                    .IsUnicode(false)
+                    .HasColumnName("param");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+
+                entity.Property(e => e.TaskName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskName");
+            });
+
+            modelBuilder.Entity<FineSoftDatum>(entity =>
+            {
+                entity.ToTable("fine_soft_data", "db_owner");
+
+                entity.HasIndex(e => new { e.DeletedName, e.Type }, "UKinws3an4js1ibprri9efepxni")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.DeletedId, e.Type }, "UKkarmvav9qpl2gngebfncpes8f")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.DeletedId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("deletedId");
+
+                entity.Property(e => e.DeletedName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("deletedName");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+            });
+
+            modelBuilder.Entity<FineSwiftColIdxConf>(entity =>
+            {
+                entity.HasKey(e => new { e.ColumnName, e.TableKey })
+                    .HasName("PK__fine_swi__71649D4AAD1A7841");
+
+                entity.ToTable("fine_swift_col_idx_conf", "db_owner");
+
+                entity.Property(e => e.ColumnName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("columnName");
+
+                entity.Property(e => e.TableKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tableKey");
+
+                entity.Property(e => e.RequireGlobalDict).HasColumnName("requireGlobalDict");
+
+                entity.Property(e => e.RequireIndex).HasColumnName("requireIndex");
+            });
+
+            modelBuilder.Entity<FineSwiftConfigEntity>(entity =>
+            {
+                entity.HasKey(e => e.ConfigKey)
+                    .HasName("PK__fine_swi__439A5A81AD688CF3");
+
+                entity.ToTable("fine_swift_config_entity", "db_owner");
+
+                entity.Property(e => e.ConfigKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("configKey");
+
+                entity.Property(e => e.ConfigValue)
+                    .IsUnicode(false)
+                    .HasColumnName("configValue");
+            });
+
+            modelBuilder.Entity<FineSwiftDaysRecord>(entity =>
+            {
+                entity.HasKey(e => e.TaskId)
+                    .HasName("PK__fine_swi__0492148DE10E7EC3");
+
+                entity.ToTable("fine_swift_days_record", "db_owner");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("task_id");
+
+                entity.Property(e => e.TaskCondition)
+                    .HasMaxLength(1024)
+                    .IsUnicode(false)
+                    .HasColumnName("task_condition");
+
+                entity.Property(e => e.TaskResult)
+                    .HasMaxLength(4096)
+                    .IsUnicode(false)
+                    .HasColumnName("task_result");
+
+                entity.Property(e => e.TaskType)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("task_type");
+            });
+
+            modelBuilder.Entity<FineSwiftFilekey>(entity =>
+            {
+                entity.HasKey(e => new { e.SegmentId, e.TimeKey })
+                    .HasName("PK__fine_swi__5790AD0BE451A0C0");
+
+                entity.ToTable("fine_swift_filekey", "db_owner");
+
+                entity.Property(e => e.SegmentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("segmentId");
+
+                entity.Property(e => e.TimeKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("timeKey");
+            });
+
+            modelBuilder.Entity<FineSwiftMetadatum>(entity =>
+            {
+                entity.ToTable("fine_swift_metadata", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Fields)
+                    .IsUnicode(false)
+                    .HasColumnName("fields");
+
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("remark");
+
+                entity.Property(e => e.SchemaName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("schemaName");
+
+                entity.Property(e => e.SwiftSchema)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("swiftSchema");
+
+                entity.Property(e => e.TableName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tableName");
+            });
+
+            modelBuilder.Entity<FineSwiftSegLocation>(entity =>
+            {
+                entity.HasKey(e => new { e.ClusterId, e.SegmentId })
+                    .HasName("PK__fine_swi__6EAA7451C1A834B5");
+
+                entity.ToTable("fine_swift_seg_location", "db_owner");
+
+                entity.Property(e => e.ClusterId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("clusterId");
+
+                entity.Property(e => e.SegmentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("segmentId");
+
+                entity.Property(e => e.SourceKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("sourceKey");
+            });
+
+            modelBuilder.Entity<FineSwiftSegment>(entity =>
+            {
+                entity.ToTable("fine_swift_segments", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.SegmentOrder).HasColumnName("segmentOrder");
+
+                entity.Property(e => e.SegmentOwner)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("segmentOwner");
+
+                entity.Property(e => e.SegmentUri)
+                    .IsUnicode(false)
+                    .HasColumnName("segmentUri");
+
+                entity.Property(e => e.StoreType)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("storeType");
+
+                entity.Property(e => e.SwiftSchema)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("swiftSchema");
+            });
+
+            modelBuilder.Entity<FineSwiftServiceInfo>(entity =>
+            {
+                entity.ToTable("fine_swift_service_info", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.ClusterId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("cluster_id");
+
+                entity.Property(e => e.IsSingleton).HasColumnName("is_singleton");
+
+                entity.Property(e => e.Service)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("service");
+
+                entity.Property(e => e.ServiceInfo)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("service_info");
+            });
+
+            modelBuilder.Entity<FineSwiftTabIdxConf>(entity =>
+            {
+                entity.HasKey(e => e.TableKey)
+                    .HasName("PK__fine_swi__8900162C27511BD9");
+
+                entity.ToTable("fine_swift_tab_idx_conf", "db_owner");
+
+                entity.Property(e => e.TableKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tableKey");
+
+                entity.Property(e => e.AllotRule)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("allotRule");
+            });
+
+            modelBuilder.Entity<FineSwiftTablePath>(entity =>
+            {
+                entity.HasKey(e => new { e.ClusterId, e.TableKey })
+                    .HasName("PK__fine_swi__DF4782DF69E9E1FC");
+
+                entity.ToTable("fine_swift_table_path", "db_owner");
+
+                entity.Property(e => e.ClusterId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("clusterId");
+
+                entity.Property(e => e.TableKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tableKey");
+
+                entity.Property(e => e.LastPath).HasColumnName("lastPath");
+
+                entity.Property(e => e.TablePath).HasColumnName("tablePath");
+
+                entity.Property(e => e.TmpDir).HasColumnName("tmpDir");
+            });
+
+            modelBuilder.Entity<FineSystemMessage>(entity =>
+            {
+                entity.ToTable("fine_system_message", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Terminal).HasColumnName("terminal");
+
+                entity.Property(e => e.Title)
+                    .IsUnicode(false)
+                    .HasColumnName("title");
+            });
+
+            modelBuilder.Entity<FineTenant>(entity =>
+            {
+                entity.ToTable("fine_tenant", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<FineUsageDatum>(entity =>
+            {
+                entity.ToTable("fine_usage_data", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Data)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("data");
+
+                entity.Property(e => e.DataType).HasColumnName("dataType");
+
+                entity.Property(e => e.SubType).HasColumnName("subType");
+
+                entity.Property(e => e.Tag)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tag");
+            });
+
+            modelBuilder.Entity<FineUser>(entity =>
+            {
+                entity.HasKey(e => new { e.Id, e.TenantId })
+                    .HasName("PK__fine_use__69528B0D1D5A41C6");
+
+                entity.ToTable("fine_user", "db_owner");
+
+                entity.HasIndex(e => e.RealAlias, "IDX3tp6gfib0xg57j3gvw9el58mo");
+
+                entity.HasIndex(e => e.UserAlias, "IDX4vir3vqq6fthqbfdtw8em2m0l");
+
+                entity.HasIndex(e => new { e.UserName, e.TenantId }, "UK548m71akign8vsov5smlm4uwx")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.Birthday).HasColumnName("birthday");
+
+                entity.Property(e => e.CreationType).HasColumnName("creationType");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("email");
+
+                entity.Property(e => e.Enable).HasColumnName("enable");
+
+                entity.Property(e => e.Language)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("language");
+
+                entity.Property(e => e.LastOperationType).HasColumnName("lastOperationType");
+
+                entity.Property(e => e.Male).HasColumnName("male");
+
+                entity.Property(e => e.Mobile)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("mobile");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("password");
+
+                entity.Property(e => e.RealAlias)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("realAlias");
+
+                entity.Property(e => e.RealName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("realName");
+
+                entity.Property(e => e.Salt)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("salt");
+
+                entity.Property(e => e.UserAlias)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userAlias");
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userName");
+
+                entity.Property(e => e.WorkPhone)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("workPhone");
+            });
+
+            modelBuilder.Entity<FineUserRoleMiddle>(entity =>
+            {
+                entity.ToTable("fine_user_role_middle", "db_owner");
+
+                entity.HasIndex(e => e.RoleId, "IDX8sr9fqbahqne0k3utap5kfx24");
+
+                entity.HasIndex(e => e.UserId, "IDX8yknqk4qau61k1h614i87emdn");
+
+                entity.HasIndex(e => e.RoleType, "IDXtmv6e3k2fr907sfbhuu1blkd6");
+
+                entity.HasIndex(e => new { e.UserId, e.RoleId, e.RoleType, e.TenantId }, "UKrjlfin3kwa87iecxe4mqvr7if")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.RoleId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("roleId");
+
+                entity.Property(e => e.RoleType).HasColumnName("roleType");
+
+                entity.Property(e => e.TenantId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("tenantId")
+                    .HasDefaultValueSql("('default')");
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<FineVc>(entity =>
+            {
+                entity.ToTable("fine_vcs", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CommitCode)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("commitCode");
+
+                entity.Property(e => e.CommitMsg)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("commitMsg");
+
+                entity.Property(e => e.Filename)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("filename");
+
+                entity.Property(e => e.Time).HasColumnName("time");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
+
+                entity.Property(e => e.Version).HasColumnName("version");
+            });
+
+            modelBuilder.Entity<FineWorkflow>(entity =>
+            {
+                entity.ToTable("fine_workflow", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
+
+                entity.Property(e => e.CreatorId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("creatorId");
+
+                entity.Property(e => e.Description)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.NodesId)
+                    .IsUnicode(false)
+                    .HasColumnName("nodesId");
+            });
+
+            modelBuilder.Entity<FineWorkflowLog>(entity =>
+            {
+                entity.ToTable("fine_workflow_log", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.DateTime).HasColumnName("dateTime");
+
+                entity.Property(e => e.Message)
+                    .IsUnicode(false)
+                    .HasColumnName("message");
+
+                entity.Property(e => e.OperatorName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("operatorName");
+
+                entity.Property(e => e.ProcessName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("processName");
+
+                entity.Property(e => e.TaskName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskName");
+            });
+
+            modelBuilder.Entity<FineWorkflowNode>(entity =>
+            {
+                entity.ToTable("fine_workflow_node", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.AlertControl)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("alertControl");
+
+                entity.Property(e => e.Authority)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("authority");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.NeedAllComplete).HasColumnName("needAllComplete");
+
+                entity.Property(e => e.NeedOfflineReport).HasColumnName("needOfflineReport");
+
+                entity.Property(e => e.ProcessId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("processId");
+
+                entity.Property(e => e.ReportControl)
+                    .HasMaxLength(3000)
+                    .IsUnicode(false)
+                    .HasColumnName("reportControl");
+            });
+
+            modelBuilder.Entity<FineWorkflowStashDatum>(entity =>
+            {
+                entity.ToTable("fine_workflow_stash_data", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Data)
+                    .IsUnicode(false)
+                    .HasColumnName("data");
+
+                entity.Property(e => e.ReportPath)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("reportPath");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<FineWorkflowTask>(entity =>
+            {
+                entity.ToTable("fine_workflow_task", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
+
+                entity.Property(e => e.CreatorId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("creatorId");
+
+                entity.Property(e => e.CreatorName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("creatorName");
+
+                entity.Property(e => e.DeadLineDate).HasColumnName("deadLineDate");
+
+                entity.Property(e => e.DeadLineType)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("deadLineType");
+
+                entity.Property(e => e.IssueControl)
+                    .IsUnicode(false)
+                    .HasColumnName("issueControl");
+
+                entity.Property(e => e.IssueOver).HasColumnName("issueOver");
+
+                entity.Property(e => e.LeapfrogBack).HasColumnName("leapfrogBack");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.ParentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("parentId");
+
+                entity.Property(e => e.ProcessId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("processId");
+
+                entity.Property(e => e.RemindControl)
+                    .IsUnicode(false)
+                    .HasColumnName("remindControl");
+
+                entity.Property(e => e.TaskNameCalculateOnce).HasColumnName("taskNameCalculateOnce");
+            });
+
+            modelBuilder.Entity<FineWorkflowTaskImpl>(entity =>
+            {
+                entity.ToTable("fine_workflow_task_impl", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Alerted).HasColumnName("alerted");
+
+                entity.Property(e => e.CompleteState)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("completeState");
+
+                entity.Property(e => e.CreateTime).HasColumnName("createTime");
+
+                entity.Property(e => e.CurrentNodeIdx).HasColumnName("currentNodeIdx");
+
+                entity.Property(e => e.DeadLine).HasColumnName("deadLine");
+
+                entity.Property(e => e.FrTaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("frTaskId");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.NeedAllComplete).HasColumnName("needAllComplete");
+
+                entity.Property(e => e.NodeRoute)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("nodeRoute");
+
+                entity.Property(e => e.Note)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("note");
+
+                entity.Property(e => e.OperatorJson)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("operatorJSON");
+
+                entity.Property(e => e.OperatorOffset)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("operatorOffset");
+
+                entity.Property(e => e.OperatorOffsetName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("operatorOffsetName");
+
+                entity.Property(e => e.ParentId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("parentId");
+
+                entity.Property(e => e.ProcessId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("processId");
+
+                entity.Property(e => e.ReportOffset).HasColumnName("reportOffset");
+
+                entity.Property(e => e.SendTime).HasColumnName("sendTime");
+
+                entity.Property(e => e.Sender)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("sender");
+
+                entity.Property(e => e.SenderId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("senderId");
+
+                entity.Property(e => e.SonTaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("sonTaskId");
+
+                entity.Property(e => e.State).HasColumnName("state");
+
+                entity.Property(e => e.TaskBackTarget)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskBackTarget");
+
+                entity.Property(e => e.TaskId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("taskId");
+            });
+
+            modelBuilder.Entity<FineWriteStash>(entity =>
+            {
+                entity.ToTable("fine_write_stash", "db_owner");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Data)
+                    .IsUnicode(false)
+                    .HasColumnName("data");
+
+                entity.Property(e => e.ReportPath)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("reportPath");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("username");
             });
 
             modelBuilder.Entity<Inquiry>(entity =>
@@ -1188,6 +3492,445 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.PromoStartDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<QrtzBlobTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup, e.TriggerName })
+                    .HasName("PK__QRTZ_BLO__922200A78645588A");
+
+                entity.ToTable("QRTZ_BLOB_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.BlobData).HasColumnName("BLOB_DATA");
+            });
+
+            modelBuilder.Entity<QrtzCalendar>(entity =>
+            {
+                entity.HasKey(e => new { e.CalendarName, e.SchedName })
+                    .HasName("PK__QRTZ_CAL__DCFFF5BC3CE5FA0B");
+
+                entity.ToTable("QRTZ_CALENDARS", "db_owner");
+
+                entity.Property(e => e.CalendarName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("CALENDAR_NAME");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.Calendar)
+                    .HasMaxLength(4000)
+                    .HasColumnName("CALENDAR");
+            });
+
+            modelBuilder.Entity<QrtzCronTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup, e.TriggerName })
+                    .HasName("PK__QRTZ_CRO__922200A728CFB7E3");
+
+                entity.ToTable("QRTZ_CRON_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.CronExpression)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("CRON_EXPRESSION");
+
+                entity.Property(e => e.TimeZoneId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TIME_ZONE_ID");
+            });
+
+            modelBuilder.Entity<QrtzFiredTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.EntryId, e.SchedName })
+                    .HasName("PK__QRTZ_FIR__4E11BD66FA490D7A");
+
+                entity.ToTable("QRTZ_FIRED_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.EntryId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("ENTRY_ID");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.FiredTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("FIRED_TIME");
+
+                entity.Property(e => e.InstanceName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("INSTANCE_NAME");
+
+                entity.Property(e => e.IsNonconcurrent).HasColumnName("IS_NONCONCURRENT");
+
+                entity.Property(e => e.JobGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.JobName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.Priority).HasColumnName("PRIORITY");
+
+                entity.Property(e => e.RequestsRecovery).HasColumnName("REQUESTS_RECOVERY");
+
+                entity.Property(e => e.SchedTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("SCHED_TIME");
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("STATE");
+
+                entity.Property(e => e.TriggerGroup)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+            });
+
+            modelBuilder.Entity<QrtzJobDetail>(entity =>
+            {
+                entity.HasKey(e => new { e.JobGroup, e.JobName, e.SchedName })
+                    .HasName("PK__QRTZ_JOB__1A47ADFBD81A9DBF");
+
+                entity.ToTable("QRTZ_JOB_DETAILS", "db_owner");
+
+                entity.Property(e => e.JobGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.JobName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.Creator)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("CREATOR");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.IsDurable).HasColumnName("IS_DURABLE");
+
+                entity.Property(e => e.IsNonconcurrent).HasColumnName("IS_NONCONCURRENT");
+
+                entity.Property(e => e.IsUpdateData).HasColumnName("IS_UPDATE_DATA");
+
+                entity.Property(e => e.JobClassName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_CLASS_NAME");
+
+                entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
+
+                entity.Property(e => e.RequestsRecovery).HasColumnName("REQUESTS_RECOVERY");
+            });
+
+            modelBuilder.Entity<QrtzLock>(entity =>
+            {
+                entity.HasKey(e => new { e.LockName, e.SchedName })
+                    .HasName("PK__QRTZ_LOC__E5C51B86241E10AE");
+
+                entity.ToTable("QRTZ_LOCKS", "db_owner");
+
+                entity.Property(e => e.LockName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("LOCK_NAME");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+            });
+
+            modelBuilder.Entity<QrtzPausedTriggerGrp>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup })
+                    .HasName("PK__QRTZ_PAU__696155E9E416F77A");
+
+                entity.ToTable("QRTZ_PAUSED_TRIGGER_GRPS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+            });
+
+            modelBuilder.Entity<QrtzSchedulerState>(entity =>
+            {
+                entity.HasKey(e => new { e.InstanceName, e.SchedName })
+                    .HasName("PK__QRTZ_SCH__BB16A25D12F3B980");
+
+                entity.ToTable("QRTZ_SCHEDULER_STATE", "db_owner");
+
+                entity.Property(e => e.InstanceName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("INSTANCE_NAME");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.CheckinInterval)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("CHECKIN_INTERVAL");
+
+                entity.Property(e => e.LastCheckinTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("LAST_CHECKIN_TIME");
+            });
+
+            modelBuilder.Entity<QrtzSimpleTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup, e.TriggerName })
+                    .HasName("PK__QRTZ_SIM__922200A7BFD67733");
+
+                entity.ToTable("QRTZ_SIMPLE_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.RepeatCount)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("REPEAT_COUNT");
+
+                entity.Property(e => e.RepeatInterval)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("REPEAT_INTERVAL");
+
+                entity.Property(e => e.TimesTriggered)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("TIMES_TRIGGERED");
+            });
+
+            modelBuilder.Entity<QrtzSimpropTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup, e.TriggerName })
+                    .HasName("PK__QRTZ_SIM__922200A7C3E66C3B");
+
+                entity.ToTable("QRTZ_SIMPROP_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.BoolProp1).HasColumnName("BOOL_PROP_1");
+
+                entity.Property(e => e.BoolProp2).HasColumnName("BOOL_PROP_2");
+
+                entity.Property(e => e.DecProp1)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("DEC_PROP_1");
+
+                entity.Property(e => e.DecProp2)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("DEC_PROP_2");
+
+                entity.Property(e => e.IntProp1).HasColumnName("INT_PROP_1");
+
+                entity.Property(e => e.IntProp2).HasColumnName("INT_PROP_2");
+
+                entity.Property(e => e.LongProp1)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("LONG_PROP_1");
+
+                entity.Property(e => e.LongProp2)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("LONG_PROP_2");
+
+                entity.Property(e => e.StrProp1)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_1");
+
+                entity.Property(e => e.StrProp2)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_2");
+
+                entity.Property(e => e.StrProp3)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_3");
+            });
+
+            modelBuilder.Entity<QrtzTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup, e.TriggerName })
+                    .HasName("PK__QRTZ_TRI__922200A7C79606C7");
+
+                entity.ToTable("QRTZ_TRIGGERS", "db_owner");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.AppointId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("APPOINT_ID");
+
+                entity.Property(e => e.CalendarName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("CALENDAR_NAME");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.EndTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("END_TIME");
+
+                entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
+
+                entity.Property(e => e.JobGroup)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.JobName)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.MisfireInstr).HasColumnName("MISFIRE_INSTR");
+
+                entity.Property(e => e.NextFireTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("NEXT_FIRE_TIME");
+
+                entity.Property(e => e.PrevFireTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("PREV_FIRE_TIME");
+
+                entity.Property(e => e.Priority).HasColumnName("PRIORITY");
+
+                entity.Property(e => e.StartTime)
+                    .HasColumnType("numeric(19, 2)")
+                    .HasColumnName("START_TIME");
+
+                entity.Property(e => e.TriggerState)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_STATE");
+
+                entity.Property(e => e.TriggerType)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_TYPE");
             });
 
             modelBuilder.Entity<Quotation>(entity =>

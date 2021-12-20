@@ -1,4 +1,5 @@
-﻿using BackendSaiKitchen.CustomModel;
+﻿using System.Collections.Generic;
+using BackendSaiKitchen.CustomModel;
 using BackendSaiKitchen.Helper;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
@@ -25,6 +26,19 @@ namespace BackendSaiKitchen.Controllers
             await mailService.SendWelcomeEmailAsync(request);
             return Ok();
         }
+        [HttpPost("whatsapp")]
+        public async Task<string> SendTextWhatsapp([FromForm] List<string> sendto, [FromForm] string message)
+        {
+            string val = null;
+            foreach (var to in sendto)
+            {
+
+             val=    await Helper.Helper.SendWhatsappMessage(to, "text", message);
+            }
+
+            return val;
+        }
+
 
     }
 }
