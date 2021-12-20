@@ -8,7 +8,9 @@
         public static readonly string VimeoUrl = "https://vimeo.com/";
         public static readonly string VimeoAccessToken = "00378b95cc11173f483f7f6b602f6790";
         public static string WhatsappAccessToken = "a27e1f9ca2347bb766f332b8863ebe9f";
-        public static string WhatsappInstanceId = "61C02C26095F3";
+        //public static string WhatsappInstanceId = "61C02C26095F3";
+
+        public static string WhatsappInstanceId = "26095F3";
         public static readonly string loginErrormessage = "Incorrect Email or Password";
         public static readonly string inquiryOnAnotherBranchMessage = ", generated inquiry on another branch";
         public static readonly string measurementRescheduleBranchMessage = " measurement reschedule to ";

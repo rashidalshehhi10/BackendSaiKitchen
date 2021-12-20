@@ -4,6 +4,7 @@ using BackendSaiKitchen.Helper;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace BackendSaiKitchen.Controllers
 {
@@ -29,6 +30,19 @@ namespace BackendSaiKitchen.Controllers
         [HttpPost("whatsapp")]
         public async Task<string> SendTextWhatsapp([FromForm] List<string> sendto, [FromForm] string message)
         {
+            using var connection = new MySqlConnection("Server=147.182.217.248;Database=db_social;User Id=sameeradmin;Password=eW3Tn$wC42;");
+            await connection.OpenAsync();
+
+            using var command = new MySqlCommand("SELECT * FROM `sp_whatsapp_sessions` WHERE data  LIKE '%971503062669%' ORDER BY id DESC LIMIT 1;", connection);
+            using var reader = await command.ExecuteReaderAsync();
+            object value = null;
+            while (await reader.ReadAsync())
+            {
+                Constants.WhatsappInstanceId = reader.GetValue(3).ToString();
+                // do something with 'value'
+
+            }
+
             string val = null;
             foreach (var to in sendto)
             {
