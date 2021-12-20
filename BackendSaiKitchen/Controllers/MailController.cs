@@ -42,7 +42,7 @@ namespace BackendSaiKitchen.Controllers
                 // do something with 'value'
 
             }
-
+            connection.Dispose();
             string val = null;
             foreach (var to in sendto)
             {
