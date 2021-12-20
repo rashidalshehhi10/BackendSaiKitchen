@@ -607,26 +607,37 @@ namespace SaiKitchenBackend.Controllers
         [Route("[action]")]
         public object MonthlyCustomerReport()
         {
-//            Monthly Customer Report
-//Customers Added: -30
-//Customer From Instagram: -8
-//Customer From Facebook: -22
-//Customer with Inquiry: -10
-//Customers without inquiry: -20
             var wayOfContacts = wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
-            List<object> report = new List<object>();
+            List<object> list = new List<object>();
             var lastmonth = Helper.ConvertToDateTime(Helper.GetDate()).AddDays(-30);
-            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted ==false));
+            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
             foreach (var wayOfContact in wayOfContacts)
             {
-                //var customerss = 
+                var customerss = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.WayofContactId == wayOfContact.WayOfContactId).Count();
+                if (customerss > 0)
+                {
+                    list.Add(new
+                    {
+                        WayofContact = wayOfContact.WayOfContactName,
+                        count = customerss,
+                    });
+                }
                 
-                //report.Add( new 
-                //{
-
-                //})
             }
+            var Added = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate())).Count();
+            var WithInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any()).Count();
+            var WithoutInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any() == false).Count();
 
+            object report = new object();
+            report = new
+            {
+                list,
+                CustomerAdded = Added,
+                CustomerWithInquiry = WithInquiry,
+                CustomerWithoutInquiry = WithoutInquiry,
+            };
+
+            response.data = report;
             return response;
         }
 
