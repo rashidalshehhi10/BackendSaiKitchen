@@ -17,7 +17,11 @@ namespace BackendSaiKitchen.CustomModel
         public int ContactedWithoutinquiry { get; set; }
         public int ContactedWithInquiry { get; set; }
         public int NeedToFollowUp { get; set; }
+        public int NeedToFollowUpWithInquiry { get; set; }
+        public int NeedToFollowUpWithoutInquiry { get; set; }
         public int NotResponding { get; set; }
+        public int NotRespondingWithInquiry { get; set; }
+        public int NotRespondingWithoutInquiry { get; set; }
         public List<Calendar> calendar { get; set; }
     }
 

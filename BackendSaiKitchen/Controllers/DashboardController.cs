@@ -79,7 +79,11 @@ namespace BackendSaiKitchen.Controllers
                         ContactedWithoutinquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.Contacted &&
                         x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false).Count(),
                         NeedToFollowUp = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NeedToFollowUp).Count(),
+                        NeedToFollowUpWithInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count(),
+                        NeedToFollowUpWithoutInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count(),
                         NotResponding = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NotResponing).Count(),
+                        NotRespondingWithInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count(),
+                        NotRespondingWithoutInquiry = x.Customers.Where(x => x.IsActive == true && x.IsDeleted == false && x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count(),
                         TotalInquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).Count()
                     }).FirstOrDefault();
 
