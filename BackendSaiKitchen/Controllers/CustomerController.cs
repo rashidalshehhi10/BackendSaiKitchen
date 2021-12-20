@@ -605,6 +605,33 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpGet]
         [Route("[action]")]
+        public object MonthlyCustomerReport()
+        {
+//            Monthly Customer Report
+//Customers Added: -30
+//Customer From Instagram: -8
+//Customer From Facebook: -22
+//Customer with Inquiry: -10
+//Customers without inquiry: -20
+            var wayOfContacts = wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            List<object> report = new List<object>();
+            var lastmonth = Helper.ConvertToDateTime(Helper.GetDate()).AddDays(-30);
+            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted ==false));
+            foreach (var wayOfContact in wayOfContacts)
+            {
+                //var customerss = 
+                
+                //report.Add( new 
+                //{
+
+                //})
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
         public object GetCustomerbyUser()
         {
             var Customers = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(y => y.BranchId == Constants.branchId)).Select(x => new

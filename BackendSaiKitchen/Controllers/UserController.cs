@@ -129,6 +129,7 @@ namespace SaiKitchenBackend.Controllers
                     oldUser.UserEmail = user.UserEmail;
                     oldUser.UserName = user.UserName;
                     oldUser.UserMobile = user.UserMobile;
+                    oldUser.IsNotificationEnabled = user.IsNotificationEnabled;
                     userRepository.Update(oldUser);
                     context.SaveChanges();
 
