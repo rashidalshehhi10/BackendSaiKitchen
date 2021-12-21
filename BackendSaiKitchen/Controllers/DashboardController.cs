@@ -261,9 +261,9 @@ namespace BackendSaiKitchen.Controllers
         public async Task FollowUpMessage()
         {
             var customers = customerRepository.FindByCondition(x =>
-                    x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null &&
+                    x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.CustomerNextMeetingDate != null &&
                     x.CustomerNextMeetingDate != "").Select(x => new
-                    { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate ,x.CustomerAssignedTo });
+                    { x.CustomerId, x.CustomerName, x.CustomerContact, x.CustomerNextMeetingDate ,x.CustomerAssignedTo }).ToList();
             foreach (var customer in customers.Where(x => Helper.Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date == Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date))
             {
                 var sendto = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == customer.CustomerAssignedTo).Select(x => x.UserMobile).FirstOrDefault();
