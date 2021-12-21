@@ -625,7 +625,7 @@ namespace SaiKitchenBackend.Controllers
             var Added = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate())).Count();
             var WithInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any()).Count();
             var WithoutInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any() == false).Count();
-            string report = "Monthly Customer Report" + Environment.NewLine + Environment.NewLine;
+            string report = "Monthly Customer Report ("+lastmonth.ToShortDateString()+" - "+ Helper.ConvertToDateTime(Helper.GetDate()).ToShortDateString()+")" + Environment.NewLine + Environment.NewLine;
             report +="Customers Added:- "+ Added + Environment.NewLine;
             foreach (var item in list)
             {
