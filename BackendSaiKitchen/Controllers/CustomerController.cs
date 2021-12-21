@@ -637,19 +637,6 @@ namespace SaiKitchenBackend.Controllers
 
             response.data = report;
 
-            using var connection = new MySqlConnection("Server=147.182.217.248;Database=db_social;User Id=sameeradmin;Password=eW3Tn$wC42;");
-            await connection.OpenAsync();
-
-            using var command = new MySqlCommand("SELECT * FROM `sp_whatsapp_sessions` WHERE data  LIKE '%971503062669%' ORDER BY id DESC LIMIT 1;", connection);
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                Constants.WhatsappInstanceId = reader.GetValue(3).ToString();
-                // do something with 'value'
-
-            }
-            connection.Dispose();
-
             await Helper.SendWhatsappMessage("963930104705", "text", report);
             
             return response;
