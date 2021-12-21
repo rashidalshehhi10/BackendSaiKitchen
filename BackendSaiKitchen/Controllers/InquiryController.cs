@@ -831,17 +831,26 @@ namespace SaiKitchenBackend.Controllers
                 UserId = x.UserId,
                 User = x.UserName,
             }).ToList();
-            List<object> inquiries = new List<object>();
+            var counts = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId);
+            List<object> inquiriess = new List<object>();
             foreach (var user in users)
             {
-                var count = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.ManagedBy == user.UserId).Count();
-                inquiries.Add(new
+                var count = counts.Where(x => x.ManagedBy == user.UserId).Count();
+                if(count > 0)
                 {
-                    UserId = user.UserId,
-                    User = user.User,
-                    inquiriesCount = count
-                });
+                    inquiriess.Add(new
+                    {
+                        UserId = user.UserId,
+                        User = user.User,
+                        inquiriesCount = count
+                    });
+                }  
             }
+            object inquiries = new {
+                inquiriess,
+                TotalInquiries = counts.Count()
+            };
+            
             response.data = inquiries;
             return response;
         }
