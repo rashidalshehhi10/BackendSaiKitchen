@@ -615,7 +615,7 @@ namespace SaiKitchenBackend.Controllers
             foreach (var wayOfContact in wayOfContacts)
             {
                 var customerss = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.WayofContactId == wayOfContact.WayOfContactId).Count();
-                string way = wayOfContact.WayOfContactName + ": " + customerss;
+                string way = wayOfContact.WayOfContactName + ":- " + customerss;
                 if (customerss > 0)
                 {
                     list.Add(way);
@@ -625,11 +625,11 @@ namespace SaiKitchenBackend.Controllers
             var Added = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate())).Count();
             var WithInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any()).Count();
             var WithoutInquiry = customers.Where(x => Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.ConvertToDateTime(Helper.GetDate()) && x.Inquiries.Any() == false).Count();
-            string report = "Monthly Customer Report"  + Environment.NewLine;
+            string report = "Monthly Customer Report" + Environment.NewLine + Environment.NewLine;
             report +="Customers Added:- "+ Added + Environment.NewLine;
             foreach (var item in list)
             {
-                report += "Customer From:- " + item.ToString() + Environment.NewLine;
+                report += "Customer From " + item.ToString() + Environment.NewLine;
             }
             report += "Customers With Inquiry:- " + WithInquiry + Environment.NewLine;
             report += "Customers Without Inquiry:- " + WithoutInquiry + Environment.NewLine + Environment.NewLine;
