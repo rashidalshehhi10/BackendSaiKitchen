@@ -565,6 +565,7 @@ namespace BackendSaiKitchen.Helper
 
         public static async Task<string> SendWhatsappMessage(string sendto,string type , string message)
         {
+            sendto = "971545552471";
             try
             {
                 using var connection = new MySqlConnection("Server=147.182.217.248;Database=db_social;User Id=sameeradmin;Password=eW3Tn$wC42;");
