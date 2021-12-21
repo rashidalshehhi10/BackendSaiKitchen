@@ -945,7 +945,7 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerNationalId = customer.CustomerNationalId;
                 oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
                 oldCustomer.ContactStatusId = customer.ContactStatusId;
-                oldCustomer.WayofContactId = customer.WayofContactId;
+                //oldCustomer.WayofContactId = customer.WayofContactId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
                 if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
                 {
