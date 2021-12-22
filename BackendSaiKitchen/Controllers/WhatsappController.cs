@@ -31,14 +31,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task SendTodayEvents()
         {
-            //var event1 = calendarEventRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
-            //{
-            //    x.CalendarEventDate,
-            //    x.CalendarEventDescription,
-            //    x.CalendarEventName,
-            //    x.UserId,
-            //    x.EventType.EventTypeName
-            //}).ToList();
+
             var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
             x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
                 .Include(x => x.CalendarEvents.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
