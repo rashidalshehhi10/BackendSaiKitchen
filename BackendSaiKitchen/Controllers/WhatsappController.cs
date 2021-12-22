@@ -32,8 +32,7 @@ namespace BackendSaiKitchen.Controllers
         public async Task SendTodayEvents()
         {
 
-            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
-            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false )
                 .Include(x => x.CalendarEvents.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
             foreach (var user in users)
             {
@@ -90,8 +89,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public async Task FollowUpMessage()
         {
-            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
-            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.CustomerUsers.Where(x =>
                     x.IsActive == true && x.IsDeleted == false && x.CustomerNextMeetingDate != null &&
                     x.CustomerNextMeetingDate != "")).ToList();
