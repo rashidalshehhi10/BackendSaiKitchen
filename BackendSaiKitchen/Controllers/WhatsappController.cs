@@ -127,7 +127,7 @@ namespace BackendSaiKitchen.Controllers
                     x.CustomerNextMeetingDate != "")).ToList();
             foreach (var user in users)
             {
-                foreach (var customer in user.CustomerUsers.Where(x => Helper.Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date == Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date))
+                foreach (var customer in user.CustomerUsers.Where(x => x.UserId == user.UserId && Helper.Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date == Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date))
                 {
                     string message = "You have to Follow-up with (" + customer.CustomerName + ") at " +
                                               customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact
