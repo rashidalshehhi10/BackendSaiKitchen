@@ -130,6 +130,7 @@ namespace BackendSaiKitchen.Controllers
             response.data = report;
 
             await Helper.Helper.SendWhatsappMessage("963930104705", "text", report);
+            await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
 
             return response;
         }
