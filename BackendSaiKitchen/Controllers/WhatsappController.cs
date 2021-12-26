@@ -103,9 +103,10 @@ namespace BackendSaiKitchen.Controllers
             var wayOfContacts = wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
             List<object> list = new List<object>();
             var lastmonth = Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).AddDays(-30).Date;
-            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
-            var inquiry = inquiryRepository.FindByCondition(x => x.IsDeleted == false).Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
-            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.QuotationStatusId == (int)inquiryStatus.contractApproved).ToList();
+            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsDeleted == false && x.BranchId == Constants.branchId).Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
+            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Inquiry.BranchId == Constants.branchId && x.QuotationStatusId == (int)inquiryStatus.contractApproved).ToList();
+            var branch = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new { branchname = x.BranchName }).FirstOrDefault();
             foreach (var wayOfContact in wayOfContacts)
             {
                 var customerss = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()) && x.WayofContactId == wayOfContact.WayOfContactId).Count();
@@ -124,29 +125,33 @@ namespace BackendSaiKitchen.Controllers
             var inquiriesinprogress = inquiry.Where(x => x.IsActive == true && (x.Quotations.Any(x => x.QuotationStatusId != (int)inquiryStatus.contractApproved) || x.Quotations.Any() == false)).Count();
             var CompletedInquiries = inquiry.Where(x => x.IsActive == true && x.InquiryEndDate != null && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
             var successfulsales = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
-            var temp = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).ToList();
+            var joborderinprogress = inquiry.Where(x => x.IsActive == true && x.JobOrders.Any(x => x.IsActive == true && x.IsDeleted == false) && x.InquiryStatusId != (int)inquiryStatus.jobOrderCompleted).Count();
             var total = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Sum(x => double.Parse(x.TotalAmount));
-            string report = "Monthly Report (" + lastmonth.ToShortDateString() + " - " + Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).ToShortDateString() + ")" + Environment.NewLine + Environment.NewLine;
-            report += "Customers Added:- " + Added + Environment.NewLine;
-            foreach (var item in list)
-            {
-                report += "Customer From " + item.ToString() + Environment.NewLine;
-            }
-            report += "Customers With Inquiry:- " + WithInquiry + Environment.NewLine;
-            report += "Customers Without Inquiry:- " + WithoutInquiry + Environment.NewLine + Environment.NewLine;
+            
+            string report = "Monthly Report of "+ branch.branchname +" (" + lastmonth.ToShortDateString() + " - " + Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).ToShortDateString() + ")" + Environment.NewLine + Environment.NewLine;
             report += "Sales:" + Environment.NewLine +
                 "Successful Sales:- " + successfulsales + Environment.NewLine +
                 "Total Amount of Sales:- " + total + Environment.NewLine +
                 "Completed Job Order:- " + CompletedInquiries + Environment.NewLine +
                 "New Inquiries:- " + newinquiries + Environment.NewLine +
                 "On-Going Inquiries:- " + inquiriesinprogress + Environment.NewLine +
+                "On-Going Job Order:- " + joborderinprogress + Environment.NewLine +
                 "Escalated Inquiries:- " + escalatedInquiry + Environment.NewLine + Environment.NewLine;
+
+            report += "Customer:" + Environment.NewLine + "Customers Added:- " + Added + Environment.NewLine;
+            foreach (var item in list)
+            {
+                report += "Customer From " + item.ToString() + Environment.NewLine;
+            }
+            report += "Customers With Inquiry:- " + WithInquiry + Environment.NewLine;
+            report += "Customers Without Inquiry:- " + WithoutInquiry + Environment.NewLine + Environment.NewLine;
+            
             report += "Generated by SAI system";
 
             response.data = report;
 
             await Helper.Helper.SendWhatsappMessage("963930104705", "text", report);
-           // await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
+            await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
 
             return response;
         }
@@ -165,7 +170,7 @@ namespace BackendSaiKitchen.Controllers
                 {
                     string message = "You have to Follow-up with (" + customer.CustomerName + ") at " +
                                               customer.CustomerNextMeetingDate + " Contact: " + customer.CustomerContact 
-                                              +Environment.NewLine + Environment.NewLine + "Notes:" +customer.CustomerNotes
+                                              +Environment.NewLine + Environment.NewLine + "Notes:-" +customer.CustomerNotes
                                               + Environment.NewLine + Environment.NewLine + "Generated by SAI system";
                     if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled)
                     {
