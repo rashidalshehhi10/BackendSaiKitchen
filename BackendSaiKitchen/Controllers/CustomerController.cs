@@ -108,7 +108,7 @@ namespace SaiKitchenBackend.Controllers
                 var count = customers.Where(x => x.UserId == user.userId).Count();
                 if (count > 0)
                 {
-                    userCont.Add(new
+                    userCount.Add(new
                     {
                         UserId = user.userId,
                         UserName = user.username,
@@ -140,7 +140,7 @@ namespace SaiKitchenBackend.Controllers
                 graph = new
                 {
                     totalCustomers,
-                    userCont,
+                    userCount,
                     customerWithInquiry,
                     customerWithOutInquiry,
                     contacted,
@@ -182,7 +182,7 @@ namespace SaiKitchenBackend.Controllers
                 graph = new
                 {
                     totalCustomers,
-                    userCont,
+                    userCount,
                     customerWithInquiry,
                     customerWithOutInquiry,
                     contacted,
