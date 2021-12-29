@@ -120,23 +120,25 @@ namespace SaiKitchenBackend.Controllers
             object graph;
             if (userId != 0)
             {
-                int customerWithInquiry = customers.Where(x => x.UserId == userId && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
-                int customerWithOutInquiry = customers.Where(x => x.UserId == userId && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
+                int customerWithInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && (x.ContactStatusId != (int)contactStatus.NeedToContact) && x.UserId == userId).Count();
+                int customerWithOutInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
                 int contacted = customers.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
                 int needToContact = customers.Where(x => x.ContactStatusId == 2 && x.UserId == userId).Count();
                 int lostCustomer = customers.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
-                int ContactedWithInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
-                int needTofollow = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.UserId == userId).Count();
+                int InquiryInProgress = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                int InquiryInProgressDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed)) && x.UserId == userId).Count();
+                int InquiryInProgressongoing = InquiryInProgress - InquiryInProgressDelay;
                 int notResponding = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId).Count();
-                int needToContactToday = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date && x.UserId == userId).Count();
                 int needToContactDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
-                int needToFollowUpToday = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date && x.UserId == userId).Count();
-                int needToFollowUpDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.UserId == userId).Count();
-                int potentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any() && x.UserId == userId).Count();
+                int InquiryNeedToFollowUp = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                int needToFollowUpDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                int needTofollow = InquiryNeedToFollowUp - needToFollowUpDelay;
+                int potentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
+                int potentialCustomersDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
+                int potentialCustomerFollowUp = potentialCustomers - potentialCustomersDelay;
                 int needToFollowUpWithOutInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
-                int needToFollowUpWithInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
-                int notRespondingWithinquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.UserId == userId && x.Inquiries.Any() ).Count();
-                int notRespondingWithoutInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
+                int UnresponsiveInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && x.UserId == userId).Count();
+                int UnresponsivePotentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
                 graph = new
                 {
                     totalCustomers,
@@ -146,39 +148,43 @@ namespace SaiKitchenBackend.Controllers
                     contacted,
                     needToContact,
                     lostCustomer,
-                    ContactedWithInquiry,
-                    needTofollow,
+                    InquiryInProgress,
+                    InquiryInProgressongoing,
+                    InquiryInProgressDelay,
                     notResponding,
-                    needToContactToday,
                     needToContactDelay,
-                    needToFollowUpToday,
+                    InquiryNeedToFollowUp,
                     needToFollowUpDelay,
+                    needTofollow,
                     potentialCustomers,
+                    potentialCustomersDelay,
+                    potentialCustomerFollowUp,
                     needToFollowUpWithOutInquiry,
-                    needToFollowUpWithInquiry,
-                    notRespondingWithinquiry,
-                    notRespondingWithoutInquiry
+                    UnresponsiveInquiry,
+                    UnresponsivePotentialCustomers
                 };
             }
             else
             {
-                int customerWithInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
+                int customerWithInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && (x.ContactStatusId != (int)contactStatus.NeedToContact)).Count();
                 int customerWithOutInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
                 int contacted = customers.Where(x => x.ContactStatusId == 1 ).Count();
                 int needToContact = customers.Where(x => x.ContactStatusId == 2 ).Count();
                 int lostCustomer = customers.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false ).Count();
-                int ContactedWithInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) ).Count();
-                int needTofollow = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp ).Count();
+                int InquiryInProgress = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) ).Count();
+                int InquiryInProgressDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed))).Count();
+                int InquiryInProgressongoing = InquiryInProgress - InquiryInProgressDelay;
                 int notResponding = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing ).Count();
-                int needToContactToday = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date ).Count();
                 int needToContactDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToContact && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date ).Count();
-                int needToFollowUpToday = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.CustomerNextMeetingDate.Contains(Helper.GetDate()) && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate()).Date ).Count();
-                int needToFollowUpDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date ).Count();
-                int potentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any() ).Count();
+                int InquiryNeedToFollowUp = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
+                int needToFollowUpDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) ).Count();
+                int needTofollow = InquiryNeedToFollowUp - needToFollowUpDelay;
+                int potentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false ) == false ).Count();
+                int potentialCustomersDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDateTime()).Date && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
+                int potentialCustomerFollowUp = potentialCustomers - potentialCustomersDelay;
                 int needToFollowUpWithOutInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false ).Count();
-                int needToFollowUpWithInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NeedToFollowUp && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) ).Count();
-                int notRespondingWithinquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any()).Count();
-                int notRespondingWithoutInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
+                int UnresponsiveInquiry = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false)).Count();
+                int UnresponsivePotentialCustomers = customers.Where(x => x.ContactStatusId == (int)contactStatus.NotResponing && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false).Count();
                 graph = new
                 {
                     totalCustomers,
@@ -188,18 +194,20 @@ namespace SaiKitchenBackend.Controllers
                     contacted,
                     needToContact,
                     lostCustomer,
-                    ContactedWithInquiry,
-                    needTofollow,
+                    InquiryInProgress,
+                    InquiryInProgressongoing,
+                    InquiryInProgressDelay,
                     notResponding,
-                    needToContactToday,
                     needToContactDelay,
-                    needToFollowUpToday,
+                    InquiryNeedToFollowUp,
                     needToFollowUpDelay,
+                    needTofollow,
                     potentialCustomers,
+                    potentialCustomersDelay,
+                    potentialCustomerFollowUp,
                     needToFollowUpWithOutInquiry,
-                    needToFollowUpWithInquiry,
-                    notRespondingWithinquiry,
-                    notRespondingWithoutInquiry
+                    UnresponsiveInquiry,
+                    UnresponsivePotentialCustomers
                 };
             }
 
