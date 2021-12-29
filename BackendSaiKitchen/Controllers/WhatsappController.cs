@@ -98,71 +98,92 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public async Task<object> MonthlyCustomerReport()
+        public async Task MonthlyCustomerReport()
         {
+            var branches = branchRepository.FindByCondition(x =>  x.IsActive == true && x.IsDeleted == false).Select(x => new 
+            { 
+                branchname = x.BranchName,
+                branchId = x.BranchId,
+            }).ToList();
             var wayOfContacts = wayOfContactRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
-            List<object> list = new List<object>();
-            var lastmonth = Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).AddDays(-30).Date;
-            var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
-            var inquiry = inquiryRepository.FindByCondition(x => x.IsDeleted == false && x.BranchId == Constants.branchId).Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
-            var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Inquiry.BranchId == Constants.branchId && x.QuotationStatusId == (int)inquiryStatus.contractApproved).Include(x => x.Inquiry).ThenInclude(x => x.Customer).ToList();
-            var branch = branchRepository.FindByCondition(x => x.BranchId == Constants.branchId && x.IsActive == true && x.IsDeleted == false).Select(x => new { branchname = x.BranchName }).FirstOrDefault();
-            foreach (var wayOfContact in wayOfContacts)
+            foreach (var branch in branches)
             {
-                var customerss = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()) && x.WayofContactId == wayOfContact.WayOfContactId).Count();
-                string way = wayOfContact.WayOfContactName + " Customers:- " + customerss;
-                if (customerss > 0)
+                List<object> list = new List<object>();
+                var lastmonth = Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).AddDays(-30).Date;
+                var customers = customerRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branch.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
+                var inquiry = inquiryRepository.FindByCondition(x => x.IsDeleted == false && x.BranchId == branch.branchId).Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).ToList();
+                var quotation = quotationRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Inquiry.BranchId == branch.branchId && x.QuotationStatusId == (int)inquiryStatus.contractApproved).Include(x => x.Inquiry).ThenInclude(x => x.Customer).ToList();
+
+                foreach (var wayOfContact in wayOfContacts)
                 {
-                    list.Add(way);
+                    var customerss = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()) && x.WayofContactId == wayOfContact.WayOfContactId).Count();
+                    string way = wayOfContact.WayOfContactName + " Customers:- " + customerss;
+                    if (customerss > 0)
+                    {
+                        list.Add(way);
+                    }
+
+                }
+                var Added = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+                var WithInquiry = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date && x.Inquiries.Any()).Count();
+                var WithoutInquiry = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date && x.Inquiries.Any() == false).Count();
+                var escalatedInquiry = inquiry.Where(x => x.IsActive == false && Helper.Helper.ConvertToDateTime(x.EscalationRequestedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.EscalationRequestedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+                var newinquiries = inquiry.Where(x => x.IsActive == true && Helper.Helper.ConvertToDateTime(x.InquiryStartDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.InquiryStartDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+                var inquiriesinprogress = inquiry.Where(x => x.IsActive == true && (x.Quotations.Any(x => x.QuotationStatusId != (int)inquiryStatus.contractApproved) || x.Quotations.Any() == false)).Count();
+                var CompletedInquiries = inquiry.Where(x => x.IsActive == true && x.InquiryEndDate != null && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+                var inquiryPayment = inquiry.Where(x => x.IsActive == true && x.IsDeleted == false && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date && x.Quotations.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.Payments.Any(x => x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentApproved)).ToList();
+                var successfulsales = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+
+                var joborderinprogress = inquiry.Where(x => x.IsActive == true && x.JobOrders.Any(x => x.IsActive == true && x.IsDeleted == false) && x.InquiryStatusId != (int)inquiryStatus.jobOrderCompleted).Count();
+                var total = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Sum(x => double.Parse(x.TotalAmount));
+
+                string report = "Monthly Report of " + branch.branchname + " (" + lastmonth.ToShortDateString() + " - " + Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).ToShortDateString() + ")" + Environment.NewLine + Environment.NewLine;
+                report += "Sales:" + Environment.NewLine +
+                    "Successful Sales:- " + successfulsales + Environment.NewLine +
+                    "Total Amount of Sales:- " + total + Environment.NewLine +
+                    "Going to contract with Advance Payment:- " + inquiryPayment.Count() + Environment.NewLine+
+                    "Going to contract with Advance Payment Amount:- "+ inquiryPayment.Sum(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x =>x.PaymentAmount))/100 + Environment.NewLine +
+                    "On-Going Job Order:- " + joborderinprogress + Environment.NewLine +
+                    "Completed Job Order:- " + CompletedInquiries + Environment.NewLine +
+                    "New Inquiries:- " + newinquiries + Environment.NewLine +
+                    "On-Going Inquiries:- " + inquiriesinprogress + Environment.NewLine +
+                    "Escalated Inquiries:- " + escalatedInquiry + Environment.NewLine + Environment.NewLine;
+
+                report += "Customer:" + Environment.NewLine + "New Customers:- " + Added + Environment.NewLine;
+                report += "New Customers With Inquiry:- " + WithInquiry + Environment.NewLine;
+                report += "New Customers Without Inquiry:- " + WithoutInquiry + Environment.NewLine;
+                foreach (var item in list)
+                {
+                    report += item.ToString() + Environment.NewLine;
                 }
 
-            }
-            var Added = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
-            var WithInquiry = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date && x.Inquiries.Any()).Count();
-            var WithoutInquiry = customers.Where(x => Helper.Helper.ConvertToDateTime(x.CreatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.CreatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date && x.Inquiries.Any() == false).Count();
-            var escalatedInquiry = inquiry.Where(x => x.IsActive == false && Helper.Helper.ConvertToDateTime(x.EscalationRequestedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.EscalationRequestedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
-            var newinquiries = inquiry.Where(x => x.IsActive == true && Helper.Helper.ConvertToDateTime(x.InquiryStartDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.InquiryStartDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
-            var inquiriesinprogress = inquiry.Where(x => x.IsActive == true && (x.Quotations.Any(x => x.QuotationStatusId != (int)inquiryStatus.contractApproved) || x.Quotations.Any() == false)).Count();
-            var CompletedInquiries = inquiry.Where(x => x.IsActive == true && x.InquiryEndDate != null && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.InquiryEndDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
-            var successfulsales = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Count();
+                report += Environment.NewLine + "Sales Detail:-" + Environment.NewLine;
+                foreach (var quo in quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date))
+                {
 
-            var joborderinprogress = inquiry.Where(x => x.IsActive == true && x.JobOrders.Any(x => x.IsActive == true && x.IsDeleted == false) && x.InquiryStatusId != (int)inquiryStatus.jobOrderCompleted).Count();
-            var total = quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date).Sum(x => double.Parse(x.TotalAmount));
-            
-            string report = "Monthly Report of "+ branch.branchname +" (" + lastmonth.ToShortDateString() + " - " + Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).ToShortDateString() + ")" + Environment.NewLine + Environment.NewLine;
-            report += "Sales:" + Environment.NewLine +
-                "Successful Sales:- " + successfulsales + Environment.NewLine +
-                "Total Amount of Sales:- " + total + Environment.NewLine +
-                "On-Going Job Order:- " + joborderinprogress + Environment.NewLine +
-                "Completed Job Order:- " + CompletedInquiries + Environment.NewLine +
-                "New Inquiries:- " + newinquiries + Environment.NewLine +
-                "On-Going Inquiries:- " + inquiriesinprogress + Environment.NewLine +
-                "Escalated Inquiries:- " + escalatedInquiry + Environment.NewLine + Environment.NewLine;
-
-            report += "Customer:" + Environment.NewLine + "New Customers:- " + Added + Environment.NewLine;
-            report += "New Customers With Inquiry:- " + WithInquiry + Environment.NewLine;
-            report += "New Customers Without Inquiry:- " + WithoutInquiry + Environment.NewLine ;
-            foreach (var item in list)
-            {
-                report += item.ToString() + Environment.NewLine;
-            }
-            
-            report += Environment.NewLine +"Sales Detail:-" + Environment.NewLine;
-            foreach (var quo in quotation.Where(x => Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date >= lastmonth && Helper.Helper.ConvertToDateTime(x.UpdatedDate).Date <= Helper.Helper.ConvertToDateTime(Helper.Helper.GetDate()).Date))
-            {
-               
                     report += quo.Inquiry.Customer.CustomerName + " (" + quo.Inquiry.InquiryCode + ") AED " + quo.TotalAmount + " on " + Helper.Helper.ConvertToDateTime(quo.UpdatedDate).ToShortDateString() + Environment.NewLine;
+                }
+                report += Environment.NewLine + "Glossary:-" + Environment.NewLine + "Successful Sales:-The number of signed Contract with the customer on this time frame (Actual value may differ in case the contract is not yet signed)" + Environment.NewLine + Environment.NewLine;
+                report += "Total Amount of Sales:- The Amount of Signed Contract on this time frame (Actual value may differ in case the contract is not yet signed)" + Environment.NewLine + Environment.NewLine;
+                report += "Generated by SAI system";
+
+                var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == branch.branchId && x.Branch.IsActive == true && x.Branch.IsDeleted == false)).Select(x => new
+                {
+                    userId = x.UserId,
+                    Number = x.UserMobile,
+                    IsNotification = x.IsNotificationEnabled
+                }).ToList();
+
+                foreach (var user in users)
+                {
+                    if (user.IsNotification != null && (bool)user.IsNotification == true && string.IsNullOrEmpty(user.Number))
+                    {
+                        await Helper.Helper.SendWhatsappMessage("963930104705"/*user.Number*/, "text", report);
+                        await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
+                    }
+                }
             }
-            report += Environment.NewLine + "Glossary:-" + Environment.NewLine + "Successful Sales:-The number of signed Contract with the customer on this time frame (Actual value maybe differ but the contract not yet signed)" + Environment.NewLine + Environment.NewLine;
-            report += "Total Amount of Sales:- The Amount of Signed Contract on this time frame (Actual value maybe differ but the contract not yet signed)" + Environment.NewLine + Environment.NewLine;
-            report +="Generated by SAI system";
-
-            response.data = report;
-
-            await Helper.Helper.SendWhatsappMessage("963930104705", "text", report);
-            await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
-
-            return response;
+            
         }
 
         [HttpPost]
