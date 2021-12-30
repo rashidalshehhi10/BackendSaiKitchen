@@ -121,7 +121,7 @@ namespace SaiKitchenBackend.Controllers
             if (userId != 0)
             {
                 int customerWithInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) && (x.ContactStatusId != (int)contactStatus.NeedToContact) && x.UserId == userId).Count();
-                int customerWithOutInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && x.UserId == userId).Count();
+                int customerWithOutInquiry = customers.Where(x => x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false) == false && (x.ContactStatusId != (int)contactStatus.NeedToContact) && x.UserId == userId).Count();
                 int contacted = customers.Where(x => x.ContactStatusId == 1 && x.UserId == userId).Count();
                 int needToContact = customers.Where(x => x.ContactStatusId == 2 && x.UserId == userId).Count();
                 int lostCustomer = customers.Where(x => x.ContactStatusId == 1 && x.Inquiries.Any(y => y.IsActive == true && y.IsDeleted == false) == false && x.UserId == userId).Count();
