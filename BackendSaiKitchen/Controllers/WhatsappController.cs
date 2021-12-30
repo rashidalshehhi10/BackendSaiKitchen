@@ -176,9 +176,18 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (var user in users)
                 {
-                    if (user.IsNotification != null && (bool)user.IsNotification == true && string.IsNullOrEmpty(user.Number))
+
+                    if (user.IsNotification != null && (bool)user.IsNotification == true && !string.IsNullOrEmpty(user.Number))
                     {
-                        await Helper.Helper.SendWhatsappMessage("971545552471"/*user.Number*/, "text", report);
+                        try
+                        {
+                            await Helper.Helper.SendWhatsappMessage(user.Number, "text", report);
+
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
                         
                     }
                 }
