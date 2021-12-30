@@ -141,8 +141,8 @@ namespace BackendSaiKitchen.Controllers
                 report += "Sales:" + Environment.NewLine +
                     "Successful Sales:- " + successfulsales + Environment.NewLine +
                     "Total Amount of Sales:- " + total + Environment.NewLine +
-                    "Going to contract with Advance Payment:- " + inquiryPayment.Count() + Environment.NewLine+
-                    "Going to contract with Advance Payment Amount:- "+ inquiryPayment.Sum(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x =>x.PaymentAmount))/100 + Environment.NewLine +
+                    //"Going to contract with Advance Payment:- " + inquiryPayment.Count() + Environment.NewLine+
+                    //"Going to contract with Advance Payment Amount:- "+ inquiryPayment.Sum(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false && x.PaymentStatusId == (int)paymentstatus.PaymentApproved).Sum(x =>x.PaymentAmount))/100 + Environment.NewLine +
                     "On-Going Job Order:- " + joborderinprogress + Environment.NewLine +
                     "Completed Job Order:- " + CompletedInquiries + Environment.NewLine +
                     "New Inquiries:- " + newinquiries + Environment.NewLine +
@@ -178,10 +178,11 @@ namespace BackendSaiKitchen.Controllers
                 {
                     if (user.IsNotification != null && (bool)user.IsNotification == true && string.IsNullOrEmpty(user.Number))
                     {
-                        await Helper.Helper.SendWhatsappMessage("963930104705"/*user.Number*/, "text", report);
-                        await Helper.Helper.SendWhatsappMessage("971545552471", "text", report);
+                        await Helper.Helper.SendWhatsappMessage("971545552471"/*user.Number*/, "text", report);
+                        
                     }
                 }
+                
             }
             
         }
