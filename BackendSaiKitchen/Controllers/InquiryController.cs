@@ -2483,6 +2483,7 @@ namespace SaiKitchenBackend.Controllers
                 technicalChecklist = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.checklistPending || x.InquiryStatusId == (int)inquiryStatus.commercialChecklistRejected) && x.ManagedBy == Constants.userId),
                 commericalChecklist = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.commercialChecklistPending || x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryRejected || x.InquiryStatusId == (int)inquiryStatus.specialApprovalRejected)),
                 specialApprovals = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.specialApprovalPending) && x.ManagedBy == Constants.userId),
+                detailedFiles = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.DetailedFilesPending) && x.ManagedBy == Constants.userId),
                 joborderAudit = JobOrderAudit,
                 joborderStatus = JoborderStatus,
                 joborderApprovals = JobOrderApprovals,
