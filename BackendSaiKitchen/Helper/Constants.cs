@@ -184,6 +184,7 @@
         jobOrderProcurementDelayed = 69,
         jobOrderCustomerRequestReschedule = 70,
         jobOrderDesignTeamDelay = 71,
+        DetailedFilesPending = 72,
     }
 
     public enum roleType

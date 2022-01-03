@@ -550,10 +550,10 @@ namespace BackendSaiKitchen.Controllers
                     payment.PaymentCompletionDate = Helper.Helper.GetDateTime();
                     if (payment.PaymentTypeId == (int)paymenttype.AdvancePayment)
                     {
-                        payment.Inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                        payment.Inquiry.InquiryStatusId = (int)inquiryStatus.DetailedFilesPending;
                         foreach (InquiryWorkscope inquiryWorkscope in payment.Inquiry.InquiryWorkscopes)
                         {
-                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                            inquiryWorkscope.InquiryStatusId = (int)inquiryStatus.DetailedFilesPending;
                         }
                     }
 

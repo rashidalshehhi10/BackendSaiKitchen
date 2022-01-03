@@ -1374,38 +1374,38 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Customer).FirstOrDefault();
 
-            JobOrder _jobOrder = new JobOrder();
+            //JobOrder _jobOrder = new JobOrder();
             if (inquiry != null)
             {
                 Helper.Helper.Each(inquiry.JobOrders, x => x.IsActive = false);
                 inquiry.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
                 //_jobOrder.JobOrderRequestedDeadline = order.JobOrderRequestedDeadline;
                 //_jobOrder.JobOrderRequestedComments = order.JobOrderRequestedComments;
-                _jobOrder.DataSheetApplianceFileUrl = order.DataSheetApplianceFileUrl;
-                _jobOrder.IsAppliancesProvidedByClient = order.IsAppliancesProvidedByClient;
-                _jobOrder.DetailedDesignFile = order.DetailedDesignFile;
-                _jobOrder.MaterialSheetFileUrl = order.MaterialSheetFileUrl;
-                _jobOrder.MepdrawingFileUrl = order.MepdrawingFileUrl;
+                //_jobOrder.DataSheetApplianceFileUrl = order.DataSheetApplianceFileUrl;
+                //_jobOrder.IsAppliancesProvidedByClient = order.IsAppliancesProvidedByClient;
+                //_jobOrder.DetailedDesignFile = order.DetailedDesignFile;
+                //_jobOrder.MaterialSheetFileUrl = order.MaterialSheetFileUrl;
+                //_jobOrder.MepdrawingFileUrl = order.MepdrawingFileUrl;
                 // _jobOrder.Comments = order.Comments;
-                _jobOrder.IsActive = true;
-                _jobOrder.IsDeleted = false;
-                _jobOrder.CreatedBy = Constants.userId;
-                _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
+                //_jobOrder.IsActive = true;
+                //_jobOrder.IsDeleted = false;
+                //_jobOrder.CreatedBy = Constants.userId;
+                //_jobOrder.CreatedDate = Helper.Helper.GetDateTime();
 
                 foreach (InquiryWorkscope inWorkscope in inquiry.InquiryWorkscopes)
                 {
                     inWorkscope.InquiryStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
-                    foreach (Design design in inWorkscope.Designs)
-                    {
-                        foreach (File file in design.Files)
-                        {
-                            if (file.FileUrl != null && file.FileUrl != "")
-                            {
-                                files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
-                            }
+                    //foreach (Design design in inWorkscope.Designs)
+                    //{
+                    //    foreach (File file in design.Files)
+                    //    {
+                    //        if (file.FileUrl != null && file.FileUrl != "")
+                    //        {
+                    //            files.Add(Helper.Helper.ConvertBytestoIFormFile(await Helper.Helper.GetFile(file.FileUrl)));
+                    //        }
 
-                        }
-                    }
+                    //    }
+                    //}
                 }
 
                 int quotationId = 0;
@@ -1533,11 +1533,11 @@ namespace BackendSaiKitchen.Controllers
                     }
                     
 
-                    if (_jobOrder.MepdrawingFileUrl != null && _jobOrder.MepdrawingFileUrl != "")
-                    {
-                        files.Add(Helper.Helper.ConvertBytestoIFormFile(
-                                                await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
-                    }
+                    //if (_jobOrder.MepdrawingFileUrl != null && _jobOrder.MepdrawingFileUrl != "")
+                    //{
+                    //    files.Add(Helper.Helper.ConvertBytestoIFormFile(
+                    //                            await Helper.Helper.GetFile(_jobOrder.MepdrawingFileUrl)));
+                    //}
                     
 
                     //foreach (var file in quotation.Files)
@@ -1546,25 +1546,26 @@ namespace BackendSaiKitchen.Controllers
                     //}
                 }
 
-                inquiry.JobOrders.Add(_jobOrder);
+                //inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
-                try
-                {
-                    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode,
-                        Constants.CRMBaseUrl + "/payinvoice.html?inquiryId=" + inquiry.InquiryId,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).AdvancePayment,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Amount,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Discount,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Vat,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).TotalAmount,
-                        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).QuotationValidityDate,
-                        Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId,
-                        Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
-                }
-                catch (Exception ex)
-                {
-                    SentrySdk.CaptureMessage(ex.Message);
-                }
+                //try
+                //{
+                //    await mailService.SendQuotationEmailAsync(inquiry.Customer.CustomerEmail, inquiry.InquiryCode,
+                //        Constants.CRMBaseUrl + "/payinvoice.html?inquiryId=" + inquiry.InquiryId,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).AdvancePayment,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Amount,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Discount,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).Vat,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).TotalAmount,
+                //        inquiry.Quotations.FirstOrDefault(x => x.QuotationId == quotationId).QuotationValidityDate,
+                //        Constants.ServerBaseURL + "/api/Quotation/AcceptQuotation?inquiryId=" + inquiry.InquiryId,
+                //        Constants.ServerBaseURL + "/api/Quotation/DeclineQuotation?inquiryId=" + inquiry.InquiryId);
+
+                //}
+                //catch (Exception ex)
+                //{
+                //    SentrySdk.CaptureMessage(ex.Message);
+                //}
 
                 context.SaveChanges();
             }
@@ -1574,6 +1575,49 @@ namespace BackendSaiKitchen.Controllers
                 response.errorMessage = "Inquiry Not Found";
             }
 
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object AddContractFiles(ContractFiles files)
+        {
+            Inquiry inquiry = inquiryRepository.FindByCondition(x =>
+                    x.InquiryId == files.inquiryId && x.IsActive == true && x.IsDeleted == false &&
+                    (x.InquiryStatusId == (int)inquiryStatus.DetailedFilesPending))
+                .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false)).ThenInclude(x =>
+                    x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.Customer).FirstOrDefault();
+
+            if (inquiry != null)
+            {
+                JobOrder _jobOrder = new JobOrder();
+                inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+                Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = (int)inquiryStatus.checklistPending);
+                _jobOrder.DataSheetApplianceFileUrl = files.DataSheetApplianceFileUrl;
+                _jobOrder.IsAppliancesProvidedByClient = files.IsAppliancesProvidedByClient;
+                _jobOrder.DetailedDesignFile = files.DetailedDesignFile;
+                _jobOrder.MaterialSheetFileUrl = files.MaterialSheetFileUrl;
+                _jobOrder.MepdrawingFileUrl = files.MepdrawingFileUrl;
+                _jobOrder.IsActive = true;
+                _jobOrder.IsDeleted = false;
+                _jobOrder.CreatedBy = Constants.userId;
+                _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
+                inquiry.JobOrders.Add(_jobOrder);
+                inquiryRepository.Update(inquiry);
+                context.SaveChanges();
+                response.data = inquiry;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Inquiry Not Found";
+            }
             return response;
         }
 

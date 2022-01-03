@@ -46,12 +46,12 @@ namespace BackendSaiKitchen.CustomModel
 
         //public string JobOrderRequestedDeadline { get; set; }
         //public string JobOrderRequestedComments { get; set; }
-        public string DataSheetApplianceFileUrl { get; set; }
-        public bool IsAppliancesProvidedByClient { get; set; }
-        public string DetailedDesignFile { get; set; }
-        public string MaterialSheetFileUrl { get; set; }
+        //public string DataSheetApplianceFileUrl { get; set; }
+        //public bool IsAppliancesProvidedByClient { get; set; }
+        //public string DetailedDesignFile { get; set; }
+        //public string MaterialSheetFileUrl { get; set; }
 
-        public string MepdrawingFileUrl { get; set; }
+        //public string MepdrawingFileUrl { get; set; }
         //public string Comments { get; set; }
 
         public int PaymentTypeId { get; set; }
@@ -62,6 +62,17 @@ namespace BackendSaiKitchen.CustomModel
         public string AfterDelivery { get; set; }
         public byte[] Pdf { get; set; }
         public List<Payment> Payments { get; set; }
+    }
+
+    public class ContractFiles
+    {
+        public int inquiryId { get; set; }
+        public string DataSheetApplianceFileUrl { get; set; }
+        public bool IsAppliancesProvidedByClient { get; set; }
+        public string DetailedDesignFile { get; set; }
+        public string MaterialSheetFileUrl { get; set; }
+
+        public string MepdrawingFileUrl { get; set; }
     }
 
     public class JobOrderFactory
