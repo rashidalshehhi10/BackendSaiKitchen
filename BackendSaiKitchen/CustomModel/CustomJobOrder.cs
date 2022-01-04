@@ -61,6 +61,9 @@ namespace BackendSaiKitchen.CustomModel
         public string BeforeInstallation { get; set; }
         public string AfterDelivery { get; set; }
         public byte[] Pdf { get; set; }
+        public List<string> signedquotation { get; set; }
+        public List<string> signedcontract { get; set; }
+        public List<string> signeddesign { get; set; }
         public List<Payment> Payments { get; set; }
     }
 

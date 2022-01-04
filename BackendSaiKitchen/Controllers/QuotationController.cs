@@ -1391,6 +1391,7 @@ namespace BackendSaiKitchen.Controllers
                 //_jobOrder.IsDeleted = false;
                 //_jobOrder.CreatedBy = Constants.userId;
                 //_jobOrder.CreatedDate = Helper.Helper.GetDateTime();
+                
 
                 foreach (InquiryWorkscope inWorkscope in inquiry.InquiryWorkscopes)
                 {
@@ -1419,6 +1420,68 @@ namespace BackendSaiKitchen.Controllers
                     quotation.AfterDelivery = order.AfterDelivery;
                     quotation.BeforeInstallation = order.BeforeInstallation;
                     quotation.QuotationStatusId = (int)inquiryStatus.contractWaitingForCustomerApproval;
+
+                    foreach (string fileUrl in order.signedquotation)
+                    { 
+                        if (fileUrl != null && fileUrl != string.Empty)
+                        {
+                           quotation.Files.Add(new File
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime()
+                            });
+                        }
+                    }
+
+                    foreach (string fileUrl in order.signedcontract)
+                    {
+                        if (fileUrl != null && fileUrl != string.Empty)
+                        {
+                            quotation.Files.Add(new File
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime()
+                            });
+                        }
+                    }
+
+                    foreach (string fileUrl in order.signeddesign)
+                    {
+                        if (fileUrl != null && fileUrl != string.Empty)
+                        {
+                            quotation.Files.Add(new File
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime()
+                            });
+                        }
+                    }
+
+
                     if ((bool)quotation.IsPaid)
                     {
                         decimal DeductTotal = 0 ;
