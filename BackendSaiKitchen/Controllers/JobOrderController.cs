@@ -21,6 +21,10 @@ namespace BackendSaiKitchen.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.jobOrderAuditRejected ||
                      x.InquiryStatusId == (int)inquiryStatus.jobOrderFactoryDelayed))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted ==false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted ==false))
                 .Include(x => x.Quotations.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Payments.Where(y => y.IsActive == true && y.IsDeleted == false))
@@ -33,7 +37,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryStatusId = Helper.Helper.ConvertToDateTime(order.installationStartDate).Date == Helper.Helper.ConvertToDateTime(joborder.JobOrderExpectedDeadline).Date 
                         ? (int)inquiryStatus.jobOrderInProgress : (int)inquiryStatus.jobOrderAuditPending;
                     Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = inquiry.InquiryStatusId);
-                    JobOrderDetail jobOrderDetail = new JobOrderDetail
+                    JobOrderDetail jobOrderDetail = new()
                     {
                         MaterialRequestDate = order.materialRequestDate,
                         MaterialDeliveryFinalDate = order.materialDeliveryFinalDate,
@@ -49,6 +53,41 @@ namespace BackendSaiKitchen.Controllers
                         IsDeleted = false
                     };
                     joborder.JobOrderDetails.Add(jobOrderDetail);
+                    if (order.IsMaterialRequired)
+                    {
+                        PurchaseRequest purchaseRequest = new()
+                        {
+                            IsActive = true,
+                            IsDeleted = false,
+                            CreatedBy = Constants.userId,
+                            CreatedDate = Helper.Helper.GetDateTime(),
+                        };
+
+                        foreach (string fileUrl in order.materialfile)
+                        {
+                            if (fileUrl != null && fileUrl != string.Empty)
+                            {
+                                purchaseRequest.Files.Add(new File
+                                {
+                                    FileUrl = fileUrl,
+                                    FileName = fileUrl.Split('.')[0],
+                                    FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                    IsImage = fileUrl.Split('.').Length > 1,
+                                    IsActive = true,
+                                    IsDeleted = false,
+                                    UpdatedBy = Constants.userId,
+                                    UpdatedDate = Helper.Helper.GetDateTime(),
+                                    CreatedBy = Constants.userId,
+                                    CreatedDate = Helper.Helper.GetDateTime()
+                                });
+                            }
+                        }
+
+                        joborder.PurchaseRequests.Add(purchaseRequest);
+                    }
+                    
+
+
                 }
 
 

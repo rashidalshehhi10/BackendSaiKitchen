@@ -593,7 +593,7 @@ namespace BackendSaiKitchen.Helper
 
                 var content = new FormUrlEncodedContent(values);
                 //number="+ sendto + "&type="+type+"&message="+ message + "&instance_id="+ Constants.WhatsappInstanceId + "&access_token="+ Constants.WhatsappAccessToken 
-                var response = await client.PostAsync("https://socialmediapartner.net/api/send.php?number=" + sendto + "&type=" + type + "&message=" + message + "&instance_id=" + Constants.WhatsappInstanceId + "&access_token=" + Constants.WhatsappAccessToken, content);
+                var response = await client.PostAsync("https://rushsuite.com/api/send.php?number=" + sendto + "&type=" + type + "&message=" + message + "&instance_id=" + Constants.WhatsappInstanceId + "&access_token=" + Constants.WhatsappAccessToken, content);
 
                 var responseString = response.IsSuccessStatusCode.ToString();
 

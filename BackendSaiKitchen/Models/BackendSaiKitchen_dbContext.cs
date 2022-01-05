@@ -129,6 +129,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
+        public virtual DbSet<PurchaseRequest> PurchaseRequests { get; set; }
         public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; }
         public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; }
         public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; }
@@ -579,6 +580,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.Paymentid)
                     .HasConstraintName("FK_File_Payment");
+
+                entity.HasOne(d => d.PurchaseRequest)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.PurchaseRequestId)
+                    .HasConstraintName("FK_File_PurchaseRequest");
 
                 entity.HasOne(d => d.Quotation)
                     .WithMany(p => p.Files)
@@ -3492,6 +3498,20 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.PromoStartDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<PurchaseRequest>(entity =>
+            {
+                entity.ToTable("PurchaseRequest");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.JobOrder)
+                    .WithMany(p => p.PurchaseRequests)
+                    .HasForeignKey(d => d.JobOrderId)
+                    .HasConstraintName("FK_PurchaseRequest_JobOrder");
             });
 
             modelBuilder.Entity<QrtzBlobTrigger>(entity =>

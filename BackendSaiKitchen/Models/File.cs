@@ -17,6 +17,7 @@ namespace BackendSaiKitchen.Models
         public int? DesignId { get; set; }
         public int? QuotationId { get; set; }
         public int? Paymentid { get; set; }
+        public int? PurchaseRequestId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
@@ -27,6 +28,7 @@ namespace BackendSaiKitchen.Models
         public virtual Design Design { get; set; }
         public virtual Measurement Measurement { get; set; }
         public virtual Payment Payment { get; set; }
+        public virtual PurchaseRequest PurchaseRequest { get; set; }
         public virtual Quotation Quotation { get; set; }
     }
 }

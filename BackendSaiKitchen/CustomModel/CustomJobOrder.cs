@@ -15,7 +15,8 @@ namespace BackendSaiKitchen.CustomModel
 
         public string installationStartDate { get; set; }
         public  int status { get; set; }
-
+        public bool IsMaterialRequired { get; set; }
+        public List<string> materialfile { get; set; }
         // public string installationEndDate { get; set; }
         public string Notes { get; set; }
     }

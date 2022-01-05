@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public JobOrder()
         {
             JobOrderDetails = new HashSet<JobOrderDetail>();
+            PurchaseRequests = new HashSet<PurchaseRequest>();
         }
 
         public int JobOrderId { get; set; }
@@ -59,5 +60,6 @@ namespace BackendSaiKitchen.Models
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
         public virtual ICollection<JobOrderDetail> JobOrderDetails { get; set; }
+        public virtual ICollection<PurchaseRequest> PurchaseRequests { get; set; }
     }
 }
