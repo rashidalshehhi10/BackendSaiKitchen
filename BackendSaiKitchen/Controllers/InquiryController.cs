@@ -2003,10 +2003,12 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
                 response.data = "";
+                
                 if ((files.Measurement != null && files.Measurement.Any()) || (files.Desgin != null && files.Desgin.Any()))
                 {
                     foreach (var inworscope in inquiry.InquiryWorkscopes)
@@ -2174,6 +2176,52 @@ namespace SaiKitchenBackend.Controllers
                 }
                 foreach (var job in inquiry.JobOrders)
                 {
+                    if (files.materialfile != null && files.materialfile.Any())
+                    {
+                        foreach (var purchase in job.PurchaseRequests)
+                        {
+                            foreach (var file in purchase.Files)
+                            {
+                                file.IsActive = false;
+                                try
+                                {
+                                    await Helper.DeleteFile(file.FileUrl);
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                            }
+
+                            foreach (string fileUrl in files.materialfile)
+                            {
+                                if (fileUrl != null)
+                                {
+                                    purchase.Files.Add(new BackendSaiKitchen.Models.File
+                                    {
+                                        FileUrl = fileUrl,
+                                        FileName = fileUrl.Split('.')[0],
+                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                        IsImage = fileUrl.Split('.').Length > 1,
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        UpdatedBy = Constants.userId,
+                                        UpdatedDate = Helper.GetDateTime(),
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.GetDateTime(),
+
+                                    });
+                                    response.data += fileUrl + " Added to Purchase Request \n";
+                                }
+                                else
+                                {
+                                    response.isError = true;
+                                    response.errorMessage = Constants.wrongFileUpload;
+                                }
+                            }
+                        }
+                        
+                    }
                     if (files.DetailedDesignFile != null && files.DetailedDesignFile != string.Empty)
                     {
                         try

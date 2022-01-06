@@ -97,6 +97,7 @@ namespace BackendSaiKitchen.CustomModel
         public List<string> AdvancePayment { get; set; }
         public List<string> BeforeInstalltionPayment { get; set; }
         public List<string> AfterDelieveryPayment { get; set; }
+        public List<string> materialfile { get; set; }
         //public List<string> InstallmentPayment { get; set; }
 
     }

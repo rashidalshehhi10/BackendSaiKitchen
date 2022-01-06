@@ -16,6 +16,7 @@ namespace BackendSaiKitchen.Models
         public int? JobOrderId { get; set; }
         public string PurchaseRequestTitle { get; set; }
         public string PurchaseRequestDescription { get; set; }
+        public int? PurchaseStatusId { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
