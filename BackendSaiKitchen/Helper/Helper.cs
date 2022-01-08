@@ -59,11 +59,20 @@ namespace BackendSaiKitchen.Helper
         public static DateTime ConvertToDateTime(string dateTime)
         {
             //04 / 27 / 2021 10:01 AM
-            DateTime.TryParseExact(dateTime, new[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy" },
+            DateTime.TryParseExact(dateTime, new[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy", "M/d/yyyy h:mm tt" },
                 provider, DateTimeStyles.None, out DateTime dateTimeParsed);
 
             return dateTimeParsed;
         }
+
+        //public static DateTime ConvertToDate(string dateTime)
+        //{
+
+        //    DateTime.TryParseExact(dateTime, new[] { "MM/dd/yyyy hh:mm tt", "MM/dd/yyyy h:mm tt", "MM/dd/yyyy", "M/d/yyyy h:mm tt" },
+        //        CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTimeParsed);
+
+        //    return dateTimeParsed.Date;
+        //}
 
         public static string GetDateFromString(string dateTime)
         {

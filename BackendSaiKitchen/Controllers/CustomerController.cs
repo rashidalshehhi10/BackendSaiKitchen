@@ -214,6 +214,360 @@ namespace SaiKitchenBackend.Controllers
             response.data = graph;
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetCustomerGraphOfBranch(int userId, int filter)
+        {
+            var type = typeof(Customer);
+            var parameterExprission = Expression.Parameter(typeof(Customer), "x");
+            var constant = Expression.Constant(false, typeof(bool?));
+            var property = Expression.Property(parameterExprission, "IsDeleted");
+            var expression = Expression.Equal(property, constant);
+            var property2 = Expression.Property(parameterExprission, "IsActive");
+            constant = Expression.Constant(true, typeof(bool?));
+            var experssion2 = Expression.Equal(property2, constant);
+            expression = Expression.And(expression, experssion2);
+            var property3 = Expression.Property(parameterExprission, "BranchId");
+            constant = Expression.Constant(Constants.branchId, typeof(int?));
+            var experssion3 = Expression.Equal(property3, constant);
+            expression = Expression.And(expression, experssion3);
+            Expression _property = parameterExprission;
+            foreach (var item in "Branch.IsActive".Split('.'))
+            {
+                _property = Expression.PropertyOrField(_property, item);
+            }
+            constant = Expression.Constant(true, typeof(bool?));
+            var _experssion = Expression.Equal(_property, constant);
+            expression = Expression.And(expression, _experssion);
+
+            Expression __property = parameterExprission;
+            foreach (var item in "Branch.IsDeleted".Split('.'))
+            {
+                __property = Expression.PropertyOrField(__property, item);
+            }
+            constant = Expression.Constant(false, typeof(bool?));
+            var __experssion = Expression.Equal(__property, constant);
+            expression = Expression.And(expression, __experssion);
+
+            if (userId != 0)
+            {
+                    var property1 = Expression.Property(parameterExprission, "UserId");
+                    constant = Expression.Constant(userId, typeof(int?));
+                    var experssion1 = Expression.Equal(property1, constant);
+                    expression = Expression.And(expression, experssion1);
+            }
+            if (filter == 1)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.NotEqual(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter == 2)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.NotEqual(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
+            }
+            else if (filter == 3 || filter == 16)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToContact, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+            }
+            else if (filter == 4)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter == 5 || filter == 11 || filter == 13)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter == 6)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
+            }
+            else if (filter == 7)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NotResponing, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
+            }
+            else if (filter == 9 || filter == 14 || filter == 15)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.NeedToFollowUp, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                constant = Expression.Constant(false, typeof(bool));
+                var ex = Expression.Equal(body, constant);
+                expression = Expression.And(expression, ex);
+            }
+            else if (filter == 10)
+            {
+                //int InquiryInProgressDelay = customers.Where(x => x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed))).Count();
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _property3 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.measurementdelayed, typeof(int?));
+                var _experssion3 = Expression.NotEqual(_property3, constant);
+                experssion1 = Expression.And(experssion1, _experssion3);
+                var _property4 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.designDelayed, typeof(int?));
+                var _experssion4 = Expression.NotEqual(_property4, constant);
+                experssion1 = Expression.And(experssion1, _experssion4);
+                var _property5 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.quotationDelayed, typeof(int?));
+                var _experssion5 = Expression.NotEqual(_property5, constant);
+                experssion1 = Expression.And(experssion1, _experssion5);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            else if (filter == 12)
+            {
+                var _property1 = Expression.Property(parameterExprission, "ContactStatusId");
+                constant = Expression.Constant((int)contactStatus.Contacted, typeof(int?));
+                var _experssion1 = Expression.Equal(_property1, constant);
+                expression = Expression.And(expression, _experssion1);
+
+                var _parameter = Expression.Parameter(typeof(Inquiry), "y");
+                Expression property1 = Expression.Property(_parameter, "IsActive");
+                constant = Expression.Constant(true, typeof(bool?));
+                var experssion1 = Expression.Equal(property1, constant);
+                var _property2 = Expression.Property(_parameter, "IsDeleted");
+                constant = Expression.Constant(false, typeof(bool?));
+                var _experssion2 = Expression.Equal(_property2, constant);
+                experssion1 = Expression.And(experssion1, _experssion2);
+                var _property3 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.measurementdelayed, typeof(int?));
+                var _experssion3 = Expression.Equal(_property3, constant);
+
+                var _property4 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.designDelayed, typeof(int?));
+                var _experssion4 = Expression.Equal(_property4, constant);
+                _experssion3 = Expression.Or(_experssion3, _experssion4);
+                var _property5 = Expression.Property(_parameter, "InquiryStatusId");
+                constant = Expression.Constant((int)inquiryStatus.quotationDelayed, typeof(int?));
+                var _experssion5 = Expression.Equal(_property5, constant);
+                _experssion3 = Expression.Or(_experssion3, _experssion5);
+                experssion1 = Expression.And(experssion1, _experssion3);
+                var _lambda = Expression.Lambda<Func<Inquiry, bool>>(experssion1, _parameter);
+                var body = Expression.Call(typeof(Enumerable),
+                    nameof(Enumerable.Any),
+                    new Type[] { typeof(Inquiry) },
+                    Expression.Property(parameterExprission, "Inquiries"), _lambda);
+                expression = Expression.And(expression, body);
+            }
+            
+
+            var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
+            var customers = customerRepository.FindByCondition(lambda).Include(x => x.Inquiries.Where(x => x.IsActive == true  && x.IsDeleted == false))
+                            .Select(x =>
+                                new
+                                {
+                                    CustomerId = x.CustomerId,
+                                    CustomerName = x.CustomerName,
+                                    CustomerContact = x.CustomerContact,
+                                    CustomerEmail = x.CustomerEmail,
+                                    Code = "CS" + x.Branch.BranchId + "" + x.CustomerId,
+                                    BranchId = x.Branch.BranchId,
+                                    BranchName = x.Branch.BranchName,
+                                    UserId = x.User.UserId,
+                                    UserName = x.User.UserName,
+                                    CustomerCity = x.CustomerCity,
+                                    CustomerCountry = x.CustomerCountry,
+                                    CustomerNationality = x.CustomerNationality,
+                                    CustomerNotes = x.CustomerNotes,
+                                    CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                                    WayofContactId = x.WayofContactId,
+                                    WayofContact = x.WayofContact.WayOfContactName,
+                                    ContactStatusId = x.ContactStatusId,
+                                    ContactStatus = x.ContactStatus.ContactStatusName,
+                                    CustomerAddress = x.CustomerAddress,
+                                    CustomerNationalId = x.CustomerNationalId,
+                                    TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
+                                    AddedOn = x.CreatedDate,
+                                    CustomerAssignedTo = x.CustomerAssignedTo,
+                                    CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                                    CustomerAssignedBy = x.CustomerAssignedBy,
+                                    CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                                    CustomerAssignedDate = x.CustomerAssignedDate,
+                                    EscalationRequestedBy = x.EscalationRequestedBy,
+                                    EscalationRequestedByName = x.EscalationRequestedByNavigation.UserName,
+                                    EscalationRequestedOn = x.EscalationRequestedOn,
+                                    IsEscalationRequested = x.IsEscalationRequested,
+                                    EscalatedBy = x.EscalatedBy,
+                                    EscalatedByName = x.EscalatedByNavigation.UserName,
+                                    EscalatedOn = x.EscalatedOn,
+                                    Inquiries=x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(),
+
+                                }).OrderByDescending(i => i.CustomerId).ToList();
+
+
+
+            if (filter == 11 || filter == 15)
+            {
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date >= Helper.ConvertToDateTime(Helper.GetDate())).OrderByDescending(i => i.CustomerId).ToList();
+            }
+            else if (filter == 13 || filter == 14 || filter == 16)
+            {
+                customers = customers.Where(x => Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < Helper.ConvertToDateTime(Helper.GetDate())).OrderByDescending(i => i.CustomerId).ToList();
+            }
+            else if (filter == 8)
+            {
+                var date = DateTime.Now.Date;
+                var helper = Helper.ConvertToDateTime(Helper.GetDate());
+                customers = customers.Where(x => ((x.ContactStatusId != (int)contactStatus.Contacted && x.ContactStatusId != (int)contactStatus.NotResponing) 
+                && Helper.ConvertToDateTime(x.CustomerNextMeetingDate).Date < DateTime.Now.Date) 
+                ||(x.ContactStatusId == (int)contactStatus.Contacted && x.Inquiries.Any(x => x.IsActive == true && x.IsDeleted == false &&
+                (x.InquiryStatusId == (int)inquiryStatus.measurementdelayed || x.InquiryStatusId == (int)inquiryStatus.designDelayed
+                || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed)) )).OrderByDescending(i => i.CustomerId).ToList();
+            }
+
+            customers.ForEach(x => x.Inquiries.Clear());
+            response.data = customers;
+            return response;
+
+        }
+
         //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
