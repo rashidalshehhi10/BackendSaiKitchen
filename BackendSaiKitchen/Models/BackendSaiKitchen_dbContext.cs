@@ -129,7 +129,9 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
+        public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual DbSet<PurchaseRequest> PurchaseRequests { get; set; }
+        public virtual DbSet<PurchaseStatus> PurchaseStatuses { get; set; }
         public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; }
         public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; }
         public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; }
@@ -580,6 +582,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Files)
                     .HasForeignKey(d => d.Paymentid)
                     .HasConstraintName("FK_File_Payment");
+
+                entity.HasOne(d => d.PurchaseOrder)
+                    .WithMany(p => p.Files)
+                    .HasForeignKey(d => d.PurchaseOrderId)
+                    .HasConstraintName("FK_File_PurchaseOrder");
 
                 entity.HasOne(d => d.PurchaseRequest)
                     .WithMany(p => p.Files)
@@ -3500,11 +3507,42 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<PurchaseOrder>(entity =>
+            {
+                entity.ToTable("PurchaseOrder");
+
+                entity.Property(e => e.PurchaseOrderId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseOrderActualDeliveryDate).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseOrderDate).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseOrderExpectedDeliveryDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.PurchaseRequest)
+                    .WithMany(p => p.PurchaseOrders)
+                    .HasForeignKey(d => d.PurchaseRequestId)
+                    .HasConstraintName("FK_PurchaseOrder_PurchaseRequest");
+
+                entity.HasOne(d => d.PurchaseStatus)
+                    .WithMany(p => p.PurchaseOrders)
+                    .HasForeignKey(d => d.PurchaseStatusId)
+                    .HasConstraintName("FK_PurchaseOrder_PurchaseStatus");
+            });
+
             modelBuilder.Entity<PurchaseRequest>(entity =>
             {
                 entity.ToTable("PurchaseRequest");
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PuchaseRequestFinalDeliveryDate).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseRequestFinalDeliveryRequestedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
@@ -3512,6 +3550,26 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.PurchaseRequests)
                     .HasForeignKey(d => d.JobOrderId)
                     .HasConstraintName("FK_PurchaseRequest_JobOrder");
+
+                entity.HasOne(d => d.PurchaseStatus)
+                    .WithMany(p => p.PurchaseRequests)
+                    .HasForeignKey(d => d.PurchaseStatusId)
+                    .HasConstraintName("FK_PurchaseRequest_PurchaseStatus");
+            });
+
+            modelBuilder.Entity<PurchaseStatus>(entity =>
+            {
+                entity.ToTable("PurchaseStatus");
+
+                entity.Property(e => e.PurchaseStatusId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseStatusDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PurchaseStatusName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<QrtzBlobTrigger>(entity =>
