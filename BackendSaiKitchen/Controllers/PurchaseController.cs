@@ -145,8 +145,11 @@ namespace BackendSaiKitchen.Controllers
                         foreach (var order in purchase.lpo)
                         {
                             PurchaseOrder Order = new PurchaseOrder();
+                            Order.PurchaseOrderExpectedDeliveryDate = purreq.PurchaseRequestFinalDeliveryRequestedDate;
                             Order.PurchaseOrderActualDeliveryDate = order.PurchaseOrderActualDeliveryDate;
+                            purreq.PuchaseRequestFinalDeliveryDate = order.PurchaseOrderActualDeliveryDate;
                             Order.PurchaseOrderAmount = order.PurchaseOrderAmount;
+                            Order.PurchaseOrderDate = Helper.Helper.GetDateTime();
                             Order.IsActive = true;
                             Order.IsDeleted = false;
                             Order.CreatedBy = Constants.userId;
