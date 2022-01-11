@@ -12,7 +12,7 @@ namespace BackendSaiKitchen.CustomModel
         public string woodenWorkCompletionDate { get; set; }
         public string materialDeliveryFinalDate { get; set; }
         public string counterTopFixingDate { get; set; }
-
+        public string jobordercompletiondate { get; set; }
         public string installationStartDate { get; set; }
         public  int status { get; set; }
         public bool IsMaterialRequired { get; set; }

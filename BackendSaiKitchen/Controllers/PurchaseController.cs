@@ -148,6 +148,8 @@ namespace BackendSaiKitchen.Controllers
                             Order.PurchaseOrderExpectedDeliveryDate = purreq.PurchaseRequestFinalDeliveryRequestedDate;
                             Order.PurchaseOrderActualDeliveryDate = order.PurchaseOrderActualDeliveryDate;
                             purreq.PuchaseRequestFinalDeliveryDate = order.PurchaseOrderActualDeliveryDate;
+                            purreq.PurchaseStatusId = (int)purchaseStatus.purchaseOrdered;
+                            Order.PurchaseStatusId = (int)purchaseStatus.purchaseOrdered;
                             Order.PurchaseOrderAmount = order.PurchaseOrderAmount;
                             Order.PurchaseOrderDate = Helper.Helper.GetDateTime();
                             Order.IsActive = true;

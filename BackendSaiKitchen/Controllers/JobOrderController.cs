@@ -37,6 +37,7 @@ namespace BackendSaiKitchen.Controllers
                     inquiry.InquiryStatusId = Helper.Helper.ConvertToDateTime(order.installationStartDate).Date == Helper.Helper.ConvertToDateTime(joborder.JobOrderExpectedDeadline).Date 
                         ? (int)inquiryStatus.jobOrderInProgress : (int)inquiryStatus.jobOrderAuditPending;
                     Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = inquiry.InquiryStatusId);
+                    joborder.JobOrderCompletionDate = order.jobordercompletiondate;
                     JobOrderDetail jobOrderDetail = new()
                     {
                         MaterialRequestDate = order.materialRequestDate,
@@ -59,6 +60,7 @@ namespace BackendSaiKitchen.Controllers
                         {
                             IsActive = true,
                             IsDeleted = false,
+                            PurchaseStatusId = (int)purchaseStatus.purchaseRequested,
                             CreatedBy = Constants.userId,
                             CreatedDate = Helper.Helper.GetDateTime(),
                         };

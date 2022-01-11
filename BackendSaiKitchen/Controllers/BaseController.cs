@@ -68,6 +68,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<ItemColor> itemColorRepository;
         public Repository<Color> colorRepository;
         public Repository<Comment> commentRepository;
+        public Repository<PurchaseOrder> purchaseOrderRepository;
 
         public BaseController()
         {
@@ -109,6 +110,7 @@ namespace SaiKitchenBackend.Controllers
             itemColorRepository = new Repository<ItemColor>(context);
             colorRepository = new Repository<Color>(context);
             commentRepository = new Repository<Comment>(context);
+            purchaseOrderRepository = new Repository<PurchaseOrder>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }

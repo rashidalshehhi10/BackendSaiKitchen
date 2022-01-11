@@ -111,6 +111,14 @@
         Delete = 5
     }
 
+    public enum purchaseStatus
+    {
+        purchaseRequested = 1,
+        purchaseOrdered = 2,
+        purchaseOrderedDelayed =3,
+        purchaseDelivered = 4
+    }
+
     public enum inquiryStatus
     {
         measurementInProgress = 1,

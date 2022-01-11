@@ -2992,6 +2992,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.JobOrderChecklistFileUrl).HasColumnName("JobOrderChecklistFileURL");
 
+                entity.Property(e => e.JobOrderCompletionDate).HasMaxLength(50);
+
                 entity.Property(e => e.JobOrderDelayReason).HasMaxLength(500);
 
                 entity.Property(e => e.JobOrderDeliveryDate).HasMaxLength(50);
@@ -3510,8 +3512,6 @@ namespace BackendSaiKitchen.Models
             modelBuilder.Entity<PurchaseOrder>(entity =>
             {
                 entity.ToTable("PurchaseOrder");
-
-                entity.Property(e => e.PurchaseOrderId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
