@@ -20,7 +20,7 @@ namespace BackendSaiKitchen.Controllers
         {
             System.Collections.Generic.List<CheckListByBranch> inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false
                     && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress) && x.JobOrders.Any(y =>
-                        y.IsActive == true && y.IsDeleted == false && y.PurchaseRequests.Any(z => z.IsActive == true && z.IsDeleted == false)))
+                        y.IsActive == true && y.IsDeleted == false && y.PurchaseRequests.Any(z => z.IsActive == true && z.IsDeleted == false && z.PurchaseStatusId == (int)purchaseStatus.purchaseRequested)))
                 .Select(x => new CheckListByBranch
                 {
                     InquiryId = x.InquiryId,
