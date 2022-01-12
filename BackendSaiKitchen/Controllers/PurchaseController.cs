@@ -72,6 +72,30 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetPurchaseOrderedByInquiryId(int inquiryId)
+        {
+            var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
+                        x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
+                        x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
+                        x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId).Select(x => new
+                        {
+                            x.PurchaseOrderId,
+                            x.PurchaseOrderTitle,
+                            x.PurchaseOrderDescription,
+                            x.Files,
+                            x.PurchaseOrderAmount,
+                            x.PurchaseOrderDate,
+                            x.PurchaseOrderExpectedDeliveryDate,
+                            x.PurchaseStatusId,
+                            x.PurchaseStatus.PurchaseStatusName,
+                        }).ToList();
+
+            response.data = Purchase;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetPurchaseOrderedByBranchId(int branchId)
         {
             var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
