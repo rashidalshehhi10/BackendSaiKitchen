@@ -72,6 +72,54 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetPurchaseOrderedByBranchId(int branchId)
+        {
+            var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
+            x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.BranchId == branchId).Select(x => new
+            {
+                x.PurchaseOrderId,
+                x.PurchaseOrderTitle,
+                x.PurchaseOrderDescription,
+                x.Files,
+                x.PurchaseOrderAmount,
+                x.PurchaseOrderDate,
+                x.PurchaseOrderExpectedDeliveryDate,
+                x.PurchaseStatusId,
+                x.PurchaseStatus.PurchaseStatusName,
+            }).ToList();
+
+            response.data = Purchase;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetPurchaseOrderedById(int purchaseOrderId)
+        {
+            var Purchase = purchaseOrderRepository.FindByCondition(x => x.PurchaseOrderId == purchaseOrderId && x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
+            x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false).Select(x => new
+            {
+                x.PurchaseOrderId,
+                x.PurchaseOrderTitle,
+                x.PurchaseOrderDescription,
+                x.Files,
+                x.PurchaseOrderAmount,
+                x.PurchaseOrderDate,
+                x.PurchaseOrderExpectedDeliveryDate,
+                x.PurchaseStatusId,
+                x.PurchaseStatus.PurchaseStatusName,
+            }).FirstOrDefault();
+
+            response.data = Purchase;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public object AddPurchaseRequest(PurchaseCustomModel purchase)
         {
             var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == purchase.inquiryId && x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
@@ -85,8 +133,6 @@ namespace BackendSaiKitchen.Controllers
                     foreach (var lp in purchase.lpo)
                     {
                         PurchaseRequest purchaseRequest = new PurchaseRequest();
-                        //purchaseRequest.PurchaseRequestTitle = lp.PurchaseRequestTitle;
-                        //purchaseRequest.PurchaseRequestDescription = lp.PurchaseRequestDescription;
                         purchaseRequest.PurchaseRequestFinalDeliveryRequestedDate = lp.PurchaseRequestFinalDeliveryRequestedDate;
                         purchaseRequest.IsActive = true;
                         purchaseRequest.IsDeleted = false;
@@ -113,7 +159,7 @@ namespace BackendSaiKitchen.Controllers
                         }
                         job.PurchaseRequests.Add(purchaseRequest);
                     }
-                    
+
                 }
                 inquiryRepository.Update(inquiry);
                 response.data = inquiry;
@@ -138,7 +184,7 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 foreach (var job in inquiry.JobOrders)
-                
+
                 {
                     foreach (var purreq in job.PurchaseRequests)
                     {
@@ -187,6 +233,31 @@ namespace BackendSaiKitchen.Controllers
             {
                 response.isError = true;
                 response.errorMessage = "inquiry Not Found";
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object RecievePurchaseOrder(int purchaseOrderId)
+        {
+            var Purchase = purchaseOrderRepository.FindByCondition(x => x.PurchaseOrderId == purchaseOrderId && x.IsActive == true && x.IsDeleted == false &&
+            x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
+            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false).FirstOrDefault();
+            if (Purchase != null)
+            {
+                Purchase.PurchaseStatusId = (int)purchaseStatus.purchaseDelivered;
+                Purchase.PurchaseOrderActualDeliveryDate = Helper.Helper.GetDateTime();
+                purchaseOrderRepository.Update(Purchase);
+                context.SaveChanges();
+                response.data = Purchase;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Purchase Not Found";
             }
 
             return response;
