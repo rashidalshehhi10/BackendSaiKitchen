@@ -215,9 +215,7 @@ namespace BackendSaiKitchen.Controllers
                         foreach (var order in purchase.lpo)
                         {
                             PurchaseOrder Order = new PurchaseOrder();
-                            Order.PurchaseOrderExpectedDeliveryDate = purreq.PurchaseRequestFinalDeliveryRequestedDate;
-                            Order.PurchaseOrderActualDeliveryDate = order.PurchaseOrderActualDeliveryDate;
-                            purreq.PuchaseRequestFinalDeliveryDate = order.PurchaseOrderActualDeliveryDate;
+                            Order.PurchaseOrderExpectedDeliveryDate = order.PurchaseOrderExpectedDeliveryDate;
                             purreq.PurchaseStatusId = (int)purchaseStatus.purchaseOrdered;
                             Order.PurchaseStatusId = (int)purchaseStatus.purchaseOrdered;
                             Order.PurchaseOrderAmount = order.PurchaseOrderAmount;
