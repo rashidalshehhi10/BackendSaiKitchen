@@ -1473,6 +1473,10 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
 
             return InquiryDetail(inquiry);
