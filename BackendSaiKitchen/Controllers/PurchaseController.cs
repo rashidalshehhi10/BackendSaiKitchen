@@ -201,7 +201,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddPurchaseOrder(PurchaseOrderCustomModel purchase)
         {
-            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
+            var inquiry = inquiryRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.InquiryId == purchase.inquiryId && x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress)
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
