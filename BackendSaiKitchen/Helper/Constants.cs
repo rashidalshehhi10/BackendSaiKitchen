@@ -111,7 +111,7 @@
         Delete = 5
     }
 
-    public enum promoType
+    public enum promotionType
     {
         Email = 1,
         WhatsApp = 2,
