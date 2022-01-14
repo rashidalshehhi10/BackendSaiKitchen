@@ -62,6 +62,16 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpGet]
         [Route("[action]")]
+        public object GetAllPromotionType()
+        {
+            var types = promotionTypeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+
+            response.data = types;
+            return response;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
         public object GetAllPromotions()
         {
             var Promotions = promotionRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
