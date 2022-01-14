@@ -111,6 +111,12 @@
         Delete = 5
     }
 
+    public enum promoType
+    {
+        Email = 1,
+        WhatsApp = 2,
+    }
+
     public enum purchaseStatus
     {
         purchaseRequested = 1,

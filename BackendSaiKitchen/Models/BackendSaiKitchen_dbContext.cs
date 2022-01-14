@@ -129,6 +129,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
+        public virtual DbSet<PromoType> PromoTypes { get; set; }
         public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual DbSet<PurchaseRequest> PurchaseRequests { get; set; }
         public virtual DbSet<PurchaseStatus> PurchaseStatuses { get; set; }
@@ -3502,9 +3503,31 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.PromoExpiryDate).HasMaxLength(50);
 
+                entity.Property(e => e.PromoFile).HasMaxLength(50);
+
                 entity.Property(e => e.PromoName).HasMaxLength(500);
 
                 entity.Property(e => e.PromoStartDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.PromoType)
+                    .WithMany(p => p.Promos)
+                    .HasForeignKey(d => d.PromoTypeId)
+                    .HasConstraintName("FK_Promo_PromoType");
+            });
+
+            modelBuilder.Entity<PromoType>(entity =>
+            {
+                entity.ToTable("PromoType");
+
+                entity.Property(e => e.PromoTypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.PromoTypeDescription).HasMaxLength(500);
+
+                entity.Property(e => e.PromoTypeName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });

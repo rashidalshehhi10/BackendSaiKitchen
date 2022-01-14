@@ -29,7 +29,10 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? PromoTypeId { get; set; }
+        public string PromoFile { get; set; }
 
+        public virtual PromoType PromoType { get; set; }
         public virtual ICollection<Inquiry> Inquiries { get; set; }
     }
 }
