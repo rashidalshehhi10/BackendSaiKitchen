@@ -537,6 +537,7 @@ namespace SaiKitchenBackend.Controllers
                                     EscalatedBy = x.EscalatedBy,
                                     EscalatedByName = x.EscalatedByNavigation.UserName,
                                     EscalatedOn = x.EscalatedOn,
+                                    UpdatedDate = x.UpdatedDate,
                                     Inquiries=x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(),
 
                                 }).OrderByDescending(i => i.CustomerId).ToList();
