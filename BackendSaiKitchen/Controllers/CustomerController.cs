@@ -945,6 +945,7 @@ namespace SaiKitchenBackend.Controllers
                     EscalatedByName = x.EscalatedByNavigation.UserName,
                     EscalatedOn = x.EscalatedOn,
                     UpdatedDate = x.UpdatedDate,
+                    AddedOn = x.CreatedDate,
                     TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = 0;
@@ -1323,7 +1324,7 @@ namespace SaiKitchenBackend.Controllers
         //[AuthFilter((int)permission.ManageCustomer, (int)permissionLevel.Create)]
         [HttpPost]
         [Route("[action]")]
-        public object AddCustomer(Customer customer)
+        public async Task<object> AddCustomer(Customer customer)
         {
             if (customer.ContactStatusId == (int)contactStatus.NeedToContact && string.IsNullOrEmpty(customer.CustomerNextMeetingDate))
             {
@@ -1387,9 +1388,36 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerCountry = customer.CustomerCountry;
                 oldCustomer.CustomerNationality = customer.CustomerNationality;
                 oldCustomer.CustomerNationalId = customer.CustomerNationalId;
+                if (oldCustomer.CustomerNotes == customer.CustomerNotes)
+                {
+                    var userr = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
+                        .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false))
+                        .ThenInclude(x => x.BranchRole).FirstOrDefault();
+                    var message = oldCustomer.CustomerName + " Follow-up reschedule to " + oldCustomer.CustomerNextMeetingDate + " Without any Updated notes By (" + userr.UserName + ")";
+
+                    foreach (var role in userr.UserRoles)
+                    {
+                        foreach (var head in role.BranchRole.RoleHeads)
+                        {
+                            var userheads = userRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchRoleId == head.HeadRoleId)
+                                .Select(x => new
+                                {
+                                    x.User.UserMobile,
+                                    x.User.IsNotificationEnabled
+                                }).ToList();
+                            foreach (var userhead in userheads)
+                            {
+                                if ((bool)userhead.IsNotificationEnabled && userhead.IsNotificationEnabled != null && userhead.UserMobile != null)
+                                {
+
+                                    await Helper.SendWhatsappMessage(userhead.UserMobile, "text", message);
+                                }
+                            }
+                        }
+                    }
+                }
                 oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
                 oldCustomer.ContactStatusId = customer.ContactStatusId;
-                //oldCustomer.WayofContactId = customer.WayofContactId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
                 if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
                 {
