@@ -1332,7 +1332,7 @@ namespace SaiKitchenBackend.Controllers
                 response.errorMessage = "Please mention next Follow-up Date";
                 return response;
             }
-            if (customer.CustomerId == 0)
+            else if (customer.CustomerId == 0)
             {
                 customer.BranchId = Constants.branchId;
                 Customer oldCustomer = customerRepository.FindByCondition(x =>
