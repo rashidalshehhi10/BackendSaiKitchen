@@ -88,6 +88,27 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object DeletePromotion(int promotionId)
+        {
+            var promotion = promotionRepository.FindByCondition(x => x.PromotionId == promotionId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+
+            if (promotion != null)
+            {
+                promotion.IsActive = false;
+                promotionRepository.Update(promotion);
+                context.SaveChanges();
+                response.data = "Promotion Deleted";
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Promotion Not Found";
+            }
+            return response;
+        }
+
     }
 }
 
