@@ -909,6 +909,7 @@ namespace SaiKitchenBackend.Controllers
                         EscalatedBy = x.EscalatedBy,
                         EscalatedByName = x.EscalatedByNavigation.UserName,
                         EscalatedOn = x.EscalatedOn,
+                        UpdatedDate = x.UpdatedDate
                         
                     }).OrderByDescending(i => i.CustomerId).ToList();
             customers.AddRange(customerRepository
@@ -942,6 +943,7 @@ namespace SaiKitchenBackend.Controllers
                     EscalatedBy = x.EscalatedBy,
                     EscalatedByName = x.EscalatedByNavigation.UserName,
                     EscalatedOn = x.EscalatedOn,
+                    UpdatedDate = x.UpdatedDate,
                     TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                 }).OrderByDescending(i => i.CustomerId).ToList());
             int? total = 0;

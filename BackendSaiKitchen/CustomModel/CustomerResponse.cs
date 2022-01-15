@@ -69,7 +69,7 @@
         public int? EscalatedBy { get; set; }
         public string EscalatedByName { get; set; }
         public string EscalatedOn { get; set; }
-
+        public string UpdatedDate { get; set; }
 
 
         public int UserId { get; set; }

@@ -36,6 +36,7 @@ namespace BackendSaiKitchen.Controllers
                 oldPromotion.PromotionTypeId = promotion.PromotionTypeId;
 
                 promotionRepository.Update(oldPromotion);
+                context.SaveChanges();
                 response.data = oldPromotion;
             }
             return response;
