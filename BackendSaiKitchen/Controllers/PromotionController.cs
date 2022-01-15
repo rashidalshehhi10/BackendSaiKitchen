@@ -42,7 +42,7 @@ namespace BackendSaiKitchen.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object GetPromotionById(int PromotionId)
         {
@@ -60,7 +60,7 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object GetAllPromotionType()
         {
@@ -70,14 +70,22 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("[action]")]
         public object GetAllPromotions()
         {
-            var Promotions = promotionRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            var Promotions = promotionRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new 
+            {
+                x.PromotionId,
+                x.PromotionName,
+                x.PromotionDescription,
+                x.PromotionTypeId,
+                x.PromotionType.PromotionTypeName,
+            }).ToList();
             response.data = Promotions;
             return response;
         }
 
     }
 }
+
