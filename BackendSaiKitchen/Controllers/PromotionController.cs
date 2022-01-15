@@ -82,6 +82,7 @@ namespace BackendSaiKitchen.Controllers
                 x.PromotionDescription,
                 x.PromotionTypeId,
                 x.PromotionType.PromotionTypeName,
+                x.PromotionFile
             }).ToList();
             response.data = Promotions;
             return response;
