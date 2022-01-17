@@ -1390,9 +1390,9 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerNationalId = customer.CustomerNationalId;
                 if (oldCustomer.CustomerNotes == customer.CustomerNotes)
                 {
-                    var userr = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false)
-                        .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false))
-                        .ThenInclude(x => x.BranchRole).FirstOrDefault();
+                    var userr = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
+                        .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
+                        .ThenInclude(x => x.BranchRole).ThenInclude(x => x.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
                     var message = oldCustomer.CustomerName + " Follow-up reschedule to " + oldCustomer.CustomerNextMeetingDate + " Without any Updated notes By (" + userr.UserName + ")";
 
                     foreach (var role in userr.UserRoles)
@@ -1407,10 +1407,17 @@ namespace SaiKitchenBackend.Controllers
                                 }).ToList();
                             foreach (var userhead in userheads)
                             {
-                                if ((bool)userhead.IsNotificationEnabled && userhead.IsNotificationEnabled != null && userhead.UserMobile != null)
+                                try
                                 {
+                                    if (userhead.IsNotificationEnabled != null && (bool)userhead.IsNotificationEnabled && userhead.UserMobile != null)
+                                    {
 
-                                    await Helper.SendWhatsappMessage(userhead.UserMobile, "text", message);
+                                        await Helper.SendWhatsappMessage(userhead.UserMobile, "text", message);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
                                 }
                             }
                         }
