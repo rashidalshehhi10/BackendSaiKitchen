@@ -1384,48 +1384,50 @@ namespace SaiKitchenBackend.Controllers
                 oldCustomer.CustomerContact = customer.CustomerContact;
                 oldCustomer.CustomerEmail = customer.CustomerEmail;
                 oldCustomer.CustomerCity = customer.CustomerCity;
-                oldCustomer.CustomerNotes = customer.CustomerNotes;
                 oldCustomer.CustomerCountry = customer.CustomerCountry;
                 oldCustomer.CustomerNationality = customer.CustomerNationality;
                 oldCustomer.CustomerNationalId = customer.CustomerNationalId;
-                //if (oldCustomer.CustomerNotes == customer.CustomerNotes)
-                //{
-                //    var userr = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
-                //        .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
-                //        .ThenInclude(x => x.BranchRole).ThenInclude(x => x.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
-                //    var message = oldCustomer.CustomerName + " Follow-up reschedule to " + oldCustomer.CustomerNextMeetingDate + " Without any Updated notes By (" + userr.UserName + ")";
-
-                //    foreach (var role in userr.UserRoles)
-                //    {
-                //        foreach (var head in role.BranchRole.RoleHeads)
-                //        {
-                //            var userheads = userRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchRoleId == head.HeadRoleId)
-                //                .Select(x => new
-                //                {
-                //                    x.User.UserMobile,
-                //                    x.User.IsNotificationEnabled
-                //                }).ToList();
-                //            foreach (var userhead in userheads)
-                //            {
-                //                try
-                //                {
-                //                    if (userhead.IsNotificationEnabled != null && (bool)userhead.IsNotificationEnabled && userhead.UserMobile != null)
-                //                    {
-
-                //                        await Helper.SendWhatsappMessage(userhead.UserMobile, "text", message);
-                //                    }
-                //                }
-                //                catch (Exception e)
-                //                {
-                //                    Sentry.SentrySdk.CaptureMessage(e.Message);
-                //                }
-                //            }
-                //        }
-                //    }
-                //}
                 oldCustomer.CustomerNextMeetingDate = customer.CustomerNextMeetingDate;
                 oldCustomer.ContactStatusId = customer.ContactStatusId;
                 oldCustomer.CustomerWhatsapp = customer.CustomerWhatsapp;
+                if (oldCustomer.CustomerNotes == customer.CustomerNotes && Helper.ConvertToDateTime(oldCustomer.CustomerNextMeetingDate).Date != Helper.ConvertToDateTime(Helper.GetDateTime()).Date)
+                {
+                    var userr = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.UserId == Constants.userId)
+                        .Include(x => x.UserRoles.Where(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId))
+                        .ThenInclude(x => x.BranchRole).ThenInclude(x => x.RoleHeads.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
+                    var message = oldCustomer.CustomerName + " Follow-up reschedule to " + oldCustomer.CustomerNextMeetingDate + " Without any Updated notes By (" + userr.UserName + ")";
+
+                    foreach (var role in userr.UserRoles)
+                    {
+                        foreach (var head in role.BranchRole.RoleHeads)
+                        {
+                            var userheads = userRoleRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchRoleId == head.HeadRoleId && x.BranchId == role.BranchId && x.User.IsActive == true && x.User.IsDeleted == false)
+                                .Select(x => new
+                                {
+                                    x.UserId,
+                                    x.User.UserName,
+                                    x.User.UserMobile,
+                                    x.User.IsNotificationEnabled
+                                }).ToList();
+                            foreach (var userhead in userheads)
+                            {
+                                try
+                                {
+                                    if (userhead.IsNotificationEnabled != null && (bool)userhead.IsNotificationEnabled && userhead.UserMobile != null)
+                                    {
+
+                                        //await Helper.SendWhatsappMessage(userhead.UserMobile, "text", message);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Sentry.SentrySdk.CaptureMessage(e.Message);
+                                }
+                            }
+                        }
+                    }
+                }
+                oldCustomer.CustomerNotes = customer.CustomerNotes;
                 if (customer.CustomerAssignedTo != null || customer.CustomerAssignedTo != 0)
                 {
                     oldCustomer.CustomerAssignedTo = customer.CustomerAssignedTo;
