@@ -44,6 +44,13 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             if (inquiry != null)
             {
@@ -98,6 +105,13 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             return InquiryDetail(inquiry);
@@ -525,6 +539,13 @@ namespace BackendSaiKitchen.Controllers
                 .ThenInclude(y => y.Workscope)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .FirstOrDefault();
             // && (y.PaymentTypeId == (int)paymenttype.AdvancePayment || y.PaymentTypeId == (int)paymenttype.Installment))).FirstOrDefault();
             return InquiryDetail(inquiry);
