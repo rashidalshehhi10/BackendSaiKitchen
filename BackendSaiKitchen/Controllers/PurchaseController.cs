@@ -115,6 +115,7 @@ namespace BackendSaiKitchen.Controllers
                 x.PurchaseOrderAmount,
                 x.PurchaseOrderDate,
                 x.PurchaseOrderExpectedDeliveryDate,
+                x.PurchaseOrderActualDeliveryDate,
                 x.PurchaseStatusId,
                 x.PurchaseStatus.PurchaseStatusName,
             }).ToList();
@@ -143,6 +144,7 @@ namespace BackendSaiKitchen.Controllers
                 x.Files,
                 x.PurchaseOrderAmount,
                 x.PurchaseOrderDate,
+                x.PurchaseOrderActualDeliveryDate,
                 x.PurchaseOrderExpectedDeliveryDate,
                 x.PurchaseStatusId,
                 x.PurchaseStatus.PurchaseStatusName,
