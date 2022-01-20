@@ -118,6 +118,9 @@ namespace BackendSaiKitchen.Controllers
                 x.PurchaseOrderActualDeliveryDate,
                 x.PurchaseStatusId,
                 x.PurchaseStatus.PurchaseStatusName,
+                WorkscopeNames = string.Join(',', x.PurchaseRequest.JobOrder.Inquiry.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.Workscope.WorkScopeName)
+                        .ToList()),
             }).ToList();
 
             response.data = Purchase;
