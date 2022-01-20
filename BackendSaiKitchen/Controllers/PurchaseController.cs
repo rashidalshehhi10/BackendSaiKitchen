@@ -294,5 +294,45 @@ namespace BackendSaiKitchen.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object UpdatePurchaseOrder(UpdateExpectedDate update)
+        {
+            var purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseOrderId == update.PurchaseOrderId).FirstOrDefault();
+            if (purchase != null)
+            {
+                purchase.PurchaseOrderExpectedDeliveryDate = update.PurchaseOrderExpectedDeliveryDate;
+                purchaseOrderRepository.Update(purchase);
+                context.SaveChanges();
+                response.data = "Expected Delivery Date Updated Successfully";
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Purchase Order Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object DeletePurchaseOrder(int PurchaseOrderId)
+        {
+            var purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseOrderId == PurchaseOrderId).FirstOrDefault();
+            if (purchase != null)
+            {
+                purchase.IsActive = false;
+                purchaseOrderRepository.Update(purchase);
+                context.SaveChanges();
+                response.data = "Purchase Order Deleted";
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Purchase Order Not Found";
+            }
+            return response;
+        }
     }
 }
