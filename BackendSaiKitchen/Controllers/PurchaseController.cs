@@ -74,7 +74,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetPurchaseOrderedByInquiryId(int inquiryId)
         {
-            var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
+            var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false /*&& x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered */&&
                         x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId).Select(x => new
