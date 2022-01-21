@@ -79,6 +79,11 @@ namespace BackendSaiKitchen.Controllers
                         x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId).Select(x => new
                         {
+                            x.PurchaseRequest.JobOrder.InquiryId,
+                            x.PurchaseRequest.JobOrder.Inquiry.InquiryCode,
+                            x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerName,
+                            x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerContact,
+                            x.PurchaseRequest.JobOrderId,
                             x.PurchaseOrderId,
                             x.PurchaseOrderTitle,
                             x.PurchaseOrderDescription,
@@ -86,6 +91,7 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseOrderAmount,
                             x.PurchaseOrderDate,
                             x.PurchaseOrderExpectedDeliveryDate,
+                            x.PurchaseOrderActualDeliveryDate,
                             x.PurchaseStatusId,
                             x.PurchaseStatus.PurchaseStatusName,
                         }).ToList();
