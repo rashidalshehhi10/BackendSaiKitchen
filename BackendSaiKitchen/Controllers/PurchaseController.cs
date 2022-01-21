@@ -235,6 +235,7 @@ namespace BackendSaiKitchen.Controllers
                             Order.PurchaseStatusId = (int)purchaseStatus.purchaseOrdered;
                             Order.PurchaseOrderAmount = order.PurchaseOrderAmount;
                             Order.PurchaseOrderDate = Helper.Helper.GetDateTime();
+                            Order.PurchaseOrderDescription = order.PurchaseOrderDescription;
                             Order.IsActive = true;
                             Order.IsDeleted = false;
                             Order.CreatedBy = Constants.userId;

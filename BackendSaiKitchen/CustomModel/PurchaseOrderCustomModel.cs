@@ -15,6 +15,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public string PurchaseOrderAmount { get; set; }
         public string PurchaseOrderExpectedDeliveryDate { get; set; }
+        public string PurchaseOrderDescription { get; set; }
         public List<string> files { get; set; }
     }
 
