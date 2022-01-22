@@ -19,7 +19,7 @@ namespace BackendSaiKitchen.Controllers
         public object GetInquirypurchaseRequestByBranchId(int branchId)
         {
             System.Collections.Generic.List<CheckListByBranch> inquiries = inquiryRepository.FindByCondition(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false
-                    && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress) && x.JobOrders.Any(y =>
+                    && (x.InquiryStatusId == (int)inquiryStatus.jobOrderInProgress && x.InquiryStatusId != (int)inquiryStatus.inquiryCompleted)  && x.JobOrders.Any(y =>
                         y.IsActive == true && y.IsDeleted == false && y.PurchaseRequests.Any(z => z.IsActive == true && z.IsDeleted == false /*&& z.PurchaseStatusId == (int)purchaseStatus.purchaseRequested*/)))
                 .Select(x => new CheckListByBranch
                 {
@@ -77,9 +77,9 @@ namespace BackendSaiKitchen.Controllers
             var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false /*&& x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered */&&
                         x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
-                        x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId).Select(x => new
-                        {
-                            x.PurchaseRequest.JobOrder.InquiryId,
+                        x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId &&
+                        x.PurchaseRequest.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new{
+    x.PurchaseRequest.JobOrder.InquiryId,
                             x.PurchaseRequest.JobOrder.Inquiry.InquiryCode,
                             x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerName,
                             x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerContact,
@@ -107,7 +107,8 @@ namespace BackendSaiKitchen.Controllers
             var Purchase = purchaseOrderRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
             x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
             x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
-            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.BranchId == branchId).Select(x => new
+            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.BranchId == branchId
+            && x.PurchaseRequest.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new
             {
                 x.PurchaseRequest.JobOrder.InquiryId,
                 x.PurchaseRequest.JobOrder.Inquiry.InquiryCode,
@@ -140,7 +141,8 @@ namespace BackendSaiKitchen.Controllers
             var Purchase = purchaseOrderRepository.FindByCondition(x => x.PurchaseOrderId == purchaseOrderId && x.IsActive == true && x.IsDeleted == false && x.PurchaseStatusId == (int)purchaseStatus.purchaseOrdered &&
             x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
             x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
-            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false).Select(x => new
+            x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false
+            && x.PurchaseRequest.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new
             {
                 x.PurchaseRequest.JobOrder.InquiryId,
                 x.PurchaseRequest.JobOrder.Inquiry.InquiryCode,
