@@ -1946,7 +1946,8 @@ namespace SaiKitchenBackend.Controllers
                      x.InquiryStatusId == (int)inquiryStatus.designRejected ||
                      x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested ||
                      x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer))
-                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer).FirstOrDefault();
+                .Include(x => x.InquiryWorkscopes).Include(x => x.Customer)
+                .FirstOrDefault();
             //var inquiryWorkscope = inquiryWorkscopeRepository.FindByCondition(x => x.InquiryWorkscopeId == updateInquiry.InquiryWorkscopeId && x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId != (int)inquiryStatus.measurementAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeAccepted || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneePending || x.InquiryStatusId != (int)inquiryStatus.measurementAssigneeRejected || x.InquiryStatusId != (int)inquiryStatus.measurementdelayed || x.InquiryStatusId != (int)inquiryStatus.measurementPending || x.InquiryStatusId != (int)inquiryStatus.measurementRejected || x.InquiryStatusId != (int)inquiryStatus.measurementWaitingForApproval))
             //    .Include(x => x.Inquiry)
             //    .ThenInclude(y => y.Customer).FirstOrDefault();
@@ -2007,7 +2008,13 @@ namespace SaiKitchenBackend.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Designs.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Quotations.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.JobOrderDetails.Where(x => x.IsActive == true && x.IsDeleted == false))
-                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseRequests.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.PurchaseOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Payments.Where(x => x.IsActive == true && x.IsDeleted == false)).ThenInclude(x => x.Files.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (inquiry != null)
             {
@@ -2182,49 +2189,136 @@ namespace SaiKitchenBackend.Controllers
                 {
                     if (files.materialfile != null && files.materialfile.Any())
                     {
-                        foreach (var purchase in job.PurchaseRequests)
+                        if (job.PurchaseRequests.Any(x => x.PurchaseStatusId != (int)purchaseStatus.purchaseDelivered))
                         {
-                            foreach (var file in purchase.Files)
+                            foreach (var purchase in job.PurchaseRequests.Where(x => x.PurchaseStatusId != (int)purchaseStatus.purchaseDelivered))
                             {
-                                file.IsActive = false;
+                                foreach (var file in purchase.Files)
+                                {
+                                    file.IsActive = false;
+                                    try
+                                    {
+                                        await Helper.DeleteFile(file.FileUrl);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                                    }
+                                }
+
+                                foreach (string fileUrl in files.materialfile)
+                                {
+                                    if (fileUrl != null)
+                                    {
+                                        purchase.Files.Add(new BackendSaiKitchen.Models.File
+                                        {
+                                            FileUrl = fileUrl,
+                                            FileName = fileUrl.Split('.')[0],
+                                            FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                            IsImage = fileUrl.Split('.').Length > 1,
+                                            IsActive = true,
+                                            IsDeleted = false,
+                                            UpdatedBy = Constants.userId,
+                                            UpdatedDate = Helper.GetDateTime(),
+                                            CreatedBy = Constants.userId,
+                                            CreatedDate = Helper.GetDateTime(),
+
+                                        });
+                                        response.data += fileUrl + " Added to Purchase Request \n";
+                                    }
+                                    else
+                                    {
+                                        response.isError = true;
+                                        response.errorMessage = Constants.wrongFileUpload;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var file in files.materialfile)
+                            {
                                 try
                                 {
-                                    await Helper.DeleteFile(file.FileUrl);
+                                    response.data += file + " Didn't Added to Purchase Request \n";
+                                    await Helper.DeleteFile(file);
+
                                 }
                                 catch (Exception e)
                                 {
                                     Sentry.SentrySdk.CaptureMessage(e.Message);
                                 }
                             }
-
-                            foreach (string fileUrl in files.materialfile)
-                            {
-                                if (fileUrl != null)
-                                {
-                                    purchase.Files.Add(new BackendSaiKitchen.Models.File
-                                    {
-                                        FileUrl = fileUrl,
-                                        FileName = fileUrl.Split('.')[0],
-                                        FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
-                                        IsImage = fileUrl.Split('.').Length > 1,
-                                        IsActive = true,
-                                        IsDeleted = false,
-                                        UpdatedBy = Constants.userId,
-                                        UpdatedDate = Helper.GetDateTime(),
-                                        CreatedBy = Constants.userId,
-                                        CreatedDate = Helper.GetDateTime(),
-
-                                    });
-                                    response.data += fileUrl + " Added to Purchase Request \n";
-                                }
-                                else
-                                {
-                                    response.isError = true;
-                                    response.errorMessage = Constants.wrongFileUpload;
-                                }
-                            }
                         }
                         
+                        
+                    }
+                    if (files.purchasefile != null && files.purchasefile.Any())
+                    {
+                        foreach (var purchase in job.PurchaseRequests.Where(x => x.PurchaseStatusId != (int)purchaseStatus.purchaseDelivered))
+                        {
+                            if (purchase.PurchaseOrders.Any(x => x.PurchaseStatusId != (int)purchaseStatus.purchaseDelivered))
+                            {
+                                foreach (var order in purchase.PurchaseOrders.Where(x => x.PurchaseStatusId != (int)purchaseStatus.purchaseDelivered))
+                                {
+                                    foreach (var file in order.Files)
+                                    {
+                                        file.IsActive = false;
+                                        try
+                                        {
+                                            await Helper.DeleteFile(file.FileUrl);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                                        }
+                                    }
+
+                                    foreach (string fileUrl in files.purchasefile)
+                                    {
+                                        if (fileUrl != null)
+                                        {
+                                            order.Files.Add(new BackendSaiKitchen.Models.File
+                                            {
+                                                FileUrl = fileUrl,
+                                                FileName = fileUrl.Split('.')[0],
+                                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                                IsImage = fileUrl.Split('.').Length > 1,
+                                                IsActive = true,
+                                                IsDeleted = false,
+                                                UpdatedBy = Constants.userId,
+                                                UpdatedDate = Helper.GetDateTime(),
+                                                CreatedBy = Constants.userId,
+                                                CreatedDate = Helper.GetDateTime(),
+
+                                            });
+                                            response.data += fileUrl + " Added to Purchase Order \n";
+                                        }
+                                        else
+                                        {
+                                            response.isError = true;
+                                            response.errorMessage = Constants.wrongFileUpload;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var file in files.purchasefile)
+                                {
+                                    try
+                                    {
+                                        response.data += file + " Didn't Added to Purchase Order \n";
+                                        await Helper.DeleteFile(file);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                                    }
+                                }
+                            }
+                            
+                        }
                     }
                     if (files.DetailedDesignFile != null && files.DetailedDesignFile != string.Empty)
                     {
