@@ -18,6 +18,7 @@ namespace BackendSaiKitchen.Models
         }
 
         public virtual DbSet<Accesory> Accesories { get; set; }
+        public virtual DbSet<Apartment> Apartments { get; set; }
         public virtual DbSet<Appliance> Appliances { get; set; }
         public virtual DbSet<ApplianceAccessory> ApplianceAccessories { get; set; }
         public virtual DbSet<ApplianceAccessoryType> ApplianceAccessoryTypes { get; set; }
@@ -29,6 +30,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<CalendarEvent> CalendarEvents { get; set; }
         public virtual DbSet<Color> Colors { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<CommercialProject> CommercialProjects { get; set; }
         public virtual DbSet<ContactStatus> ContactStatuses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<CustomerBranch> CustomerBranches { get; set; }
@@ -113,6 +115,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<JobOrderDetail> JobOrderDetails { get; set; }
         public virtual DbSet<KitchenDesignInfo> KitchenDesignInfos { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<Material> Materials { get; set; }
         public virtual DbSet<Measurement> Measurements { get; set; }
         public virtual DbSet<MeasurementDetail> MeasurementDetails { get; set; }
         public virtual DbSet<MeasurementDetailInfo> MeasurementDetailInfos { get; set; }
@@ -128,6 +131,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
+        public virtual DbSet<ProjectStatus> ProjectStatuses { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
         public virtual DbSet<Promotion> Promotions { get; set; }
         public virtual DbSet<PromotionType> PromotionTypes { get; set; }
@@ -145,10 +149,12 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<QrtzSimpleTrigger> QrtzSimpleTriggers { get; set; }
         public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; }
         public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; }
+        public virtual DbSet<Quantity> Quantities { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
+        public virtual DbSet<Size> Sizes { get; set; }
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; }
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -184,6 +190,20 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Accesories)
                     .HasForeignKey(d => d.WardrobeDesignInfoId)
                     .HasConstraintName("FK_Accesories_WardrobeDesignInformation");
+            });
+
+            modelBuilder.Entity<Apartment>(entity =>
+            {
+                entity.ToTable("Apartment");
+
+                entity.Property(e => e.ApartmentName).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.CommercialProject)
+                    .WithMany(p => p.Apartments)
+                    .HasForeignKey(d => d.CommercialProjectId)
+                    .HasConstraintName("FK_Apartment_CommercialProject");
             });
 
             modelBuilder.Entity<Appliance>(entity =>
@@ -391,6 +411,24 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.InquiryStatusId)
                     .HasConstraintName("FK_Comment_InquiryStatus");
+            });
+
+            modelBuilder.Entity<CommercialProject>(entity =>
+            {
+                entity.ToTable("CommercialProject");
+
+                entity.Property(e => e.CommercialProjectName).HasMaxLength(50);
+
+                entity.Property(e => e.CommercialProjectStartDate).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.ProjectStatus)
+                    .WithMany(p => p.CommercialProjects)
+                    .HasForeignKey(d => d.ProjectStatusId)
+                    .HasConstraintName("FK_CommercialProject_ProjectStatus");
             });
 
             modelBuilder.Entity<ContactStatus>(entity =>
@@ -3131,6 +3169,17 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UserName).HasMaxLength(200);
             });
 
+            modelBuilder.Entity<Material>(entity =>
+            {
+                entity.ToTable("Material");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.MaterialName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Measurement>(entity =>
             {
                 entity.ToTable("Measurement");
@@ -3488,6 +3537,19 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.PermissionRoles)
                     .HasForeignKey(d => d.PermissionLevelId)
                     .HasConstraintName("FK_PermissionRole_PermissionLevel");
+            });
+
+            modelBuilder.Entity<ProjectStatus>(entity =>
+            {
+                entity.ToTable("ProjectStatus");
+
+                entity.Property(e => e.ProjectStatusId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.ProjectStatusName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Promo>(entity =>
@@ -4046,6 +4108,44 @@ namespace BackendSaiKitchen.Models
                     .HasColumnName("TRIGGER_TYPE");
             });
 
+            modelBuilder.Entity<Quantity>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("Quantity");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.Quantity1).HasColumnName("Quantity");
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.CommercialProject)
+                    .WithMany()
+                    .HasForeignKey(d => d.CommercialProjectId)
+                    .HasConstraintName("FK_Quantity_CommercialProject");
+
+                entity.HasOne(d => d.Material)
+                    .WithMany()
+                    .HasForeignKey(d => d.MaterialId)
+                    .HasConstraintName("FK_Quantity_Material");
+
+                entity.HasOne(d => d.ProjectStatus)
+                    .WithMany()
+                    .HasForeignKey(d => d.ProjectStatusId)
+                    .HasConstraintName("FK_Quantity_ProjectStatus");
+
+                entity.HasOne(d => d.Size)
+                    .WithMany()
+                    .HasForeignKey(d => d.SizeId)
+                    .HasConstraintName("FK_Quantity_Size");
+
+                entity.HasOne(d => d.WorkScope)
+                    .WithMany()
+                    .HasForeignKey(d => d.WorkScopeId)
+                    .HasConstraintName("FK_Quantity_WorkScope");
+            });
+
             modelBuilder.Entity<Quotation>(entity =>
             {
                 entity.ToTable("Quotation");
@@ -4127,6 +4227,26 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.SettingName).HasMaxLength(500);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Size>(entity =>
+            {
+                entity.ToTable("Size");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.SizeHeight).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.SizeName).HasMaxLength(50);
+
+                entity.Property(e => e.SizeWidth).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Material)
+                    .WithMany(p => p.Sizes)
+                    .HasForeignKey(d => d.MaterialId)
+                    .HasConstraintName("FK_Size_Material");
             });
 
             modelBuilder.Entity<TermsAndCondition>(entity =>
