@@ -9,6 +9,7 @@ namespace BackendSaiKitchen.Models
     {
         public Material()
         {
+            ProjectDetails = new HashSet<ProjectDetail>();
             Sizes = new HashSet<Size>();
         }
 
@@ -22,6 +23,7 @@ namespace BackendSaiKitchen.Models
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
 
+        public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
         public virtual ICollection<Size> Sizes { get; set; }
     }
 }

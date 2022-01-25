@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public ProjectStatus()
         {
             CommercialProjects = new HashSet<CommercialProject>();
+            ProjectDetails = new HashSet<ProjectDetail>();
         }
 
         public int ProjectStatusId { get; set; }
@@ -23,5 +24,6 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual ICollection<CommercialProject> CommercialProjects { get; set; }
+        public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
     }
 }

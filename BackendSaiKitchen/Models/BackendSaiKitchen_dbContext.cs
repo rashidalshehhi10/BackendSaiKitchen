@@ -131,6 +131,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<PermissionLevel> PermissionLevels { get; set; }
         public virtual DbSet<PermissionRole> PermissionRoles { get; set; }
+        public virtual DbSet<ProjectDetail> ProjectDetails { get; set; }
         public virtual DbSet<ProjectStatus> ProjectStatuses { get; set; }
         public virtual DbSet<Promo> Promos { get; set; }
         public virtual DbSet<Promotion> Promotions { get; set; }
@@ -149,7 +150,6 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<QrtzSimpleTrigger> QrtzSimpleTriggers { get; set; }
         public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; }
         public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; }
-        public virtual DbSet<Quantity> Quantities { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
@@ -3539,6 +3539,40 @@ namespace BackendSaiKitchen.Models
                     .HasConstraintName("FK_PermissionRole_PermissionLevel");
             });
 
+            modelBuilder.Entity<ProjectDetail>(entity =>
+            {
+                entity.ToTable("ProjectDetail");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.CommercialProject)
+                    .WithMany(p => p.ProjectDetails)
+                    .HasForeignKey(d => d.CommercialProjectId)
+                    .HasConstraintName("FK_ProjectDetail_CommercialProject");
+
+                entity.HasOne(d => d.Material)
+                    .WithMany(p => p.ProjectDetails)
+                    .HasForeignKey(d => d.MaterialId)
+                    .HasConstraintName("FK_ProjectDetail_Material");
+
+                entity.HasOne(d => d.ProjectStatus)
+                    .WithMany(p => p.ProjectDetails)
+                    .HasForeignKey(d => d.ProjectStatusId)
+                    .HasConstraintName("FK_ProjectDetail_ProjectStatus");
+
+                entity.HasOne(d => d.Size)
+                    .WithMany(p => p.ProjectDetails)
+                    .HasForeignKey(d => d.SizeId)
+                    .HasConstraintName("FK_ProjectDetail_Size");
+
+                entity.HasOne(d => d.WorkScope)
+                    .WithMany(p => p.ProjectDetails)
+                    .HasForeignKey(d => d.WorkScopeId)
+                    .HasConstraintName("FK_ProjectDetail_WorkScope");
+            });
+
             modelBuilder.Entity<ProjectStatus>(entity =>
             {
                 entity.ToTable("ProjectStatus");
@@ -4106,44 +4140,6 @@ namespace BackendSaiKitchen.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("TRIGGER_TYPE");
-            });
-
-            modelBuilder.Entity<Quantity>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("Quantity");
-
-                entity.Property(e => e.CreatedDate).HasMaxLength(50);
-
-                entity.Property(e => e.Quantity1).HasColumnName("Quantity");
-
-                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
-
-                entity.HasOne(d => d.CommercialProject)
-                    .WithMany()
-                    .HasForeignKey(d => d.CommercialProjectId)
-                    .HasConstraintName("FK_Quantity_CommercialProject");
-
-                entity.HasOne(d => d.Material)
-                    .WithMany()
-                    .HasForeignKey(d => d.MaterialId)
-                    .HasConstraintName("FK_Quantity_Material");
-
-                entity.HasOne(d => d.ProjectStatus)
-                    .WithMany()
-                    .HasForeignKey(d => d.ProjectStatusId)
-                    .HasConstraintName("FK_Quantity_ProjectStatus");
-
-                entity.HasOne(d => d.Size)
-                    .WithMany()
-                    .HasForeignKey(d => d.SizeId)
-                    .HasConstraintName("FK_Quantity_Size");
-
-                entity.HasOne(d => d.WorkScope)
-                    .WithMany()
-                    .HasForeignKey(d => d.WorkScopeId)
-                    .HasConstraintName("FK_Quantity_WorkScope");
             });
 
             modelBuilder.Entity<Quotation>(entity =>

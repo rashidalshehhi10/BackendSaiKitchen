@@ -7,6 +7,11 @@ namespace BackendSaiKitchen.Models
 {
     public partial class Size
     {
+        public Size()
+        {
+            ProjectDetails = new HashSet<ProjectDetail>();
+        }
+
         public int SizeId { get; set; }
         public string SizeName { get; set; }
         public string SizeDescription { get; set; }
@@ -19,5 +24,6 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual Material Material { get; set; }
+        public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
     }
 }

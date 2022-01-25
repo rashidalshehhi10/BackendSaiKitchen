@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public WorkScope()
         {
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
+            ProjectDetails = new HashSet<ProjectDetail>();
         }
 
         public int WorkScopeId { get; set; }
@@ -24,5 +25,6 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
+        public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
     }
 }
