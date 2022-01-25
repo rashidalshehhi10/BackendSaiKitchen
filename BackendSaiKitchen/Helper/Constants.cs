@@ -125,6 +125,28 @@
         purchaseDelivered = 4
     }
 
+    public enum projectStatus
+    {
+        CuttingPending = 1,
+        CuttingStopped = 2,
+        CuttingCompleted = 3,
+        LippingPending = 4,
+        LippingStopped = 5,
+        LippingCompleted = 6,
+        CNCPending = 7,
+        CNCStopped = 8,
+        CNCCompleted = 9,
+        AssemblePending = 10,
+        AssembleStopped = 11,
+        AssembleCompleted = 12,
+        PackingPending = 13,
+        PackingStopped = 14,
+        PackingCompleted = 15,
+        DispatchPending = 16,
+        DispatchStopped = 17,
+        DispatchCompleted = 18,
+    }
+
     public enum inquiryStatus
     {
         measurementInProgress = 1,
