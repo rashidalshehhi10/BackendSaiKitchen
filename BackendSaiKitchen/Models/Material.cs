@@ -22,7 +22,9 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? WorkscopeId { get; set; }
 
+        public virtual WorkScope Workscope { get; set; }
         public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
         public virtual ICollection<Size> Sizes { get; set; }
     }

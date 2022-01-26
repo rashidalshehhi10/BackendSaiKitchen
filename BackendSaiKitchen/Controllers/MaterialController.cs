@@ -20,6 +20,15 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetMaterialByWorkscopeId(int WorkscopeId)
+        {
+            var Materials = materialRepository.FindByCondition(x => x.WorkscopeId == WorkscopeId && x.IsActive == true && x.IsDeleted == false).ToList();
+            response.data = Materials;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetMaterailById(int MaterailId)
         {
             var Materail = materialRepository.FindByCondition(x => x.MaterialId == MaterailId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();

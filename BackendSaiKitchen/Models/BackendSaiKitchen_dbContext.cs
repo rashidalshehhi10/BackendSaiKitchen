@@ -3180,6 +3180,11 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.MaterialName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Workscope)
+                    .WithMany(p => p.Materials)
+                    .HasForeignKey(d => d.WorkscopeId)
+                    .HasConstraintName("FK_Material_WorkScope");
             });
 
             modelBuilder.Entity<Measurement>(entity =>
