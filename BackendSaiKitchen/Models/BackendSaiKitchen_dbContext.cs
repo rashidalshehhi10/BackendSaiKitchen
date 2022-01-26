@@ -419,6 +419,8 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CommercialProjectName).HasMaxLength(50);
 
+                entity.Property(e => e.CommercialProjectNo).HasMaxLength(50);
+
                 entity.Property(e => e.CommercialProjectStartDate).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);

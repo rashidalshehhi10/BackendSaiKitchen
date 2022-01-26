@@ -72,6 +72,8 @@ namespace SaiKitchenBackend.Controllers
         public Repository<Promotion> promotionRepository;
         public Repository<PromotionType> promotionTypeRepository;
         public Repository<CommercialProject> commercialProjectRepository;
+        public Repository<Material> materialRepository;
+        public Repository<Size> sizeRepository;
 
         public BaseController()
         {
@@ -117,6 +119,8 @@ namespace SaiKitchenBackend.Controllers
             promotionRepository = new Repository<Promotion>(context);
             promotionTypeRepository = new Repository<PromotionType>(context);
             commercialProjectRepository = new Repository<CommercialProject>(context);
+            materialRepository = new Repository<Material>(context);
+            sizeRepository = new Repository<Size>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }
