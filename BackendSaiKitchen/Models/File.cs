@@ -25,8 +25,10 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? HandingOver { get; set; }
 
         public virtual Design Design { get; set; }
+        public virtual JobOrder HandingOverNavigation { get; set; }
         public virtual Measurement Measurement { get; set; }
         public virtual Payment Payment { get; set; }
         public virtual PurchaseOrder PurchaseOrder { get; set; }
