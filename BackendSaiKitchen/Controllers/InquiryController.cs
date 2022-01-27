@@ -2648,7 +2648,7 @@ namespace SaiKitchenBackend.Controllers
 
         #region workscope
 
-        [AuthFilter((int)permission.ManageWorkscope, (int)permissionLevel.Read)]
+        //[AuthFilter((int)permission.ManageWorkscope, (int)permissionLevel.Read)]
         [HttpPost]
         [Route("[action]")]
         public object GetAllWorkscope()
