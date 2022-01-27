@@ -24,6 +24,6 @@ namespace BackendSaiKitchen.CustomModel
 
     public class apartment
     {
-        public string apartmentname { get; set; }
+        public string ApartmentName { get; set; }
     }
 }

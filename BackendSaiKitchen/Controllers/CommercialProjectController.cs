@@ -23,18 +23,21 @@ namespace BackendSaiKitchen.Controllers
             {
                 commercial.Apartments.Add(new Apartment
                 {
-                    ApartmentName = apartment.apartmentname
+                    ApartmentName = apartment.ApartmentName
                 });
             }
             foreach (var work in project.scopeofWork)
             {
-                commercial.ProjectDetails.Add(new ProjectDetail
+                if (work.WorkScopeId != 0)
                 {
-                    MaterialId = work.MaterialId,
-                    SizeId = work.SizeId,
-                    WorkScopeId = work.WorkScopeId,
-                    Quantity = work.Quantity,
-                });
+                    commercial.ProjectDetails.Add(new ProjectDetail
+                    {
+                        MaterialId = work.MaterialId,
+                        SizeId = work.SizeId,
+                        WorkScopeId = work.WorkScopeId,
+                        Quantity = work.Quantity,
+                    });
+                }  
             }
             commercialProjectRepository.Create(commercial);
             context.SaveChanges();
