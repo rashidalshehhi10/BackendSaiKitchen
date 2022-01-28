@@ -45,5 +45,52 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public object GetAllCommercialProjects()
+        {
+            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                x.CommercialProjectId,
+                x.CommercialProjectName,
+                x.CommercialProjectNo,
+                x.CommercialProjectDesription,
+                x.CommercialProjectStartDate,
+                x.ProjectStatusId,
+                x.ProjectStatus.ProjectStatusName,
+                x.Apartments
+            }).ToList();
+
+            response.data = project;
+            return response;
+
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetCommercialProjectById(int CommercialProjectId)
+        {
+            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CommercialProjectId == CommercialProjectId).Select(x => new
+            {
+                x.CommercialProjectId,
+                x.CommercialProjectName,
+                x.CommercialProjectNo,
+                x.CommercialProjectDesription,
+                x.CommercialProjectStartDate,
+                x.ProjectStatusId,
+                x.ProjectStatus.ProjectStatusName,
+                x.Apartments
+            }).FirstOrDefault();
+            if (project != null)
+            {
+                response.data = project;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Commercial project Not Found";
+            }
+            return response;
+        }
     }
 }
