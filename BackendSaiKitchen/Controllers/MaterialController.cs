@@ -71,7 +71,14 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllMaterial()
         {
-            var Materials = materialRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            var Materials = materialRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new 
+            {
+                x.MaterialId,
+                x.MaterialName,
+                x.MaterialDescription,
+                x.WorkscopeId,
+                x.Workscope.WorkScopeName,
+            }).ToList();
             response.data = Materials;
             return response;
         }
