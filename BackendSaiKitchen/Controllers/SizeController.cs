@@ -75,7 +75,16 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllSize()
         {
-            var size = sizeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).ToList();
+            var size = sizeRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            {
+                x.SizeId,
+                x.SizeName,
+                x.SizeDescription,
+                x.SizeWidth,
+                x.SizeHeight,
+                x.MaterialId,
+                x.Material.MaterialName,
+            }).ToList();
             response.data = size;
             return response;
         }
