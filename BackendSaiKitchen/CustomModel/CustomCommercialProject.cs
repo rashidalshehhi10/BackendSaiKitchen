@@ -9,6 +9,7 @@ namespace BackendSaiKitchen.CustomModel
     {
         public string jobno { get; set; }
         public string projectname { get; set; }
+        public string projectdescription { get; set; }
         public string location { get; set; }
         public List<apartment> excel { get; set; }
         public List<CustomProjectDetail> scopeofWork { get; set; }

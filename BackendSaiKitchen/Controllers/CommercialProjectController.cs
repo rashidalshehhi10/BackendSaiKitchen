@@ -18,6 +18,9 @@ namespace BackendSaiKitchen.Controllers
             CommercialProject commercial = new CommercialProject();
             commercial.CommercialProjectName = project.projectname;
             commercial.CommercialProjectStartDate = Helper.Helper.GetDateTime();
+            commercial.CommercialProjectLocation = project.location;
+            commercial.CommercialProjectNo = project.jobno;
+            commercial.CommercialProjectDesription = project.projectdescription;
             
             foreach (var apartment in project.excel)
             {
