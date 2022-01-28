@@ -93,6 +93,7 @@ namespace BackendSaiKitchen.CustomModel
         public string Remark { get; set; }
         public string JobOrderDetailsDescription { get; set; }
         public string installationStartDate { get; set; }
+        public List<string> handingover { get; set; }
     }
 
     public class Factroy

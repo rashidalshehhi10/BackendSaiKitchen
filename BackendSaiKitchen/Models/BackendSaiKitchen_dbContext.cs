@@ -615,9 +615,9 @@ namespace BackendSaiKitchen.Models
                     .HasForeignKey(d => d.DesignId)
                     .HasConstraintName("FK_File_Design");
 
-                entity.HasOne(d => d.HandingOverNavigation)
+                entity.HasOne(d => d.Joborder)
                     .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.HandingOver)
+                    .HasForeignKey(d => d.JoborderId)
                     .HasConstraintName("FK_File_JobOrder");
 
                 entity.HasOne(d => d.Measurement)

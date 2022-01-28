@@ -331,6 +331,26 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (Models.JobOrder joborder in inquiry.JobOrders)
                 {
+                    foreach (string fileUrl in install.handingover)
+                    {
+                        if (fileUrl != null && fileUrl != string.Empty)
+                        {
+                            joborder.Files.Add(new File
+                            {
+                                FileUrl = fileUrl,
+                                FileName = fileUrl.Split('.')[0],
+                                FileContentType = fileUrl.Split('.').Length > 1 ? fileUrl.Split('.')[1] : "mp4",
+                                IsImage = fileUrl.Split('.').Length > 1,
+                                IsActive = true,
+                                IsDeleted = false,
+                                UpdatedBy = Constants.userId,
+                                UpdatedDate = Helper.Helper.GetDateTime(),
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime()
+                            });
+                        }
+                    }
+
                     Helper.Helper.Each(joborder.JobOrderDetails, x =>
                     {
                         x.InstallationEndDate = Helper.Helper.GetDateTime();
