@@ -82,6 +82,23 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public object GetSizeById(int SizeId)
+        {
+            var size = sizeRepository.FindByCondition(x => x.SizeId == SizeId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            if (size != null)
+            {
+                response.data = size;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Size Not Found";
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
         public object GetSizeByMaterialId(int MaterialId)
         {
             var size = sizeRepository.FindByCondition(x => x.MaterialId == MaterialId && x.IsActive == true && x.IsDeleted == false).ToList();
