@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.Models
         public UnitOfMeasurement()
         {
             ApplianceAccessories = new HashSet<ApplianceAccessory>();
+            Materials = new HashSet<Material>();
         }
 
         public int UnitOfMeasurementId { get; set; }
@@ -23,5 +24,6 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual ICollection<ApplianceAccessory> ApplianceAccessories { get; set; }
+        public virtual ICollection<Material> Materials { get; set; }
     }
 }

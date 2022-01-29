@@ -24,6 +24,7 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
+        public string SizeDetail { get; set; }
 
         public virtual Material Material { get; set; }
         public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
