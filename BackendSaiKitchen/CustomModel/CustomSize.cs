@@ -10,6 +10,7 @@ namespace BackendSaiKitchen.CustomModel
         public int SizeId { get; set; }
         public string SizeName { get; set; }
         public string SizeDescription { get; set; }
+        public string SizeDetail { get; set; }
         public decimal SizeHeight { get; set; }
         public decimal SizeWidth { get; set; }
         public int MaterialId { get; set; }

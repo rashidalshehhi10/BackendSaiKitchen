@@ -18,6 +18,7 @@ namespace BackendSaiKitchen.Controllers
             Size size = new Size();
             size.SizeName = _size.SizeName;
             size.SizeDescription = _size.SizeDescription;
+            size.SizeDetail = _size.SizeDetail;
             size.SizeHeight = _size.SizeHeight;
             size.SizeWidth = _size.SizeWidth;
             size.MaterialId = _size.MaterialId;
@@ -36,6 +37,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 size.SizeName = _size.SizeName;
                 size.SizeDescription = _size.SizeDescription;
+                size.SizeDetail = _size.SizeDetail;
                 size.SizeHeight = _size.SizeHeight;
                 size.SizeWidth = _size.SizeWidth;
                 size.MaterialId = _size.MaterialId;
@@ -80,6 +82,7 @@ namespace BackendSaiKitchen.Controllers
                 x.SizeId,
                 x.SizeName,
                 x.SizeDescription,
+                x.SizeDetail,
                 x.SizeWidth,
                 x.SizeHeight,
                 x.MaterialId,

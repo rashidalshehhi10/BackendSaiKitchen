@@ -1,6 +1,8 @@
 ﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,15 @@ namespace BackendSaiKitchen.Controllers
             material.MaterialName = _material.MaterialName;
             material.MaterialDescription = _material.MaterialDescription;
             material.WorkscopeId = _material.WorkscopeId;
+            foreach (var _size in _material.SizeDetail)
+            {
+                material.Sizes.Add(new Size
+                {
+                    SizeDetail = _size,
+                    CreatedBy = Constants.userId,
+                    CreatedDate = Helper.Helper.GetDateTime(),
+                });
+            }
             materialRepository.Create(material);
             context.SaveChanges();
             response.data = material;
@@ -35,6 +46,19 @@ namespace BackendSaiKitchen.Controllers
                 material.MaterialName = _material.MaterialName;
                 material.MaterialDescription = _material.MaterialDescription;
                 material.WorkscopeId = _material.WorkscopeId;
+                foreach (var _size in material.Sizes)
+                {
+                    _size.IsActive = false;
+                }
+                foreach (var _size in _material.SizeDetail)
+                {
+                    material.Sizes.Add(new Size
+                    {
+                        SizeDetail = _size,
+                        CreatedBy = Constants.userId,
+                        CreatedDate = Helper.Helper.GetDateTime(),
+                    });
+                }
                 materialRepository.Update(material);
                 context.SaveChanges();
                 response.data = material;
@@ -78,6 +102,11 @@ namespace BackendSaiKitchen.Controllers
                 x.MaterialDescription,
                 x.WorkscopeId,
                 x.Workscope.WorkScopeName,
+                x.UnitOfMeasurementId,
+                x.UnitOfMeasurement.UnitOfMeasurementName,
+                sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.SizeDetail)
+                        .ToList())
             }).ToList();
             response.data = Materials;
             return response;
@@ -87,7 +116,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetMaterialByWorkscopeId(int WorkscopeId)
         {
-            var Materials = materialRepository.FindByCondition(x => x.WorkscopeId == WorkscopeId && x.IsActive == true && x.IsDeleted == false).ToList();
+            var Materials = materialRepository.FindByCondition(x => x.WorkscopeId == WorkscopeId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.UnitOfMeasurement).Include(x => x.Workscope).ToList();
             response.data = Materials;
             return response;
         }
@@ -96,7 +126,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetMaterailById(int MaterailId)
         {
-            var Materail = materialRepository.FindByCondition(x => x.MaterialId == MaterailId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var Materail = materialRepository.FindByCondition(x => x.MaterialId == MaterailId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.UnitOfMeasurement).Include(x => x.Workscope).FirstOrDefault();
             if (Materail != null)
             {
                 response.data = Materail;
