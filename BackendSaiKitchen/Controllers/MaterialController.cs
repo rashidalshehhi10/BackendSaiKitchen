@@ -23,6 +23,7 @@ namespace BackendSaiKitchen.Controllers
             material.WorkscopeId = _material.WorkscopeId;
             material.MaterialImg = _material.MaterialImg;
             material.Skucode = _material.Skucode;
+            material.UnitOfMeasurementId = _material.UnitOfMeasurementId;
             foreach (var _size in _material.SizeDetail)
             {
                 material.Sizes.Add(new Size
@@ -49,6 +50,7 @@ namespace BackendSaiKitchen.Controllers
                 material.MaterialDescription = _material.MaterialDescription;
                 material.WorkscopeId = _material.WorkscopeId;
                 material.MaterialImg = _material.MaterialImg;
+                material.UnitOfMeasurementId = _material.UnitOfMeasurementId;
                 foreach (var _size in material.Sizes)
                 {
                     _size.IsActive = false;
@@ -105,6 +107,7 @@ namespace BackendSaiKitchen.Controllers
                 x.MaterialDescription,
                 x.WorkscopeId,
                 x.Workscope.WorkScopeName,
+                x.MaterialImg,
                 x.UnitOfMeasurementId,
                 x.UnitOfMeasurement.UnitOfMeasurementName,
                 x.Skucode,
@@ -128,6 +131,7 @@ namespace BackendSaiKitchen.Controllers
                     x.MaterialDescription,
                     x.WorkscopeId,
                     x.Workscope.WorkScopeName,
+                    x.MaterialImg,
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
                     x.Skucode,
@@ -151,6 +155,7 @@ namespace BackendSaiKitchen.Controllers
                     x.MaterialDescription,
                     x.WorkscopeId,
                     x.Workscope.WorkScopeName,
+                    x.MaterialImg,
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
                     x.Skucode,
