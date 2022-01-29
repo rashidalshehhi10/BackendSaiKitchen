@@ -29,6 +29,8 @@ namespace BackendSaiKitchen.Controllers
                 material.Sizes.Add(new Size
                 {
                     SizeDetail = _size,
+                    IsActive = true,
+                    IsDeleted = false,
                     CreatedBy = Constants.userId,
                     CreatedDate = Helper.Helper.GetDateTime(),
                 });
@@ -60,6 +62,8 @@ namespace BackendSaiKitchen.Controllers
                     material.Sizes.Add(new Size
                     {
                         SizeDetail = _size,
+                        IsActive = true,
+                        IsDeleted = false,
                         CreatedBy = Constants.userId,
                         CreatedDate = Helper.Helper.GetDateTime(),
                     });
