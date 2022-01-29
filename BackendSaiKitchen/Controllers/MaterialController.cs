@@ -21,6 +21,7 @@ namespace BackendSaiKitchen.Controllers
             material.MaterialName = _material.MaterialName;
             material.MaterialDescription = _material.MaterialDescription;
             material.WorkscopeId = _material.WorkscopeId;
+            material.MaterialImg = _material.MaterialImg;
             foreach (var _size in _material.SizeDetail)
             {
                 material.Sizes.Add(new Size
@@ -46,6 +47,7 @@ namespace BackendSaiKitchen.Controllers
                 material.MaterialName = _material.MaterialName;
                 material.MaterialDescription = _material.MaterialDescription;
                 material.WorkscopeId = _material.WorkscopeId;
+                material.MaterialImg = _material.MaterialImg;
                 foreach (var _size in material.Sizes)
                 {
                     _size.IsActive = false;
@@ -117,7 +119,19 @@ namespace BackendSaiKitchen.Controllers
         public object GetMaterialByWorkscopeId(int WorkscopeId)
         {
             var Materials = materialRepository.FindByCondition(x => x.WorkscopeId == WorkscopeId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.UnitOfMeasurement).Include(x => x.Workscope).ToList();
+                .Select(x => new
+                {
+                    x.MaterialId,
+                    x.MaterialName,
+                    x.MaterialDescription,
+                    x.WorkscopeId,
+                    x.Workscope.WorkScopeName,
+                    x.UnitOfMeasurementId,
+                    x.UnitOfMeasurement.UnitOfMeasurementName,
+                    sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.SizeDetail)
+                        .ToList())
+                }).ToList();
             response.data = Materials;
             return response;
         }
@@ -127,7 +141,19 @@ namespace BackendSaiKitchen.Controllers
         public object GetMaterailById(int MaterailId)
         {
             var Materail = materialRepository.FindByCondition(x => x.MaterialId == MaterailId && x.IsActive == true && x.IsDeleted == false)
-                .Include(x => x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)).Include(x => x.UnitOfMeasurement).Include(x => x.Workscope).FirstOrDefault();
+                .Select(x => new
+                {
+                    x.MaterialId,
+                    x.MaterialName,
+                    x.MaterialDescription,
+                    x.WorkscopeId,
+                    x.Workscope.WorkScopeName,
+                    x.UnitOfMeasurementId,
+                    x.UnitOfMeasurement.UnitOfMeasurementName,
+                    sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
+                        .Select(x => x.SizeDetail)
+                        .ToList())
+                }).FirstOrDefault();
             if (Materail != null)
             {
                 response.data = Materail;

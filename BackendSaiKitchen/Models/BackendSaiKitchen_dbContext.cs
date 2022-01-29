@@ -3182,7 +3182,7 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
-                entity.Property(e => e.MaterailImg).HasMaxLength(50);
+                entity.Property(e => e.MaterialImg).HasMaxLength(50);
 
                 entity.Property(e => e.MaterialName).HasMaxLength(50);
 

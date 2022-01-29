@@ -24,7 +24,7 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
         public int? WorkscopeId { get; set; }
         public int? UnitOfMeasurementId { get; set; }
-        public string MaterailImg { get; set; }
+        public string MaterialImg { get; set; }
 
         public virtual UnitOfMeasurement UnitOfMeasurement { get; set; }
         public virtual WorkScope Workscope { get; set; }
