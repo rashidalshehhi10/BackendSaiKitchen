@@ -11,6 +11,7 @@ namespace BackendSaiKitchen.CustomModel
         public string MaterialName { get; set; }
         public string MaterialDescription { get; set; }
         public string MaterialImg { get; set; }
+        public string Skucode { get; set; }
         public List<string> SizeDetail { get; set; }
         public int WorkscopeId { get; set; }
     }

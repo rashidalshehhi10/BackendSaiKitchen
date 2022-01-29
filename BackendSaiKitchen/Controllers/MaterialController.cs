@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.Controllers
             material.MaterialDescription = _material.MaterialDescription;
             material.WorkscopeId = _material.WorkscopeId;
             material.MaterialImg = _material.MaterialImg;
+            material.Skucode = _material.Skucode;
             foreach (var _size in _material.SizeDetail)
             {
                 material.Sizes.Add(new Size
@@ -106,6 +107,7 @@ namespace BackendSaiKitchen.Controllers
                 x.Workscope.WorkScopeName,
                 x.UnitOfMeasurementId,
                 x.UnitOfMeasurement.UnitOfMeasurementName,
+                x.Skucode,
                 sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.SizeDetail)
                         .ToList())
@@ -128,6 +130,7 @@ namespace BackendSaiKitchen.Controllers
                     x.Workscope.WorkScopeName,
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
+                    x.Skucode,
                     sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.SizeDetail)
                         .ToList())
@@ -150,6 +153,7 @@ namespace BackendSaiKitchen.Controllers
                     x.Workscope.WorkScopeName,
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
+                    x.Skucode,
                     sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
                         .Select(x => x.SizeDetail)
                         .ToList())
