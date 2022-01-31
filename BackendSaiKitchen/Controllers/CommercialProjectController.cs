@@ -1,4 +1,5 @@
 ﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
@@ -21,7 +22,7 @@ namespace BackendSaiKitchen.Controllers
             commercial.CommercialProjectLocation = project.location;
             commercial.CommercialProjectNo = project.jobno;
             commercial.CommercialProjectDesription = project.projectdescription;
-            
+            commercial.BranchId = Constants.branchId;
             foreach (var apartment in project.excel)
             {
                 commercial.Apartments.Add(new Apartment
@@ -52,7 +53,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetAllCommercialProjects()
         {
-            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false).Select(x => new
+            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId).Select(x => new
             {
                 x.CommercialProjectId,
                 x.CommercialProjectName,
@@ -60,8 +61,11 @@ namespace BackendSaiKitchen.Controllers
                 x.CommercialProjectDesription,
                 x.CommercialProjectStartDate,
                 x.ProjectStatusId,
+                x.CommercialProjectLocation,
                 x.ProjectStatus.ProjectStatusName,
-                x.Apartments
+                x.Apartments,
+                x.BranchId,
+                x.Branch.BranchName
             }).ToList();
 
             response.data = project;
@@ -73,7 +77,7 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object GetCommercialProjectById(int CommercialProjectId)
         {
-            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CommercialProjectId == CommercialProjectId).Select(x => new
+            var project = commercialProjectRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.CommercialProjectId == CommercialProjectId && x.BranchId == Constants.branchId).Select(x => new
             {
                 x.CommercialProjectId,
                 x.CommercialProjectName,
@@ -81,8 +85,11 @@ namespace BackendSaiKitchen.Controllers
                 x.CommercialProjectDesription,
                 x.CommercialProjectStartDate,
                 x.ProjectStatusId,
+                x.CommercialProjectLocation,
                 x.ProjectStatus.ProjectStatusName,
-                x.Apartments
+                x.Apartments,
+                x.BranchId,
+                x.Branch.BranchName
             }).FirstOrDefault();
             if (project != null)
             {
