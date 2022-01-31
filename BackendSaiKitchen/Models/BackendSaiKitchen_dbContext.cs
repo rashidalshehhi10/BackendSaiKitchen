@@ -151,6 +151,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; }
         public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; }
         public virtual DbSet<Quotation> Quotations { get; set; }
+        public virtual DbSet<Remark> Remarks { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
@@ -3038,6 +3039,10 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.DataSheetApplianceFileUrl).HasColumnName("DataSheetApplianceFileURL");
 
+                entity.Property(e => e.EsigntureImh)
+                    .HasMaxLength(50)
+                    .HasColumnName("ESigntureImh");
+
                 entity.Property(e => e.IsSpecialApprovalRequired).HasColumnName("Is SpecialApprovalRequired");
 
                 entity.Property(e => e.JobOrderApprovalRequestDate).HasMaxLength(50);
@@ -3081,6 +3086,21 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_JobOrder_Inquiry");
+
+                entity.HasOne(d => d.QualityRemarksNavigation)
+                    .WithMany(p => p.JobOrderQualityRemarksNavigations)
+                    .HasForeignKey(d => d.QualityRemarks)
+                    .HasConstraintName("FK_JobOrder_Remarks");
+
+                entity.HasOne(d => d.ServiceOverAllRemarksNavigation)
+                    .WithMany(p => p.JobOrderServiceOverAllRemarksNavigations)
+                    .HasForeignKey(d => d.ServiceOverAllRemarks)
+                    .HasConstraintName("FK_JobOrder_Remarks2");
+
+                entity.HasOne(d => d.SpeedOfWorkRemarksNavigation)
+                    .WithMany(p => p.JobOrderSpeedOfWorkRemarksNavigations)
+                    .HasForeignKey(d => d.SpeedOfWorkRemarks)
+                    .HasConstraintName("FK_JobOrder_Remarks1");
             });
 
             modelBuilder.Entity<JobOrderDetail>(entity =>
@@ -4211,6 +4231,19 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.Quotations)
                     .HasForeignKey(d => d.QuotationStatusId)
                     .HasConstraintName("FK_Quotation_InquiryStatus");
+            });
+
+            modelBuilder.Entity<Remark>(entity =>
+            {
+                entity.HasKey(e => e.RemarksId);
+
+                entity.Property(e => e.RemarksId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.RemarksName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
             modelBuilder.Entity<RoleHead>(entity =>

@@ -58,9 +58,16 @@ namespace BackendSaiKitchen.Models
         public int? CommercialCheckListDoneBy { get; set; }
         public string JobOrderApprovalRequestDate { get; set; }
         public string JobOrderCompletionDate { get; set; }
+        public int? QualityRemarks { get; set; }
+        public int? SpeedOfWorkRemarks { get; set; }
+        public int? ServiceOverAllRemarks { get; set; }
+        public string EsigntureImh { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
+        public virtual Remark QualityRemarksNavigation { get; set; }
+        public virtual Remark ServiceOverAllRemarksNavigation { get; set; }
+        public virtual Remark SpeedOfWorkRemarksNavigation { get; set; }
         public virtual ICollection<File> Files { get; set; }
         public virtual ICollection<JobOrderDetail> JobOrderDetails { get; set; }
         public virtual ICollection<PurchaseRequest> PurchaseRequests { get; set; }
