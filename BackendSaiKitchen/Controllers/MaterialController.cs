@@ -139,9 +139,7 @@ namespace BackendSaiKitchen.Controllers
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
                     x.Skucode,
-                    sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.SizeDetail)
-                        .ToList())
+                    sizes = x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.SizeDetail).ToList()
                 }).ToList();
             response.data = Materials;
             return response;
@@ -163,9 +161,7 @@ namespace BackendSaiKitchen.Controllers
                     x.UnitOfMeasurementId,
                     x.UnitOfMeasurement.UnitOfMeasurementName,
                     x.Skucode,
-                    sizes = string.Join(',', x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)
-                        .Select(x => x.SizeDetail)
-                        .ToList())
+                    sizes = x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.SizeDetail).ToList()
                 }).FirstOrDefault();
             if (Materail != null)
             {
