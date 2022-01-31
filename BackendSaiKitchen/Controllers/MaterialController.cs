@@ -45,7 +45,8 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object UpdateMaterial(CustomMaterial _material)
         {
-            var material = materialRepository.FindByCondition(x => x.MaterialId == _material.MaterialId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+            var material = materialRepository.FindByCondition(x => x.MaterialId == _material.MaterialId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Sizes.Where(x => x.IsActive == true && x.IsDeleted == false)).FirstOrDefault();
             if (material != null)
             {
                 material.MaterialName = _material.MaterialName;
