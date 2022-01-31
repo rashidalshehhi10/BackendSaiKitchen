@@ -147,6 +147,13 @@
         DispatchCompleted = 18,
     }
 
+    public enum remarks
+    {
+        Bad = 1,
+        Fair = 2,
+        Good = 3,
+    }
+
     public enum inquiryStatus
     {
         measurementInProgress = 1,

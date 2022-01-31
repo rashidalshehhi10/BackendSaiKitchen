@@ -331,6 +331,10 @@ namespace BackendSaiKitchen.Controllers
 
                 foreach (Models.JobOrder joborder in inquiry.JobOrders)
                 {
+                    joborder.QualityRemarks = install.QualityRemarks;
+                    joborder.ServiceOverAllRemarks = install.ServiceOverAllRemarks;
+                    joborder.SpeedOfWorkRemarks = install.SpeedOfWorkRemarks;
+                    joborder.EsignatureImg = install.EsignatureImg;
                     foreach (string fileUrl in install.handingover)
                     {
                         if (fileUrl != null && fileUrl != string.Empty)

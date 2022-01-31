@@ -93,6 +93,10 @@ namespace BackendSaiKitchen.CustomModel
         public string Remark { get; set; }
         public string JobOrderDetailsDescription { get; set; }
         public string installationStartDate { get; set; }
+        public int QualityRemarks { get; set; }
+        public int SpeedOfWorkRemarks { get; set; }
+        public int ServiceOverAllRemarks { get; set; }
+        public string EsignatureImg { get; set; }
         public List<string> handingover { get; set; }
     }
 

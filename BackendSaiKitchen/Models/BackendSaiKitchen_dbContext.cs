@@ -3039,9 +3039,9 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.DataSheetApplianceFileUrl).HasColumnName("DataSheetApplianceFileURL");
 
-                entity.Property(e => e.EsigntureImh)
+                entity.Property(e => e.EsignatureImg)
                     .HasMaxLength(50)
-                    .HasColumnName("ESigntureImh");
+                    .HasColumnName("ESignatureImg");
 
                 entity.Property(e => e.IsSpecialApprovalRequired).HasColumnName("Is SpecialApprovalRequired");
 

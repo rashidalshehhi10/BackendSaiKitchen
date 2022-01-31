@@ -61,7 +61,7 @@ namespace BackendSaiKitchen.Models
         public int? QualityRemarks { get; set; }
         public int? SpeedOfWorkRemarks { get; set; }
         public int? ServiceOverAllRemarks { get; set; }
-        public string EsigntureImh { get; set; }
+        public string EsignatureImg { get; set; }
 
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
