@@ -26,7 +26,9 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
         public string CommercialProjectNo { get; set; }
         public string CommercialProjectLocation { get; set; }
+        public int? BranchId { get; set; }
 
+        public virtual Branch Branch { get; set; }
         public virtual ProjectStatus ProjectStatus { get; set; }
         public virtual ICollection<Apartment> Apartments { get; set; }
         public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }

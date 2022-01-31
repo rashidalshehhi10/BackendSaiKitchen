@@ -9,6 +9,7 @@ namespace BackendSaiKitchen.Models
     {
         public Branch()
         {
+            CommercialProjects = new HashSet<CommercialProject>();
             CustomerBranches = new HashSet<CustomerBranch>();
             Customers = new HashSet<Customer>();
             Inquiries = new HashSet<Inquiry>();
@@ -30,6 +31,7 @@ namespace BackendSaiKitchen.Models
         public string UpdatedDate { get; set; }
 
         public virtual BranchType BranchType { get; set; }
+        public virtual ICollection<CommercialProject> CommercialProjects { get; set; }
         public virtual ICollection<CustomerBranch> CustomerBranches { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Inquiry> Inquiries { get; set; }

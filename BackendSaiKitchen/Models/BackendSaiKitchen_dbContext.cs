@@ -427,6 +427,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
+                entity.HasOne(d => d.Branch)
+                    .WithMany(p => p.CommercialProjects)
+                    .HasForeignKey(d => d.BranchId)
+                    .HasConstraintName("FK_CommercialProject_Branch");
+
                 entity.HasOne(d => d.ProjectStatus)
                     .WithMany(p => p.CommercialProjects)
                     .HasForeignKey(d => d.ProjectStatusId)
