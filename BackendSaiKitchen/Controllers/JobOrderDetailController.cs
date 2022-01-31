@@ -6,11 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
 {
     public class JobOrderDetailController : BaseController
     {
+        public JobOrderDetailController(IBlobManager blobManager)
+        {
+            Helper.Helper.blobManager = blobManager;
+        }
+
         [HttpPost]
         [Route("[action]")]
         public object GetInquiryJobOrderDetailsByBranchId(int branchId)
@@ -315,11 +321,13 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object JobOrderCompleted(Install install)
+        public async Task<object> JobOrderCompleted(Install install)
         {
             Models.Inquiry inquiry = inquiryRepository.FindByCondition(x => x.InquiryId == install.inquiryId && x.IsActive == true && x.IsDeleted == false)
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .ThenInclude(x => x.JobOrderDetails.Where(y => y.IsActive == true && y.IsDeleted == false)).FirstOrDefault();
+            string ext = "";
+
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderCompleted;
@@ -334,7 +342,9 @@ namespace BackendSaiKitchen.Controllers
                     joborder.QualityRemarks = install.QualityRemarks;
                     joborder.ServiceOverAllRemarks = install.ServiceOverAllRemarks;
                     joborder.SpeedOfWorkRemarks = install.SpeedOfWorkRemarks;
-                    joborder.EsignatureImg = install.EsignatureImg;
+                    
+                    var ImgUrl = await Helper.Helper.UploadFile(Convert.FromBase64String(install.EsignatureImg));
+                    joborder.EsignatureImg =ImgUrl.Item1;
                     foreach (string fileUrl in install.handingover)
                     {
                         if (fileUrl != null && fileUrl != string.Empty)
