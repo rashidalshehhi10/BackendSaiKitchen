@@ -1121,7 +1121,7 @@ namespace SaiKitchenBackend.Controllers
                     CustomerNotes = x.Customer.CustomerNotes,
                     ContactStatusId =(int)x.Customer.ContactStatusId,
                     ContactStatus = x.Customer.ContactStatus.ContactStatusName,
-                }).OrderByDescending(x => x.InquiryId).Skip((int)start).Take((int)length)
+                }).OrderByDescending(x => x.InquiryId).AsNoTracking().Skip((int)start).Take((int)length)
                 .ToListAsync();
             tableResponse.data = inquiries;
             tableResponse.recordsTotal =  inquiryRepository

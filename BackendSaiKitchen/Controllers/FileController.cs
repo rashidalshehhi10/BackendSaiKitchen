@@ -202,9 +202,9 @@ namespace BackendSaiKitchen.Controllers
         [DisableRequestSizeLimit]
         [HttpPost]
         [Route("[action]")]
-        public async Task<object> Test(string sendto , string type , string message)
+        public async Task<object> Test(TestClass test)
         {
-            response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
+            //response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
 
             return response;
         }
