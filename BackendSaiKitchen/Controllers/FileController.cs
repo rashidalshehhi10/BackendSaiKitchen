@@ -199,14 +199,14 @@ namespace BackendSaiKitchen.Controllers
             return response;
         }
 
-        [DisableRequestSizeLimit]
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<object> Test(TestClass test)
-        {
-            //response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
+        //[DisableRequestSizeLimit]
+        //[HttpPost]
+        //[Route("[action]")]
+        //public async Task<object> Test(TestClass test)
+        //{
+        //    //response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
 
-            return response;
-        }
+        //    return response;
+        //}
     }
 }
