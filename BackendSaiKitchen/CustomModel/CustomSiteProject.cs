@@ -19,11 +19,11 @@ namespace BackendSaiKitchen.CustomModel
         public List<Excel> excel { get; set; }
     }
 
-    //public class Row
-    //{
-    //    public string row { get; set; }
-    //    public List<Block> blocks { get; set; }
-    //}
+    public class row
+    {
+        public string Row { get; set; }
+        public List<Block> blocks { get; set; }
+    }
     public class Block
     {
         public string block { get; set; }

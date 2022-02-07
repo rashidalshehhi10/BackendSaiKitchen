@@ -21,7 +21,9 @@ namespace BackendSaiKitchen.Controllers
             //}
             List<object> list = new List<object>();
             List<string> rows = new List<string>();
+            List<row> row = new List<row>();
             List<int> inds = new List<int>();
+            List<string> block = new List<string>();
 
             //var r = project.excel[0].Row.Where(x => x.Contains(project.excel[0].Row[j])).FirstOrDefault();
             //var b = project.excel[1].Block.Where(x => x.Contains(project.excel[1].Block[j])).FirstOrDefault();
@@ -42,11 +44,22 @@ namespace BackendSaiKitchen.Controllers
             {
                 inds.Clear();
                 inds = new List<int>();
+                string b = "";
                 for (int j = 0; j < project.excel[0].Row.Count; j++)
                 {
                     if (project.excel[0].Row[j] == rows[i])
                     {
                         inds.Add(j);
+                        row.Add(new CustomModel.row
+                        {
+                            Row = rows[i],
+
+                        });
+                        if (b != project.excel[1].Block[j])
+                        {
+                            block.Add(project.excel[1].Block[j]);
+                        }
+                        b = project.excel[1].Block[j];
                     }
 
                 }
@@ -54,8 +67,8 @@ namespace BackendSaiKitchen.Controllers
                 list.Add(new
                 {
                     row = rows[i],
-                    indexes = inds
-
+                    indexes = inds.ToList(),
+                    blocks = block.ToList()
                 });
             }
             

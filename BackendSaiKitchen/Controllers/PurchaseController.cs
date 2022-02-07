@@ -88,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseOrderId,
                             x.PurchaseOrderTitle,
                             x.PurchaseOrderDescription,
-                            files = x.Files.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.FileUrl).ToList(),
+                            x.Files,
                             x.PurchaseOrderAmount,
                             x.PurchaseOrderDate,
                             x.PurchaseOrderExpectedDeliveryDate,
@@ -100,6 +100,35 @@ namespace BackendSaiKitchen.Controllers
 //            response.data = Purchase;
             return Purchase;
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetPurchaseRequestByInquiryId(int inquiryId)
+        {
+            var Purchase = purchaseRequestRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+                        x.JobOrder.IsActive == true && x.JobOrder.IsDeleted == false &&
+                        x.JobOrder.Inquiry.IsActive == true && x.JobOrder.Inquiry.IsDeleted == false && x.JobOrder.Inquiry.InquiryId == inquiryId &&
+                        x.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new
+                        {
+                            x.JobOrder.InquiryId,
+                            x.JobOrder.Inquiry.InquiryCode,
+                            x.JobOrder.Inquiry.Customer.CustomerName,
+                            x.JobOrder.Inquiry.Customer.CustomerContact,
+                            x.JobOrderId,
+                            x.PurchaseRequestId,
+                            x.PurchaseRequestTitle,
+                            x.PurchaseRequestDescription,
+                            x.Files,
+                            x.PuchaseRequestFinalDeliveryDate,
+                            x.PurchaseRequestFinalDeliveryRequestedDate,
+                            x.PurchaseStatusId,
+                            x.PurchaseStatus.PurchaseStatusName,
+                        }).ToList();
+
+            //            response.data = Purchase;
+            return Purchase;
+        }
+
 
         [HttpPost]
         [Route("[action]")]

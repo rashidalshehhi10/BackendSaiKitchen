@@ -69,6 +69,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<Color> colorRepository;
         public Repository<Comment> commentRepository;
         public Repository<PurchaseOrder> purchaseOrderRepository;
+        public Repository<PurchaseRequest> purchaseRequestRepository;
         public Repository<Promotion> promotionRepository;
         public Repository<PromotionType> promotionTypeRepository;
         public Repository<CommercialProject> commercialProjectRepository;
@@ -116,6 +117,7 @@ namespace SaiKitchenBackend.Controllers
             colorRepository = new Repository<Color>(context);
             commentRepository = new Repository<Comment>(context);
             purchaseOrderRepository = new Repository<PurchaseOrder>(context);
+            purchaseRequestRepository = new Repository<PurchaseRequest>(context);
             promotionRepository = new Repository<Promotion>(context);
             promotionTypeRepository = new Repository<PromotionType>(context);
             commercialProjectRepository = new Repository<CommercialProject>(context);
