@@ -97,8 +97,8 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseStatus.PurchaseStatusName,
                         }).ToList();
 
-//            response.data = Purchase;
-            return Purchase;
+            response.data = Purchase;
+            return response;
         }
 
         [HttpPost]
@@ -125,8 +125,8 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseStatus.PurchaseStatusName,
                         }).ToList();
 
-            //            response.data = Purchase;
-            return Purchase;
+            response.data = Purchase;
+            return response;
         }
 
 
