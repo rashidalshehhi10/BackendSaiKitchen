@@ -78,8 +78,9 @@ namespace BackendSaiKitchen.Controllers
                         x.PurchaseRequest.IsActive == true && x.PurchaseRequest.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.IsActive == true && x.PurchaseRequest.JobOrder.IsDeleted == false &&
                         x.PurchaseRequest.JobOrder.Inquiry.IsActive == true && x.PurchaseRequest.JobOrder.Inquiry.IsDeleted == false && x.PurchaseRequest.JobOrder.Inquiry.InquiryId == inquiryId &&
-                        x.PurchaseRequest.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new{
-    x.PurchaseRequest.JobOrder.InquiryId,
+                        x.PurchaseRequest.JobOrder.Inquiry.InquiryStatusId != (int)inquiryStatus.inquiryCompleted).Select(x => new
+                        {
+                            x.PurchaseRequest.JobOrder.InquiryId,
                             x.PurchaseRequest.JobOrder.Inquiry.InquiryCode,
                             x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerName,
                             x.PurchaseRequest.JobOrder.Inquiry.Customer.CustomerContact,
@@ -87,7 +88,7 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseOrderId,
                             x.PurchaseOrderTitle,
                             x.PurchaseOrderDescription,
-                            x.Files,
+                            files = x.Files.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.FileUrl).ToList(),
                             x.PurchaseOrderAmount,
                             x.PurchaseOrderDate,
                             x.PurchaseOrderExpectedDeliveryDate,
@@ -96,8 +97,8 @@ namespace BackendSaiKitchen.Controllers
                             x.PurchaseStatus.PurchaseStatusName,
                         }).ToList();
 
-            response.data = Purchase;
-            return response;
+//            response.data = Purchase;
+            return Purchase;
         }
 
         [HttpPost]
