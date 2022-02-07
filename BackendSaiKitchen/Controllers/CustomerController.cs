@@ -872,7 +872,7 @@ namespace SaiKitchenBackend.Controllers
             }
             var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
 
-            System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(lambda)
+            System.Collections.Generic.List<CustomerResponse> customers = customerRepository.FindByCondition(lambda/*x => x.IsActive == true && x.IsDeleted == false && x.BranchId == 32 && x.Branch.IsActive == true*/ )
                 .Select(x =>
                     new CustomerResponse
                     {
@@ -896,7 +896,7 @@ namespace SaiKitchenBackend.Controllers
                         ContactStatus = x.ContactStatus.ContactStatusName,
                         CustomerAddress = x.CustomerAddress,
                         CustomerNationalId = x.CustomerNationalId,
-                        TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
+                        TotalNoOfInquiries = !x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Any() ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
                         AddedOn = x.CreatedDate,
                         CustomerAssignedTo = x.CustomerAssignedTo,
                         CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,

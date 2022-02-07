@@ -23,22 +23,23 @@ namespace BackendSaiKitchen.CustomModel
     {
         public string Row { get; set; }
         public List<Block> blocks { get; set; }
+        public List<int> Indexes { get; set; }  
     }
     public class Block
     {
         public string block { get; set; }
-        public List<Villa> Villas { get; set; }
+        public List<Villa> villas{ get; set; }
     }
     public class Villa
     {
         public string villa { get; set; }
-        public List<workScope> workScopes { get; set; }
+        public string workScopes { get; set; }
     }
 
-    public class workScope
-    {
-        public string workscope { get; set; }
-    }
+    //public class workScope
+    //{
+    //    public string workscope { get; set; }
+    //}
 
     //public class CustomSiteProject
     //{

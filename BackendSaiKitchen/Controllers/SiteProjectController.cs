@@ -20,10 +20,10 @@ namespace BackendSaiKitchen.Controllers
 
             //}
             List<object> list = new List<object>();
-            List<string> rows = new List<string>();
             List<row> row = new List<row>();
             List<int> inds = new List<int>();
-            List<string> block = new List<string>();
+            List<int> blkInds = new List<int>();
+            List<Block> block = new List<Block>();
 
             //var r = project.excel[0].Row.Where(x => x.Contains(project.excel[0].Row[j])).FirstOrDefault();
             //var b = project.excel[1].Block.Where(x => x.Contains(project.excel[1].Block[j])).FirstOrDefault();
@@ -33,31 +33,58 @@ namespace BackendSaiKitchen.Controllers
             string r = "";
             for (int i = 0; i < project.excel[0].Row.Count; i++)
             {
+                inds.Clear();
                 if (project.excel[0].Row[i] != r)
                 {
-                    rows.Add(project.excel[0].Row[i]);
+                    r = project.excel[0].Row[i];
+                    for (int j = 0; j < project.excel[0].Row.Count; j++)
+                    {
+                        if (project.excel[0].Row[j] == r)
+                        {
+                            inds.Add(j);
+                        }
+                    }
+                    row.Add(new CustomModel.row
+                    {
+                        Row = project.excel[0].Row[i],
+                        Indexes = inds.ToList()
+                    });
                 }
                 r = project.excel[0].Row[i];
             }
                 
-            for (int i = 0; i < rows.Count; i++)
+            for (int i = 0; i < row.Count; i++)
             {
-                inds.Clear();
                 inds = new List<int>();
                 string b = "";
+                row[i].blocks = new List<Block>();
                 for (int j = 0; j < project.excel[0].Row.Count; j++)
                 {
-                    if (project.excel[0].Row[j] == rows[i])
+                    if (project.excel[0].Row[j] == row[i].Row)
                     {
-                        inds.Add(j);
-                        row.Add(new CustomModel.row
-                        {
-                            Row = rows[i],
-
-                        });
+                        
                         if (b != project.excel[1].Block[j])
                         {
-                            block.Add(project.excel[1].Block[j]);
+                            b = project.excel[1].Block[j];
+                            List<Villa> Villa = new List<Villa>();
+
+                            for (int z = 0; z < row[i].Indexes.Count(); z++)
+                            {
+                                if (project.excel[1].Block[row[i].Indexes[z]] == b)
+                                {
+                                    Villa.Add(new CustomModel.Villa
+                                    {
+                                        villa = project.excel[2].Villa[row[i].Indexes[z]],
+                                        workScopes = project.excel[3].Workscope[row[i].Indexes[z]],
+                                    });
+                                } 
+                            }
+                                
+                            row[i].blocks.Add(new Block
+                            {
+                                block = project.excel[1].Block[j],
+                                villas = Villa,
+                            });
                         }
                         b = project.excel[1].Block[j];
                     }
@@ -66,7 +93,7 @@ namespace BackendSaiKitchen.Controllers
 
                 list.Add(new
                 {
-                    row = rows[i],
+                    row = row[i],
                     indexes = inds.ToList(),
                     blocks = block.ToList()
                 });
