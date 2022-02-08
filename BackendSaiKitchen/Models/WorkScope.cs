@@ -12,6 +12,7 @@ namespace BackendSaiKitchen.Models
             InquiryWorkscopes = new HashSet<InquiryWorkscope>();
             Materials = new HashSet<Material>();
             ProjectDetails = new HashSet<ProjectDetail>();
+            VillaWorkScopes = new HashSet<VillaWorkScope>();
         }
 
         public int WorkScopeId { get; set; }
@@ -28,5 +29,6 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopes { get; set; }
         public virtual ICollection<Material> Materials { get; set; }
         public virtual ICollection<ProjectDetail> ProjectDetails { get; set; }
+        public virtual ICollection<VillaWorkScope> VillaWorkScopes { get; set; }
     }
 }

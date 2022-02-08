@@ -22,6 +22,7 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Appliance> Appliances { get; set; }
         public virtual DbSet<ApplianceAccessory> ApplianceAccessories { get; set; }
         public virtual DbSet<ApplianceAccessoryType> ApplianceAccessoryTypes { get; set; }
+        public virtual DbSet<Block> Blocks { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<BranchRole> BranchRoles { get; set; }
         public virtual DbSet<BranchType> BranchTypes { get; set; }
@@ -154,12 +155,16 @@ namespace BackendSaiKitchen.Models
         public virtual DbSet<Remark> Remarks { get; set; }
         public virtual DbSet<RoleHead> RoleHeads { get; set; }
         public virtual DbSet<RoleType> RoleTypes { get; set; }
+        public virtual DbSet<Row> Rows { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
+        public virtual DbSet<SiteProject> SiteProjects { get; set; }
         public virtual DbSet<Size> Sizes { get; set; }
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; }
         public virtual DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<Villa> Villas { get; set; }
+        public virtual DbSet<VillaWorkScope> VillaWorkScopes { get; set; }
         public virtual DbSet<WardrobeDesignInformation> WardrobeDesignInformations { get; set; }
         public virtual DbSet<WayOfContact> WayOfContacts { get; set; }
         public virtual DbSet<WorkScope> WorkScopes { get; set; }
@@ -264,6 +269,22 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Block>(entity =>
+            {
+                entity.ToTable("Block");
+
+                entity.Property(e => e.BlockName).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Row)
+                    .WithMany(p => p.Blocks)
+                    .HasForeignKey(d => d.RowId)
+                    .HasConstraintName("FK_Block_Row");
             });
 
             modelBuilder.Entity<Branch>(entity =>
@@ -4273,6 +4294,22 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<Row>(entity =>
+            {
+                entity.ToTable("Row");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.RowName).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.SiteProject)
+                    .WithMany(p => p.Rows)
+                    .HasForeignKey(d => d.SiteProjectId)
+                    .HasConstraintName("FK_Row_SiteProject");
+            });
+
             modelBuilder.Entity<Setting>(entity =>
             {
                 entity.ToTable("Setting");
@@ -4282,6 +4319,21 @@ namespace BackendSaiKitchen.Models
                 entity.Property(e => e.SettingDescription).HasMaxLength(500);
 
                 entity.Property(e => e.SettingName).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SiteProject>(entity =>
+            {
+                entity.ToTable("SiteProject");
+
+                entity.Property(e => e.SiteProjectId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.SiteProjectFile).HasMaxLength(50);
+
+                entity.Property(e => e.SiteProjectName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
             });
@@ -4381,6 +4433,43 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_UserRole_User");
+            });
+
+            modelBuilder.Entity<Villa>(entity =>
+            {
+                entity.ToTable("Villa");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.VillaName).HasMaxLength(50);
+
+                entity.HasOne(d => d.Block)
+                    .WithMany(p => p.Villas)
+                    .HasForeignKey(d => d.BlockId)
+                    .HasConstraintName("FK_Villa_Block");
+            });
+
+            modelBuilder.Entity<VillaWorkScope>(entity =>
+            {
+                entity.ToTable("VillaWorkScope");
+
+                entity.Property(e => e.CreatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.Property(e => e.VillaWorkScopeName).HasMaxLength(50);
+
+                entity.HasOne(d => d.Villa)
+                    .WithMany(p => p.VillaWorkScopes)
+                    .HasForeignKey(d => d.VillaId)
+                    .HasConstraintName("FK_VillaWorkScope_Villa");
+
+                entity.HasOne(d => d.WorkScope)
+                    .WithMany(p => p.VillaWorkScopes)
+                    .HasForeignKey(d => d.WorkScopeId)
+                    .HasConstraintName("FK_VillaWorkScope_WorkScope");
             });
 
             modelBuilder.Entity<WardrobeDesignInformation>(entity =>

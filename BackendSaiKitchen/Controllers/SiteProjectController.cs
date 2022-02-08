@@ -14,11 +14,6 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddSiteProject(Root project)
         {
-            //foreach (var item in  )
-            //{
-            //   i = item.(x => x.Contains(item.Row[0]));
-
-            //}
             List<object> list = new List<object>();
             List<row> row = new List<row>();
             List<int> inds = new List<int>();
@@ -98,25 +93,8 @@ namespace BackendSaiKitchen.Controllers
                     blocks = block.ToList()
                 });
             }
-            
 
-                    //var B = blocks.FindIndex(x => x.block.Contains(b));
-                    //if (b != null)
-                    //{
-                    //    var V = B.Villas.Where(x => x.villa.Contains(v)).FirstOrDefault();
-                    //    if (V != null)
-                    //    {
-                    //        V.workScopes.Add(new workScope { workscope = w });
-                    //    }
-                    //}
-
-                
-                //else
-                //{
-                //    blocks.Add
-              
-            //i = project.excel[0].Row.FindIndex(x => x.Contains(project.excel[0].Row[0]));
-            response.data = list;
+            response.data = row;
             return response;
         }
     }
