@@ -23,8 +23,8 @@ namespace BackendSaiKitchen.Controllers
 
             siteProject.SiteProjectName = project.SiteProjectName;
             siteProject.SiteProjectDescription = project.SiteProjectDescription;
-            siteProject.SiteProjectLocation = project.SiteProjectLocation;
             siteProject.BranchId = project.BranchId;
+            siteProject.SiteProjectLocation = project.SiteProjectLocation;
 
             string r = "";
             for (int i = 0; i < project.excel[0].Row.Count; i++)
