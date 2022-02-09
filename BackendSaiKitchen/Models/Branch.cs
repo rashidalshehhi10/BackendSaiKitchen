@@ -15,6 +15,7 @@ namespace BackendSaiKitchen.Models
             Inquiries = new HashSet<Inquiry>();
             JobOrders = new HashSet<JobOrder>();
             Notifications = new HashSet<Notification>();
+            SiteProjects = new HashSet<SiteProject>();
             UserRoles = new HashSet<UserRole>();
         }
 
@@ -37,6 +38,7 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<Inquiry> Inquiries { get; set; }
         public virtual ICollection<JobOrder> JobOrders { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
+        public virtual ICollection<SiteProject> SiteProjects { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

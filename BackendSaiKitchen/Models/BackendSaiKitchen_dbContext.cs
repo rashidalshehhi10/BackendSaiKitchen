@@ -4333,9 +4333,16 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.SiteProjectFile).HasMaxLength(50);
 
+                entity.Property(e => e.SiteProjectLocation).HasMaxLength(50);
+
                 entity.Property(e => e.SiteProjectName).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
+
+                entity.HasOne(d => d.Branch)
+                    .WithMany(p => p.SiteProjects)
+                    .HasForeignKey(d => d.BranchId)
+                    .HasConstraintName("FK_SiteProject_Branch");
             });
 
             modelBuilder.Entity<Size>(entity =>

@@ -24,7 +24,11 @@ namespace BackendSaiKitchen.Models
         public string CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string UpdatedDate { get; set; }
+        public int? BranchId { get; set; }
+        public string SiteProjectDescription { get; set; }
+        public string SiteProjectLocation { get; set; }
 
+        public virtual Branch Branch { get; set; }
         public virtual ICollection<Row> Rows { get; set; }
     }
 }

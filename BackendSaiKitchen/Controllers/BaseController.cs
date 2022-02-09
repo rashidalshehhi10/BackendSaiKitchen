@@ -75,6 +75,7 @@ namespace SaiKitchenBackend.Controllers
         public Repository<CommercialProject> commercialProjectRepository;
         public Repository<Material> materialRepository;
         public Repository<Size> sizeRepository;
+        public Repository<SiteProject> siteProjectRepository;
 
         public BaseController()
         {
@@ -123,6 +124,7 @@ namespace SaiKitchenBackend.Controllers
             commercialProjectRepository = new Repository<CommercialProject>(context);
             materialRepository = new Repository<Material>(context);
             sizeRepository = new Repository<Size>(context);
+            siteProjectRepository = new Repository<SiteProject>(context);
         }
 
         public Repository<Fee> FeesRepository { get; set; }

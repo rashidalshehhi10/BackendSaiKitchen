@@ -16,21 +16,24 @@ namespace BackendSaiKitchen.CustomModel
 
     public class Root
     {
+        public string SiteProjectName { get; set; }
+        public string SiteProjectDescription { get; set; }
+        public string SiteProjectLocation { get; set; }
         public List<Excel> excel { get; set; }
     }
 
-    public class row
+    public class CustomRow
     {
         public string Row { get; set; }
-        public List<Block> blocks { get; set; }
+        public List<CustomBlock> blocks { get; set; }
         public List<int> Indexes { get; set; }  
     }
-    public class Block
+    public class CustomBlock
     {
         public string block { get; set; }
-        public List<Villa> villas{ get; set; }
+        public List<CustomVilla> villas{ get; set; }
     }
-    public class Villa
+    public class CustomVilla
     {
         public string villa { get; set; }
         public string workScopes { get; set; }

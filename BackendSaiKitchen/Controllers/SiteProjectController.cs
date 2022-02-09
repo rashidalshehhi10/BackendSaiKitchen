@@ -1,4 +1,6 @@
 ﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
+using BackendSaiKitchen.Models;
 using Microsoft.AspNetCore.Mvc;
 using SaiKitchenBackend.Controllers;
 using System;
@@ -14,16 +16,15 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddSiteProject(Root project)
         {
-            List<object> list = new List<object>();
-            List<row> row = new List<row>();
+            SiteProject siteProject = new SiteProject();
+            List<CustomRow> row = new List<CustomRow>();
             List<int> inds = new List<int>();
-            List<int> blkInds = new List<int>();
-            List<Block> block = new List<Block>();
+            List<Row> rows = new List<Row>();
 
-            //var r = project.excel[0].Row.Where(x => x.Contains(project.excel[0].Row[j])).FirstOrDefault();
-            //var b = project.excel[1].Block.Where(x => x.Contains(project.excel[1].Block[j])).FirstOrDefault();
-            //var v = project.excel[2].Villa.Where(x => x.Contains(project.excel[2].Villa[j])).FirstOrDefault();
-            //var w = project.excel[3].Workscope.Where(x => x.Contains(project.excel[3].Workscope[j])).FirstOrDefault();
+            siteProject.SiteProjectName = project.SiteProjectName;
+            siteProject.SiteProjectDescription = project.SiteProjectDescription;
+            siteProject.SiteProjectLocation = project.SiteProjectLocation;
+            siteProject.BranchId = Constants.branchId;
 
             string r = "";
             for (int i = 0; i < project.excel[0].Row.Count; i++)
@@ -39,10 +40,19 @@ namespace BackendSaiKitchen.Controllers
                             inds.Add(j);
                         }
                     }
-                    row.Add(new CustomModel.row
+                    row.Add(new CustomModel.CustomRow
                     {
                         Row = project.excel[0].Row[i],
                         Indexes = inds.ToList()
+                    });
+
+                    rows.Add(new Row
+                    {
+                        RowName = project.excel[0].Row[i],
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreatedBy = Constants.userId,
+                        CreatedDate = Helper.Helper.GetDateTime(),
                     });
                 }
                 r = project.excel[0].Row[i];
@@ -52,7 +62,7 @@ namespace BackendSaiKitchen.Controllers
             {
                 inds = new List<int>();
                 string b = "";
-                row[i].blocks = new List<Block>();
+                row[i].blocks = new List<CustomBlock>();
                 for (int j = 0; j < project.excel[0].Row.Count; j++)
                 {
                     if (project.excel[0].Row[j] == row[i].Row)
@@ -61,24 +71,51 @@ namespace BackendSaiKitchen.Controllers
                         if (b != project.excel[1].Block[j])
                         {
                             b = project.excel[1].Block[j];
-                            List<Villa> Villa = new List<Villa>();
-
+                            List<CustomVilla> _Villa = new List<CustomVilla>();
+                            List<Villa> villas = new List<Villa>();
+                            List<VillaWorkScope> scopeOfWork = new List<VillaWorkScope>();
                             for (int z = 0; z < row[i].Indexes.Count(); z++)
                             {
                                 if (project.excel[1].Block[row[i].Indexes[z]] == b)
                                 {
-                                    Villa.Add(new CustomModel.Villa
+                                    scopeOfWork.Clear();
+                                    _Villa.Add(new CustomModel.CustomVilla
                                     {
                                         villa = project.excel[2].Villa[row[i].Indexes[z]],
                                         workScopes = project.excel[3].Workscope[row[i].Indexes[z]],
                                     });
+
+                                    foreach (var item in project.excel[3].Workscope[row[i].Indexes[z]].Split(','))
+                                    {
+                                        int workscopeId = workScopeRepository.FindByCondition(x => x.WorkScopeName.Contains(item) && x.IsActive == true && x.IsDeleted == false).Select(x => x.WorkScopeId).FirstOrDefault();
+                                        scopeOfWork.Add(new VillaWorkScope 
+                                        { 
+                                            WorkScopeId = workscopeId,
+                                            IsActive = true,
+                                            IsDeleted = false,
+                                            CreatedBy = Constants.userId,
+                                            CreatedDate = Helper.Helper.GetDateTime()
+                                        });
+                                    }
+
+                                    villas.Add(new Villa
+                                    {
+                                        VillaName = project.excel[2].Villa[row[i].Indexes[z]],
+                                        VillaWorkScopes = scopeOfWork.ToList()
+                                    });
                                 } 
                             }
+
+                            rows[i].Blocks.Add(new Block
+                            {
+                                BlockName = project.excel[1].Block[j],
+                                Villas = villas
+                            });
                                 
-                            row[i].blocks.Add(new Block
+                            row[i].blocks.Add(new CustomBlock
                             {
                                 block = project.excel[1].Block[j],
-                                villas = Villa,
+                                villas = _Villa,
                             });
                         }
                         b = project.excel[1].Block[j];
@@ -86,15 +123,11 @@ namespace BackendSaiKitchen.Controllers
 
                 }
 
-                list.Add(new
-                {
-                    row = row[i],
-                    indexes = inds.ToList(),
-                    blocks = block.ToList()
-                });
             }
-
-            response.data = row;
+            siteProject.Rows = rows;
+            siteProjectRepository.Create(siteProject);
+            context.SaveChanges();
+            response.data = siteProject;
             return response;
         }
     }
