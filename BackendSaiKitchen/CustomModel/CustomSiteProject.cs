@@ -19,6 +19,7 @@ namespace BackendSaiKitchen.CustomModel
         public string SiteProjectName { get; set; }
         public string SiteProjectDescription { get; set; }
         public string SiteProjectLocation { get; set; }
+        public int BranchId { get; set; }
         public List<Excel> excel { get; set; }
     }
 
