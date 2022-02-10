@@ -106,7 +106,11 @@ namespace BackendSaiKitchen.Controllers
                                     villas.Add(new Villa
                                     {
                                         VillaName = project.excel[2].Villa[row[i].Indexes[z]],
-                                        VillaWorkScopes = scopeOfWork.ToList()
+                                        VillaWorkScopes = scopeOfWork.ToList(),
+                                        IsActive = true,
+                                        IsDeleted = false,
+                                        CreatedBy = Constants.userId,
+                                        CreatedDate = Helper.Helper.GetDateTime(),
                                     });
                                 } 
                             }
@@ -114,7 +118,11 @@ namespace BackendSaiKitchen.Controllers
                             rows[i].Blocks.Add(new Block
                             {
                                 BlockName = project.excel[1].Block[j],
-                                Villas = villas
+                                Villas = villas,
+                                IsActive = true,
+                                IsDeleted = false,
+                                CreatedBy = Constants.userId,
+                                CreatedDate = Helper.Helper.GetDateTime(),
                             });
                                 
                             row[i].blocks.Add(new CustomBlock
@@ -279,6 +287,28 @@ namespace BackendSaiKitchen.Controllers
                 x.SiteProjectStatusId,
             }).ToList();
             response.data = sites;
+            return response;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public object GetSiteProjectDetailbyId(int ProjectSiteId)
+        {
+            var site = siteProjectRepository.FindByCondition(x => x.SiteProjectId == ProjectSiteId && x.IsActive == true && x.IsDeleted == false)
+                .Include(x => x.Rows.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Blocks.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.Villas.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.VillaWorkScopes.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .ThenInclude(x => x.WorkScope).FirstOrDefault();
+            if (site != null)
+            {
+                response.data = site;
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "SiteProject Not Found";
+            }
             return response;
         }
     }
