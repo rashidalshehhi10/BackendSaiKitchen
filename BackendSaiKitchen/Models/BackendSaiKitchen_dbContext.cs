@@ -4327,8 +4327,6 @@ namespace BackendSaiKitchen.Models
             {
                 entity.ToTable("SiteProject");
 
-                entity.Property(e => e.SiteProjectId).ValueGeneratedNever();
-
                 entity.Property(e => e.CreatedDate).HasMaxLength(50);
 
                 entity.Property(e => e.SiteProjectFile).HasMaxLength(50);

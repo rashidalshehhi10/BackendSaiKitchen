@@ -22,6 +22,11 @@ namespace BackendSaiKitchen.CustomModel
         public int BranchId { get; set; }
         public List<Excel> excel { get; set; }
     }
+    public class AddExcel
+    {
+        public int SiteProjectId { get; set; }
+        public List<Excel> excel { get; set; }
+    }
 
     public class CustomRow
     {
