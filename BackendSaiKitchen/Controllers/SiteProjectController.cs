@@ -17,6 +17,15 @@ namespace BackendSaiKitchen.Controllers
         [Route("[action]")]
         public object AddSiteProject(Root project)
         {
+            if (project.excel.Any())
+            {
+
+            }
+            else
+            {
+                response.isError = true;
+                response.errorMessage = "Please Add Excel";
+            }
             SiteProject siteProject = new SiteProject();
             List<CustomRow> row = new List<CustomRow>();
             List<int> inds = new List<int>();
@@ -88,7 +97,7 @@ namespace BackendSaiKitchen.Controllers
 
                                     foreach (var item in project.excel[3].Workscope[row[i].Indexes[z]].Split(','))
                                     {
-                                        int workscopeId = workScopeRepository.FindByCondition(x => x.WorkScopeName.Contains(item) && x.IsActive == true && x.IsDeleted == false).Select(x => x.WorkScopeId).FirstOrDefault();
+                                        int workscopeId = workScopeRepository.FindByCondition(x => x.WorkScopeName.Contains(item.Trim()) && x.IsActive == true && x.IsDeleted == false).Select(x => x.WorkScopeId).FirstOrDefault();
                                         if (workscopeId != 0)
                                         {
                                             scopeOfWork.Add(new VillaWorkScope
