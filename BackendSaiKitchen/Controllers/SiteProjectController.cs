@@ -294,7 +294,7 @@ namespace BackendSaiKitchen.Controllers
                 x.SiteProjectLocation,
                 x.SiteProjectIsOnHold,
                 x.SiteProjectStatusId,
-            }).ToList();
+            }).OrderByDescending(x => x.SiteProjectId).ToList();
             response.data = sites;
             return response;
         }
