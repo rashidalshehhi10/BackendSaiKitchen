@@ -501,7 +501,7 @@ namespace SaiKitchenBackend.Controllers
             var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
             var customers = customerRepository.FindByCondition(lambda).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false))
                             .Select(x =>
-                                new CustomerResponse
+                                new GraphResponse
                                 {
                                     CustomerId = x.CustomerId,
                                     CustomerName = x.CustomerName,
@@ -544,7 +544,7 @@ namespace SaiKitchenBackend.Controllers
             customers.AddRange(customerRepository
                .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
                .Include(x => x.Inquiries)
-               .Select(x => new CustomerResponse
+               .Select(x => new GraphResponse
                {
                    CustomerId = x.CustomerId,
                    CustomerName = x.CustomerName,
