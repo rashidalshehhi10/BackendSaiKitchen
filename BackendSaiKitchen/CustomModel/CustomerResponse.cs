@@ -1,4 +1,7 @@
-﻿namespace BackendSaiKitchen.CustomModel
+﻿using BackendSaiKitchen.Models;
+using System.Collections.Generic;
+
+namespace BackendSaiKitchen.CustomModel
 {
     public class CustomCustomer
     {
@@ -79,5 +82,7 @@
 
         public int? BranchId { get; set; }
         public string BranchName { get; set; }
+
+        public List<Inquiry> Inquiries { get; set; }
     }
 }

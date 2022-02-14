@@ -499,9 +499,9 @@ namespace SaiKitchenBackend.Controllers
             
 
             var lambda = Expression.Lambda<Func<Customer, bool>>(expression, parameterExprission);
-            var customers = customerRepository.FindByCondition(lambda).Include(x => x.Inquiries.Where(x => x.IsActive == true  && x.IsDeleted == false))
+            var customers = customerRepository.FindByCondition(lambda).Include(x => x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false))
                             .Select(x =>
-                                new
+                                new CustomerResponse
                                 {
                                     CustomerId = x.CustomerId,
                                     CustomerName = x.CustomerName,
@@ -538,10 +538,45 @@ namespace SaiKitchenBackend.Controllers
                                     EscalatedByName = x.EscalatedByNavigation.UserName,
                                     EscalatedOn = x.EscalatedOn,
                                     UpdatedDate = x.UpdatedDate,
-                                    Inquiries=x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(),
+                                    Inquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(),
 
                                 }).OrderByDescending(i => i.CustomerId).ToList();
-
+            customers.AddRange(customerRepository
+               .FindByCondition(x => x.IsActive == true && x.IsDeleted == false && x.Branch == null)
+               .Include(x => x.Inquiries)
+               .Select(x => new CustomerResponse
+               {
+                   CustomerId = x.CustomerId,
+                   CustomerName = x.CustomerName,
+                   CustomerContact = x.CustomerContact,
+                   CustomerEmail = x.CustomerEmail,
+                   CustomerCity = x.CustomerCity,
+                   CustomerCountry = x.CustomerCountry,
+                   CustomerNationality = x.CustomerNationality,
+                   CustomerNotes = x.CustomerNotes,
+                   CustomerNextMeetingDate = x.CustomerNextMeetingDate,
+                   WayofContactId = x.WayofContactId,
+                   ContactStatusId = x.ContactStatusId,
+                   ContactStatus = x.ContactStatus.ContactStatusName,
+                   CustomerAddress = x.CustomerAddress,
+                   CustomerNationalId = x.CustomerNationalId,
+                   CustomerAssignedTo = x.CustomerAssignedTo,
+                   CustomerAssignedToName = x.CustomerAssignedToNavigation.UserName,
+                   CustomerAssignedBy = x.CustomerAssignedBy,
+                   CustomerAssignedByName = x.CustomerAssignedByNavigation.UserName,
+                   CustomerAssignedDate = x.CustomerAssignedDate,
+                   EscalationRequestedBy = x.EscalationRequestedBy,
+                   EscalationRequestedByName = x.EscalationRequestedByNavigation.UserName,
+                   EscalationRequestedOn = x.EscalationRequestedOn,
+                   IsEscalationRequested = x.IsEscalationRequested,
+                   EscalatedBy = x.EscalatedBy,
+                   EscalatedByName = x.EscalatedByNavigation.UserName,
+                   EscalatedOn = x.EscalatedOn,
+                   UpdatedDate = x.UpdatedDate,
+                   AddedOn = x.CreatedDate,
+                   TotalNoOfInquiries = x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count() == 0 ? "No Inquiries" : x.Inquiries.Where(y => y.IsActive == true && y.IsDeleted == false).Count().ToString(),
+                   Inquiries = x.Inquiries.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(),
+               }).OrderByDescending(i => i.CustomerId).ToList());
 
 
             if (filter == 11 || filter == 15)
