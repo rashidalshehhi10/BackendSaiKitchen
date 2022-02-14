@@ -2625,7 +2625,7 @@ namespace SaiKitchenBackend.Controllers
                 designAssigne = x.Inquiries.Count(x => x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.designAssigneePending && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)),
                 designs = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designPending || x.InquiryStatusId == (int)inquiryStatus.designDelayed || x.InquiryStatusId == (int)inquiryStatus.designRejected || x.InquiryStatusId == (int)inquiryStatus.designRevisionRequested) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)),
                 designApprovals = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForApproval || x.InquiryStatusId == (int)inquiryStatus.designRejectedByCustomer) && x.ManagedBy == Constants.userId),
-                designCustomerApprovals = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval) && x.ManagedBy == Constants.userId),
+                designCustomerApprovals = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval)),
                 quotationAssign = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationSchedulePending) && x.InquiryWorkscopes.Any(y => y.IsActive == true && y.IsDeleted == false && y.DesignAssignedTo == Constants.userId)),
                 quotations = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && (x.InquiryStatusId == (int)inquiryStatus.quotationPending || x.InquiryStatusId == (int)inquiryStatus.quotationRejected || x.InquiryStatusId == (int)inquiryStatus.quotationDelayed || x.InquiryStatusId == (int)inquiryStatus.quotationRevisionRequested) && x.ManagedBy == Constants.userId),
                 quotationApprovals = x.Inquiries.Count(x => x.IsActive == true && x.IsDeleted == false && x.InquiryStatusId == (int)inquiryStatus.quotationWaitingForApproval && x.ManagedBy == Constants.userId),
@@ -3402,12 +3402,11 @@ namespace SaiKitchenBackend.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object GetApprovalCustomerDesignOfBranch(int branchId, int userId)
+        public object GetApprovalCustomerDesignOfBranch(int branchId)
         {
             IOrderedQueryable<ViewInquiryDetail> inquiries = inquiryRepository.FindByCondition(x =>
                     x.BranchId == branchId && x.IsActive == true && x.IsDeleted == false &&
-                    (x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval ) &&
-                    x.ManagedBy == userId)
+                    (x.InquiryStatusId == (int)inquiryStatus.designWaitingForCustomerApproval ))
                 .Select(x => new ViewInquiryDetail
                 {
                     // InquiryWorkscopeId = x.InquiryWorkscopeId,
