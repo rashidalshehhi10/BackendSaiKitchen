@@ -62,6 +62,15 @@ namespace BackendSaiKitchen.CustomModel
         public string CustomerNotes { get; set; }
         public int ContactStatusId { get; set; }
         public string ContactStatus { get; set; }
+        public string TechnicalChecklistDate { get; set; }
+        public int? TechnicalChecklistBy { get; set; }
+        public string TechnicalChecklistByName { get; set; }
+        public string CommercialChecklistDate { get; set; }
+        public int? CommercialChecklistBy { get; set; }
+        public string CommercialChecklistByName { get; set; }
+        public string JoborderConfirmationDate { get; set; }
+        public int? JoborderConfirmationBy { get; set; }
+        public string JoborderConfirmationByName { get; set; }
 
 
         public string QuotationAddedOn { get; set; }

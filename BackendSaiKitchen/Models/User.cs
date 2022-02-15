@@ -23,6 +23,9 @@ namespace BackendSaiKitchen.Models
             InquiryQuotationAssignToNavigations = new HashSet<Inquiry>();
             InquiryWorkscopeDesignAssignedToNavigations = new HashSet<InquiryWorkscope>();
             InquiryWorkscopeMeasurementAssignedToNavigations = new HashSet<InquiryWorkscope>();
+            JobOrderCommercialCheckListDoneByNavigations = new HashSet<JobOrder>();
+            JobOrderJobOrderConfirmationByNavigations = new HashSet<JobOrder>();
+            JobOrderTechnicalCheckListDoneByNavigations = new HashSet<JobOrder>();
             MeasurementMeasurementApprovedByNavigations = new HashSet<Measurement>();
             MeasurementMeasurementTakenByNavigations = new HashSet<Measurement>();
             Newsletters = new HashSet<Newsletter>();
@@ -63,6 +66,9 @@ namespace BackendSaiKitchen.Models
         public virtual ICollection<Inquiry> InquiryQuotationAssignToNavigations { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopeDesignAssignedToNavigations { get; set; }
         public virtual ICollection<InquiryWorkscope> InquiryWorkscopeMeasurementAssignedToNavigations { get; set; }
+        public virtual ICollection<JobOrder> JobOrderCommercialCheckListDoneByNavigations { get; set; }
+        public virtual ICollection<JobOrder> JobOrderJobOrderConfirmationByNavigations { get; set; }
+        public virtual ICollection<JobOrder> JobOrderTechnicalCheckListDoneByNavigations { get; set; }
         public virtual ICollection<Measurement> MeasurementMeasurementApprovedByNavigations { get; set; }
         public virtual ICollection<Measurement> MeasurementMeasurementTakenByNavigations { get; set; }
         public virtual ICollection<Newsletter> Newsletters { get; set; }

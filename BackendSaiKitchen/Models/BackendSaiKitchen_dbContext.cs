@@ -3064,13 +3064,13 @@ namespace BackendSaiKitchen.Models
                     .HasMaxLength(50)
                     .HasColumnName("ESignatureImg");
 
-                entity.Property(e => e.IsSpecialApprovalRequired).HasColumnName("Is SpecialApprovalRequired");
-
                 entity.Property(e => e.JobOrderApprovalRequestDate).HasMaxLength(50);
 
                 entity.Property(e => e.JobOrderChecklistFileUrl).HasColumnName("JobOrderChecklistFileURL");
 
                 entity.Property(e => e.JobOrderCompletionDate).HasMaxLength(50);
+
+                entity.Property(e => e.JobOrderConfirmationDate).HasMaxLength(50);
 
                 entity.Property(e => e.JobOrderDelayReason).HasMaxLength(500);
 
@@ -3098,6 +3098,11 @@ namespace BackendSaiKitchen.Models
 
                 entity.Property(e => e.UpdatedDate).HasMaxLength(50);
 
+                entity.HasOne(d => d.CommercialCheckListDoneByNavigation)
+                    .WithMany(p => p.JobOrderCommercialCheckListDoneByNavigations)
+                    .HasForeignKey(d => d.CommercialCheckListDoneBy)
+                    .HasConstraintName("FK_JobOrder_User1");
+
                 entity.HasOne(d => d.Factory)
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.FactoryId)
@@ -3107,6 +3112,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.JobOrders)
                     .HasForeignKey(d => d.InquiryId)
                     .HasConstraintName("FK_JobOrder_Inquiry");
+
+                entity.HasOne(d => d.JobOrderConfirmationByNavigation)
+                    .WithMany(p => p.JobOrderJobOrderConfirmationByNavigations)
+                    .HasForeignKey(d => d.JobOrderConfirmationBy)
+                    .HasConstraintName("FK_JobOrder_User2");
 
                 entity.HasOne(d => d.QualityRemarksNavigation)
                     .WithMany(p => p.JobOrderQualityRemarksNavigations)
@@ -3122,6 +3132,11 @@ namespace BackendSaiKitchen.Models
                     .WithMany(p => p.JobOrderSpeedOfWorkRemarksNavigations)
                     .HasForeignKey(d => d.SpeedOfWorkRemarks)
                     .HasConstraintName("FK_JobOrder_Remarks1");
+
+                entity.HasOne(d => d.TechnicalCheckListDoneByNavigation)
+                    .WithMany(p => p.JobOrderTechnicalCheckListDoneByNavigations)
+                    .HasForeignKey(d => d.TechnicalCheckListDoneBy)
+                    .HasConstraintName("FK_JobOrder_User");
             });
 
             modelBuilder.Entity<JobOrderDetail>(entity =>

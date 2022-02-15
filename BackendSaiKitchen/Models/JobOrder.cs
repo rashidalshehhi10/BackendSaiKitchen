@@ -62,12 +62,17 @@ namespace BackendSaiKitchen.Models
         public int? SpeedOfWorkRemarks { get; set; }
         public int? ServiceOverAllRemarks { get; set; }
         public string EsignatureImg { get; set; }
+        public string JobOrderConfirmationDate { get; set; }
+        public int? JobOrderConfirmationBy { get; set; }
 
+        public virtual User CommercialCheckListDoneByNavigation { get; set; }
         public virtual Branch Factory { get; set; }
         public virtual Inquiry Inquiry { get; set; }
+        public virtual User JobOrderConfirmationByNavigation { get; set; }
         public virtual Remark QualityRemarksNavigation { get; set; }
         public virtual Remark ServiceOverAllRemarksNavigation { get; set; }
         public virtual Remark SpeedOfWorkRemarksNavigation { get; set; }
+        public virtual User TechnicalCheckListDoneByNavigation { get; set; }
         public virtual ICollection<File> Files { get; set; }
         public virtual ICollection<JobOrderDetail> JobOrderDetails { get; set; }
         public virtual ICollection<PurchaseRequest> PurchaseRequests { get; set; }

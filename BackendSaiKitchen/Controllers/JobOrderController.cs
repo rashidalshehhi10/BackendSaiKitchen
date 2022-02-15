@@ -38,6 +38,8 @@ namespace BackendSaiKitchen.Controllers
                         ? (int)inquiryStatus.jobOrderInProgress : (int)inquiryStatus.jobOrderAuditPending;
                     Helper.Helper.Each(inquiry.InquiryWorkscopes, x => x.InquiryStatusId = inquiry.InquiryStatusId);
                     joborder.JobOrderCompletionDate = order.jobordercompletiondate;
+                    joborder.JobOrderConfirmationDate = Helper.Helper.GetDateTime();
+                    joborder.JobOrderConfirmationBy = Constants.userId;
                     JobOrderDetail jobOrderDetail = new()
                     {
                         MaterialRequestDate = order.materialRequestDate,

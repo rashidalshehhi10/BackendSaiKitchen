@@ -1121,6 +1121,16 @@ namespace SaiKitchenBackend.Controllers
                     CustomerNotes = x.Customer.CustomerNotes,
                     ContactStatusId =(int)x.Customer.ContactStatusId,
                     ContactStatus = x.Customer.ContactStatus.ContactStatusName,
+                    TechnicalChecklistDate = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.TechnicalCheckListCompletionDate).FirstOrDefault(),
+                    TechnicalChecklistBy = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.TechnicalCheckListDoneBy).FirstOrDefault(),
+                    TechnicalChecklistByName = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.TechnicalCheckListDoneByNavigation.UserName).FirstOrDefault(),
+                    CommercialChecklistDate = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.CommercialCheckListCompletionDate).FirstOrDefault(),
+                    CommercialChecklistBy = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.CommercialCheckListDoneBy).FirstOrDefault(),
+                    CommercialChecklistByName = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.CommercialCheckListDoneByNavigation.UserName).FirstOrDefault(),
+                    JoborderConfirmationDate = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.JobOrderConfirmationDate).FirstOrDefault(),
+                    JoborderConfirmationBy = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.JobOrderConfirmationBy).FirstOrDefault(),
+                    JoborderConfirmationByName = x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false).Select(x => x.JobOrderConfirmationByNavigation.UserName).FirstOrDefault(),
+
                 }).OrderByDescending(x => x.InquiryId).AsNoTracking().Skip((int)start).Take((int)length)
                 .ToListAsync();
             tableResponse.data = inquiries;
