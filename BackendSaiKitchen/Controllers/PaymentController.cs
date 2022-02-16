@@ -165,6 +165,10 @@ namespace BackendSaiKitchen.Controllers
 
                     viewQuotation.TermsAndConditionsDetail.RemoveAll(x =>
                         x.IsInstallmentTerms != viewQuotation.IsInstallment);
+                    if (viewQuotation.installments.Count == 0)
+                    {
+                        viewQuotation.IsInstallment = false;
+                    }
 
                     if (viewQuotation.IsInstallment == true)
                     {
