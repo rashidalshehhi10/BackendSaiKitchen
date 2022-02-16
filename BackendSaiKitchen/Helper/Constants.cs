@@ -97,9 +97,17 @@
         ManageWorkscope = 10,
         ManageFees = 11,
         ManagePromo = 12,
-        ManageChecklist = 13,
+        ManageTechnicalChecklist = 13,
         ManageJobOrder = 14,
-        ManagePayment = 15
+        ManagePayment = 15,
+        ManageReport = 16,
+        ManageCommercialCheckList = 17,
+        ManageJobOrderFactory = 18,
+        ManageProcurement = 19,
+        ManageSalesReport = 20,
+        ManageCommercialSpecialApprove = 21,
+        ManageJobOrderAudit = 22,
+        ManageNewsLetter = 23
     }
 
     public enum permissionLevel

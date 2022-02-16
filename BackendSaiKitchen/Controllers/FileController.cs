@@ -1,9 +1,11 @@
 ﻿using BackendSaiKitchen.CustomModel;
+using BackendSaiKitchen.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaiKitchenBackend.Controllers;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackendSaiKitchen.Controllers
@@ -200,13 +202,22 @@ namespace BackendSaiKitchen.Controllers
         }
 
         //[DisableRequestSizeLimit]
-        //[HttpPost]
-        //[Route("[action]")]
-        //public async Task<object> Test(TestClass test)
-        //{
-        //    //response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
+        [HttpPost]
+        [Route("[action]")]
+        public object Test()
+        {
+            //response.data = await Helper.Helper.SendWhatsappMessage(sendto, type, message);
 
-        //    return response;
-        //}
+            var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+            x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageTechnicalChecklist))).Select(x => new
+            {
+                x.UserId,
+                x.UserName,
+                x.UserMobile
+            }).ToList();
+            response.data = users;
+            return response;
+        }
     }
 }

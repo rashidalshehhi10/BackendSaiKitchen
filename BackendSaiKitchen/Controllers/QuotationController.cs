@@ -1643,7 +1643,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object AddContractFiles(ContractFiles files)
+        public async Task<object> AddContractFiles(ContractFiles files)
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == files.inquiryId && x.IsActive == true && x.IsDeleted == false &&
@@ -1671,6 +1671,44 @@ namespace BackendSaiKitchen.Controllers
                 _jobOrder.IsDeleted = false;
                 _jobOrder.CreatedBy = Constants.userId;
                 _jobOrder.CreatedDate = Helper.Helper.GetDateTime();
+
+                string msg = "Inquiry (" + inquiry.InquiryCode + ") On Technical CheckList Pending Of " + inquiry.Customer.CustomerName;
+
+                var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+            x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageTechnicalChecklist))).Select(x => new
+            {
+                x.UserId,
+                x.UserName,
+                x.UserMobile,
+                x.IsNotificationEnabled,
+                x.UserEmail
+            }).ToList();
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        if (user.UserEmail != null)
+                        {
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Subject = "Inquiry On Technical CheckList Prnding",
+                                Body = msg + " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                            });
+                        }
+                        if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                        {
+
+                            await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg + Environment.NewLine + "This msg should send to " + user.UserName + " Number " + user.UserMobile);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+                }
+
                 inquiry.JobOrders.Add(_jobOrder);
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();

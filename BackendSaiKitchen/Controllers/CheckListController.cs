@@ -8,6 +8,7 @@ using Sentry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Constants = BackendSaiKitchen.Helper.Constants;
 
 namespace BackendSaiKitchen.Controllers
@@ -244,7 +245,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object InquiryChecklist(int inquiryId)
+        public async Task<object> InquiryChecklist(int inquiryId)
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == inquiryId && x.IsActive == true && x.IsDeleted == false
@@ -287,6 +288,44 @@ namespace BackendSaiKitchen.Controllers
                 }
 
                 inquiry.InquiryStatusId = (int)inquiryStatus.checklistPending;
+
+                string msg = "Inquiry (" + inquiry.InquiryCode + ") On Technical CheckList Pending Of " + inquiry.Customer.CustomerName;
+
+                var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+            x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageTechnicalChecklist))).Select(x => new
+            {
+                x.UserId,
+                x.UserName,
+                x.UserMobile,
+                x.IsNotificationEnabled,
+                x.UserEmail
+            }).ToList();
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        if (user.UserEmail != null)
+                        {
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Subject = "Inquiry On Technical CheckList Prnding",
+                                Body = msg + " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                            });
+                        }
+                        if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                        {
+
+                            await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg + Environment.NewLine + "This msg should send to " + user.UserName + " Number " + user.UserMobile);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+                }
+
                 inquiryRepository.Update(inquiry);
                 context.SaveChanges();
             }
@@ -302,7 +341,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveinquiryChecklist(CustomCheckListapprove approve)
+        public async Task<object> ApproveinquiryChecklist(CustomCheckListapprove approve)
         {
             Inquiry inquiry = inquiryRepository
                 .FindByCondition(x =>
@@ -323,6 +362,45 @@ namespace BackendSaiKitchen.Controllers
             if (inquiry != null)
             {
                 inquiry.InquiryStatusId = (int)inquiryStatus.commercialChecklistPending;
+
+                string msg = "Inquiry (" + inquiry.InquiryCode + ") On Commercial CheckList Pending Of " + inquiry.Customer.CustomerName;
+
+                var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+            x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageCommercialCheckList))).Select(x => new
+            {
+                x.UserId,
+                x.UserName,
+                x.UserMobile,
+                x.IsNotificationEnabled,
+                x.UserEmail
+            }).ToList();
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        if (user.UserEmail != null)
+                        {
+
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Subject = "Inquiry On Commercial CheckList Prnding",
+                                Body = msg+ " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                            });
+                        }
+                        if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                        {
+
+                            await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg +Environment.NewLine+"This msg should send to "+user.UserName+ " Number "+ user.UserMobile);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+                }
+
                 if (approve.Comment != string.Empty || approve.Comment != null)
                 {
                     inquiry.InquiryComment = approve.Comment;
@@ -553,7 +631,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveSpecialApproval(Approval approve)
+        public async Task<object> ApproveSpecialApproval(Approval approve)
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
@@ -561,6 +639,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(x => x.IsActive == true && x.IsDeleted == false))
                 .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Customer)
                 .FirstOrDefault();
 
             if (inquiry != null)
@@ -570,6 +649,44 @@ namespace BackendSaiKitchen.Controllers
                     jobOrder.JobOrderApprovalRequestDate = Helper.Helper.GetDateTime();
                 }
                 inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
+
+                string msg = "Inquiry (" + inquiry.InquiryCode + ") On Job Order Confirmation Pending Of " + inquiry.Customer.CustomerName;
+
+                var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+            x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+            x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageJobOrderFactory))).Select(x => new
+            {
+                x.UserId,
+                x.UserName,
+                x.UserMobile,
+                x.IsNotificationEnabled,
+                x.UserEmail
+            }).ToList();
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        if (user.UserEmail != null)
+                        {
+                            await mailService.SendEmailAsync(new MailRequest
+                            {
+                                Subject = "Inquiry On Job Order Confirmation Pending",
+                                Body = msg + " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                            });
+                        }
+                        if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                        {
+
+                            await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg + Environment.NewLine + "This msg should send to " + user.UserName + " Number " + user.UserMobile);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Sentry.SentrySdk.CaptureMessage(e.Message);
+                    }
+                }
+
                 if (approve.Reason != string.Empty || approve.Reason != null)
                 {
                     inquiry.InquiryComment = approve.Reason;
@@ -664,7 +781,7 @@ namespace BackendSaiKitchen.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public object ApproveinquiryCommericalChecklist(commerical approve)
+        public async Task<object> ApproveinquiryCommericalChecklist(commerical approve)
         {
             Inquiry inquiry = inquiryRepository.FindByCondition(x =>
                     x.InquiryId == approve.inquiryId && x.IsActive == true && x.IsDeleted == false &&
@@ -674,6 +791,7 @@ namespace BackendSaiKitchen.Controllers
                 .Include(x => x.InquiryWorkscopes.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.JobOrders.Where(y => y.IsActive == true && y.IsDeleted == false))
                 .Include(x => x.Comments.Where(x => x.IsActive == true && x.IsDeleted == false))
+                .Include(x => x.Customer)
                 .FirstOrDefault();
 
             if (inquiry != null)
@@ -689,6 +807,44 @@ namespace BackendSaiKitchen.Controllers
                 if (approve.IsSpecialApprovalRequired)
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.specialApprovalPending;
+
+                    string msg = "Inquiry (" + inquiry.InquiryCode + ") On Special Approval Pending Of " + inquiry.Customer.CustomerName;
+
+                    var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+                x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+                x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageCommercialSpecialApprove))).Select(x => new
+                {
+                    x.UserId,
+                    x.UserName,
+                    x.UserMobile,
+                    x.IsNotificationEnabled,
+                    x.UserEmail
+                }).ToList();
+                    foreach (var user in users)
+                    {
+                        try
+                        {
+                            if (user.UserEmail != null)
+                            {
+                                await mailService.SendEmailAsync(new MailRequest
+                                {
+                                    Subject = "Inquiry On Special Approval Pending",
+                                    Body = msg + " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                    ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                                });
+                            }
+                            if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                            {
+
+                                await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg + Environment.NewLine + "This msg should send to " + user.UserName + " Number " + user.UserMobile);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                    }
+
                     if (approve.Reason != string.Empty || approve.Reason != null)
                     {
                         inquiry.InquiryComment = approve.Reason;
@@ -715,6 +871,44 @@ namespace BackendSaiKitchen.Controllers
                 else
                 {
                     inquiry.InquiryStatusId = (int)inquiryStatus.jobOrderConfirmationPending;
+
+                    string msg = "Inquiry (" + inquiry.InquiryCode + ") On Job Order Confirmation Pending Of " + inquiry.Customer.CustomerName;
+
+                    var users = userRepository.FindByCondition(x => x.IsActive == true && x.IsDeleted == false &&
+                x.UserRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.BranchId == Constants.branchId && x.BranchRole.IsActive == true && x.BranchRole.IsDeleted == false &&
+                x.BranchRole.PermissionRoles.Any(x => x.IsActive == true && x.IsDeleted == false && x.PermissionId == (int)permission.ManageJobOrderFactory))).Select(x => new
+                {
+                    x.UserId,
+                    x.UserName,
+                    x.UserMobile,
+                    x.IsNotificationEnabled,
+                    x.UserEmail
+                }).ToList();
+                    foreach (var user in users)
+                    {
+                        try
+                        {
+                            if (user.UserEmail != null)
+                            {
+                                await mailService.SendEmailAsync(new MailRequest
+                                {
+                                    Subject = "Inquiry On Job Order Confirmation Pending",
+                                    Body = msg + " This email Should send to  " + user.UserName + " Email " + user.UserEmail,
+                                    ToEmail = "m.sameer@sai-group.ae" //user.UserEmail
+                                });
+                            }
+                            if (user.IsNotificationEnabled != null && (bool)user.IsNotificationEnabled && user.UserMobile != null)
+                            {
+
+                                await Helper.Helper.SendWhatsappMessage("971545552471"/*user.UserMobile*/, "text", msg + Environment.NewLine + "This msg should send to " + user.UserName + " Number " + user.UserMobile);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Sentry.SentrySdk.CaptureMessage(e.Message);
+                        }
+                    }
+
                     inquiry.InquiryComment = approve.Reason;
                     inquiry.Comments.Add(new Comment
                     {

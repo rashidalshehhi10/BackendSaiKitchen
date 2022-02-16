@@ -85,12 +85,21 @@ namespace BackendSaiKitchen.Controllers
                         AdvancePayment = x.Payments
                             .FirstOrDefault(y =>
                                 y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
+                                y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null ? "0" : x.Payments
+                            .FirstOrDefault(y =>
+                                y.PaymentTypeId == (int)paymenttype.AdvancePayment && y.IsActive == true &&
                                 y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                         BeforeInstallation = x.Payments
                             .FirstOrDefault(y =>
                                 y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
+                                y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null ? "0" : x.Payments
+                            .FirstOrDefault(y =>
+                                y.PaymentTypeId == (int)paymenttype.BeforeInstallation && y.IsActive == true &&
                                 y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
                         AfterDelivery = x.Payments
+                            .FirstOrDefault(y =>
+                                y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
+                                y.IsDeleted == false).PaymentAmountinPercentage.ToString() == null ? "0" : x.Payments
                             .FirstOrDefault(y =>
                                 y.PaymentTypeId == (int)paymenttype.AfterDelivery && y.IsActive == true &&
                                 y.IsDeleted == false).PaymentAmountinPercentage.ToString(),
