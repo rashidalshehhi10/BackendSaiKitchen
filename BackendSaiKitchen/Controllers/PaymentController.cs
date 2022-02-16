@@ -163,12 +163,14 @@ namespace BackendSaiKitchen.Controllers
                         Log.Error(ex.Message);
                     }
 
-                    viewQuotation.TermsAndConditionsDetail.RemoveAll(x =>
-                        x.IsInstallmentTerms != viewQuotation.IsInstallment);
                     if (viewQuotation.installments.Count == 0)
                     {
                         viewQuotation.IsInstallment = false;
                     }
+
+                    viewQuotation.TermsAndConditionsDetail.RemoveAll(x =>
+                        x.IsInstallmentTerms != viewQuotation.IsInstallment);
+                    
 
                     if (viewQuotation.IsInstallment == true)
                     {
